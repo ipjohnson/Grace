@@ -1,0 +1,128 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace", "Grace\Grace.csproj", "{2E64FA60-F2CD-428C-8413-D71B4BF5935A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Net", "Grace.Net\Grace.Net.csproj", "{C2FDC6DD-E8BA-4550-8C4E-97EDF9A01B95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.NSubstitute", "Grace.NSubstitute\Grace.NSubstitute.csproj", "{742CB845-347E-42F2-9133-E8775E36F83C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Moq", "Grace.Moq\Grace.Moq.csproj", "{4EE2F531-4968-4910-83E4-DEFD58537BA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.WCF", "Grace.WCF\Grace.WCF.csproj", "{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.MVC5", "Grace.MVC5\Grace.MVC5.csproj", "{C05F9C12-8915-4B43-9C83-9B63C8079936}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.MVC4", "Grace.MVC4\Grace.MVC4.csproj", "{F971978C-23BA-4B5C-B6BB-467B621D4D51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.UnitTests", "Grace.UnitTests\Grace.UnitTests.csproj", "{8D577C3E-55EB-43C2-9B81-3547A16A0496}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2605CBB7-C958-4353-A371-AE655A3D8E31}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecFiles", "NuSpecFiles", "{F3A527B7-F1C4-4D78-AAE6-B908B6F93024}"
+	ProjectSection(SolutionItems) = preProject
+		..\NuGet\Grace.FakeItEasy.nuspec = ..\NuGet\Grace.FakeItEasy.nuspec
+		..\NuGet\Grace.log4net.nuspec = ..\NuGet\Grace.log4net.nuspec
+		..\NuGet\Grace.Moq.nuspec = ..\NuGet\Grace.Moq.nuspec
+		..\NuGet\Grace.MVC4.nuspec = ..\NuGet\Grace.MVC4.nuspec
+		..\NuGet\Grace.MVC5.nuspec = ..\NuGet\Grace.MVC5.nuspec
+		..\NuGet\Grace.Net.nuspec = ..\NuGet\Grace.Net.nuspec
+		..\NuGet\Grace.NLog.nuspec = ..\NuGet\Grace.NLog.nuspec
+		..\NuGet\Grace.NSubstitute.nuspec = ..\NuGet\Grace.NSubstitute.nuspec
+		..\NuGet\Grace.nuspec = ..\NuGet\Grace.nuspec
+		..\NuGet\Grace.WCF.nuspec = ..\NuGet\Grace.WCF.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.log4net", "Grace.log4net\Grace.log4net.csproj", "{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mocking", "Mocking", "{D824794F-C32B-450C-8150-F54B4848B949}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{3A1809AF-15A1-498A-97F5-79AD09EC8F81}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{F26376D4-77AC-4095-ACE8-9D17ADD1C543}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.FakeItEasy", "Grace.FakeItEasy\Grace.FakeItEasy.csproj", "{2ED7B534-6054-4AAE-858E-A6BC2B323CDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.NLog", "Grace.NLog\Grace.NLog.csproj", "{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WCF", "WCF", "{F6A98F7E-8C40-47C6-B04D-878908608023}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{36C6B292-1625-491E-9807-DB189E2A3587}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Templates", "Grace.Templates\Grace.Templates.csproj", "{FA16AAB4-B28A-46B1-810C-876E333B1373}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E64FA60-F2CD-428C-8413-D71B4BF5935A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E64FA60-F2CD-428C-8413-D71B4BF5935A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E64FA60-F2CD-428C-8413-D71B4BF5935A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E64FA60-F2CD-428C-8413-D71B4BF5935A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2FDC6DD-E8BA-4550-8C4E-97EDF9A01B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2FDC6DD-E8BA-4550-8C4E-97EDF9A01B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2FDC6DD-E8BA-4550-8C4E-97EDF9A01B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2FDC6DD-E8BA-4550-8C4E-97EDF9A01B95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{742CB845-347E-42F2-9133-E8775E36F83C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{742CB845-347E-42F2-9133-E8775E36F83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{742CB845-347E-42F2-9133-E8775E36F83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{742CB845-347E-42F2-9133-E8775E36F83C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EE2F531-4968-4910-83E4-DEFD58537BA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EE2F531-4968-4910-83E4-DEFD58537BA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE2F531-4968-4910-83E4-DEFD58537BA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EE2F531-4968-4910-83E4-DEFD58537BA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C05F9C12-8915-4B43-9C83-9B63C8079936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05F9C12-8915-4B43-9C83-9B63C8079936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C05F9C12-8915-4B43-9C83-9B63C8079936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C05F9C12-8915-4B43-9C83-9B63C8079936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F971978C-23BA-4B5C-B6BB-467B621D4D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F971978C-23BA-4B5C-B6BB-467B621D4D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F971978C-23BA-4B5C-B6BB-467B621D4D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F971978C-23BA-4B5C-B6BB-467B621D4D51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D577C3E-55EB-43C2-9B81-3547A16A0496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D577C3E-55EB-43C2-9B81-3547A16A0496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D577C3E-55EB-43C2-9B81-3547A16A0496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D577C3E-55EB-43C2-9B81-3547A16A0496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ED7B534-6054-4AAE-858E-A6BC2B323CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED7B534-6054-4AAE-858E-A6BC2B323CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED7B534-6054-4AAE-858E-A6BC2B323CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED7B534-6054-4AAE-858E-A6BC2B323CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4EE2F531-4968-4910-83E4-DEFD58537BA8} = {D824794F-C32B-450C-8150-F54B4848B949}
+		{742CB845-347E-42F2-9133-E8775E36F83C} = {D824794F-C32B-450C-8150-F54B4848B949}
+		{2ED7B534-6054-4AAE-858E-A6BC2B323CDB} = {D824794F-C32B-450C-8150-F54B4848B949}
+		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2} = {F6A98F7E-8C40-47C6-B04D-878908608023}
+		{F971978C-23BA-4B5C-B6BB-467B621D4D51} = {3A1809AF-15A1-498A-97F5-79AD09EC8F81}
+		{C05F9C12-8915-4B43-9C83-9B63C8079936} = {3A1809AF-15A1-498A-97F5-79AD09EC8F81}
+		{FA16AAB4-B28A-46B1-810C-876E333B1373} = {36C6B292-1625-491E-9807-DB189E2A3587}
+		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
+		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
+	EndGlobalSection
+EndGlobal

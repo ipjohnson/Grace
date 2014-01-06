@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="sourcemonitor_metrics" type="xs:anyType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        This schema defines metrics exported from SourceMonitor.exe.
+        Export of project metrics and checkpoint metrics both use
+        this schema.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="project">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+            For exported project metrics, the element "checkpoints" will be present.
+            For exported checkpoint metrics, the element "checkpoint" will be present.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:element ref="project_name" />
+        <xs:element ref="project_directory" />
+        <xs:element ref="project_language" />
+        <xs:element ref="modified_complexity" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="ignore_headers_footers" />
+        <xs:element ref="metric_names" />
+        <xs:choice>
+          <xs:element ref="checkpoints" />
+          <xs:element ref="checkpoint" />
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="project_name" type="xs:string" />
+  <xs:element name="project_directory" type="xs:string" />
+  <xs:element name="project_language" type="xs:string" />
+  <xs:element name="modified_complexity" type="xs:boolean" />
+  <xs:element default="false" name="ignore_headers_footers" type="xs:boolean" />
+  <xs:element name="metric_names">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="metric_name" />
+      </xs:sequence>
+      <xs:attribute name="name_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="metric_name">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="id" type="xs:ID" use="required" />
+          <xs:attribute name="type" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="string" />
+                <xs:enumeration value="number" />
+                <xs:enumeration value="ratio" />
+                <xs:enumeration value="percent" />
+                <xs:enumeration value="maximum" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="divisor" type="xs:IDREF" use="optional" />
+          <xs:attribute name="values" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="checkpoints">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="checkpoint" />
+      </xs:sequence>
+      <xs:attribute name="checkpoint_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="checkpoint">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation>
+          For exported projects, the "metrics" and "block_depths" elements
+          will be present. For exported checkpoints, the "files" element will
+          be present.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="metrics" />
+          <xs:element ref="block_depths" />
+        </xs:sequence>
+        <xs:element ref="files" />
+      </xs:choice>
+      <xs:attribute name="checkpoint_name" type="xs:string" use="required" />
+      <xs:attribute name="checkpoint_date" type="xs:date" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="metrics">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="metric" />
+      </xs:sequence>
+      <xs:attribute name="metric_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="metric">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="id" type="xs:IDREF" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="method_metrics">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="method" />
+      </xs:sequence>
+      <xs:attribute name="method_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="method">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="complexity" type="xs:unsignedInt" />
+        <xs:element name="statements" type="xs:unsignedInt" />
+        <xs:element name="maximum_depth" type="xs:unsignedInt" />
+        <xs:element name="calls" type="xs:unsignedInt" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="line" type="xs:unsignedInt" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="block_depths">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="block_depth" />
+      </xs:sequence>
+      <xs:attribute name="depth_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="block_depth">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:unsignedInt">
+          <xs:attribute name="level" type="xs:unsignedByte" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="files">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="file" />
+      </xs:sequence>
+      <xs:attribute name="file_count" type="xs:unsignedInt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="file">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="metrics" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="method_metrics" />
+        <xs:element ref="block_depths" />
+      </xs:sequence>
+      <xs:attribute name="file_name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

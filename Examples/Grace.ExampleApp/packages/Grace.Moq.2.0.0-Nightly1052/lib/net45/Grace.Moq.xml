@@ -1,0 +1,436 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Grace.Moq</name>
+    </assembly>
+    <members>
+        <member name="T:Grace.Moq.IExportLocatorExtensions">
+            <summary>
+            Contains C# extension methods for IExportLocator
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.IExportLocatorExtensions.Moq(Grace.DependencyInjection.IExportLocator)">
+            <summary>
+            Enables Moq on a DependencyInjectionContainer or IInjectionScope
+            </summary>
+            <param name="locator"></param>
+        </member>
+        <member name="M:Grace.Moq.IExportLocatorExtensions.Verify(Grace.DependencyInjection.IExportLocator)">
+            <summary>
+            Verify all Mock objects created by the container pass verify 
+            </summary>
+            <param name="locator"></param>
+        </member>
+        <member name="T:Grace.Moq.IExportRegistrationBlockExtensions">
+            <summary>
+            Contains C# extensions for creating Moq objects
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.IExportRegistrationBlockExtensions.Moq``1(Grace.DependencyInjection.IExportRegistrationBlock)">
+            <summary>
+            Creates a Moq export for a particular type
+            </summary>
+            <typeparam name="T">type to mock</typeparam>
+            <param name="block">registration block</param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.Moq.IMockCollection">
+            <summary>
+            A collection of mock objects created by the container. You can locate this interface from the container
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.IMockCollection.AddMock``1(Moq.Mock{``0},System.Action{Moq.Mock{``0}})">
+            <summary>
+            Add a mock to the collection
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="newMock"></param>
+            <param name="verifyMethod"></param>
+        </member>
+        <member name="M:Grace.Moq.IMockCollection.Clear">
+            <summary>
+            Clear the collection of mock objects
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.IMockCollection.Verify">
+            <summary>
+            Verify all mock objects created pass verification. 
+            </summary>
+        </member>
+        <member name="T:Grace.Moq.IMoqExportStrategyConfiguration`1">
+            <summary>
+            Configure a Moq export strategy for use in a container or scope
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WithPriority(System.Int32)">
+            <summary>
+            Export the type with the specified priority
+            </summary>
+            <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.As``1">
+            <summary>
+            Export as a specific type (usually an interface)
+            </summary>
+            <typeparam name="TExportType"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.As(System.Type)">
+            <summary>
+            Export as a particular interface
+            </summary>
+            <param name="exportType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.InEnvironment(Grace.DependencyInjection.ExportEnvironment)">
+            <summary>
+            Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.AsName(System.String)">
+            <summary>
+            Export the type under the specified name
+            </summary>
+            <param name="name">name to export under</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.When(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.Unless(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.AndCondition(Grace.DependencyInjection.Conditions.IExportCondition)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WhenInjectedInto``1">
+            <summary>
+            Applies a new WhenInjectedInto condition on the export, using the export only when injecting into the specified class
+            </summary>
+            <typeparam name="TInjected"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WhenClassHas``1">
+            <summary>
+            Applies a WhenClassHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WhenMemberHas``1">
+            <summary>
+            Applies a WhenMemberHas condition, using the export only if the Property or method or constructor is attribute with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WhenTargetHas``1">
+            <summary>
+            Applies a WhenTargetHas condition, using the export only if the Property or Parameter is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to an export
+            </summary>
+            <param name="metadataName"></param>
+            <param name="metadataValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.Setup(System.Action{Moq.Mock{`0}})">
+            <summary>
+            Setup a moq for use
+            </summary>
+            <param name="mockSetup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.Verify(System.Action{Moq.Mock{`0}})">
+            <summary>
+            Allows you to specify verify statements that will be executed when you cal Verify() on the container
+            </summary>
+            <param name="verifyMock"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.AndSingleton">
+            <summary>
+            Make the moq a singleton
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.IMoqExportStrategyConfiguration`1.LifeCycleContainer(Grace.DependencyInjection.LifeCycleContainers.ILifeCycleContainer)">
+            <summary>
+            Setup a life cycle contianer for this Moq
+            </summary>
+            <param name="container"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.Moq.MockCollection">
+            <summary>
+            Collection of Mock object
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MockCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>1</filterpriority>
+        </member>
+        <member name="M:Grace.Moq.MockCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Grace.Moq.MockCollection.AddMock``1(Moq.Mock{``0},System.Action{Moq.Mock{``0}})">
+            <summary>
+            Add a mock to the collection
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="newMock"></param>
+            <param name="verifyMethod"></param>
+        </member>
+        <member name="M:Grace.Moq.MockCollection.Clear">
+            <summary>
+            Clear the collection of mock objects
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MockCollection.Verify">
+            <summary>
+            Verify all mock objects created pass verification. 
+            </summary>
+        </member>
+        <member name="T:Grace.Moq.MoqContainer">
+            <summary>
+            A container that will supply missing exports with Moq objects.
+            The same functionality can be had by calling container.Moq()
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MoqContainer.#ctor(Grace.DependencyInjection.ExportEnvironment,Grace.DependencyInjection.ExportStrategyComparer,Grace.DependencyInjection.IDisposalScopeProvider)">
+            <summary>
+            Default constructor
+            </summary>
+            <param name="environment">environment for this container, by default unit test</param>
+            <param name="comparer">comparer method for container</param>
+            <param name="disposalScopeProvider">disposal scope provider</param>
+        </member>
+        <member name="T:Grace.Moq.MoqExportStrategy`1">
+            <summary>
+            Export strategy the creates a Moq object
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategy`1.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategy`1.Initialize">
+            <summary>
+            Initialize the strategy
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategy`1.Setup(System.Action{Moq.Mock{`0}})">
+            <summary>
+            
+            </summary>
+            <param name="setupMethod"></param>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategy`1.Verify(System.Action{Moq.Mock{`0}})">
+            <summary>
+            Add a verify method to the export
+            </summary>
+            <param name="verifyMethod"></param>
+        </member>
+        <member name="T:Grace.Moq.MoqExportStrategyConfiguration`1">
+            <summary>
+            Configuration object for Moq export strategy
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.#ctor(System.Type,Grace.Moq.MoqExportStrategy{`0})">
+            <summary>
+            Default Constructor
+            </summary>
+            <param name="exportType"></param>
+            <param name="exportStrategy"></param>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WithPriority(System.Int32)">
+            <summary>
+            Export the type with the specified priority
+            </summary>
+            <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.As``1">
+            <summary>
+            Export as a specific type (usually an interface)
+            </summary>
+            <typeparam name="TExportType"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.As(System.Type)">
+            <summary>
+            Export as a particular interface
+            </summary>
+            <param name="exportType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.InEnvironment(Grace.DependencyInjection.ExportEnvironment)">
+            <summary>
+            Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.AsName(System.String)">
+            <summary>
+            Export the type under the specified name
+            </summary>
+            <param name="name">name to export under</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.When(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.Unless(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.AndCondition(Grace.DependencyInjection.Conditions.IExportCondition)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WhenInjectedInto``1">
+            <summary>
+            Applies a new WhenInjectedInto condition on the export, using the export only when injecting into the specified class
+            </summary>
+            <typeparam name="TInjected"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WhenClassHas``1">
+            <summary>
+            Applies a WhenClassHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WhenMemberHas``1">
+            <summary>
+            Applies a WhenMemberHas condition, using the export only if the Property or method or constructor is attribute with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WhenTargetHas``1">
+            <summary>
+            Applies a WhenTargetHas condition, using the export only if the Property or Parameter is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to an export
+            </summary>
+            <param name="metadataName"></param>
+            <param name="metadataValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.Setup(System.Action{Moq.Mock{`0}})">
+            <summary>
+            Setup a moq for use
+            </summary>
+            <param name="mockSetup"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.Verify(System.Action{Moq.Mock{`0}})">
+            <summary>
+            Allows you to specify verify statements that will be executed when you cal Verify() on the container
+            </summary>
+            <param name="verifyMock"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.AndSingleton">
+            <summary>
+            Make the moq a singleton
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.LifeCycleContainer(Grace.DependencyInjection.LifeCycleContainers.ILifeCycleContainer)">
+            <summary>
+            Setup a lifecycle container for this Moq
+            </summary>
+            <param name="container"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.ProvideStrategies">
+            <summary>
+            Provide a list of strategies
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqExportStrategyConfiguration`1.DisposalCleanupDelegate(Grace.DependencyInjection.BeforeDisposalCleanupDelegate)">
+            <summary>
+            You can provide a cleanup method to be called 
+            </summary>
+            <param name="disposalCleanupDelegate"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.Moq.MoqDependencyLocator">
+            <summary>
+            Secondary locator that resolves missing exports using Moq
+            </summary>
+        </member>
+        <member name="M:Grace.Moq.MoqDependencyLocator.Locate(Grace.DependencyInjection.IInjectionScope,Grace.DependencyInjection.IInjectionContext,System.String,System.Type,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Resolve will be called when the injection scope can't locate a particular resource
+            </summary>
+            <param name="owningScope"></param>
+            <param name="context"></param>
+            <param name="resolveName"></param>
+            <param name="resolveType"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.Moq.MoqDependencyLocator.LocateAll(Grace.DependencyInjection.IInjectionScope,Grace.DependencyInjection.IInjectionContext,System.String,System.Type,System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            ResolveAll will be called every time a collection is resolved
+            </summary>
+            <param name="owningScope"></param>
+            <param name="context"></param>
+            <param name="resolveName"></param>
+            <param name="resolveType"></param>
+            <param name="collectionEmpty"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

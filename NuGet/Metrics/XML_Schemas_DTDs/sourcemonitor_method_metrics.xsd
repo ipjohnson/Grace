@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="sourcemonitor_metrics">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="project">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="project_name" type="xs:string" />
+              <xs:element name="project_directory" type="xs:string" />
+              <xs:element name="project_language" type="xs:string" />
+              <xs:element name="checkpoints">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="checkpoint">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="files">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element maxOccurs="unbounded" name="file">
+                                  <xs:complexType mixed="true">
+                                    <xs:sequence minOccurs="0">
+                                      <xs:element maxOccurs="unbounded" name="method">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="complexity" type="xs:unsignedByte" />
+                                            <xs:element name="statements" type="xs:unsignedByte" />
+                                            <xs:element name="maximum_depth" type="xs:unsignedByte" />
+                                            <xs:element name="calls" type="xs:unsignedByte" />
+                                          </xs:sequence>
+                                          <xs:attribute name="name" type="xs:string" use="required" />
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="file_name" type="xs:string" use="required" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="file_count" type="xs:unsignedByte" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="checkpoint_name" type="xs:string" use="required" />
+                        <xs:attribute name="checkpoint_date" type="xs:date" use="required" />
+                        <xs:attribute name="ignore_blank_lines" type="xs:boolean" use="required" />
+                        <xs:attribute name="modified_complexity" type="xs:boolean" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="checkpoint_count" type="xs:unsignedByte" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:decimal" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

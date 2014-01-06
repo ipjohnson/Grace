@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sourcemonitor_commands>
+  <write_log>true</write_log>
+  <command>
+    <project_file>Grace.Metrics.smproj</project_file>
+    <checkpoint_name>Baseline</checkpoint_name>
+    <project_language>C#</project_language>
+    <source_directory>../Source/Grace/</source_directory>
+    <source_subdirectory_list>
+      <exclude_subdirectories>false</exclude_subdirectories>
+    </source_subdirectory_list>
+    <parse_utf8_files>True</parse_utf8_files>
+    <ignore_headers_footers>True</ignore_headers_footers>
+    <export>
+      <export_file>Grace-details.xml</export_file>
+      <export_type>2</export_type>
+    </export>
+  </command>
+    <command>
+    <project_file>Grace.Metrics.smproj</project_file>
+    <checkpoint_name>Baseline</checkpoint_name>
+    <project_language>C#</project_language>
+    <source_directory>../Source/Grace/</source_directory>
+    <source_subdirectory_list>
+      <exclude_subdirectories>false</exclude_subdirectories>
+    </source_subdirectory_list>
+    <parse_utf8_files>True</parse_utf8_files>
+    <ignore_headers_footers>True</ignore_headers_footers>
+    <export>
+      <export_file>Grace-summary.xml</export_file>
+      <export_type>1</export_type>
+    </export>
+  </command>
+</sourcemonitor_commands>

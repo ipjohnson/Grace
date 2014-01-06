@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- DTD 'sourcemonitor' for metrics exported from SourceMonitor.exe -->
+<!ELEMENT   sourcemonitor_metrics   (project)                                           >
+
+<!ELEMENT   project                 (project_name,
+                                     project_directory,
+                                     project_language,
+                                     modified_complexity?,
+                                     ignore_headers_footers?,
+                                     metric_names,
+                                     checkpoints)                                       >
+<!ATTLIST   project
+                version             CDATA                                     #REQUIRED >
+
+<!ELEMENT   project_name            (#PCDATA)                                           >
+
+<!ELEMENT   project_directory       (#PCDATA)                                           >
+
+<!ELEMENT   project_language        (#PCDATA)                                           >
+
+<!ELEMENT   modified_complexity   (#PCDATA)                                           >
+
+<!ELEMENT   ignore_headers_footers  (#PCDATA)                                           >
+
+<!ELEMENT   metric_names            (metric_name+)                                      >
+<!ATTLIST   metric_names
+                name_count          CDATA                                     #REQUIRED >
+
+<!ELEMENT   metric_name             (#PCDATA)                                           >
+<!ATTLIST   metric_name
+                id                  ID                                        #REQUIRED
+                type                (string |
+                                     number |
+                                     ratio |
+                                     percent |
+                                     maximum |
+                                     average)                                  #IMPLIED
+                divisor             IDREF                                      #IMPLIED
+                values              CDATA                                      #IMPLIED >
+
+<!ELEMENT   checkpoints             (checkpoint*)                                       >
+<!ATTLIST   checkpoints
+                checkpoint_count    CDATA                                     #REQUIRED >
+
+<!ELEMENT   checkpoint              ((metrics, block_depths) | files)                   >
+<!ATTLIST   checkpoint
+                checkpoint_name     CDATA                                     #REQUIRED
+                checkpoint_date     CDATA                                     #REQUIRED
+                checkpoint_files    CDATA                                      #IMPLIED >
+
+<!ELEMENT   metrics                 (metric+)                                           >
+<!ATTLIST   metrics
+                metric_count        CDATA                                     #REQUIRED >
+
+<!ELEMENT   metric                  (#PCDATA)                                           >
+<!ATTLIST   metric
+                id                  IDREF                                     #REQUIRED >
+
+<!ELEMENT   method_metrics          (method+)                                           >
+<!ATTLIST   method_metrics
+                method_count        CDATA                                     #REQUIRED >
+
+<!ELEMENT   method                  (complexity, statements, maximum_depth, calls?)                                           >
+<!ATTLIST   method
+                name                CDATA                                     #REQUIRED 
+                line                CDATA                                     #IMPLIED >
+
+<!ELEMENT   complexity              (#PCDATA)                                           >
+<!ELEMENT   statements              (#PCDATA)                                           >
+<!ELEMENT   maximum_depth           (#PCDATA)                                           >
+<!ELEMENT   calls                   (#PCDATA)                                           >
+
+<!ELEMENT   block_depths            (block_depth+)                                      >
+<!ATTLIST   block_depths
+                depth_count         CDATA                                     #REQUIRED >
+
+<!ELEMENT   block_depth             (#PCDATA)                                           >
+<!ATTLIST   block_depth
+                level               CDATA                                     #REQUIRED >
+
+<!ELEMENT   files                   (file*)                                             >
+<!ATTLIST   files
+                file_count          CDATA                                     #REQUIRED >
+
+<!ELEMENT   file                    (metrics, method_metrics?, block_depths)                             >
+<!ATTLIST   file
+                file_name           CDATA                                     #REQUIRED >

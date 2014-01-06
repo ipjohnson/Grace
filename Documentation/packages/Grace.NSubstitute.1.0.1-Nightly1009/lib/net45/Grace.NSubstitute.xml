@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Grace.NSubstitute</name>
+    </assembly>
+    <members>
+        <member name="T:Grace.NSubstitute.IExportLocatorExtensions">
+            <summary>
+            C# extension class to enable NSubstitute on a Grace container or scope
+            </summary>
+        </member>
+        <member name="M:Grace.NSubstitute.IExportLocatorExtensions.Substitute(Grace.DependencyInjection.IExportLocator)">
+            <summary>
+            Enables NSubstitute on a DependencyInjectionContainer or IInjectionScope
+            </summary>
+            <param name="locator"></param>
+        </member>
+        <member name="T:Grace.NSubstitute.IExportRegistrationBlockExtensions">
+            <summary>
+            C# extension classes for NSubstitute
+            </summary>
+        </member>
+        <member name="M:Grace.NSubstitute.IExportRegistrationBlockExtensions.Substitute``1(Grace.DependencyInjection.IExportRegistrationBlock)">
+            <summary>
+            Exports an interface using NSubstitute
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="block"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithPriority(System.Int32)">
+            <summary>
+            Export the type with the specified priority
+            </summary>
+            <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.As``1">
+            <summary>
+            Export as a specific type (usually an interface)
+            </summary>
+            <typeparam name="TExportType"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.InEnvironment(Grace.DependencyInjection.ExportEnvironment)">
+            <summary>
+            Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AsName(System.String)">
+            <summary>
+            Export the type under the specified name
+            </summary>
+            <param name="name">name to export under</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AndSingleton">
+            <summary>
+            Export will be treated as a singleton for the lifetime of the container
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AndSingletonPerScope">
+            <summary>
+            Export will be treated as a singleton for the lifetime of the scope
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AndWeakSingleton">
+            <summary>
+            Exports will be trated as a singleton using a weak reference
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithKey(System.Object)">
+            <summary>
+            Attach a key to the export
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ImportConstructor(System.Linq.Expressions.Expression{System.Action})">
+            <summary>
+            This method allows you to specify which constructor to use ( x => new MyTypeName("Specific","Constructor") )
+            </summary>
+            <param name="constructorExpression">constructor expression ( x => new MyTypeName("Specific","Constructor") )</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean,System.String,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import (using dependency injection container)
+            </summary>
+            <param name="property">property expression (x => x.PropertyName) </param>
+            <param name="isRequired">is the import required (object will not construct if true and cannot be found)</param>
+            <param name="exportName">export name to use (when null it will use the property type to locate the export)</param>
+            <param name="consider">provide an ImportFilter that will be used to filter exports</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Grace.DependencyInjection.IInjectionContext,``0},System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import and provide the export for it
+            </summary>
+            <param name="property"></param>
+            <param name="propertyFunc"></param>
+            <param name="isRequired"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},Grace.DependencyInjection.IExportValueProvider,System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import and provide the export for it
+            </summary>
+            <param name="property"></param>
+            <param name="valueProvider"></param>
+            <param name="isRequired"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ImportMethod(System.Linq.Expressions.Expression{System.Action{`0}},System.Object)">
+            <summary>
+            Mark a method to be called upon activation passing in an arguement that has be located using the IoC
+            </summary>
+            <param name="method"></param>
+            <param name="parameterDefaults"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.ActivationMethod(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Mark a particular Action() as the activation action
+            </summary>
+            <param name="activationMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.UsingLifeCycleContainer(Grace.DependencyInjection.LifeCycleContainers.ILifeCycleContainer)">
+            <summary>
+            Specify a custom life cycle container for the export
+            </summary>
+            <param name="container"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.When(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.Unless(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AndCondition(Grace.DependencyInjection.Conditions.IExportCondition)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WhenInjectedInto``1">
+            <summary>
+            Applies a new WhenInjectedInto condition on the export, using the export only when injecting into the specified class
+            </summary>
+            <typeparam name="TInjected"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WhenClassHas``1">
+            <summary>
+            Applies a WhenClassHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WhenMemberHas``1">
+            <summary>
+            Applies a WhenMemberHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WhenTargetHas``1">
+            <summary>
+            Applies a WhenTargetHas condition, using the export only if the Property or Parameter is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.AutoWireProperties(System.Boolean)">
+            <summary>
+            Sets up all public writable properties on the type to be injected
+            </summary>
+            <param name="required">are the properties required</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to an export
+            </summary>
+            <param name="metadataName"></param>
+            <param name="metadataValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithCtorParam``1(``0,System.String)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">value for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithCtorParam``1(System.Func{``0},System.String)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">Func(TParam) for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.WithCtorParam``1(Grace.DependencyInjection.IExportValueProvider,System.String,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">value provider for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <param name="consider">filter which export to use</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.DisposalCleanupDelegate(Grace.DependencyInjection.BeforeDisposalCleanupDelegate)">
+            <summary>
+            You can provide a cleanup method to be called 
+            </summary>
+            <param name="disposalCleanupDelegate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.EnrichWith(Grace.DependencyInjection.EnrichWithDelegate)">
+            <summary>
+            Allows you to add custom activation logic to process before the object is returned.
+            </summary>
+            <param name="enrichWithDelegate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.ISubstituteExportStrategyConfiguration`1.Setup(System.Action{`0})">
+            <summary>
+            Allows you to specify a set of Substitutions to be invoked every time an object created
+            </summary>
+            <param name="setupAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.NSubstitute.NSubstituteDependencyLocator">
+            <summary>
+            Dependency Locator that creates objects using NSubstitute
+            </summary>
+        </member>
+        <member name="M:Grace.NSubstitute.NSubstituteDependencyLocator.Locate(Grace.DependencyInjection.IInjectionScope,Grace.DependencyInjection.IInjectionContext,System.String,System.Type,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Resolves types using NSubstitute
+            </summary>
+            <param name="owningScope"></param>
+            <param name="context"></param>
+            <param name="resolveName"></param>
+            <param name="resolveType"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.NSubstituteDependencyLocator.LocateAll(Grace.DependencyInjection.IInjectionScope,Grace.DependencyInjection.IInjectionContext,System.String,System.Type,System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            ResolveAll will be called every time a collection is resolved
+            </summary>
+            <param name="owningScope"></param>
+            <param name="context"></param>
+            <param name="resolveName"></param>
+            <param name="resolveType"></param>
+            <param name="collectionEmpty"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Grace.NSubstitute.NSubstituteExportStrategy`1">
+            <summary>
+            Export strategy that creates it's type using NSubstitute
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Grace.NSubstitute.NSubstituteExportStrategy`1.#ctor">
+            <summary>
+            Deault constructor that calls NSubstitute to create the instance
+            </summary>
+        </member>
+        <member name="T:Grace.NSubstitute.SubstituteContainer">
+            <summary>
+            This container will create exports for missing types using NSubstitute
+            It's equvalent to calling .Substitute() on a container
+            </summary>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteContainer.#ctor(Grace.DependencyInjection.ExportEnvironment,Grace.DependencyInjection.ExportStrategyComparer,Grace.DependencyInjection.IDisposalScopeProvider)">
+            <summary>
+            Default constructor
+            </summary>
+            <param name="environment">environment for this container, by default unit test</param>
+            <param name="comparer">comparer method for container</param>
+            <param name="disposalScopeProvider">disposal scope provider</param>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.#ctor(Grace.DependencyInjection.Impl.ICompiledExportStrategy)">
+            <summary>
+            Default constructor
+            </summary>
+            <param name="exportStrategy"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithPriority(System.Int32)">
+            <summary>
+            Export the type with the specified priority
+            </summary>
+            <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.As``1">
+            <summary>
+            Export as a specific type (usually an interface)
+            </summary>
+            <typeparam name="TExportType"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.InEnvironment(Grace.DependencyInjection.ExportEnvironment)">
+            <summary>
+            Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AsName(System.String)">
+            <summary>
+            Export the type under the specified name
+            </summary>
+            <param name="name">name to export under</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AndSingleton">
+            <summary>
+            Export will be treated as a singleton for the lifetime of the container
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AndSingletonPerScope">
+            <summary>
+            Export will be treated as a singleton for the lifetime of the scope
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AndWeakSingleton">
+            <summary>
+            Exports will be trated as a singleton using a weak reference
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithKey(System.Object)">
+            <summary>
+            Export under a specific key
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ImportConstructor(System.Linq.Expressions.Expression{System.Action})">
+            <summary>
+            This method allows you to specify which constructor to use ( x => new MyTypeName("Specific","Constructor") )
+            </summary>
+            <param name="constructorExpression">constructor expression ( x => new MyTypeName("Specific","Constructor") )</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean,System.String,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import (using dependency injection container)
+            </summary>
+            <param name="property">property expression (x => x.PropertyName) </param>
+            <param name="isRequired">is the import required (object will not construct if true and cannot be found)</param>
+            <param name="exportName">export name to use (when null it will use the property type to locate the export)</param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{Grace.DependencyInjection.IInjectionContext,``0},System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import and provide the export for it
+            </summary>
+            <param name="property"></param>
+            <param name="propertyFunc"></param>
+            <param name="isRequired"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ImportProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},Grace.DependencyInjection.IExportValueProvider,System.Boolean,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Mark a property for Import and provide the export for it
+            </summary>
+            <param name="property"></param>
+            <param name="valueProvider"></param>
+            <param name="isRequired"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ImportMethod(System.Linq.Expressions.Expression{System.Action{`0}},System.Object)">
+            <summary>
+            Mark a method to be called upon activation passing in an arguement that has be located using the IoC
+            </summary>
+            <param name="method"></param>
+            <param name="defaultParameters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ActivationMethod(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Mark a particular Action() as the activation action
+            </summary>
+            <param name="activationMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.UsingLifeCycleContainer(Grace.DependencyInjection.LifeCycleContainers.ILifeCycleContainer)">
+            <summary>
+            Specify a custom life cycle container for the export
+            </summary>
+            <param name="container"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.When(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.Unless(Grace.DependencyInjection.ExportConditionDelegate)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="conditionDelegate"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AndCondition(Grace.DependencyInjection.Conditions.IExportCondition)">
+            <summary>
+            Adds a condition to the export
+            </summary>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WhenInjectedInto``1">
+            <summary>
+            Applies a new WhenInjectedInto condition on the export, using the export only when injecting into the specified class
+            </summary>
+            <typeparam name="TInjected"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WhenClassHas``1">
+            <summary>
+            Applies a WhenClassHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WhenMemberHas``1">
+            <summary>
+            Applies a WhenMemberHas condition, using the export only if injecting into a class that is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WhenTargetHas``1">
+            <summary>
+            Applies a WhenTargetHas condition, using the export only if the Property or Parameter is attributed with TAttr
+            </summary>
+            <typeparam name="TAttr"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.AutoWireProperties(System.Boolean)">
+            <summary>
+            Sets up all public writable properties on the type to be injected
+            </summary>
+            <param name="required">are the properties required</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to an export
+            </summary>
+            <param name="metadataName"></param>
+            <param name="metadataValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithCtorParam``1(``0,System.String)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">value for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithCtorParam``1(System.Func{``0},System.String)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">Func(TParam) for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.WithCtorParam``1(Grace.DependencyInjection.IExportValueProvider,System.String,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Add a value to be used for constructor parameters
+            </summary>
+            <typeparam name="TParam">type of parameter</typeparam>
+            <param name="paramValue">value provider for the parameter</param>
+            <param name="paramName">name of the parameter, if null type matching is used</param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.DisposalCleanupDelegate(Grace.DependencyInjection.BeforeDisposalCleanupDelegate)">
+            <summary>
+            You can provide a cleanup method to be called 
+            </summary>
+            <param name="disposalCleanupDelegate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.EnrichWith(Grace.DependencyInjection.EnrichWithDelegate)">
+            <summary>
+            Allows you to add custom activation logic to process before the object is returned.
+            </summary>
+            <param name="enrichWithDelegate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.NSubstitute.SubstituteExportStrategyConfiguration`1.ProvideStrategies">
+            <summary>
+            Provide a list of strategies
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

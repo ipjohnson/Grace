@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- DTD 'sourcemonitor_commands' for command line option scripts -->
+<!--      executed by SourceMonitor.exe -->
+<!ELEMENT   sourcemonitor_commands  (log_errors, command+)          >
+
+<!ELEMENT   log_errors              (#PCDATA)                       >
+
+<!ELEMENT   command                 (project_file,
+                                     project_language?,
+                                     modified_complexity?,
+                                     source_directory?,
+                                     source_subdirectory_list?,
+                                     checkpoint_name,
+                                     file_extensions?,
+                                     include_subdirectories?,
+                                     ignore_headers_footers?,
+                                     parse_utf8_files?,
+                                     export?,
+                                     delete_checkpoint?)            >
+
+
+<!ELEMENT   project_file            (#PCDATA)                       >
+<!ELEMENT   project_language        (#PCDATA)                       >
+<!ELEMENT   modified_complexity        (#PCDATA)                       >
+<!ELEMENT   source_directory        (#PCDATA)                       >
+<!ELEMENT   source_subdirectory_list (exclude_subdirectories?,
+                                      source_subdirectory*,
+									                    source_subtree*)              >
+<!ELEMENT   checkpoint_name         (#PCDATA)                       >
+<!ELEMENT   file_extensions         (#PCDATA)                       >
+<!ELEMENT   include_subdirectories  (#PCDATA)                       >
+<!ELEMENT   ignore_headers_footers  (#PCDATA)                       >
+<!ELEMENT   parse_utf8_files        (#PCDATA)                       >
+<!ELEMENT   export                  (export_file,
+                                     export_type,
+                                     export_format,
+                                     export_option,
+                                     export_insert,
+                                     export_all_checkpoints)        >
+
+<!ELEMENT   delete_checkpoint       EMPTY                           >
+<!ELEMENT   export_all_checkpoints  EMPTY                           >
+
+<!ELEMENT   exclude_subdirectories  (#PCDATA)                       >
+<!ELEMENT   source_subdirectory     (#PCDATA)                       >
+<!ELEMENT   source_subtree          (#PCDATA)                       >
+<!ELEMENT   export_file             (#PCDATA)                       >
+<!ELEMENT   export_type             (#PCDATA)                       >
+<!ELEMENT   export_format           (#PCDATA)                       >
+<!ELEMENT   export_option           (#PCDATA)                       >
+<!ELEMENT   export_insert           (#PCDATA)                       >

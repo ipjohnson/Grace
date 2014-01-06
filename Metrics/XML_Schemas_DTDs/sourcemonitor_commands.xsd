@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="sourcemonitor_commands">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+                DTD 'sourcemonitor_commands' for command line option scripts
+                    executed by SourceMonitor.exe
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="log_errors" />
+        <xs:element maxOccurs="unbounded" ref="command" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="log_errors" type="xs:boolean" />
+  <xs:element name="command">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="parse_utf8_files" />
+        <xs:element ref="project_file" />
+        <xs:element minOccurs="0" ref="project_language" />
+        <xs:element minOccurs="0" ref="modified_complexity" />
+        <xs:element minOccurs="0" ref="source_directory" />
+        <xs:element minOccurs="0" ref="source_subdirectory_list" />
+        <xs:element ref="checkpoint_name" />
+        <xs:element minOccurs="0" ref="file_extensions" />
+        <xs:element minOccurs="0" ref="include_subdirectories" />
+        <xs:element minOccurs="0" ref="export" />
+        <xs:element minOccurs="0" ref="delete_checkpoint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parse_utf8_files" type="xs:boolean" />
+  <xs:element name="project_file" type="xs:string" />
+  <xs:element name="project_language" type="xs:string" />
+  <xs:element name="modified_complexity" type="xs:boolean" />
+  <xs:element name="source_directory" type="xs:string" />
+  <xs:element name="source_subdirectory_list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="exclude_subdirectories" />
+        <xs:element minOccurs="0" ref="source_subdirectory" />
+        <xs:element minOccurs="0" ref="source_subtree" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="checkpoint_name" type="xs:string" />
+  <xs:element name="file_extensions" type="xs:string" />
+  <xs:element name="include_subdirectories" type="xs:boolean" />
+  <xs:element name="ignore_headers_footers" type="xs:string" />
+  <xs:element name="export">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="export_file" />
+        <xs:element ref="export_type" />
+        <xs:element ref="export_format" />
+        <xs:element ref="export_option" />
+        <xs:element ref="export_all_checkpoints" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="export_all_checkpoints">
+    <xs:complexType>
+      <xs:complexContent mixed="false">
+        <xs:restriction base="xs:anyType" />
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="delete_checkpoint">
+    <xs:complexType>
+      <xs:complexContent mixed="false">
+        <xs:restriction base="xs:anyType" />
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="source_subdirectory" type="xs:string" />
+  <xs:element name="source_subtree" type="xs:string" />
+  <xs:element name="exclude_subdirectories" type="xs:boolean" />
+  <xs:element name="export_file" type="xs:string" />
+  <xs:element name="export_type" type="xs:string" />
+  <xs:element name="export_format" type="xs:string" />
+  <xs:element name="export_option" type="xs:string" />
+</xs:schema>
