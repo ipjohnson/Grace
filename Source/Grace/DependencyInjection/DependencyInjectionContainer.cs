@@ -424,6 +424,18 @@ namespace Grace.DependencyInjection
 		}
 
 		/// <summary>
+		/// This method compares 2 export strategies by class name
+		/// </summary>
+		/// <param name="x">x compare object</param>
+		/// <param name="y">y compare object</param>
+		/// <param name="environment">environment to compare the strategies in</param>
+		/// <returns>compare value</returns>
+		public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
+		{
+			return string.Compare(x.ActivationType.Name, y.ActivationType.Name,StringComparison.CurrentCulture);
+		}
+
+		/// <summary>
 		/// This method compares 2 export strategies in a particular environment using ExportEnvironment attributes and ExportPriority attributes
 		/// </summary>
 		/// <param name="x">x compare object</param>
