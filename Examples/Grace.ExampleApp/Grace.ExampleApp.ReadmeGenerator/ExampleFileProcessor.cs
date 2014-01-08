@@ -8,5 +8,6 @@ namespace Grace.ExampleApp.ReadmeGenerator
 {
 	public class ExampleFileProcessor
 	{
+
 	}
 }

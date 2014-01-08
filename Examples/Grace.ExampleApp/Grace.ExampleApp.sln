@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{90DE80
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.ExampleApp.ReadmeGenerator", "Grace.ExampleApp.ReadmeGenerator\Grace.ExampleApp.ReadmeGenerator.csproj", "{C7C33294-211E-460A-9A49-E0BEEBB71FCA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,10 +26,6 @@ Global
 		{5A60ED43-F295-4F9E-8D5A-E3D17629ED89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A60ED43-F295-4F9E-8D5A-E3D17629ED89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A60ED43-F295-4F9E-8D5A-E3D17629ED89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7C33294-211E-460A-9A49-E0BEEBB71FCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7C33294-211E-460A-9A49-E0BEEBB71FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7C33294-211E-460A-9A49-E0BEEBB71FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7C33294-211E-460A-9A49-E0BEEBB71FCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,5 +13,6 @@ namespace Grace.ExampleApp.ReadmeGenerator
 
 	public class ReadmeFileOutput
 	{
+
 	}
 }
