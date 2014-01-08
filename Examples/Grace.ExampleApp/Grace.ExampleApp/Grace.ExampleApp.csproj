@@ -36,13 +36,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Grace, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.2.0.0-Nightly1052\lib\portable-windows8+net45\Grace.dll</HintPath>
+    <Reference Include="Grace">
+      <HintPath>..\packages\Grace.2.0.0\lib\portable-windows8+net45\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Net, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.Net.2.0.0-Nightly1052\lib\net45\Grace.Net.dll</HintPath>
+    <Reference Include="Grace.Net">
+      <HintPath>..\packages\Grace.Net.2.0.0\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,11 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyInjection\AttributedExampleClasses\AppSettingCondition.cs" />
-    <Compile Include="DependencyInjection\Attributes\ConditionalExportExample.cs" />
-    <Compile Include="DependencyInjection\Attributes\BasicAttributeExample.cs" />
+    <Compile Include="DependencyInjection\AttributeConfiguration\ConditionalExportExamples.cs" />
+    <Compile Include="DependencyInjection\AttributeConfiguration\BasicAttributeExamples.cs" />
     <Compile Include="DependencyInjection\AttributedExampleClasses\Calculator.cs" />
     <Compile Include="DependencyInjection\AttributedExampleClasses\CalculatorFunctions.cs" />
-    <Compile Include="DependencyInjection\Attributes\AttributeSubModule.cs" />
+    <Compile Include="DependencyInjection\AttributeConfiguration\AttributeConfigurationSubModule.cs" />
     <Compile Include="DependencyInjection\ExampleClasses\BasicService.cs" />
     <Compile Include="DependencyInjection\ExampleClasses\DependencyInjectionContainerImportService.cs" />
     <Compile Include="DependencyInjection\ExampleClasses\DisposalScopeImportService.cs" />
@@ -74,19 +72,19 @@
     <Compile Include="DependencyInjection\ExampleClasses\SimpleObjects.cs" />
     <Compile Include="DependencyInjection\ExampleClasses\SomeTestAttribute.cs" />
     <Compile Include="DependencyInjection\DependencyInjectionExampleModule.cs" />
-    <Compile Include="DependencyInjection\Fluent\BasicExportExamples.cs" />
-    <Compile Include="DependencyInjection\Fluent\ExportPropertyExamples.cs" />
-    <Compile Include="DependencyInjection\Fluent\FluentSubModule.cs" />
-    <Compile Include="DependencyInjection\Fluent\ImportConstructorExamples.cs" />
-    <Compile Include="DependencyInjection\Fluent\ImportPropertyExamples.cs" />
-    <Compile Include="DependencyInjection\Fluent\MultipleConstructorExample.cs" />
-    <Compile Include="DependencyInjection\Fluent\ScanAssemblyExample.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\BasicExportExamples.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\ExportPropertyExamples.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\FluentConfigurationSubModule.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\ImportConstructorExamples.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\ImportPropertyExamples.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\MultipleConstructorExamples.cs" />
+    <Compile Include="DependencyInjection\FluentConfiguration\ScanAssemblyExamples.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\CollectionExamples.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\ContainerExamples.cs" />
-    <Compile Include="DependencyInjection\SpecialTypes\FuncOwnedExample.cs" />
-    <Compile Include="DependencyInjection\SpecialTypes\FuncExample.cs" />
-    <Compile Include="DependencyInjection\SpecialTypes\OwnedExample.cs" />
-    <Compile Include="DependencyInjection\SpecialTypes\OwnedFuncExample.cs" />
+    <Compile Include="DependencyInjection\SpecialTypes\FuncOwnedExamples.cs" />
+    <Compile Include="DependencyInjection\SpecialTypes\FuncExamples.cs" />
+    <Compile Include="DependencyInjection\SpecialTypes\OwnedExamples.cs" />
+    <Compile Include="DependencyInjection\SpecialTypes\OwnedFuncExamples.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\SpecialTypesSubModule.cs" />
     <Compile Include="IExample.cs" />
     <Compile Include="IExampleModule.cs" />

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Grace.Net</id>
+    <version>2.0.0</version>
+    <title>Grace.Net</title>
+    <authors>Ian Johnson</authors>
+    <owners>Ian Johnson</owners>
+    <licenseUrl>https://grace.codeplex.com/license</licenseUrl>
+    <projectUrl>https://grace.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Grace.Net is the .Net adjunct library for Grace</description>
+    <summary>Grace.Net is the .Net adjunct library for Grace</summary>
+    <releaseNotes>This is a major feature release containing support for diagnostics, sorting collections, fluent interface changes and more.As well as new companion libraries for MVC 4, MVC 5, Nancy, WCF, log4net, NLog, and Fake It Easy</releaseNotes>
+    <copyright>Copyright 2013 Ian Johnson</copyright>
+    <language>en-US</language>
+    <tags>IoC Dependency Injection Container Portable Library</tags>
+    <dependencies>
+      <dependency id="Grace" version="2.0.0" />
+    </dependencies>
+  </metadata>
+</package>

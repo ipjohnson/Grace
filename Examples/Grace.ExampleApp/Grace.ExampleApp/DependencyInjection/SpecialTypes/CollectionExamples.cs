@@ -19,7 +19,7 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export(Types.FromThisAssembly()).ExportInterface(typeof(ISimpleObject)));
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
 
 			ReadOnlyCollection<ISimpleObject> simpleObjects = container.Locate<ReadOnlyCollection<ISimpleObject>>();
 
@@ -44,7 +44,7 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export(Types.FromThisAssembly()).ExportInterface(typeof(ISimpleObject)));
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
 
 			ISimpleObject[] simpleObjects = container.Locate<ISimpleObject[]>();
 
@@ -70,7 +70,7 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export(Types.FromThisAssembly()).ExportInterface(typeof(ISimpleObject)));
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
 
 			ObservableCollection<ISimpleObject> simpleObjects = container.Locate<ObservableCollection<ISimpleObject>>();
 
@@ -95,7 +95,7 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export(Types.FromThisAssembly()).ExportInterface(typeof(ISimpleObject)));
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
 
 			ObservableCollection<ISimpleObject> simpleObjects = 
 				container.Locate<ObservableCollection<ISimpleObject>>(consider: ExportsThat.HaveAttribute<SomeTestAttribute>());

@@ -61,7 +61,7 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 	/// <summary>
 	/// This example shows how to import the dependency injection container the object was created by 
 	/// </summary>
-	public class ImportIDependencyInjectionContainer : IExample<SpecialTypesSubModule>
+	public class ImportIDependencyInjectionContainerExample : IExample<SpecialTypesSubModule>
 	{
 		public void ExecuteExample()
 		{

@@ -83,7 +83,7 @@ namespace Grace.ExampleApp.UnitTests
 			container.Configure(c =>
 				                    {
 					                    c.Export<ImportConstructor>();
-											  c.Moq<IBasicService>().Setup(mock => mock.Setup(y => y.SomeMethod()).Returns(5));
+											  c.Moq<IBasicService>().Arrange(mock => mock.Setup(y => y.SomeMethod()).Returns(5));
 				                    });
 
 			ImportConstructor importConstructor = container.Locate<ImportConstructor>();
@@ -107,8 +107,8 @@ namespace Grace.ExampleApp.UnitTests
 			{
 				c.Export<ImportConstructor>();
 				c.Moq<IBasicService>().
-				  Setup(mock => mock.Setup(y => y.SomeMethod()).Returns(5)).
-				  Verify(mock => mock.Verify(b => b.SomeMethod(), Times.Once));
+				  Arrange(mock => mock.Setup(y => y.SomeMethod()).Returns(5)).
+				  Assert(mock => mock.Verify(b => b.SomeMethod(), Times.Once));
 			});
 
 			ImportConstructor importConstructor = container.Locate<ImportConstructor>();
@@ -117,7 +117,7 @@ namespace Grace.ExampleApp.UnitTests
 
 			Assert.Equal(5, importConstructor.SomeMethod());
 
-			container.Verify();
+			container.Assert();
 		}
 	}
 }

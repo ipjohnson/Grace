@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5A60ED43-F295-4F9E-8D5A-E3D17629ED89}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{C7C33294-211E-460A-9A49-E0BEEBB71FCA}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grace.ExampleApp.xUnitTests</RootNamespace>
-    <AssemblyName>Grace.ExampleApp.xUnitTests</AssemblyName>
+    <RootNamespace>Grace.ExampleApp.ReadmeGenerator</RootNamespace>
+    <AssemblyName>Grace.ExampleApp.ReadmeGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,20 +35,8 @@
     <Reference Include="Grace">
       <HintPath>..\packages\Grace.2.0.0\lib\portable-windows8+net45\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Moq">
-      <HintPath>..\packages\Grace.Moq.2.0.0\lib\net45\Grace.Moq.dll</HintPath>
-    </Reference>
     <Reference Include="Grace.Net">
       <HintPath>..\packages\Grace.Net.2.0.0\lib\net45\Grace.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Grace.NSubstitute">
-      <HintPath>..\packages\Grace.NSubstitute.2.0.0\lib\net45\Grace.NSubstitute.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="NSubstitute">
-      <HintPath>..\packages\NSubstitute.1.7.0.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,34 +45,20 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="xunit.abstractions">
-      <HintPath>..\packages\xunit.abstractions.2.0.0-alpha-build2562\lib\net35\xunit.abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit2">
-      <HintPath>..\packages\xunit.core.2.0.0-alpha-build2562\lib\net45\xunit2.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit2.assert">
-      <HintPath>..\packages\xunit.assert.2.0.0-alpha-build2562\lib\net45\xunit2.assert.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MoqUnitTest.cs" />
-    <Compile Include="NSubstituteUnitTest.cs" />
+    <Compile Include="ExampleFileProcessor.cs" />
+    <Compile Include="ModuleFileProcessor.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadmeFileOutput.cs" />
+    <Compile Include="ProjectProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Grace.ExampleApp\Grace.ExampleApp.csproj">
-      <Project>{557129cf-7170-4673-b567-c7701199bee5}</Project>
-      <Name>Grace.ExampleApp</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(TargetDir)*" "$(ProjectDir)..\..\..\Output\Grace.ExampleApp.xUnitTests\"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

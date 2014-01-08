@@ -58,7 +58,7 @@ namespace Grace.ExampleApp.UnitTests
 			container.Configure(c =>
 				                    {
 					                    c.Export<ImportConstructor>();
-					                    c.Substitute<IBasicService>().Setup(x => x.SomeMethod().Returns(5));
+					                    c.Substitute<IBasicService>().Arrange(x => x.SomeMethod().Returns(5));
 				                    });
 
 			ImportConstructor importConstructor = container.Locate<ImportConstructor>();
