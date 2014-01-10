@@ -90,6 +90,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <typeparam name="T">type to export</typeparam>
 		/// <returns>configuration object</returns>
+		[NotNull]
 		IFluentSimpleExportStrategyConfiguration SimpleExport<T>();
 
 		/// <summary>
@@ -99,14 +100,14 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="type">export type</param>
 		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration SimpleExport(Type type);
+		[NotNull]
+		IFluentSimpleExportStrategyConfiguration SimpleExport([NotNull]Type type);
 
 		/// <summary>
 		/// Add an export strategy directly to a scope
 		/// </summary>
 		/// <param name="strategy">new startegy</param>
-		[NotNull]
-		void AddExportStrategy(IExportStrategy strategy);
+		void AddExportStrategy([NotNull]IExportStrategy strategy);
 	}
 
 }
