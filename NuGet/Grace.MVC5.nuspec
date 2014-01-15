@@ -8,7 +8,6 @@
     <projectUrl>https://Grace.codeplex.com/</projectUrl>
     <id>Grace.MVC5</id>
     <title>Grace.MVC5</title>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Grace.MVC5 is a companion library for Grace and MVC 5</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC5 classes to integrate Grace and MVC 5</description>
     <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>

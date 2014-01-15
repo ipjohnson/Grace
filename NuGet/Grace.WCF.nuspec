@@ -8,7 +8,6 @@
     <projectUrl>https://Grace.codeplex.com/</projectUrl>
     <id>Grace.WCF</id>
     <title>Grace.WCF</title>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Grace.WCF is a companion library for Grace and WCF</summary>
     <description>Grace.WCF provides integration classes between WCF and Grace (Dependency Injection Container)</description>
     <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>

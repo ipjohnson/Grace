@@ -8,7 +8,6 @@
     <projectUrl>https://Grace.codeplex.com/</projectUrl>
     <id>Grace.Net</id>
     <title>Grace.Net</title>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
     <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
     <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>

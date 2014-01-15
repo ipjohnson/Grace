@@ -8,7 +8,6 @@
     <projectUrl>https://Grace.codeplex.com/</projectUrl>
     <id>Grace.NSubstitute</id>
     <title>Grace.NSubstitute</title>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Grace.NSubstitute is a companion library for Grace and NSubstitute</summary>
     <description>Grace.NSubstitute provides integration classes between NSubstitute and Grace (Dependency Injection Contaniner)</description>
     <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>
