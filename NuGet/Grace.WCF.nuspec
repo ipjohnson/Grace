@@ -9,10 +9,11 @@
     <id>Grace.WCF</id>
     <title>Grace.WCF</title>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Grace.WCF is a companion library for Grace and WCF</description>
     <summary>Grace.WCF is a companion library for Grace and WCF</summary>
-    <releaseNotes>This is a major feature release containing support for diagnostics, sorting collections, fluent interface changes and more.As well as new companion libraries for MVC 4, MVC 5, Nancy, WCF, log4net, NLog, and Fake It Easy</releaseNotes>
-    <copyright>Copyright 2013 Ian Johnson</copyright>
+    <description>Grace.WCF provides integration classes between WCF and Grace (Dependency Injection Container)</description>
+    <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>
+    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container WCF</tags>
     <dependencies>

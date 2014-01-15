@@ -9,10 +9,11 @@
     <id>Grace.Net</id>
     <title>Grace.Net</title>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Grace.Net is the .Net adjunct library for Grace</description>
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
-    <releaseNotes>This is a major feature release containing support for diagnostics, sorting collections, fluent interface changes and more.As well as new companion libraries for MVC 4, MVC 5, Nancy, WCF, log4net, NLog, and Fake It Easy</releaseNotes>
-    <copyright>Copyright 2013 Ian Johnson</copyright>
+    <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
+    <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>
+    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container Portable Library</tags>
     <dependencies>
