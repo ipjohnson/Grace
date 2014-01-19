@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection
 		IFluentExportStrategyConfiguration<T> Export<T>();
 
 		/// <summary>
-		/// Export a collection of types all at one time
+		/// Export an enumeration of types all at one time
 		/// </summary>
 		/// <param name="types">collection of types to export</param>
 		/// <returns>set configuration object</returns>
@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration Export([NotNull]IEnumerable<Type> types);
 
 		/// <summary>
-		/// Register an assembly for exports.
+		/// Register types from an assembly for exports.
 		/// </summary>
 		/// <param name="assembly">assembly to export</param>
 		/// <returns>set configuration object</returns>
@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration ExportAssembly([NotNull]Assembly assembly);
 
 		/// <summary>
-		/// Register a set of assemblies.
+		/// Register types from a set of assemblies.
 		/// </summary>
 		/// <param name="assemblies">list of assemblies to export</param>
 		/// <returns>set configuration object</returns>

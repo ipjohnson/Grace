@@ -4,8 +4,8 @@
     <version>1.0.0</version>
     <authors>Ian Johnson</authors>
     <owners>Ian Johnson</owners>
-    <licenseUrl>https://Grace.codeplex.com/license</licenseUrl>
-    <projectUrl>https://Grace.codeplex.com/</projectUrl>
+    <licenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</licenseUrl>
+    <projectUrl>https://github.com/ipjohnson/Grace</projectUrl>
     <id>Grace.MVC4</id>
     <title>Grace.MVC4</title>
     <summary>Grace.MVC4 is a companion library for Grace and MVC 4</summary>

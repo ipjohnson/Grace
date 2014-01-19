@@ -4,6 +4,7 @@
     <Identity Id="Grace.Templates..fe286c2e-4521-40f2-8520-9b446cd3b335" Version="1.0" Language="en-US" Publisher="Ian Johnson" />
     <DisplayName>Grace Templates</DisplayName>
     <Description xml:space="preserve">This package provides visual studio templates that combine Grace and a variety of other technologies such as MVC, WCF and Nancy.</Description>
+    <MoreInfo>https://github.com/ipjohnson/Grace</MoreInfo>
     <License>License.rtf</License>
   </Metadata>
   <Installation>

@@ -156,7 +156,6 @@
     <Compile Include="DependencyInjection\Impl\CompiledFuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledInstanceExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ConfigurableExportStrategy.cs" />
-    <Compile Include="DependencyInjection\Impl\CustomFuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\DisposalScope.cs" />
     <Compile Include="DependencyInjection\Exceptions\DisposalScopeMissingException.cs" />
     <Compile Include="DependencyInjection\Impl\ExportActivationDelegateFactory.cs" />
