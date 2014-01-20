@@ -474,7 +474,8 @@ namespace Grace.DependencyInjection
 				{
 					returnValue = -1;
 				}
-				else
+				else if(x.ActivationType != null &&
+					y.ActivationType != null)
 				{
 					// all things being equal sort alphabetically by class name
 					returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
