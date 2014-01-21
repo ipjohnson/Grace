@@ -10,7 +10,7 @@
     <title>Grace.log4net</title>
     <summary>Grace.log4net provides a logging service using </summary>
     <description>Grace.log4net provides integration classes between log4net and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This is a minor bug fix release for Singleton Per Request, as well as documentation updates</releaseNotes>
+    <releaseNotes>This is very minor release to add sorting of multiple exports by class name if no order is specified</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
