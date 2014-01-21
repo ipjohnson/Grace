@@ -13,6 +13,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		{
 			this.activationDelegate = activationDelegate;
 			MeetsConditionValue = true;
+			ActivationType = typeof(object);
 			ActivationName = typeof(object).FullName;
 			AllowingFiltering = true;
 		}

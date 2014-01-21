@@ -531,6 +531,8 @@ namespace Grace.DependencyInjection
 			if (RootScope != null)
 			{
 				RootScope.Dispose();
+
+				RootScope = null;
 			}
 		}
 
