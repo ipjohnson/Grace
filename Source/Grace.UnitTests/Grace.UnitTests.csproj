@@ -59,6 +59,7 @@
     <Compile Include="Classes\Attributed\AttributedActivationService.cs" />
     <Compile Include="Classes\Attributed\AttributedImportMethodService.cs" />
     <Compile Include="Classes\Attributed\AttributedImportPropertyService.cs" />
+    <Compile Include="Classes\Attributed\AttributedOpenGenericTransient.cs" />
     <Compile Include="Classes\Attributed\AttributedSimpleObject.cs" />
     <Compile Include="Classes\Attributed\AttributeImportConstructorService.cs" />
     <Compile Include="Classes\Attributed\ComplexService.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="DependencyInjection\Attributes\ExportAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttributedWithAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttributeTests.cs" />
+    <Compile Include="DependencyInjection\Attributes\OpenGenericTests.cs" />
     <Compile Include="DependencyInjection\Attributes\SingletonAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\SingletonPerScopeAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\WeakSingletonAttributeTests.cs" />

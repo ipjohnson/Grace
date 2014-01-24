@@ -33,9 +33,18 @@ namespace Grace.DependencyInjection.Impl
 
 				if (exportAttribute != null)
 				{
-					AttributeExportStrategy strategy = new AttributeExportStrategy(exportedType, attributes);
+					if (exportedType.GetTypeInfo().IsGenericTypeDefinition)
+					{
+						GenericAttributeExportStrategy strategy = new GenericAttributeExportStrategy(exportedType,attributes);
 
-					yield return strategy;
+						yield return strategy;
+					}
+					else
+					{
+						AttributeExportStrategy strategy = new AttributeExportStrategy(exportedType, attributes);
+
+						yield return strategy;
+					}
 				}
 			}
 		}

@@ -114,15 +114,15 @@ namespace Grace.DependencyInjection.Impl
 							}
 
 							ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
-							                                            {
-								                                            ComparerObject = comparer,
+																					  {
+																						  ComparerObject = comparer,
 																						  ExportStrategyFilter = filter,
 																						  ImportName = importName,
 																						  IsRequired = isRequired,
 																						  ParameterName = parameterInfo.Name,
 																						  ParameterType = parameterInfo.ParameterType,
 																						  ValueProvider = valueProvider
-							                                            };
+																					  };
 
 							WithCtorParam(constructorParamInfo);
 						}
@@ -196,12 +196,12 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ExportPropertyInfo exportPropertyInfo = new ExportPropertyInfo
-					                                        {
-						                                        ExportCondition =  condition,
-																			 ExportNames =  propertyExportNames,
+																		 {
+																			 ExportCondition = condition,
+																			 ExportNames = propertyExportNames,
 																			 ExportTypes = propertyExportTypes,
 																			 PropertyInfo = runtimeProperty
-					                                        };
+																		 };
 
 					ExportProperty(exportPropertyInfo);
 				}
@@ -237,14 +237,14 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-					                                        {
-						                                        ComparerObject = comparer,
-						                                        ExportStrategyFilter = filter,
-						                                        ImportName = attributeInfo.ImportName,
-						                                        IsRequired = attributeInfo.IsRequired,
-						                                        Property = runtimeProperty,
-						                                        ValueProvider = attributeInfo.ValueProvider
-					                                        };
+																		 {
+																			 ComparerObject = comparer,
+																			 ExportStrategyFilter = filter,
+																			 ImportName = attributeInfo.ImportName,
+																			 IsRequired = attributeInfo.IsRequired,
+																			 Property = runtimeProperty,
+																			 ValueProvider = attributeInfo.ValueProvider
+																		 };
 
 					ImportProperty(importPropertyInfo);
 				}
@@ -266,9 +266,9 @@ namespace Grace.DependencyInjection.Impl
 							ImportAttributeInfo info = attribute.ProvideImportInfo(exportType, declaredMethod.Name);
 
 							ImportMethodInfo methodInfo = new ImportMethodInfo
-							                              {
-								                              MethodToImport = declaredMethod
-							                              };
+																	{
+																		MethodToImport = declaredMethod
+																	};
 
 
 							ImportMethod(methodInfo);
@@ -292,23 +292,13 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
-		private void ProcessClassAttributes()
+		protected virtual void ProcessClassAttributes()
 		{
 			foreach (Attribute classAttribute in classAttributes)
 			{
 				if (classAttribute is IExportAttribute)
 				{
-					IExportAttribute exportAttribute = classAttribute as IExportAttribute;
-
-					foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
-					{
-						AddExportName(provideExportName);
-					}
-
-					foreach (Type provideExportType in exportAttribute.ProvideExportTypes(exportType))
-					{
-						AddExportType(provideExportType);
-					}
+					ProcessExportAttribute(classAttribute as IExportAttribute);
 
 					continue;
 				}
@@ -356,6 +346,19 @@ namespace Grace.DependencyInjection.Impl
 
 					continue;
 				}
+			}
+		}
+
+		protected virtual void ProcessExportAttribute(IExportAttribute exportAttribute)
+		{
+			foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
+			{
+				AddExportName(provideExportName);
+			}
+
+			foreach (Type provideExportType in exportAttribute.ProvideExportTypes(exportType))
+			{
+				AddExportType(provideExportType);
 			}
 		}
 	}
