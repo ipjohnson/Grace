@@ -18,6 +18,8 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<LazyService>().As<ILazyService>());
 
+			LazyService.Created = false;
+
 			var lazy = container.Locate<Lazy<ILazyService>>();
 
 			Assert.NotNull(lazy);
@@ -35,6 +37,8 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export<LazyService>().As<ILazyService>());
+
+			LazyService.Created = false;
 
 			var lazies = container.LocateAll<Lazy<ILazyService>>();
 
@@ -54,6 +58,8 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export<LazyService>().As<ILazyService>().WithMetadata("Hello", "World"));
+
+			LazyService.Created = false;
 
 			var lazy = container.Locate<Lazy<Meta<ILazyService>>>();
 

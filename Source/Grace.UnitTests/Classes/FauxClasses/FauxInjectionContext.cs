@@ -15,7 +15,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public IInjectionContext Clone()
 		{
-			throw new NotImplementedException();
+			return new InjectionContext(DisposalScope, RequestingScope);
 		}
 
 		public IDisposalScope DisposalScope { get; set; }
