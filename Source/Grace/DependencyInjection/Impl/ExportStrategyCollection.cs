@@ -44,6 +44,133 @@ namespace Grace.DependencyInjection.Impl
 			get { return exportStrategies; }
 		}
 
+		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TLazy : Lazy<T>
+		{
+			List<TLazy> returnValue = new List<TLazy>();
+			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
+			int count = localStrategies.Count;
+
+			for (int i = 0; i < count; i++)
+			{
+				IExportStrategy testStrategy = localStrategies[i];
+
+				if (testStrategy.MeetsCondition(injectionContext) &&
+					 (filter == null ||
+					  !testStrategy.AllowingFiltering ||
+					  filter(injectionContext, testStrategy)))
+				{
+					try
+					{
+						IInjectionContext clonedContext = injectionContext.Clone();
+
+						Lazy<T> lazyT = new Lazy<T>(() => (T)testStrategy.Activate(injectionKernel, clonedContext, filter));
+
+						returnValue.Add((TLazy)lazyT);
+					}
+					catch (Exception exp)
+					{
+						if (injectionKernel.Container == null ||
+							 injectionKernel.Container.ThrowExceptions)
+						{
+							throw;
+						}
+
+						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
+							exp);
+					}
+				}
+			}
+
+			return returnValue;
+		}
+
+		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TOwned : Owned<T> where T : class
+		{
+			List<TOwned> returnValue = new List<TOwned>();
+			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
+			int count = localStrategies.Count;
+
+			for (int i = 0; i < count; i++)
+			{
+				IExportStrategy testStrategy = localStrategies[i];
+
+				if (testStrategy.MeetsCondition(injectionContext) &&
+					 (filter == null ||
+					  !testStrategy.AllowingFiltering ||
+					  filter(injectionContext, testStrategy)))
+				{
+					try
+					{
+						Owned<T> owned = new Owned<T>();
+
+						IDisposalScope currentDisposalScope = injectionContext.DisposalScope;
+
+						injectionContext.DisposalScope = owned;
+
+						T activated = (T)testStrategy.Activate(injectionKernel, injectionContext, filter);
+
+						owned.SetValue(activated);
+
+						returnValue.Add((TOwned)owned);
+
+						injectionContext.DisposalScope = currentDisposalScope;
+					}
+					catch (Exception exp)
+					{
+						if (injectionKernel.Container == null ||
+							 injectionKernel.Container.ThrowExceptions)
+						{
+							throw;
+						}
+
+						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
+							exp);
+					}
+				}
+			}
+
+			return returnValue;
+		}
+
+		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TMeta : Meta<T>
+		{
+			List<TMeta> returnValue = new List<TMeta>();
+			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
+			int count = localStrategies.Count;
+
+			for (int i = 0; i < count; i++)
+			{
+				IExportStrategy testStrategy = localStrategies[i];
+
+				if (testStrategy.MeetsCondition(injectionContext) &&
+					 (filter == null ||
+					  !testStrategy.AllowingFiltering ||
+					  filter(injectionContext, testStrategy)))
+				{
+					try
+					{
+						Meta<T> meta = 
+							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter),testStrategy.Metadata);
+
+						returnValue.Add((TMeta)meta);
+					}
+					catch (Exception exp)
+					{
+						if (injectionKernel.Container == null ||
+							 injectionKernel.Container.ThrowExceptions)
+						{
+							throw;
+						}
+
+						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
+							exp);
+					}
+				}
+			}
+
+			return returnValue;
+		}
+
 		/// <summary>
 		/// Activate the first export strategy that meets conditions
 		/// </summary>

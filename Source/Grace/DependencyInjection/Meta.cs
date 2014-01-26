@@ -7,6 +7,17 @@
 	public class Meta<T>
 	{
 		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		/// <param name="value">exported value</param>
+		/// <param name="metadata">metadata associated with export</param>
+		public Meta(T value, IExportMetadata metadata)
+		{
+			Value = value;
+			Metadata = metadata;
+		}
+
+		/// <summary>
 		/// Resolved Value
 		/// </summary>
 		public T Value { get; private set; }

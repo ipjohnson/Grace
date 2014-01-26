@@ -13,6 +13,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			MaxResolveDepth = 1000;
 		}
 
+		public IInjectionContext Clone()
+		{
+			throw new NotImplementedException();
+		}
+
 		public IDisposalScope DisposalScope { get; set; }
 
 		public IInjectionScope RequestingScope { get; set; }

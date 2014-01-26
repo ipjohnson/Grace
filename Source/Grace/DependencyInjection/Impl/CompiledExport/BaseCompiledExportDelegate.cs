@@ -1299,15 +1299,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <returns></returns>
 		public static Lazy<T> CreateLazy<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter)
 		{
-			IInjectionScope requestingScope = injectionContext.RequestingScope;
-			IDisposalScope disposalScope = injectionContext.DisposalScope;
+			IInjectionContext clonedContext = injectionContext.Clone();
 
 			return new Lazy<T>(() =>
-									 {
-										 IInjectionContext newInjectionContext = new InjectionContext(disposalScope, requestingScope);
-
-										 return injectionContext.RequestingScope.Locate<T>(newInjectionContext, exportStrategyFilter);
-									 });
+									 clonedContext.RequestingScope.Locate<T>(clonedContext, exportStrategyFilter));
 		}
 	}
 }

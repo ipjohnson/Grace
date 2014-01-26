@@ -122,6 +122,7 @@
     <Compile Include="DependencyInjection\Impl\ICollectionExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceFuncStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\MetaStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyDescendingComparer.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyAscendingComparer.cs" />

@@ -106,6 +106,7 @@
     <Compile Include="Classes\Simple\ImportReadOnlyCollectionService.cs" />
     <Compile Include="Classes\Simple\InheritClasses.cs" />
     <Compile Include="Classes\Simple\LazyImportService.cs" />
+    <Compile Include="Classes\Simple\LazyService.cs" />
     <Compile Include="Classes\Simple\MultipleConstructorImport.cs" />
     <Compile Include="Classes\Simple\MultiplePropertyImportService.cs" />
     <Compile Include="Classes\Simple\MultipleSimpleObjects.cs" />
@@ -144,10 +145,12 @@
     <Compile Include="DependencyInjection\Impl\SimpleExportStrategyTests.cs" />
     <Compile Include="DependencyInjection\Impl\SimpleSecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\InjectionContextTests.cs" />
+    <Compile Include="DependencyInjection\LazyTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonLifecycleTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerScopeContainerTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\ThreadStaticContainerTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\WeakReferenceContainerTests.cs" />
+    <Compile Include="DependencyInjection\MetaTests.cs" />
     <Compile Include="DependencyInjection\OwnedTests.cs" />
     <Compile Include="DependencyInjection\SecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\ThatTests.cs" />

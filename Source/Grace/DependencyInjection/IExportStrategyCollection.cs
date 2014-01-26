@@ -23,6 +23,41 @@ namespace Grace.DependencyInjection
 		List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter);
 
 		/// <summary>
+		/// Activate all instances of type as Meta(T)
+		/// </summary>
+		/// <typeparam name="TMeta"></typeparam>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="TLazy"></typeparam>
+		/// <param name="injectionContext"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TLazy : Lazy<T>;
+
+		/// <summary>
+		/// Activate all instances of type as Meta(T)
+		/// </summary>
+		/// <typeparam name="TMeta"></typeparam>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="TOwned"></typeparam>
+		/// <param name="injectionContext"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TOwned : Owned<T> where T : class;
+
+		/// <summary>
+		/// Activate all instances of type as Meta(T)
+		/// </summary>
+		/// <typeparam name="TMeta"></typeparam>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="injectionContext"></param>
+		/// <param name="filter"></param>
+		/// <returns></returns>
+		List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TMeta : Meta<T>;
+
+		/// <summary>
 		/// Activate the first export strategy that meets conditions
 		/// </summary>
 		/// <param name="exportName">export name</param>

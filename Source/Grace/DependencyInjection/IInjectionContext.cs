@@ -12,6 +12,12 @@ namespace Grace.DependencyInjection
 	public interface IInjectionContext : IExtraDataContainer
 	{
 		/// <summary>
+		/// Creates a clone of the injection context
+		/// </summary>
+		/// <returns></returns>
+		IInjectionContext Clone();
+
+		/// <summary>
 		/// The disposal scope associated with this injection request
 		/// </summary>
 		[CanBeNull]

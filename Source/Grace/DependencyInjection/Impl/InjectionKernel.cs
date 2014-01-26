@@ -20,10 +20,20 @@ namespace Grace.DependencyInjection.Impl
 	{
 		#region Private Static
 
+		private static readonly MethodInfo locateLazyListMethodInfo;
+		private static readonly MethodInfo locateOwnedListMethodInfo;
+		private static readonly MethodInfo locateMetaListMethodInfo;
 		private static readonly Dictionary<Type, Type> openGenericStrategyMapping;
 
 		static InjectionKernel()
 		{
+			locateLazyListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+				.First(x => x.Name == "LocateListOfLazyExports");
+			locateMetaListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+				.First(x => x.Name == "LocateListOfMetaExports");
+			locateOwnedListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+				.First(x => x.Name == "LocateListOfOwnedExports");
+
 			openGenericStrategyMapping = new Dictionary<Type, Type>();
 
 			openGenericStrategyMapping[typeof(IEnumerable<>)] = typeof(ListExportStrategy<>);
@@ -36,7 +46,7 @@ namespace Grace.DependencyInjection.Impl
 			openGenericStrategyMapping[typeof(ReadOnlyCollection<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
 
 			openGenericStrategyMapping[typeof(Owned<>)] = typeof(OwnedStrategy<>);
-
+			openGenericStrategyMapping[typeof(Meta<>)] = typeof(MetaStrategy<>);
 			openGenericStrategyMapping[typeof(Lazy<>)] = typeof(LazyExportStrategy<>);
 
 			openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncExportStrategy<>);
@@ -227,10 +237,10 @@ namespace Grace.DependencyInjection.Impl
 			IDisposalScopeProvider newProvider = (scopeProvider ?? disposalScopeProvider) ?? parentScopeProvider;
 
 			InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, newProvider, ScopeName, comparer)
-			                              {
-				                              ParentScope = parentScope,
-				                              Environment = Environment
-			                              };
+													{
+														ParentScope = parentScope,
+														Environment = Environment
+													};
 
 			Dictionary<string, ExportStrategyCollection> newExports = returnValue.exports;
 
@@ -465,7 +475,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -479,7 +489,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			if (kernelManager.Container != null &&
-			    kernelManager.Container.ThrowExceptions)
+				 kernelManager.Container.ThrowExceptions)
 			{
 				throw new ExportMissingException(objectType.FullName);
 			}
@@ -567,7 +577,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -578,7 +588,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			if (kernelManager.Container != null &&
-			    kernelManager.Container.ThrowExceptions)
+				 kernelManager.Container.ThrowExceptions)
 			{
 				throw new ExportMissingException(exportName);
 			}
@@ -617,7 +627,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -679,7 +689,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -688,7 +698,7 @@ namespace Grace.DependencyInjection.Impl
 					string.Format("Exception was thrown from LocateAll by name {0} in scope {1} id {2}", name, ScopeName, ScopeId),
 					exp);
 
-				returnValue=  new List<object>();
+				returnValue = new List<object>();
 			}
 
 			if (comparer != null)
@@ -735,7 +745,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -887,8 +897,8 @@ namespace Grace.DependencyInjection.Impl
 						IGenericExportStrategy genericExportStrategy = strategy as IGenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-						    genericExportStrategy.MeetsCondition(injectionContext) &&
-						    genericExportStrategy.CheckGenericConstrataints(closingTypes))
+							 genericExportStrategy.MeetsCondition(injectionContext) &&
+							 genericExportStrategy.CheckGenericConstrataints(closingTypes))
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{
@@ -934,7 +944,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (IExportStrategy exportStrategy in returnValue.ExportStrategies)
 				{
 					if (exportStrategy.MeetsCondition(context) &&
-					    (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
+						 (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
 					{
 						yield return exportStrategy;
 					}
@@ -1159,11 +1169,11 @@ namespace Grace.DependencyInjection.Impl
 				returnValue = kernelManager.Container.LocateMissingExport(injectionContext, resolveName, resolveType, consider);
 
 				if (returnValue == null &&
-				    kernelManager.Container.AutoRegisterUnknown &&
-				    resolveType != null &&
-				    string.IsNullOrEmpty(resolveName) &&
-				    !resolveType.GetTypeInfo().IsAbstract &&
-				    !resolveType.GetTypeInfo().IsGenericTypeDefinition)
+					 kernelManager.Container.AutoRegisterUnknown &&
+					 resolveType != null &&
+					 string.IsNullOrEmpty(resolveName) &&
+					 !resolveType.GetTypeInfo().IsAbstract &&
+					 !resolveType.GetTypeInfo().IsGenericTypeDefinition)
 				{
 					ConcreteAttributeExportStrategy strategy =
 						new ConcreteAttributeExportStrategy(resolveType,
@@ -1267,78 +1277,51 @@ namespace Grace.DependencyInjection.Impl
 			Type locateType,
 			ExportStrategyFilter exportFilter)
 		{
-			ExportStrategyCollection exportStrategyCollection;
 			List<T> returnValue = new List<T>();
-
-			if (exports.TryGetValue(name, out exportStrategyCollection))
-			{
-				returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
-			}
+			Type genericType = null;
+			Type[] genericArgs = null;
+			bool specialType = false;
 
 			if (locateType != null && locateType.IsConstructedGenericType)
 			{
-				Type genericType = locateType.GetGenericTypeDefinition();
-				Type[] genericArgs = locateType.GetTypeInfo().GenericTypeArguments;
-				ExportStrategyCollection genericCollection;
+				genericType = locateType.GetGenericTypeDefinition();
+				genericArgs = locateType.GetTypeInfo().GenericTypeArguments;
 
-				if (exports.TryGetValue(genericType.FullName, out genericCollection))
+				CheckForNewGenericExports<T>(injectionContext, locateType, genericType, genericArgs);
+
+				if (genericType == typeof(Lazy<>))
 				{
-					List<IExportStrategy> strategies = new List<IExportStrategy>(genericCollection.ExportStrategies);
+					MethodInfo methodInfo = locateLazyListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					if (exportStrategyCollection != null)
-					{
-						foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
-						{
-							ICompiledExportStrategy compiledExport = exportStrategy as ICompiledExportStrategy;
+					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
 
-							if (compiledExport != null && compiledExport.CreatingStrategy != null)
-							{
-								strategies.Remove(compiledExport.CreatingStrategy);
-							}
-						}
-					}
+					specialType = true;
+				}
+				else if (genericType == typeof(Owned<>))
+				{
+					MethodInfo methodInfo = locateOwnedListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					foreach (IExportStrategy exportStrategy in strategies)
-					{
-						GenericExportStrategy genericExportStrategy = exportStrategy as GenericExportStrategy;
+					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
 
-						if (genericExportStrategy != null &&
-						    genericExportStrategy.MeetsCondition(injectionContext) &&
-						    genericExportStrategy.CheckGenericConstrataints(genericArgs))
-						{
-							IExportStrategy newStrategy =
-								genericExportStrategy.CreateClosedStrategy(genericArgs);
+					specialType = true;
+				}
+				else if (genericType == typeof(Meta<>))
+				{
+					MethodInfo methodInfo = locateMetaListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-							AddStrategy(newStrategy);
+					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
 
-							// I'm jumping through these hoops because in a multithreaded app it's possible to 
-							// create two closed strategies at the same time and we want to use the strategy that was added.
-							if (exports.TryGetValue(name, out exportStrategyCollection))
-							{
-								IExportStrategy exportStrategyToUse = null;
+					specialType = true;
+				}
+			}
 
-								foreach (IExportStrategy strategy in exportStrategyCollection.ExportStrategies)
-								{
-									CompiledExportStrategy compiledExportStrategy = strategy as CompiledExportStrategy;
+			if (!specialType)
+			{
+				ExportStrategyCollection exportStrategyCollection;
 
-									if (compiledExportStrategy != null && compiledExportStrategy.CreatingStrategy == genericExportStrategy)
-									{
-										exportStrategyToUse = compiledExportStrategy;
-									}
-								}
-
-								if (exportStrategyToUse != null)
-								{
-									object tempO = exportStrategyToUse.Activate(this, injectionContext, exportFilter);
-
-									if (tempO != null)
-									{
-										returnValue.Add((T)tempO);
-									}
-								}
-							}
-						}
-					}
+				if (exports.TryGetValue(name, out exportStrategyCollection))
+				{
+					returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
 				}
 			}
 
@@ -1382,6 +1365,90 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			return returnValue;
+		}
+
+		private void CheckForNewGenericExports<T>(IInjectionContext injectionContext,
+			Type locateType,
+			Type genericType,
+			Type[] genericArgs)
+		{
+			if (locateType != null && locateType.IsConstructedGenericType)
+			{
+				ExportStrategyCollection genericCollection = null;
+
+				if (exports.TryGetValue(genericType.FullName, out genericCollection))
+				{
+					List<IExportStrategy> strategies = new List<IExportStrategy>(genericCollection.ExportStrategies);
+
+					ExportStrategyCollection exportStrategyCollection;
+
+					if (exports.TryGetValue(locateType.FullName, out exportStrategyCollection))
+					{
+						foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
+						{
+							ICompiledExportStrategy compiledExport = exportStrategy as ICompiledExportStrategy;
+
+							if (compiledExport != null && compiledExport.CreatingStrategy != null)
+							{
+								strategies.Remove(compiledExport.CreatingStrategy);
+							}
+						}
+					}
+
+					foreach (IExportStrategy exportStrategy in strategies)
+					{
+						GenericExportStrategy genericExportStrategy = exportStrategy as GenericExportStrategy;
+
+						if (genericExportStrategy != null &&
+							 genericExportStrategy.MeetsCondition(injectionContext) &&
+							 genericExportStrategy.CheckGenericConstrataints(genericArgs))
+						{
+							IExportStrategy newStrategy =
+								genericExportStrategy.CreateClosedStrategy(genericArgs);
+
+							AddStrategy(newStrategy);
+						}
+					}
+				}
+			}
+		}
+
+		protected void LocateListOfLazyExports<TLazy, T>(IInjectionContext injectionContext,
+																		 ExportStrategyFilter exportFilter,
+																		 List<TLazy> returnList) where TLazy : Lazy<T>
+		{
+			ExportStrategyCollection collection;
+
+			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			{
+				returnList.AddRange(collection.ActivateAllLazy<TLazy, T>(injectionContext, exportFilter));
+			}
+		}
+
+		protected void LocateListOfOwnedExports<TOwned, T>(IInjectionContext injectionContext,
+																		  ExportStrategyFilter exportFilter,
+																		  List<TOwned> returnList)
+			where TOwned : Owned<T>
+			where T : class
+		{
+			ExportStrategyCollection collection;
+
+			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			{
+				returnList.AddRange(collection.ActivateAllOwned<TOwned, T>(injectionContext, exportFilter));
+			}
+		}
+
+		protected void LocateListOfMetaExports<TMeta, T>(IInjectionContext injectionContext,
+																		 ExportStrategyFilter exportFilter,
+																		 List<TMeta> returnList) where TMeta : Meta<T>
+		{
+			ExportStrategyCollection collection;
+
+			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			{
+				returnList.AddRange(collection.ActivateAllMeta<TMeta, T>(injectionContext, exportFilter));
+			}
 		}
 
 		private string DebugDisplayString

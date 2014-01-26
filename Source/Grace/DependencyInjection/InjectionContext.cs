@@ -59,6 +59,27 @@ namespace Grace.DependencyInjection
 			return GetEnumerator();
 		}
 
+		public IInjectionContext Clone()
+		{
+			InjectionContext injectionContext = new InjectionContext(DisposalScope,RequestingScope);
+
+			if (exports != null)
+			{
+				injectionContext.exports = new Dictionary<string, ExportActivationDelegate>(exports);
+			}
+
+			if (extraData != null)
+			{
+				injectionContext.extraData = new Dictionary<string, object>(extraData);
+			}
+
+			injectionContext.resolveDepth = resolveDepth;
+			injectionContext.RequestingScope = RequestingScope;
+			injectionContext.DisposalScope = DisposalScope;
+
+			return injectionContext;
+		}
+
 		/// <summary>
 		/// Disposal scope for the injection context
 		/// </summary>
