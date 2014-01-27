@@ -93,6 +93,17 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Export all objects that implements the specified interface
+		/// </summary>
+		/// <returns>returns self</returns>
+		public IExportTypeSetConfiguration ByInterface<T>()
+		{
+			exportInterfaces.Add(typeof(T));
+
+			return this;
+		}
+
+		/// <summary>
 		/// Export all classes by interface or that match a set of interfaces
 		/// </summary>
 		/// <param name="filterMethod"></param>
@@ -119,6 +130,17 @@ namespace Grace.DependencyInjection.Impl
 		public IExportTypeSetConfiguration BasedOn(Type baseType)
 		{
 			exportBaseTypes.Add(baseType);
+
+			return this;
+		}
+
+		/// <summary>
+		/// Export all types based on speficied type
+		/// </summary>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration BasedOn<T>()
+		{
+			exportBaseTypes.Add(typeof(T));
 
 			return this;
 		}

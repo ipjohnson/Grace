@@ -31,7 +31,13 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="exportType">type to export as</param>
 		/// <returns>configuration object</returns>
-		IFluentExportStrategyConfiguration As(Type exportType);
+		IFluentExportStrategyConfiguration As(Type exportType);	
+		
+		/// <summary>
+		/// Export as a particular type
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IFluentExportStrategyConfiguration As<T>();
 
 		/// <summary>
 		/// Defines which environment this export should be exported in

@@ -17,6 +17,12 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration ByInterface(Type interfaceType);
 
 		/// <summary>
+		/// Export all objects that implements the specified interface
+		/// </summary>
+		/// <returns>returns self</returns>
+		IExportTypeSetConfiguration ByInterface<T>();
+
+		/// <summary>
 		/// Export all classes by interface or that match a set of interfaces
 		/// </summary>
 		/// <param name="whereClause"></param>
@@ -29,6 +35,12 @@ namespace Grace.DependencyInjection
 		/// <param name="baseType">base type to export</param>
 		/// <returns></returns>
 		IExportTypeSetConfiguration BasedOn(Type baseType);
+
+		/// <summary>
+		/// Export all types based on speficied type
+		/// </summary>
+		/// <returns></returns>
+		IExportTypeSetConfiguration BasedOn<T>();
 
 		/// <summary>
 		/// Export with the spcified priority

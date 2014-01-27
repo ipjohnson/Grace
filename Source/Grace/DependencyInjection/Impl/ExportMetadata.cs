@@ -18,6 +18,9 @@ namespace Grace.DependencyInjection.Impl
 			Key = key;
 		}
 
+		/// <summary>
+		/// Key the export was registered with
+		/// </summary>
 		public object Key { get; private set; }
 	}
 }

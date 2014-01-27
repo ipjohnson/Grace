@@ -25,7 +25,6 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Activate all instances of type as Meta(T)
 		/// </summary>
-		/// <typeparam name="TMeta"></typeparam>
 		/// <typeparam name="T"></typeparam>
 		/// <typeparam name="TLazy"></typeparam>
 		/// <param name="injectionContext"></param>
@@ -37,7 +36,6 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Activate all instances of type as Meta(T)
 		/// </summary>
-		/// <typeparam name="TMeta"></typeparam>
 		/// <typeparam name="T"></typeparam>
 		/// <typeparam name="TOwned"></typeparam>
 		/// <param name="injectionContext"></param>
