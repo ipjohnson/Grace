@@ -139,7 +139,14 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType"></param>
 		public virtual void AddExportType(Type exportType)
 		{
-			AddExportName(exportType.FullName);
+            		if (exportType.FullName != null)
+            		{
+                		AddExportName(exportType.FullName);
+            		}
+            		else
+            		{
+                		AddExportName(exportType.Namespace + "." + exportType.Name);
+            		}
 		}
 
 		public virtual ExportEnvironment Environment { get; private set; }
