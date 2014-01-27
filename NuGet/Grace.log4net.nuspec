@@ -10,7 +10,7 @@
     <title>Grace.log4net</title>
     <summary>Grace.log4net provides a logging service using </summary>
     <description>Grace.log4net provides integration classes between log4net and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This is very minor release to add sorting of multiple exports by class name if no order is specified</releaseNotes>
+    <releaseNotes>This release adds support for IEnumerable&lt;Lazy&lt;T&gt;&gt; IEnumerable&lt;Meta&lt;T&gt;&gt; IEnumerable&lt;Owned&lt;T&gt;&gt; </releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

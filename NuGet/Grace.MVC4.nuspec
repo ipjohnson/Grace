@@ -10,7 +10,7 @@
     <title>Grace.MVC4</title>
     <summary>Grace.MVC4 is a companion library for Grace and MVC 4</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC4 classes to integrate Grace and MVC 4</description>
-    <releaseNotes>This is very minor release to add sorting of multiple exports by class name if no order is specified</releaseNotes>
+    <releaseNotes>This release adds support for IEnumerable&lt;Lazy&lt;T&gt;&gt; IEnumerable&lt;Meta&lt;T&gt;&gt; IEnumerable&lt;Owned&lt;T&gt;&gt; </releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
