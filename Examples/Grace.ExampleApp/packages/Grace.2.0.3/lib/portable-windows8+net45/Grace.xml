@@ -1810,9 +1810,9 @@
             <param name="comparer">comparer object to use while sorting</param>
             <returns>configuration object</returns>
         </member>
-        <member name="T:Grace.DependencyInjection.Impl.ClosedGenericExportStrategy">
+        <member name="T:Grace.DependencyInjection.Impl.AttributeExportStrategy">
             <summary>
-            Closed generic strategy is used to create closed strategies by the generic strategy
+            Exports a type using attributes to define how it should be exported
             </summary>
         </member>
         <member name="T:Grace.DependencyInjection.Impl.CompiledInstanceExportStrategy">
@@ -2314,6 +2314,36 @@
             List of dependencies for this strategy
             </summary>
         </member>
+        <member name="M:Grace.DependencyInjection.Impl.AttributeExportStrategy.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.Attribute})">
+            <summary>
+            DEfault constructor
+            </summary>
+            <param name="exportType"></param>
+            <param name="attributes"></param>
+        </member>
+        <member name="M:Grace.DependencyInjection.Impl.AttributeExportStrategy.Initialize">
+            <summary>
+            Initialize the strategy
+            </summary>
+        </member>
+        <member name="M:Grace.DependencyInjection.Impl.ClosedAttributeExportStrategy.Equals(System.Object)">
+            <summary>
+            OVerride equals to compare if to closed generics are equal
+            </summary>
+            <param name="obj">object to compare</param>
+            <returns>compare value</returns>
+        </member>
+        <member name="M:Grace.DependencyInjection.Impl.ClosedAttributeExportStrategy.GetHashCode">
+            <summary>
+            Gets hashcode of activation name
+            </summary>
+            <returns>hash code value</returns>
+        </member>
+        <member name="T:Grace.DependencyInjection.Impl.ClosedGenericExportStrategy">
+            <summary>
+            Closed generic strategy is used to create closed strategies by the generic strategy
+            </summary>
+        </member>
         <member name="M:Grace.DependencyInjection.Impl.ClosedGenericExportStrategy.#ctor(System.Type)">
             <summary>
             Default constructor
@@ -2592,23 +2622,6 @@
             This method generates the compiled delegate
             </summary>
             <returns></returns>
-        </member>
-        <member name="T:Grace.DependencyInjection.Impl.AttributeExportStrategy">
-            <summary>
-            Exports a type using attributes to define how it should be exported
-            </summary>
-        </member>
-        <member name="M:Grace.DependencyInjection.Impl.AttributeExportStrategy.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.Attribute})">
-            <summary>
-            DEfault constructor
-            </summary>
-            <param name="exportType"></param>
-            <param name="attributes"></param>
-        </member>
-        <member name="M:Grace.DependencyInjection.Impl.AttributeExportStrategy.Initialize">
-            <summary>
-            Initialize the strategy
-            </summary>
         </member>
         <member name="T:Grace.DependencyInjection.Impl.ExportMetadata">
             <summary>
@@ -3387,6 +3400,15 @@
             <param name="enrichWithDelegate"></param>
             <returns></returns>
         </member>
+        <member name="M:Grace.DependencyInjection.Impl.GenericAttributeExportStrategy.Activate(Grace.DependencyInjection.IInjectionScope,Grace.DependencyInjection.IInjectionContext,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Activate the export
+            </summary>
+            <param name="exportInjectionScope"></param>
+            <param name="context"></param>
+            <param name="consider"></param>
+            <returns></returns>
+        </member>
         <member name="T:Grace.DependencyInjection.Impl.ICollectionExportStrategy`2">
             <summary>
             Creates a new instance of any class that implements ICollection(TItem)
@@ -3893,21 +3915,21 @@
         </member>
         <member name="M:Grace.DependencyInjection.IExportRegistrationBlock.Export(System.Collections.Generic.IEnumerable{System.Type})">
             <summary>
-            Export a collection of types all at one time
+            Export an enumeration of types all at one time
             </summary>
             <param name="types">collection of types to export</param>
             <returns>set configuration object</returns>
         </member>
         <member name="M:Grace.DependencyInjection.IExportRegistrationBlock.ExportAssembly(System.Reflection.Assembly)">
             <summary>
-            Register an assembly for exports.
+            Register types from an assembly for exports.
             </summary>
             <param name="assembly">assembly to export</param>
             <returns>set configuration object</returns>
         </member>
         <member name="M:Grace.DependencyInjection.IExportRegistrationBlock.ExportAssemblies(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
             <summary>
-            Register a set of assemblies.
+            Register types from a set of assemblies.
             </summary>
             <param name="assemblies">list of assemblies to export</param>
             <returns>set configuration object</returns>
@@ -4153,6 +4175,38 @@
             <param name="filter">export filter</param>
             <returns>list of exports</returns>
         </member>
+        <member name="M:Grace.DependencyInjection.IExportStrategyCollection.ActivateAllLazy``2(Grace.DependencyInjection.IInjectionContext,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Activate all instances of type as Meta(T)
+            </summary>
+            <typeparam name="TMeta"></typeparam>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TLazy"></typeparam>
+            <param name="injectionContext"></param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.DependencyInjection.IExportStrategyCollection.ActivateAllOwned``2(Grace.DependencyInjection.IInjectionContext,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Activate all instances of type as Meta(T)
+            </summary>
+            <typeparam name="TMeta"></typeparam>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TOwned"></typeparam>
+            <param name="injectionContext"></param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Grace.DependencyInjection.IExportStrategyCollection.ActivateAllMeta``2(Grace.DependencyInjection.IInjectionContext,Grace.DependencyInjection.ExportStrategyFilter)">
+            <summary>
+            Activate all instances of type as Meta(T)
+            </summary>
+            <typeparam name="TMeta"></typeparam>
+            <typeparam name="T"></typeparam>
+            <param name="injectionContext"></param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="M:Grace.DependencyInjection.IExportStrategyCollection.Activate(System.String,System.Type,Grace.DependencyInjection.IInjectionContext,Grace.DependencyInjection.ExportStrategyFilter)">
             <summary>
             Activate the first export strategy that meets conditions
@@ -4186,6 +4240,12 @@
             It holds information pertinent to this injection
             Note: The implementation for IInjectionContext is not thread safe
             </summary>
+        </member>
+        <member name="M:Grace.DependencyInjection.IInjectionContext.Clone">
+            <summary>
+            Creates a clone of the injection context
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Grace.DependencyInjection.IInjectionContext.Locate``1">
             <summary>
@@ -6326,6 +6386,15 @@
             <param name="consider">export filter</param>
             <returns>export object</returns>
         </member>
+        <member name="M:Grace.DependencyInjection.DependencyInjectionContainer.CompareExportStrategiesByName(Grace.DependencyInjection.IExportStrategy,Grace.DependencyInjection.IExportStrategy,Grace.DependencyInjection.ExportEnvironment)">
+            <summary>
+            This method compares 2 export strategies by class name
+            </summary>
+            <param name="x">x compare object</param>
+            <param name="y">y compare object</param>
+            <param name="environment">environment to compare the strategies in</param>
+            <returns>compare value</returns>
+        </member>
         <member name="M:Grace.DependencyInjection.DependencyInjectionContainer.CompareExportStrategies(Grace.DependencyInjection.IExportStrategy,Grace.DependencyInjection.IExportStrategy,Grace.DependencyInjection.ExportEnvironment)">
             <summary>
             This method compares 2 export strategies in a particular environment using ExportEnvironment attributes and ExportPriority attributes
@@ -7087,6 +7156,13 @@
             Meta class is a wrapper around an export 
             </summary>
             <typeparam name="T">Type to request</typeparam>
+        </member>
+        <member name="M:Grace.DependencyInjection.Meta`1.#ctor(`0,Grace.DependencyInjection.IExportMetadata)">
+            <summary>
+            Default Constructor
+            </summary>
+            <param name="value">exported value</param>
+            <param name="metadata">metadata associated with export</param>
         </member>
         <member name="P:Grace.DependencyInjection.Meta`1.Value">
             <summary>

@@ -12,12 +12,12 @@ namespace Grace.ExampleApp
 	{
 		static void Main(string[] args)
 		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(comparer: DependencyInjectionContainer.CompareExportStrategies);
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export(Types.FromThisAssembly()).
-											  ByInterface(typeof(IExampleModule)).
-											  ByInterface(typeof(IExampleSubModule<>)).
-											  ByInterface(typeof(IExample<>)));
+											   ByInterface(typeof(IExampleModule)).
+											   ByInterface(typeof(IExampleSubModule<>)).
+											   ByInterface(typeof(IExample<>)));
 
 			IEnumerable<IExampleModule> exampleModules = container.LocateAll<IExampleModule>();
 

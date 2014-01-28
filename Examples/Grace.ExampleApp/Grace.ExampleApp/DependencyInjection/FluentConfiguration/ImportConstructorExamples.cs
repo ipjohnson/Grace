@@ -7,7 +7,7 @@ using Grace.DependencyInjection;
 using Grace.ExampleApp.DependencyInjection.ExampleClasses;
 using Grace.ExampleApp.DependencyInjection.FluentConfiguration;
 
-namespace Grace.ExampleApp.DependencyInjection.Fluent
+namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 {
 	/// <summary>
 	/// This exmaple shows how the constructor will automatically figure out how to import your constructor

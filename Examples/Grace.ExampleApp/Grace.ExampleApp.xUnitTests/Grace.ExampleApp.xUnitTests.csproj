@@ -31,16 +31,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Grace">
-      <HintPath>..\packages\Grace.2.0.0\lib\portable-windows8+net45\Grace.dll</HintPath>
+      <HintPath>..\packages\Grace.2.0.3\lib\portable-windows8+net45\Grace.dll</HintPath>
     </Reference>
     <Reference Include="Grace.Moq">
-      <HintPath>..\packages\Grace.Moq.2.0.0\lib\net45\Grace.Moq.dll</HintPath>
+      <HintPath>..\packages\Grace.Moq.2.0.3\lib\net45\Grace.Moq.dll</HintPath>
     </Reference>
     <Reference Include="Grace.Net">
-      <HintPath>..\packages\Grace.Net.2.0.0\lib\net45\Grace.Net.dll</HintPath>
+      <HintPath>..\packages\Grace.Net.2.0.3\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
     <Reference Include="Grace.NSubstitute">
-      <HintPath>..\packages\Grace.NSubstitute.2.0.0\lib\net45\Grace.NSubstitute.dll</HintPath>
+      <HintPath>..\packages\Grace.NSubstitute.2.0.3\lib\net45\Grace.NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
@@ -78,6 +78,9 @@
       <Project>{557129cf-7170-4673-b567-c7701199bee5}</Project>
       <Name>Grace.ExampleApp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

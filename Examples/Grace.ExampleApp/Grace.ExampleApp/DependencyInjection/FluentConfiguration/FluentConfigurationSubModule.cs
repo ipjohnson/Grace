@@ -9,8 +9,6 @@ namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 		public FluentConfigurationSubModule(List<IExample<FluentConfigurationSubModule>> examples)
 		{
 			this.examples = examples;
-
-			this.examples.Sort((x,y) => string.Compare(x.GetType().Name,y.GetType().Name));
 		}
 
 		public void Execute()

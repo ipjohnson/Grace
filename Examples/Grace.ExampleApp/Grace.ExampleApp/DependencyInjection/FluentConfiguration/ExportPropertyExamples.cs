@@ -1,7 +1,6 @@
 ﻿using System;
 using Grace.DependencyInjection;
 using Grace.ExampleApp.DependencyInjection.ExampleClasses;
-using Grace.ExampleApp.DependencyInjection.Fluent;
 
 namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 {

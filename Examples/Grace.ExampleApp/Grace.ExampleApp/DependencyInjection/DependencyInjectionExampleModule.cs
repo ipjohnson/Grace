@@ -14,8 +14,6 @@ namespace Grace.ExampleApp.DependencyInjection
 		public DependencyInjectionExampleModule(List<IExampleSubModule<DependencyInjectionExampleModule>> subModules)
 		{
 			this.subModules = subModules;
-
-			this.subModules.Sort((x, y) => string.Compare(x.GetType().Name, y.GetType().Name));
 		}
 
 		public string ModuleName
