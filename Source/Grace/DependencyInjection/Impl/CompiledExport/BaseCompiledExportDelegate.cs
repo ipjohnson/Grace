@@ -1021,16 +1021,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					MethodInfo createFuncMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateFunc",
 						new[]
 						{
-							typeof(IInjectionScope),
+							typeof(IInjectionContext),
 							typeof(ExportStrategyFilter)
 						});
 
 					MethodInfo closedMethod = createFuncMethod.MakeGenericMethod(importType.GenericTypeArguments);
 
 					Expression assign = Expression.Assign(importVariable,
-						Expression.Call(closedMethod,
-							Expression.Property(injectionContextParameter,
-								"RequestingScope"),
+						Expression.Call(closedMethod,injectionContextParameter,
 							Expression.Convert(Expression.Constant(exportStrategyFilter),
 								typeof(ExportStrategyFilter))));
 
@@ -1220,12 +1218,19 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Creates a new Func(T)
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="injectionScope"></param>
+		/// <param name="context"></param>
 		/// <param name="exportStrategyFilter"></param>
 		/// <returns></returns>
-		public static Func<T> CreateFunc<T>(IInjectionScope injectionScope, ExportStrategyFilter exportStrategyFilter)
+		public static Func<T> CreateFunc<T>(IInjectionContext context, ExportStrategyFilter exportStrategyFilter)
 		{
-			return () => injectionScope.Locate<T>(consider: exportStrategyFilter);
+			IInjectionContext clonedContext = context.Clone();
+
+			return () =>
+			       {
+				       IInjectionContext injectionContext = clonedContext.Clone();
+
+						 return injectionContext.RequestingScope.Locate<T>(injectionContext, exportStrategyFilter);
+			       };
 		}
 
 		/// <summary>
@@ -1244,13 +1249,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <summary>
 		/// Creates a new Func(Type,object) for resolving type without having to access container
 		/// </summary>
-		/// <param name="injectionScope">injection scope to use</param>
+		/// <param name="context">injection context to use</param>
 		/// <param name="exportStrategyFilter">export filter to use when locating</param>
 		/// <returns>new Func(Type,object)</returns>
-		public static Func<Type, object> CreateFuncType(IInjectionScope injectionScope,
+		public static Func<Type, object> CreateFuncType(IInjectionContext context,
 			ExportStrategyFilter exportStrategyFilter)
 		{
-			return type => injectionScope.Locate(type, consider: exportStrategyFilter);
+			IInjectionContext clonedContext = context.Clone();
+
+			return type =>
+			       {
+				       IInjectionContext newContext = clonedContext.Clone();
+
+						 return newContext.RequestingScope.Locate(type, newContext, exportStrategyFilter);
+			       };
 		}
 
 		/// <summary>
