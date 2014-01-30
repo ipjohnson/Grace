@@ -9,7 +9,7 @@ using Grace.DependencyInjection;
 
 namespace Grace.MVC.Extensions
 {
-	public class DisposalScopeControllerActivator : IControllerActivator
+	public class DisposalScopeControllerActivator : DefaultControllerFactory
 	{
 		private readonly IInjectionScope injectionScope;
 
@@ -18,9 +18,14 @@ namespace Grace.MVC.Extensions
 			this.injectionScope = injectionScope;
 		}
 
-		public IController Create(RequestContext requestContext, Type controllerType)
-		{
-			return injectionScope.Locate(controllerType) as IController;
-		}
+        	protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
+        	{
+            		if (controllerType == null)
+            		{
+                		return base.GetControllerInstance(requestContext, null);
+            		}
+
+            		return injectionScope.Locate(controllerType) as IController;
+        	}
 	}
 }
