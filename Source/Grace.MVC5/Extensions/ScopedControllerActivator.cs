@@ -6,7 +6,7 @@ using Grace.DependencyInjection.Attributes;
 
 namespace Grace.MVC.Extensions
 {
-	public class ScopedControllerActivator : IControllerActivator
+	public class ScopedControllerActivator : DefaultControllerFactory
 	{
 		private readonly IPerRequestScopeProvider scopeProvider;
 
@@ -15,11 +15,16 @@ namespace Grace.MVC.Extensions
 			this.scopeProvider = scopeProvider;
 		}
 
-		public IController Create(RequestContext requestContext, Type controllerType)
-		{
-			IInjectionScope scope = scopeProvider.ProvideInjectionScope();
+        	protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
+        	{
+            		if (controllerType == null)
+            		{
+                		return base.GetControllerInstance(requestContext, null);
+            		}
 
-			return scope.Locate(controllerType) as IController;
-		}
+            		IInjectionScope scope = scopeProvider.ProvideInjectionScope();
+
+            		return scope.Locate(controllerType) as IController;
+        	}
 	}
 }
