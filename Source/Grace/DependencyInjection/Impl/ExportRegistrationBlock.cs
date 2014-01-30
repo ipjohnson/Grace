@@ -226,6 +226,15 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Using this the developer can provide C# extensions that add to the registration block
+		/// </summary>
+		/// <param name="strategyProvider">new strategy provider</param>
+		public void AddExportProvider(IExportStrategyProvider strategyProvider)
+		{
+			strategyProviders.Add(strategyProvider);
+		}
+
+		/// <summary>
 		/// Get all exports for the registration block
 		/// </summary>
 		/// <returns></returns>

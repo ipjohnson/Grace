@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.DependencyInjection
 {
 	/// <summary>
 	/// Used by classes that provide strategies to the registration block
