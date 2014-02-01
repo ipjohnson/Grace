@@ -20,6 +20,12 @@ namespace Grace.DependencyInjection.Impl
 	{
 		#region Private Static
 
+		private static readonly ReadOnlyDictionary<string, ExportStrategyCollection> emptyExportStrategies =
+			new ReadOnlyDictionary<string, ExportStrategyCollection>(new Dictionary<string, ExportStrategyCollection>());
+
+		private static readonly ReadOnlyDictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
+			new ReadOnlyDictionary<Type, IInjectionStrategy>(new Dictionary<Type, IInjectionStrategy>());
+
 		private static readonly MethodInfo locateLazyListMethodInfo;
 		private static readonly MethodInfo locateOwnedListMethodInfo;
 		private static readonly MethodInfo locateMetaListMethodInfo;
@@ -69,8 +75,9 @@ namespace Grace.DependencyInjection.Impl
 		private readonly InjectionKernelManager kernelManager;
 		private readonly ILog log = Logger.GetLogger<InjectionKernel>();
 		private readonly object secondaryResolversLock = new object();
-		private volatile Dictionary<string, ExportStrategyCollection> exports;
 		private volatile Dictionary<string, object> extraData;
+		private volatile ReadOnlyDictionary<string, ExportStrategyCollection> exports;
+		private volatile ReadOnlyDictionary<Type, IInjectionStrategy> injections;
 		private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
 
 		#endregion
@@ -93,7 +100,8 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ScopeId = Guid.NewGuid();
 
-			exports = new Dictionary<string, ExportStrategyCollection>();
+			exports = emptyExportStrategies;
+			injections = emptyInjectionStrategies;
 
 			this.kernelManager = kernelManager;
 			this.comparer = comparer;
@@ -242,13 +250,7 @@ namespace Grace.DependencyInjection.Impl
 														Environment = Environment
 													};
 
-			Dictionary<string, ExportStrategyCollection> newExports = returnValue.exports;
-
-			foreach (KeyValuePair<string, ExportStrategyCollection> exportStrategyCollection in exports)
-			{
-				newExports[exportStrategyCollection.Key] =
-					exportStrategyCollection.Value.Clone(returnValue);
-			}
+			returnValue.exports = exports;
 
 			return returnValue;
 		}
@@ -320,7 +322,7 @@ namespace Grace.DependencyInjection.Impl
 					}
 				}
 
-				exports = newExports;
+				exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
 			}
 		}
 
@@ -816,7 +818,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			IInjectionContext context = null;
 			HashSet<IExportStrategy> returnValue = new HashSet<IExportStrategy>();
-			Dictionary<string, ExportStrategyCollection> currentExports = exports;
+			IDictionary<string, ExportStrategyCollection> currentExports = exports;
 
 			if (exportFilter != null)
 			{
@@ -1000,7 +1002,7 @@ namespace Grace.DependencyInjection.Impl
 
 					newExports[exportName] = returnValue;
 
-					exports = newExports;
+					exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
 				}
 			}
 
@@ -1054,7 +1056,7 @@ namespace Grace.DependencyInjection.Impl
 					}
 				}
 
-				exports = newExports;
+				exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
 			}
 		}
 
@@ -1072,6 +1074,52 @@ namespace Grace.DependencyInjection.Impl
 				{
 					collection.RemoveExport(knownStrategy);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Inject dependencies into a constructed object
+		/// </summary>
+		/// <param name="injectedObject">object to be injected</param>
+		/// <param name="injectionContext">injection context</param>
+		public void Inject(object injectedObject, IInjectionContext injectionContext = null)
+		{
+			if (injectedObject == null)
+			{
+				throw new ArgumentNullException("injectedObject");
+			}
+
+			if (injectionContext == null)
+			{
+				injectionContext = CreateContext();
+			}
+
+			IInjectionStrategy injectionStrategy;
+
+			if (injections.TryGetValue(injectedObject.GetType(), out injectionStrategy))
+			{
+				injectionStrategy.Inject(injectionContext, injectedObject);
+			}
+			else if (ParentScope != null)
+			{
+				ParentScope.Inject(injectedObject, injectionContext);
+			}
+			else
+			{
+				AttributedInjectionStrategy attributedInjectionStrategy = new AttributedInjectionStrategy(injectedObject.GetType());
+
+				attributedInjectionStrategy.Initialize();
+
+				lock (exportsLock)
+				{
+					Dictionary<Type, IInjectionStrategy> newInjectionStrategies = new Dictionary<Type, IInjectionStrategy>(injections);
+
+					newInjectionStrategies[injectedObject.GetType()] = attributedInjectionStrategy;
+
+					injections = new ReadOnlyDictionary<Type, IInjectionStrategy>(newInjectionStrategies);
+				}
+
+				attributedInjectionStrategy.Inject(injectionContext, injectedObject);
 			}
 		}
 
@@ -1357,7 +1405,7 @@ namespace Grace.DependencyInjection.Impl
 				}
 				else
 				{
-					foreach (T t in ParentScope.LocateAll(name, injectionContext: injectionContext, consider: exportFilter))
+					foreach (T t in ParentScope.LocateAll(name, injectionContext, exportFilter))
 					{
 						returnValue.Add(t);
 					}

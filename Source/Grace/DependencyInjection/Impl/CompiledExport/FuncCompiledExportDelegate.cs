@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Grace.DependencyInjection.Impl.CompiledExport
 {
 	/// <summary>
-	/// THis class creates a compiled delegate that can be used for export
+	/// This class creates a compiled delegate that can be used for export
 	/// It uses a function to create a new instance
 	/// </summary>
 	public class FuncCompiledExportDelegate : BaseCompiledExportDelegate

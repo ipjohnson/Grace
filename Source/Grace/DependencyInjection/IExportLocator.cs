@@ -201,5 +201,12 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="knownStrategy">strategy to remove</param>
 		void RemoveStrategy([NotNull]IExportStrategy knownStrategy);
+
+		/// <summary>
+		/// Inject dependencies into a constructed object
+		/// </summary>
+		/// <param name="injectedObject">object to be injected</param>
+		/// <param name="injectionContext">injection context</param>
+		void Inject([NotNull]object injectedObject, IInjectionContext injectionContext = null);
 	}
 }

@@ -241,7 +241,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			throw new NotImplementedException();
 		}
 
-		public void Inject(object injectionObject)
+		public void Inject(object injectionObject, IInjectionContext injectionContext = null)
 		{
 			throw new NotImplementedException();
 		}

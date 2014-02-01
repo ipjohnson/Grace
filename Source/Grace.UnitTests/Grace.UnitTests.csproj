@@ -123,6 +123,7 @@
     <Compile Include="DependencyInjection\Attributes\SingletonPerScopeAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\WeakSingletonAttributeTests.cs" />
     <Compile Include="DependencyInjection\BasicContainerTests.cs" />
+    <Compile Include="DependencyInjection\InjectionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\UnlessConditionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenConditionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenInjectedIntoConditionTests.cs" />

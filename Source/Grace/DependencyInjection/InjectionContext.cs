@@ -158,7 +158,7 @@ namespace Grace.DependencyInjection
 			{
 				ExportActivationDelegate activationDelegate;
 
-				if (exports.TryGetValue(name, out activationDelegate))
+				if (exports.TryGetValue(name.ToLowerInvariant(), out activationDelegate))
 				{
 					return activationDelegate(RequestingScope, this);
 				}

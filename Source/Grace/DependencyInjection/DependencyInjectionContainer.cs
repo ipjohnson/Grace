@@ -389,6 +389,16 @@ namespace Grace.DependencyInjection
 		}
 
 		/// <summary>
+		/// Inject dependencies into a constructed object
+		/// </summary>
+		/// <param name="injectedObject">object to be injected</param>
+		/// <param name="injectionContext">injection context</param>
+		public void Inject(object injectedObject, IInjectionContext injectionContext = null)
+		{
+			RootScope.Inject(injectedObject,injectionContext: injectionContext);
+		}
+
+		/// <summary>
 		/// Dispose of the container
 		/// </summary>
 		public void Dispose()

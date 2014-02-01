@@ -9,8 +9,8 @@ namespace Grace.DependencyInjection.Lifestyle
 	public interface ILifestyle : IDisposable
 	{
 		/// <summary>
-		/// Objects managed by this container are transient. If true then the container will allow the export to be located in down facing scopes
-		/// otherwise it will only be resolved in the current scope and in upward scopes (i.e. parent scope)
+		/// If true then the container will allow the dependencies to be located in down facing scopes
+		/// otherwise they will only be resolved in the current scope and in upward scopes (i.e. parent scope)
 		/// </summary>
 		bool Transient { get; }
 

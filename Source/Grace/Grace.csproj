@@ -103,6 +103,9 @@
     <Compile Include="DependencyInjection\IFluentSimpleExportStrategyConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentWithCtorCollectionConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentWithCtorConfiguration.cs" />
+    <Compile Include="DependencyInjection\IInjectionStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\AttributedInjectionStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\BaseInjectionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ClosedAttributeExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ClosedGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\InjectionCompiledExportDelegate.cs" />
