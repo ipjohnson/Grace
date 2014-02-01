@@ -138,7 +138,7 @@ namespace Grace.DependencyInjection
 			{
 				ExportActivationDelegate activationDelegate;
 
-				if (exports.TryGetValue(typeof(T).FullName, out activationDelegate))
+				if (exports.TryGetValue(typeof(T).FullName.ToLowerInvariant(), out activationDelegate))
 				{
 					return (T)activationDelegate(RequestingScope, this);
 				}
@@ -189,7 +189,7 @@ namespace Grace.DependencyInjection
 				exports = new Dictionary<string, ExportActivationDelegate>();
 			}
 
-			exports[exportType.FullName] = activationDelegate;
+			exports[exportType.FullName.ToLowerInvariant()] = activationDelegate;
 		}
 
 		/// <summary>

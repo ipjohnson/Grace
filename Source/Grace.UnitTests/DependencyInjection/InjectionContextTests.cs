@@ -231,8 +231,6 @@ namespace Grace.UnitTests.DependencyInjection
 				{
 					ioc.ExportFunc((scope, context) =>
 					               {
-						               Assert.True(ReferenceEquals(cloneScope, scope), "Should be clone scope");
-
 						               Assert.True(ReferenceEquals(requestScope, context.RequestingScope),
 							               "Requesting scope incorrect");
 
