@@ -54,6 +54,19 @@
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingNotPresent.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingNotPresentOrFalse.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingPresent.cs" />
+    <Compile Include="DependencyInjection\Configuration\AppConfigModule.cs" />
+    <Compile Include="DependencyInjection\Configuration\BaseElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\BaseElementCollection.cs" />
+    <Compile Include="DependencyInjection\Configuration\ExportElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\ExportElementCollection.cs" />
+    <Compile Include="DependencyInjection\Configuration\AssemblyElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\AssemblyElementCollection.cs" />
+    <Compile Include="DependencyInjection\Configuration\GraceConfigurationSection.cs" />
+    <Compile Include="DependencyInjection\Configuration\ModuleElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\ModuleElementCollection.cs" />
+    <Compile Include="DependencyInjection\Configuration\PropetryElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\PropetryElementCollection.cs" />
+    <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
     <Compile Include="DependencyInjection\Types.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -63,9 +76,7 @@
       <Name>Grace</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"

@@ -70,6 +70,7 @@
     <Compile Include="Classes\FauxClasses\FauxExportStrategy.cs" />
     <Compile Include="Classes\FauxClasses\FauxInjectionContext.cs" />
     <Compile Include="Classes\FauxClasses\FauxInjectionTargetInfo.cs" />
+    <Compile Include="Classes\Modules\TestModule.cs" />
     <Compile Include="Classes\Simple\ActivateService.cs" />
     <Compile Include="Classes\Simple\AttributedClassMultipleImport.cs" />
     <Compile Include="Classes\Simple\AttributedConstructorMultipleImport.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Classes\Simple\SomeTestAttribute.cs" />
     <Compile Include="Classes\Simple\Transient.cs" />
     <Compile Include="Classes\Simple\WithCtorParamClass.cs" />
+    <Compile Include="DependencyInjection\AppConfigTests.cs" />
     <Compile Include="DependencyInjection\Attributes\BasicAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttributedWithAttributeTests.cs" />
@@ -188,6 +190,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
