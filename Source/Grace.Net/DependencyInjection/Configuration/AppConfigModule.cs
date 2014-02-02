@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.DependencyInjection.Lifestyle;
 using Grace.Logging;
 
 namespace Grace.DependencyInjection.Configuration
@@ -34,13 +35,20 @@ namespace Grace.DependencyInjection.Configuration
 
 			if (graceSection != null)
 			{
+				var assemblies = graceSection.Assemblies;
+
+				foreach (AssemblyElement assemblyElement in assemblies)
+				{
+					ProcessAssembly(registrationBlock, assemblyElement);
+				}
+
 				var exports = graceSection.Exports;
 
 				if (exports != null)
 				{
 					foreach (ExportElement exportElement in exports)
 					{
-
+						ProcessExportElement(registrationBlock, exportElement);
 					}
 				}
 
@@ -52,7 +60,7 @@ namespace Grace.DependencyInjection.Configuration
 					{
 						try
 						{
-							Type moduleType = Type.GetType(moduleElement.Type);
+							Type moduleType = ConvertStringToType(moduleElement.Type);
 
 							if (moduleType != null)
 							{
@@ -75,9 +83,107 @@ namespace Grace.DependencyInjection.Configuration
 			}
 		}
 
+		private void ProcessExportElement(IExportRegistrationBlock registrationBlock, ExportElement exportElement)
+		{
+			Type exportType = ConvertStringToType(exportElement.Type);
+
+			if (exportType != null)
+			{
+				var config = registrationBlock.Export(exportType);
+
+				if (exportElement.ExternallyOwned)
+				{
+					config = config.ExternallyOwned();
+				}
+
+				foreach (AsElement asElement in exportElement)
+				{
+					if (asElement.Type != null)
+					{
+						Type asType = ConvertStringToType(asElement.Type);
+
+						if (asType != null)
+						{
+							config = config.As(asType);
+						}
+					}
+					else if (asElement.Name != null)
+					{
+						config.AsName(asElement.Name);
+					}
+				}
+
+				if (string.IsNullOrEmpty(exportElement.LifeStyle))
+				{
+					switch (exportElement.LifeStyle)
+					{
+						case "Singleton":
+							config = config.AndSingleton();
+							break;
+						case "WeakSingleton":
+							config = config.AndWeakSingleton();
+							break;
+						case "SingletonPerInjection":
+						case "PerInjection":
+							config = config.UsingLifestyle(new SingletonPerInjectionContextLifestyle());
+							break;
+						case "SingletonPerScope":
+						case "PerScope":
+							config = config.AndSingletonPerScope();
+							break;
+						case "SingletonPerRequest":
+						case "PerRequest":
+							config = config.UsingLifestyle(new SingletonPerRequestLifestyle());
+							break;
+
+						default:
+							Type lifeStyleType = ConvertStringToType(exportElement.LifeStyle);
+
+							if (lifeStyleType != null)
+							{
+								try
+								{
+									ILifestyle lifestyle = Activator.CreateInstance(lifeStyleType) as ILifestyle;
+
+									config = config.UsingLifestyle(lifestyle);
+								}
+								catch (Exception exp)
+								{
+									Logger.Error("Exception thrown while creating lifestyle container: " + lifeStyleType, "AppConfig", exp);
+								}
+
+							}
+							break;
+					}
+				}
+			}
+		}
+
+		private Type ConvertStringToType(string type)
+		{
+			return Type.GetType(type);
+		}
+
+		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)
+		{
+			try
+			{
+				Assembly newAssembly = Assembly.Load(assemblyElement.Path);
+
+				if (assemblyElement.ScanForAttributes)
+				{
+					registrationBlock.Export(Types.FromAssembly(newAssembly));
+				}
+			}
+			catch (Exception exp)
+			{
+				Logger.Error("Exception thrown while loading assembly", "AppConfig", exp);
+			}
+		}
+
 		private void ConfigureModule(IExportRegistrationBlock registrationBlock, IConfigurationModule configurationModule, ModuleElement element)
 		{
-			foreach (PropetryElement propertyElement in element.Propetries)
+			foreach (PropetryElement propertyElement in element)
 			{
 				PropertyInfo propertyInfo =
 					configurationModule.GetType().GetRuntimeProperty(propertyElement.Name);

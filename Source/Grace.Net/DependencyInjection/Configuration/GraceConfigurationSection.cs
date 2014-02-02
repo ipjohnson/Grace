@@ -10,7 +10,11 @@ namespace Grace.DependencyInjection.Configuration
 {
 	public class GraceConfigurationSection : ConfigurationSection
 	{
-
+		[ConfigurationProperty("assemblies", IsRequired = false, IsDefaultCollection = true)]
+		public AssemblyElementCollection Assemblies
+		{
+			get { return PropertyValue<AssemblyElementCollection>(); }
+		}
 
 		[ConfigurationProperty("modules", IsRequired = false, IsDefaultCollection = true)]
 		public ModuleElementCollection Modules

@@ -55,6 +55,7 @@
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingNotPresentOrFalse.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingPresent.cs" />
     <Compile Include="DependencyInjection\Configuration\AppConfigModule.cs" />
+    <Compile Include="DependencyInjection\Configuration\AsElement.cs" />
     <Compile Include="DependencyInjection\Configuration\BaseElement.cs" />
     <Compile Include="DependencyInjection\Configuration\BaseElementCollection.cs" />
     <Compile Include="DependencyInjection\Configuration\ExportElement.cs" />
