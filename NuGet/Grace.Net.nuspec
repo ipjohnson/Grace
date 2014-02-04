@@ -10,7 +10,7 @@
     <title>Grace.Net</title>
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
     <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
-    <releaseNotes>This release adds support for IEnumerable&lt;Lazy&lt;T&gt;&gt; IEnumerable&lt;Meta&lt;T&gt;&gt; IEnumerable&lt;Owned&lt;T&gt;&gt; </releaseNotes>
+    <releaseNotes>This release adds support to Inject constructed object as well as XML configuration support (App.Config)</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
