@@ -17,6 +17,8 @@ namespace Grace.UnitTests.Classes.Modules
 		public void Configure(IExportRegistrationBlock registrationBlock)
 		{
 			registrationBlock.Export<BasicService>().As<IBasicService>();
+
+			registrationBlock.ExportInstance(IntProperty).AsName("IntProperty");
 		}
 	}
 }
