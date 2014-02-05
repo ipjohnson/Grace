@@ -71,6 +71,16 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IFluentExportStrategyConfiguration As(Type exportType)
 		{
+			if (!this.exportType.GetTypeInfo().IsGenericTypeDefinition &&
+				 !exportType.GetTypeInfo().IsAssignableFrom(this.exportType.GetTypeInfo()))
+			{
+				throw new ArgumentException(
+					string.Format("Exported type {0} cannot be cast to {1}", 
+										this.exportType.FullName,
+										exportType.FullName),
+					"exportType");
+			}
+
 			exportStrategy.AddExportType(exportType);
 
 			return this;
@@ -82,6 +92,15 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>configuration object</returns>
 		public IFluentExportStrategyConfiguration As<T>()
 		{
+			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
+				 !typeof(T).GetTypeInfo().IsAssignableFrom(exportType.GetTypeInfo()))
+			{
+				throw new ArgumentException(
+					string.Format("Exported type {0} cannot be cast to {1}",
+										this.exportType.FullName,
+										exportType.FullName));
+			}
+
 			exportStrategy.AddExportType(typeof(T));
 
 			return this;
@@ -368,7 +387,18 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IFluentExportStrategyConfiguration<T> As<TExportType>()
 		{
-			exportStrategy.AddExportType(typeof(TExportType));
+			Type asType = typeof(TExportType);
+
+			if (!asType.GetTypeInfo().IsGenericTypeDefinition && 
+				 !asType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+			{
+				throw new ArgumentException(
+					string.Format("Exported type {0} cannot be cast to {1}",
+										typeof(T).FullName,
+										asType.FullName));
+			}
+
+			exportStrategy.AddExportType(asType);
 
 			return this;
 		}
@@ -380,6 +410,16 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IFluentExportStrategyConfiguration<T> As(Type exportType)
 		{
+			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
+				 !exportType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+			{
+				throw new ArgumentException(
+					string.Format("Exported type {0} cannot be cast to {1}",
+										typeof(T).FullName,
+										exportType.FullName),
+					"exportType");
+			}
+
 			exportStrategy.AddExportType(exportType);
 
 			return this;
@@ -393,7 +433,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			if (exportStrategy.ActivationType.GetTypeInfo().IsInterface)
 			{
-				exportStrategy.AddExportType(exportStrategy.ActivationType);	
+				exportStrategy.AddExportType(exportStrategy.ActivationType);
 			}
 
 			foreach (Type interfaceTypes in exportStrategy.ActivationType.GetTypeInfo().ImplementedInterfaces)
@@ -489,7 +529,7 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	
+
 		/// <summary>
 		/// Mark a particular Action() as the activation action
 		/// </summary>
