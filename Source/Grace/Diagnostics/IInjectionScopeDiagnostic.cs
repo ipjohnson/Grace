@@ -133,6 +133,11 @@ namespace Grace.Diagnostics
 			{
 				foreach (ExportStrategyDependency exportStrategyDependency in exportStrategy.DependsOn)
 				{
+					if (exportStrategyDependency.HasValueProvider)
+					{
+						continue;
+					}
+					
 					if (exportStrategyDependency.ImportName != null)
 					{
 
