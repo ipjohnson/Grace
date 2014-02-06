@@ -244,12 +244,13 @@ namespace Grace.Diagnostics
 
 		private static bool TestForOwnedType(Type openType)
 		{
-			return false;
+			return openType == typeof(Owned<>);
 		}
 
 		private static bool TestForLazyType(Type openType)
 		{
-			return false;
+
+			return openType == typeof(Lazy<>);
 		}
 
 		private static bool TestForListSpecialType(Type openType)
