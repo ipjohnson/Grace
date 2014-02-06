@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.Logging;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -64,7 +65,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <param name="injectionScope"></param>
 		/// <param name="injectionContext"></param>
 		/// <returns></returns>
-		private ILifestyle LocateContainer(IInjectionScope injectionScope, IInjectionContext injectionContext)
+		private static ILifestyle LocateContainer(IInjectionScope injectionScope, IInjectionContext injectionContext)
 		{
 			ILifestyle returnValue = null;
 
@@ -78,8 +79,9 @@ namespace Grace.DependencyInjection.Lifestyle
 					returnValue = provider.ProvideContainer();
 				}
 			}
-			catch (Exception)
+			catch (Exception exp)
 			{
+				Logger.Error("Exception throw while trying to locate IPerRequestLifestyleProvider", "SingletonPerRequest", exp);
 			}
 
 			return returnValue ?? new SingletonPerInjectionContextLifestyle();
