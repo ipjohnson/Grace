@@ -65,7 +65,7 @@ namespace Grace.Logging
 		}
 
 		/// <summary>
-		/// Log a debug message
+		/// Log a Debug message
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="supplemental"></param>
@@ -76,7 +76,29 @@ namespace Grace.Logging
 		}
 
 		/// <summary>
-		/// Log an error message
+		/// Log a Info message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="supplemental"></param>
+		/// <param name="exp"></param>
+		public static void Info(string message, string supplemental = null, Exception exp = null)
+		{
+			LogService.GetLogger(supplemental).Info(message, exp);
+		}
+
+		/// <summary>
+		/// Log a Warn message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="supplemental"></param>
+		/// <param name="exp"></param>
+		public static void Warn(string message, string supplemental = null, Exception exp = null)
+		{
+			LogService.GetLogger(supplemental).Warn(message, exp);
+		}
+
+		/// <summary>
+		/// Log an Error message
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="supplemental"></param>
@@ -84,6 +106,17 @@ namespace Grace.Logging
 		public static void Error(string message, string supplemental = null, Exception exp = null)
 		{
 			LogService.GetLogger(supplemental).Debug(message, exp);
+		}
+
+		/// <summary>
+		/// Log an Fatal message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="supplemental"></param>
+		/// <param name="exp"></param>
+		public static void Fatal(string message, string supplemental = null, Exception exp = null)
+		{
+			LogService.GetLogger(supplemental).Fatal(message, exp);
 		}
 	}
 }
