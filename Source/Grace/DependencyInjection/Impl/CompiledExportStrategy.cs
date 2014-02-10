@@ -44,17 +44,17 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext context,
 			ExportStrategyFilter consider)
 		{
-			if (log.IsDebugEnabled)
+			if (Log.IsDebugEnabled)
 			{
 				if (Lifestyle != null)
 				{
-					log.DebugFormat("Activating export type {0} with life cycle container {1} ",
+					Log.DebugFormat("Activating export type {0} with life cycle container {1} ",
 						ActivationType.FullName,
 						Lifestyle.GetType().FullName);
 				}
 				else
 				{
-					log.DebugFormat("Activating export type {0} with no life cycle container ",
+					Log.DebugFormat("Activating export type {0} with no life cycle container ",
 						ActivationType.FullName);
 				}
 			}

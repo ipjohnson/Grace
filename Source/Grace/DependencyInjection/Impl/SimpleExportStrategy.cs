@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl
 				}
 				else
 				{
-					log.Error("Activate called with a null DisposalScope in the context");
+					Log.Error("Activate called with a null DisposalScope in the context");
 				}
 			}
 

@@ -154,13 +154,13 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn, TOut>(@in =>
-			                           {
-				                           IInjectionContext newInjectionContext = clonedContext.Clone();
+												{
+													IInjectionContext newInjectionContext = clonedContext.Clone();
 
-				                           newInjectionContext.Export((scope, c) => @in);
+													newInjectionContext.Export((scope, c) => @in);
 
-				                           return clonedContext.RequestingScope.Locate<TOut>(newInjectionContext);
-			                           });
+													return clonedContext.RequestingScope.Locate<TOut>(newInjectionContext);
+												});
 		}
 
 
@@ -180,13 +180,21 @@ namespace Grace.DependencyInjection.Impl
 		{
 			get { return typeof(Func<TIn, TOut>).FullName; }
 		}
-		
+
 		/// <summary>
 		/// Names this strategy should be known as.
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<TIn, TOut>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<TIn, TOut>); }
 		}
 	}
 
@@ -210,14 +218,14 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TOut>((in1, in2) =>
-			                                  {
-				                                  IInjectionContext newInjectionContext = clonedContext.Clone();
+														 {
+															 IInjectionContext newInjectionContext = clonedContext.Clone();
 
-				                                  newInjectionContext.Export((scope, c) => in1);
-				                                  newInjectionContext.Export((scope, c) => in2);
+															 newInjectionContext.Export((scope, c) => in1);
+															 newInjectionContext.Export((scope, c) => in2);
 
-				                                  return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-			                                  });
+															 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+														 });
 		}
 
 		/// <summary>
@@ -241,7 +249,15 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<TIn1, TIn2, TOut>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<TIn1, TIn2, TOut>); }
 		}
 	}
 
@@ -266,15 +282,15 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TIn3, TOut>((in1, in2, in3) =>
-			                                        {
-				                                        IInjectionContext newInjectionContext = clonedContext.Clone();
+																 {
+																	 IInjectionContext newInjectionContext = clonedContext.Clone();
 
-				                                        newInjectionContext.Export((scope, c) => in1);
-				                                        newInjectionContext.Export((scope, c) => in2);
-				                                        newInjectionContext.Export((scope, c) => in3);
+																	 newInjectionContext.Export((scope, c) => in1);
+																	 newInjectionContext.Export((scope, c) => in2);
+																	 newInjectionContext.Export((scope, c) => in3);
 
-				                                        return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-			                                        });
+																	 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+																 });
 		}
 
 		/// <summary>
@@ -292,13 +308,21 @@ namespace Grace.DependencyInjection.Impl
 		{
 			get { return typeof(Func<TIn1, TIn2, TIn3, TOut>).FullName; }
 		}
-		
+
 		/// <summary>
 		/// Names this strategy should be known as.
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<TIn1, TIn2, TIn3, TOut>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<TIn1, TIn2, TIn3, TOut>); }
 		}
 	}
 
@@ -324,17 +348,17 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TOut>((in1, in2, in3, in4) =>
-			                                              {
-				                                              IInjectionContext newInjectionContext = clonedContext.Clone();
+																		 {
+																			 IInjectionContext newInjectionContext = clonedContext.Clone();
 
-				                                              newInjectionContext.Export((scope, c) => in1);
-				                                              newInjectionContext.Export((scope, c) => in2);
-				                                              newInjectionContext.Export((scope, c) => in3);
-				                                              newInjectionContext.Export((scope, c) => in4);
+																			 newInjectionContext.Export((scope, c) => in1);
+																			 newInjectionContext.Export((scope, c) => in2);
+																			 newInjectionContext.Export((scope, c) => in3);
+																			 newInjectionContext.Export((scope, c) => in4);
 
-				                                              return
-					                                              newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-			                                              });
+																			 return
+																				 newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+																		 });
 		}
 
 		/// <summary>
@@ -358,7 +382,15 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TOut>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TOut>); }
 		}
 	}
 
@@ -371,7 +403,7 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="TIn4"></typeparam>
 	/// <typeparam name="TIn5"></typeparam>
 	/// <typeparam name="TOut"></typeparam>
-	public class GenericFuncExportStrategy<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> :BaseGenericFuncExportStrategy, IExportStrategy
+	public class GenericFuncExportStrategy<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> : BaseGenericFuncExportStrategy, IExportStrategy
 	{
 		/// <summary>
 		/// Activate the export
@@ -415,13 +447,21 @@ namespace Grace.DependencyInjection.Impl
 		{
 			get { return typeof(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>).FullName; }
 		}
-		
+
 		/// <summary>
 		/// Names this strategy should be known as.
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>); }
 		}
 	}
 }

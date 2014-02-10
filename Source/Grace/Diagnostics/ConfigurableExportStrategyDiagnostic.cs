@@ -30,6 +30,12 @@ namespace Grace.Diagnostics
 			get { return strategy.ExportNames; }
 		}
 
+		[DebuggerDisplay("{ExportTypesDisplayString,nq}", Name = "Export Types")]
+		public IEnumerable<Type> ExportTypes
+		{
+			get { return strategy.ExportTypes; }
+		}
+
 		public object Key
 		{
 			get { return strategy.Key; }
@@ -81,6 +87,12 @@ namespace Grace.Diagnostics
 		private string ExportNamesDisplayString
 		{
 			get { return "Count = " + strategy.ExportNames.Count(); }
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private string ExportTypesDisplayString
+		{
+			get { return "Count = " + strategy.ExportTypes.Count(); }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]

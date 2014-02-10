@@ -70,7 +70,7 @@ namespace Grace.DependencyInjection.Impl
 				newExportStrategy.AddExportName(exportName);
 			}
 
-			foreach (Type exportAsType in exportAsTypes)
+			foreach (Type exportAsType in ExportTypes)
 			{
 				if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
 				{
@@ -92,36 +92,5 @@ namespace Grace.DependencyInjection.Impl
 			return newExportStrategy;
 		}
 
-		/// <summary>
-		/// Names this strategy should be known as.
-		/// </summary>
-		public override IEnumerable<string> ExportNames
-		{
-			get
-			{
-				List<string> returnValue = new List<string>(exportNames);
-
-				foreach (Type exportAsType in exportAsTypes)
-				{
-					returnValue.Add(exportAsType.FullName);
-				}
-
-				if (returnValue.Count == 0)
-				{
-					returnValue.Add(exportType.FullName);
-				}
-
-				return returnValue;
-			}
-		}
-
-		/// <summary>
-		/// Add an export type for the strategy
-		/// </summary>
-		/// <param name="exportType"></param>
-		public override void AddExportType(Type exportType)
-		{
-			exportAsTypes.Add(exportType);
-		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection.Impl
 	/// </summary>
 	public class ExportRegistrationBlock : IExportRegistrationBlock
 	{
-		private readonly ILog log = Logger.GetLogger<ExportRegistrationBlock>();
+		private ILog log;
 		private readonly IInjectionScope owningScope;
 		private readonly List<IExportStrategyProvider> strategyProviders = new List<IExportStrategyProvider>();
 		private ExportStrategyListProvider exportStrategyList;
@@ -33,6 +33,11 @@ namespace Grace.DependencyInjection.Impl
 		public IInjectionScope OwningScope
 		{
 			get { return owningScope; }
+		}
+
+		private ILog Log
+		{
+			get { return log ?? (log = Logger.GetLogger<ExportRegistrationBlock>()); }
 		}
 
 		/// <summary>
@@ -249,11 +254,16 @@ namespace Grace.DependencyInjection.Impl
 						continue;
 					}
 
-					if (log.IsInfoEnabled)
+					if (Log.IsInfoEnabled)
 					{
-						string exportNames = provideStrategy.ExportNames.Aggregate((x, y) => string.Concat(x, ',', y));
+						string exportNames = null;
 
-						log.InfoFormat("Exporting type {0} as {1}", provideStrategy.ActivationType.FullName, exportNames);
+						if (provideStrategy.ExportNames.Any())
+						{
+							provideStrategy.ExportNames.Aggregate((x, y) => string.Concat(x, ',', y));
+						}
+
+						Log.InfoFormat("Exporting type {0} as {1}", provideStrategy.ActivationType.FullName, exportNames);
 					}
 
 					yield return provideStrategy;

@@ -365,9 +365,9 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="exportName"></param>
 		/// <returns>can be null if nothing is registered by that name</returns>
-		public IExportStrategyCollection GetStrategyCollection(string exportName)
+		public IExportStrategyCollection GetStrategyCollection(Type exportType)
 		{
-			return RootScope.GetStrategyCollection(exportName);
+			return RootScope.GetStrategyCollection(exportType);
 		}
 
 		/// <summary>

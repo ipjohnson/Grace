@@ -35,7 +35,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
 			                                  {
-				                                  ExportNames = new[] { typeof(IBasicService).FullName }
+				                                  ExportTypes = new[] { typeof(IBasicService) }
 			                                  };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
@@ -74,7 +74,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
 			                                  {
-				                                  ExportNames = new[] { typeof(IBasicService).FullName }
+				                                  ExportTypes = new[] { typeof(IBasicService) }
 			                                  };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
@@ -112,7 +112,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
 			                                  {
-				                                  ExportNames = new[] { typeof(IBasicService).FullName }
+				                                  ExportTypes = new[] { typeof(IBasicService) }
 			                                  };
 
 			InjectionKernelManager manager =
@@ -156,7 +156,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
 			                                  {
-				                                  ExportNames = new[] { typeof(IBasicService).FullName }
+				                                  ExportTypes = new[] { typeof(IBasicService) }
 			                                  };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
@@ -225,7 +225,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
 			                                  {
-				                                  ExportNames = new[] { typeof(IBasicService).FullName }
+				                                  ExportTypes = new[] { typeof(IBasicService) }
 			                                  };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();

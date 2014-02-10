@@ -15,12 +15,13 @@ namespace Grace.DependencyInjection.Impl
 	[DebuggerTypeProxy(typeof(ConfigurableExportStrategyDiagnostic))]
 	public abstract class ConfigurableExportStrategy : IConfigurableExportStrategy
 	{
-		protected readonly ILog log;
+		private ILog log;
 		private bool allowingFiltering = true;
 		protected List<IExportCondition> conditions;
 		protected bool disposed;
 		protected List<EnrichWithDelegate> enrichWithDelegates;
 		protected List<string> exportNames;
+		protected List<Type> exportTypes;
 		protected Type exportType;
 		protected ILifestyle lifestyle;
 		private bool locked;
@@ -31,12 +32,13 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ActivationName = exportType.FullName;
 			ActivationType = exportType;
-			exportNames = new List<string>(1);
+			exportNames = new List<string>();
+			exportTypes = new List<Type>();
 			this.exportType = exportType;
 
 			Environment = ExportEnvironment.Any;
 
-			log = Logger.GetLogger(GetType());
+			//log = Logger.GetLogger(GetType());
 		}
 
 		/// <summary>
@@ -110,12 +112,23 @@ namespace Grace.DependencyInjection.Impl
 		{
 			get
 			{
-				if (exportNames.Count > 0)
+				return exportNames;
+			}
+		}
+
+		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get
+			{
+				if (exportTypes.Count == 0 && exportNames.Count == 0)
 				{
-					return exportNames;
+					return new[] { exportType };
 				}
 
-				return new[] { exportType.FullName };
+				return exportTypes;
 			}
 		}
 
@@ -139,14 +152,12 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType"></param>
 		public virtual void AddExportType(Type exportType)
 		{
-            		if (exportType.FullName != null)
-            		{
-                		AddExportName(exportType.FullName);
-            		}
-            		else
-            		{
-                		AddExportName(exportType.Namespace + "." + exportType.Name);
-            		}
+			if (locked)
+			{
+				throw new ArgumentException("Strategy is locked can't be changed");
+			}
+
+			exportTypes.Add(exportType);
 		}
 
 		public virtual ExportEnvironment Environment { get; private set; }
@@ -422,5 +433,12 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+		/// <summary>
+		/// Logger for strategies
+		/// </summary>
+		protected ILog Log
+		{
+			get { return log ?? (log = Logger.GetLogger(GetType())); }
+		}
 	}
 }

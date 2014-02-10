@@ -111,6 +111,7 @@
     <Compile Include="Classes\Simple\MultipleConstructorImport.cs" />
     <Compile Include="Classes\Simple\MultiplePropertyImportService.cs" />
     <Compile Include="Classes\Simple\MultipleSimpleObjects.cs" />
+    <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
     <Compile Include="Classes\Simple\SimpleModule.cs" />
     <Compile Include="Classes\Simple\SomeTestAttribute.cs" />
     <Compile Include="Classes\Simple\Transient.cs" />

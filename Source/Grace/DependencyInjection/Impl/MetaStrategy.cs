@@ -73,7 +73,12 @@ namespace Grace.DependencyInjection.Impl
 
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Meta<T>).FullName; }
+			get { return new string[0]; }
+		}
+
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Meta<T>); }
 		}
 
 		public ExportEnvironment Environment

@@ -9,7 +9,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 	{
 		private readonly DisposalScope disposalScope = new DisposalScope();
 		private readonly Dictionary<string, object> extraData = new Dictionary<string, object>();
-		private Dictionary<string, IExportStrategyCollection> exports = new Dictionary<string, IExportStrategyCollection>();
+		private Dictionary<Type, IExportStrategyCollection> exports = new Dictionary<Type, IExportStrategyCollection>();
 
 		public void Dispose()
 		{
@@ -109,18 +109,18 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			return new IExportStrategy[0];
 		}
 
-		public IExportStrategyCollection GetStrategyCollection(string exportName)
+		public IExportStrategyCollection GetStrategyCollection(Type exportType)
 		{
 			IExportStrategyCollection returnValue;
 
-			if (!exports.TryGetValue(exportName, out returnValue) && ParentScope == null)
+			if (!exports.TryGetValue(exportType, out returnValue) && ParentScope == null)
 			{
-				Dictionary<string, IExportStrategyCollection> newExports =
-					new Dictionary<string, IExportStrategyCollection>(exports);
+				Dictionary<Type, IExportStrategyCollection> newExports =
+					new Dictionary<Type, IExportStrategyCollection>(exports);
 
 				returnValue = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
 
-				newExports[exportName] = returnValue;
+				newExports[exportType] = returnValue;
 
 				exports = newExports;
 			}
@@ -132,13 +132,13 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		{
 			IExportStrategyCollection collection;
 
-			foreach (string exportName in addStrategy.ExportNames)
+			foreach (Type exportType in addStrategy.ExportTypes)
 			{
-				if (!exports.TryGetValue(exportName, out collection))
+				if (!exports.TryGetValue(exportType, out collection))
 				{
 					collection = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
 
-					exports[exportName] = collection;
+					exports[exportType] = collection;
 				}
 
 				collection.AddExport(addStrategy);
@@ -149,9 +149,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		{
 			IExportStrategyCollection collection;
 
-			foreach (string exportName in knownStrategy.ExportNames)
+			foreach (Type exporType in knownStrategy.ExportTypes)
 			{
-				if (exports.TryGetValue(exportName, out collection))
+				if (exports.TryGetValue(exporType, out collection))
 				{
 					collection.RemoveExport(knownStrategy);
 				}
@@ -174,6 +174,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
 		{
+			return (T)Locate(typeof(T), injectionContext, consider);
+		}
+
+		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		{
 			object returnValue = null;
 
 			if (injectionContext == null)
@@ -185,23 +190,18 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			{
 				IExportStrategyCollection collection;
 
-				if (exports.TryGetValue(typeof(T).FullName, out collection))
+				if (exports.TryGetValue(objectType, out collection))
 				{
-					returnValue = (T)collection.Activate(null, typeof(T), injectionContext, consider);
+					returnValue = collection.Activate(null, objectType, injectionContext, consider);
 				}
 			}
 
 			if (returnValue == null && ParentScope != null)
 			{
-				returnValue = ParentScope.Locate<T>(injectionContext, consider);
+				returnValue = ParentScope.Locate(objectType,injectionContext, consider);
 			}
 
-			return (T)returnValue;
-		}
-
-		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
-		{
-			throw new NotImplementedException();
+			return returnValue;
 		}
 
 		public object Locate(string exportName,

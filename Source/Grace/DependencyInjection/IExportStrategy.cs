@@ -57,6 +57,12 @@ namespace Grace.DependencyInjection
 		IEnumerable<string> ExportNames { get; }
 
 		/// <summary>
+		/// Type this strategy should be known as
+		/// </summary>
+		[NotNull]
+		IEnumerable<Type> ExportTypes { get; }
+			
+		/// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
 		ExportEnvironment Environment { get; }

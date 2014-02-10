@@ -185,10 +185,10 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Get the export strategy collection
 		/// </summary>
-		/// <param name="exportName"></param>
+		/// <param name="exportType"></param>
 		/// <returns>can be null if nothing is registered by that name</returns>
 		[CanBeNull]
-		IExportStrategyCollection GetStrategyCollection([NotNull]string exportName);
+		IExportStrategyCollection GetStrategyCollection([NotNull]Type exportType);
 
 		/// <summary>
 		/// Adds a new strategy to the container

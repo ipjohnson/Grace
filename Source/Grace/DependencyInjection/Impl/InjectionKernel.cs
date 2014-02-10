@@ -20,8 +20,11 @@ namespace Grace.DependencyInjection.Impl
 	{
 		#region Private Static
 
-		private static readonly ReadOnlyDictionary<string, ExportStrategyCollection> emptyExportStrategies =
+		private static readonly ReadOnlyDictionary<string, ExportStrategyCollection> emptyStringExportStrategies =
 			new ReadOnlyDictionary<string, ExportStrategyCollection>(new Dictionary<string, ExportStrategyCollection>());
+
+		private static readonly ReadOnlyDictionary<Type, ExportStrategyCollection> emptyTypeExportStrategies =
+			new ReadOnlyDictionary<Type, ExportStrategyCollection>(new Dictionary<Type, ExportStrategyCollection>());
 
 		private static readonly ReadOnlyDictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
 			new ReadOnlyDictionary<Type, IInjectionStrategy>(new Dictionary<Type, IInjectionStrategy>());
@@ -76,7 +79,8 @@ namespace Grace.DependencyInjection.Impl
 		private readonly ILog log = Logger.GetLogger<InjectionKernel>();
 		private readonly object secondaryResolversLock = new object();
 		private volatile Dictionary<string, object> extraData;
-		private volatile ReadOnlyDictionary<string, ExportStrategyCollection> exports;
+		private volatile ReadOnlyDictionary<string, ExportStrategyCollection> exportsByName;
+		private volatile ReadOnlyDictionary<Type, ExportStrategyCollection> exportsByType;
 		private volatile ReadOnlyDictionary<Type, IInjectionStrategy> injections;
 		private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
 
@@ -100,7 +104,8 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ScopeId = Guid.NewGuid();
 
-			exports = emptyExportStrategies;
+			exportsByName = emptyStringExportStrategies;
+			exportsByType = emptyTypeExportStrategies;
 			injections = emptyInjectionStrategies;
 
 			this.kernelManager = kernelManager;
@@ -250,7 +255,8 @@ namespace Grace.DependencyInjection.Impl
 														Environment = Environment
 													};
 
-			returnValue.exports = exports;
+			returnValue.exportsByName = exportsByName;
+			returnValue.exportsByType = exportsByType;
 
 			return returnValue;
 		}
@@ -295,10 +301,15 @@ namespace Grace.DependencyInjection.Impl
 				}
 			}
 
+			AddExportStrategies(exportStrategyList);
+		}
+
+		private void AddExportStrategies(List<IExportStrategy> exportStrategyList)
+		{
 			lock (exportsLock)
 			{
-				Dictionary<string, ExportStrategyCollection> newExports =
-					new Dictionary<string, ExportStrategyCollection>(exports);
+				Dictionary<string, ExportStrategyCollection> newExportsByName =
+					new Dictionary<string, ExportStrategyCollection>(exportsByName);
 
 				foreach (IExportStrategy exportStrategy in exportStrategyList)
 				{
@@ -307,22 +318,59 @@ namespace Grace.DependencyInjection.Impl
 						continue;
 					}
 
-					foreach (string exportName in exportStrategy.ExportNames)
+					var exportNames = exportStrategy.ExportNames;
+
+					if (exportNames != null)
 					{
-						ExportStrategyCollection currentCollection;
-
-						if (!newExports.TryGetValue(exportName, out currentCollection))
+						foreach (string exportName in exportStrategy.ExportNames)
 						{
-							currentCollection = new ExportStrategyCollection(this, Environment, comparer);
 
-							newExports[exportName] = currentCollection;
+							ExportStrategyCollection currentCollection;
+
+							if (!newExportsByName.TryGetValue(exportName, out currentCollection))
+							{
+								currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+
+								newExportsByName[exportName] = currentCollection;
+							}
+
+							currentCollection.AddExport(exportStrategy);
 						}
-
-						currentCollection.AddExport(exportStrategy);
 					}
 				}
 
-				exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
+				Dictionary<Type, ExportStrategyCollection> newExportsByType =
+					new Dictionary<Type, ExportStrategyCollection>(exportsByType);
+
+				foreach (IExportStrategy exportStrategy in exportStrategyList)
+				{
+					if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
+					{
+						continue;
+					}
+
+					var exportTypes = exportStrategy.ExportTypes;
+
+					if (exportTypes != null)
+					{
+						foreach (Type exportType in exportStrategy.ExportTypes)
+						{
+							ExportStrategyCollection currentCollection;
+
+							if (!newExportsByType.TryGetValue(exportType, out currentCollection))
+							{
+								currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+
+								newExportsByType[exportType] = currentCollection;
+							}
+
+							currentCollection.AddExport(exportStrategy);
+						}
+					}
+				}
+
+				exportsByType = new ReadOnlyDictionary<Type, ExportStrategyCollection>(newExportsByType);
+				exportsByName = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExportsByName);
 			}
 		}
 
@@ -385,8 +433,6 @@ namespace Grace.DependencyInjection.Impl
 				throw new ArgumentNullException("objectType");
 			}
 
-			string fullName = objectType.FullName;
-
 			if (log.IsDebugEnabled)
 			{
 				log.DebugFormat("Locate by type {0} with injectionContext is null: {1} and consider is null {2}",
@@ -405,9 +451,9 @@ namespace Grace.DependencyInjection.Impl
 				object returnValue = null;
 				ExportStrategyCollection collection;
 
-				if (exports.TryGetValue(fullName, out collection))
+				if (exportsByType.TryGetValue(objectType, out collection))
 				{
-					returnValue = collection.Activate(fullName, null, injectionContext, consider);
+					returnValue = collection.Activate(null, objectType, injectionContext, consider);
 
 					if (returnValue != null)
 					{
@@ -421,9 +467,9 @@ namespace Grace.DependencyInjection.Impl
 
 					// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
 					// and they have a singleton you have to use the same export strategy
-					if (exportStrategy != null && exports.TryGetValue(fullName, out collection))
+					if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
 					{
-						returnValue = collection.Activate(fullName, objectType, injectionContext, consider);
+						returnValue = collection.Activate(null, objectType, injectionContext, consider);
 					}
 				}
 
@@ -536,7 +582,7 @@ namespace Grace.DependencyInjection.Impl
 
 				ExportStrategyCollection collection;
 
-				if (exports.TryGetValue(exportName, out collection))
+				if (exportsByName.TryGetValue(exportName, out collection))
 				{
 					returnValue = collection.Activate(exportName, null, injectionContext, consider);
 
@@ -818,14 +864,28 @@ namespace Grace.DependencyInjection.Impl
 		{
 			IInjectionContext context = null;
 			HashSet<IExportStrategy> returnValue = new HashSet<IExportStrategy>();
-			IDictionary<string, ExportStrategyCollection> currentExports = exports;
+			IEnumerable<ExportStrategyCollection> currentExports = exportsByName.Values;
 
 			if (exportFilter != null)
 			{
 				context = CreateContext();
 			}
 
-			foreach (ExportStrategyCollection exportStrategyCollection in currentExports.Values)
+			foreach (ExportStrategyCollection exportStrategyCollection in currentExports)
+			{
+				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
+				{
+					if (!returnValue.Contains(exportStrategy) &&
+						 (exportFilter == null || exportFilter(context, exportStrategy)))
+					{
+						returnValue.Add(exportStrategy);
+					}
+				}
+			}
+
+			currentExports = exportsByType.Values;
+
+			foreach (ExportStrategyCollection exportStrategyCollection in currentExports)
 			{
 				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 				{
@@ -850,7 +910,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection;
 
-			if (exports.TryGetValue(name, out collection))
+			if (exportsByName.TryGetValue(name, out collection))
 			{
 				foreach (IExportStrategy exportStrategy in collection.ExportStrategies)
 				{
@@ -875,7 +935,7 @@ namespace Grace.DependencyInjection.Impl
 			IExportStrategy exportStrategy = null;
 			ExportStrategyCollection collection;
 
-			if (exports.TryGetValue(exportType.FullName, out collection))
+			if (exportsByType.TryGetValue(exportType, out collection))
 			{
 				foreach (IExportStrategy currentExportStrategy in collection.ExportStrategies)
 				{
@@ -890,7 +950,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				Type genericType = exportType.GetGenericTypeDefinition();
 
-				if (exports.TryGetValue(genericType.FullName, out collection))
+				if (exportsByType.TryGetValue(genericType, out collection))
 				{
 					Type[] closingTypes = exportType.GenericTypeArguments;
 
@@ -941,7 +1001,7 @@ namespace Grace.DependencyInjection.Impl
 
 			name = name.ToLowerInvariant();
 
-			if (exports.TryGetValue(name, out returnValue))
+			if (exportsByName.TryGetValue(name, out returnValue))
 			{
 				foreach (IExportStrategy exportStrategy in returnValue.ExportStrategies)
 				{
@@ -965,11 +1025,10 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter = null)
 		{
-			string name = exportType.FullName;
 			ExportStrategyCollection returnValue;
 			IInjectionContext context = injectionContext ?? CreateContext();
 
-			if (exports.TryGetValue(name, out returnValue))
+			if (exportsByType.TryGetValue(exportType, out returnValue))
 			{
 				foreach (IExportStrategy exportStrategy in returnValue.ExportStrategies)
 				{
@@ -985,24 +1044,24 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Get the export strategy collection
 		/// </summary>
-		/// <param name="exportName"></param>
+		/// <param name="exporType"></param>
 		/// <returns>can be null if nothing is registered by that name</returns>
-		public IExportStrategyCollection GetStrategyCollection(string exportName)
+		public IExportStrategyCollection GetStrategyCollection(Type exportType)
 		{
 			ExportStrategyCollection returnValue;
 
-			if (!exports.TryGetValue(exportName, out returnValue) && ParentScope == null)
+			if (!exportsByType.TryGetValue(exportType, out returnValue) && ParentScope == null)
 			{
 				lock (exportsLock)
 				{
-					Dictionary<string, ExportStrategyCollection> newExports =
-						new Dictionary<string, ExportStrategyCollection>(exports);
+					Dictionary<Type, ExportStrategyCollection> newExports =
+						new Dictionary<Type, ExportStrategyCollection>(exportsByType);
 
 					returnValue = new ExportStrategyCollection(this, Environment, comparer);
 
-					newExports[exportName] = returnValue;
+					newExports[exportType] = returnValue;
 
-					exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
+					exportsByType = new ReadOnlyDictionary<Type, ExportStrategyCollection>(newExports);
 				}
 			}
 
@@ -1034,30 +1093,7 @@ namespace Grace.DependencyInjection.Impl
 				newExportStrategies.Add(secondaryStrategy);
 			}
 
-			lock (exportsLock)
-			{
-				Dictionary<string, ExportStrategyCollection> newExports =
-					new Dictionary<string, ExportStrategyCollection>(exports);
-
-				foreach (IExportStrategy newExportStrategy in newExportStrategies)
-				{
-					foreach (string exportName in newExportStrategy.ExportNames)
-					{
-						ExportStrategyCollection currentCollection;
-
-						if (!newExports.TryGetValue(exportName, out currentCollection))
-						{
-							currentCollection = new ExportStrategyCollection(this, Environment, comparer);
-
-							newExports[exportName] = currentCollection;
-						}
-
-						currentCollection.AddExport(newExportStrategy);
-					}
-				}
-
-				exports = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExports);
-			}
+			AddExportStrategies(newExportStrategies);
 		}
 
 		/// <summary>
@@ -1066,13 +1102,29 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="knownStrategy">strategy to remove</param>
 		public void RemoveStrategy(IExportStrategy knownStrategy)
 		{
-			foreach (string exportName in knownStrategy.ExportNames)
+			if (knownStrategy.ExportNames != null)
 			{
-				ExportStrategyCollection collection;
-
-				if (exports.TryGetValue(exportName, out collection))
+				foreach (string exportName in knownStrategy.ExportNames)
 				{
-					collection.RemoveExport(knownStrategy);
+					ExportStrategyCollection collection;
+
+					if (exportsByName.TryGetValue(exportName, out collection))
+					{
+						collection.RemoveExport(knownStrategy);
+					}
+				}
+			}
+
+			if (knownStrategy.ExportTypes != null)
+			{
+				foreach (Type exportType in knownStrategy.ExportTypes)
+				{
+					ExportStrategyCollection collection;
+
+					if (exportsByType.TryGetValue(exportType, out collection))
+					{
+						collection.RemoveExport(knownStrategy);
+					}
 				}
 			}
 		}
@@ -1183,12 +1235,18 @@ namespace Grace.DependencyInjection.Impl
 
 			if (dispose)
 			{
-				foreach (ExportStrategyCollection exportStrategyCollection in exports.Values)
+				foreach (ExportStrategyCollection exportStrategyCollection in exportsByName.Values)
 				{
 					exportStrategyCollection.Dispose();
 				}
 
-				exports = null;
+				foreach (ExportStrategyCollection exportStrategyCollection in exportsByType.Values)
+				{
+					exportStrategyCollection.Dispose();
+				}
+
+				exportsByName = null;
+				exportsByType = null;
 
 				base.Dispose(true);
 			}
@@ -1367,7 +1425,14 @@ namespace Grace.DependencyInjection.Impl
 			{
 				ExportStrategyCollection exportStrategyCollection;
 
-				if (exports.TryGetValue(name, out exportStrategyCollection))
+				if (locateType != null)
+				{
+					if (exportsByType.TryGetValue(locateType, out exportStrategyCollection))
+					{
+						returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
+					}
+				}
+				else if (exportsByName.TryGetValue(name, out exportStrategyCollection))
 				{
 					returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
 				}
@@ -1424,13 +1489,13 @@ namespace Grace.DependencyInjection.Impl
 			{
 				ExportStrategyCollection genericCollection = null;
 
-				if (exports.TryGetValue(genericType.FullName, out genericCollection))
+				if (exportsByType.TryGetValue(genericType, out genericCollection))
 				{
 					List<IExportStrategy> strategies = new List<IExportStrategy>(genericCollection.ExportStrategies);
 
 					ExportStrategyCollection exportStrategyCollection;
 
-					if (exports.TryGetValue(locateType.FullName, out exportStrategyCollection))
+					if (exportsByType.TryGetValue(locateType, out exportStrategyCollection))
 					{
 						foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 						{
@@ -1467,7 +1532,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection;
 
-			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
 				returnList.AddRange(collection.ActivateAllLazy<TLazy, T>(injectionContext, exportFilter));
 			}
@@ -1481,7 +1546,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection;
 
-			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
 				returnList.AddRange(collection.ActivateAllOwned<TOwned, T>(injectionContext, exportFilter));
 			}
@@ -1493,7 +1558,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection;
 
-			if (exports.TryGetValue(typeof(T).FullName, out collection))
+			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
 				returnList.AddRange(collection.ActivateAllMeta<TMeta, T>(injectionContext, exportFilter));
 			}

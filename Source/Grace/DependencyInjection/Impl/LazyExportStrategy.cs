@@ -95,6 +95,14 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Types this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Lazy<T>); }
+		}
+
+		/// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
 		public ExportEnvironment Environment

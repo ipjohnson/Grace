@@ -79,7 +79,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy strategy = new FauxExportStrategy(() => new BasicService())
 			                              {
-				                              ExportNames = new[] { typeof(IBasicService).FullName }
+														ExportTypes = new[] { typeof(IBasicService) }
 			                              };
 
 			injectionKernel.AddStrategy(strategy);
@@ -111,7 +111,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy strategy = new FauxExportStrategy(() => new BasicService())
 			                              {
-				                              ExportNames = new[] { typeof(IBasicService).FullName }
+				                              ExportTypes = new[] { typeof(IBasicService) }
 			                              };
 
 			injectionKernel.AddStrategy(strategy);
@@ -136,7 +136,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy strategy = new FauxExportStrategy(() => new BasicService())
 			                              {
-				                              ExportNames = new[] { typeof(IBasicService).FullName }
+				                              ExportTypes = new[] { typeof(IBasicService) }
 			                              };
 
 			injectionKernel.AddStrategy(strategy);
@@ -172,7 +172,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy strategy = new FauxExportStrategy(() => new BasicService())
 			                              {
-				                              ExportNames = new[] { typeof(IBasicService).FullName }
+				                              ExportTypes = new[] { typeof(IBasicService) }
 			                              };
 
 			injectionKernel.AddStrategy(strategy);
@@ -1027,7 +1027,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy basicExport = new FauxExportStrategy(() => new BasicService());
 
-			basicExport.ExportNames = new List<string> { typeof(IBasicService).FullName };
+			basicExport.ExportTypes = new [] { typeof(IBasicService) };
 
 			injectionKernel.Configure(c => c.AddExportStrategy(basicExport));
 

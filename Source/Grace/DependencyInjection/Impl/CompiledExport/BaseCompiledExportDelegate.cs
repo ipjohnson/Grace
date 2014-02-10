@@ -660,8 +660,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						 owningScope != null &&
 						 importType != null &&
 						 !importType.IsConstructedGenericType &&
-						 importType != typeof(string) &&
-						 !importType.GetTypeInfo().IsValueType)
+						 !ImportTypeByName(importType))
 					{
 						ImportForRootScope(importType, targetInfo, exportName, importVariable);
 					}
@@ -718,14 +717,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			{
 				exportNameExpression = Expression.Convert(exportNameExpression, typeof(string));
 			}
-
-			if (importType == null)
-			{
-				importTypeExpression = Expression.Convert(importTypeExpression, typeof(Type));
-			}
-
+			
 			IExportStrategyCollection collection = 
-				owningScope.GetStrategyCollection(tempName);
+				owningScope.GetStrategyCollection(importType);
 			
 			if (exportDelegateInfo.IsTransient)
 			{

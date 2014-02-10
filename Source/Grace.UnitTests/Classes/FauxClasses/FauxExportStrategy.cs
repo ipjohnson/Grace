@@ -47,6 +47,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public IEnumerable<string> ExportNames { get; set; }
 
+		public IEnumerable<Type> ExportTypes { get; set; }
+
 		public ExportEnvironment Environment { get; set; }
 
 		public int Priority { get; set; }

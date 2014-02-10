@@ -86,7 +86,15 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { yield return typeof(Func<T>).FullName; }
+			get { return new string[0]; }
+		}
+
+		/// <summary>
+		/// Types this strategy should be known as
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Func<T>); }
 		}
 
 		/// <summary>

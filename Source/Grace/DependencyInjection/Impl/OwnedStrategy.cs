@@ -104,6 +104,14 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Export types this strategy should
+		/// </summary>
+		public IEnumerable<Type> ExportTypes
+		{
+			get { yield return typeof(Owned<T>); }
+		}
+
+		/// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
 		public ExportEnvironment Environment
