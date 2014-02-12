@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.LanguageExtensions;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -19,6 +21,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<Func<Type, bool>> interfaceMatchList;
 		private readonly IEnumerable<Type> scanTypes;
 		private readonly List<Func<Type, bool>> whereClauses;
+		private readonly List<IExportStrategyInspector> inspectors; 
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
@@ -41,6 +44,7 @@ namespace Grace.DependencyInjection.Impl
 			excludeClauses = new List<Func<Type, bool>>();
 			whereClauses = new List<Func<Type, bool>>();
 			interfaceMatchList = new List<Func<Type, bool>>();
+			inspectors = new List<IExportStrategyInspector>();
 		}
 
 		/// <summary>
@@ -75,6 +79,16 @@ namespace Grace.DependencyInjection.Impl
 			    exportAllByInterface)
 			{
 				returnValues.AddRange(ScanTypesForExports(filteredTypes));
+			}
+
+			if (inspectors.Count > 0)
+			{
+				foreach (IExportStrategy exportStrategy in returnValues)
+				{
+					var strategy = exportStrategy;
+
+					inspectors.Apply(x => x.Inspect(strategy));
+				}
 			}
 
 			return returnValues;
@@ -158,6 +172,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Priority will be set using a priority attribute
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute
+		{
+			inspectors.Add(new PriorityAttributeInspector<T>());
+
+			return this;
+		}
+
+		/// <summary>
 		/// Export in the specified Environment
 		/// </summary>
 		/// <param name="environment">environment to export in</param>
@@ -169,6 +195,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Mark all exports as externally owned
+		/// </summary>
+		/// <returns></returns>
 		public IExportTypeSetConfiguration ExternallyOwned()
 		{
 			externallyOwned = true;
@@ -276,6 +306,11 @@ namespace Grace.DependencyInjection.Impl
 			whereClauses.Add(whereClause);
 
 			return this;
+		}
+
+		public IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector)
+		{
+			throw new NotImplementedException();
 		}
 
 		private List<Type> FilterTypes()

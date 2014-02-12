@@ -96,6 +96,7 @@
     <Compile Include="DependencyInjection\IExportLocator.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
     <Compile Include="DependencyInjection\IExportMetadata.cs" />
+    <Compile Include="DependencyInjection\IExportStrategyInspector.cs" />
     <Compile Include="DependencyInjection\IFluentExportPropertyConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentImportPropertyCollectionConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentImportMethodConfiguration.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="DependencyInjection\Impl\IGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceFuncStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\MetaStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\PriorityAttributeInspector.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyDescendingComparer.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyAscendingComparer.cs" />

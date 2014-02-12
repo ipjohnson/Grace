@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -48,6 +49,13 @@ namespace Grace.DependencyInjection
 		/// <param name="priority">priority to export at</param>
 		/// <returns></returns>
 		IExportTypeSetConfiguration WithPriority(int priority);
+
+		/// <summary>
+		/// Allows you to specify an attribute that will be used to apply 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute;
 
 		/// <summary>
 		/// Export in the specified Environment
@@ -118,5 +126,12 @@ namespace Grace.DependencyInjection
 		/// <param name="whereClause"></param>
 		/// <returns></returns>
 		IExportTypeSetConfiguration Select(Func<Type, bool> whereClause);
+
+		/// <summary>
+		/// Inspectors will be called for every export strategy that is found
+		/// </summary>
+		/// <param name="inspector"></param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector);
 	}
 }
