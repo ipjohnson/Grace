@@ -8,13 +8,22 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="T"></typeparam>
 	public class FuncValueProvider<T> : IExportValueProvider
 	{
-		private readonly Func<T> valueFunc;
+		private readonly Func<IInjectionScope, IInjectionContext, T> valueFunc;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		/// <param name="valueFunc"></param>
 		public FuncValueProvider(Func<T> valueFunc)
+		{
+			this.valueFunc = (scope, context) => valueFunc();
+		}
+
+		/// <summary>
+		/// Constructor takes a Func(IInjectionScope, IInjectionContext, T)
+		/// </summary>
+		/// <param name="valueFunc"></param>
+		public FuncValueProvider(Func<IInjectionScope, IInjectionContext, T> valueFunc)
 		{
 			this.valueFunc = valueFunc;
 		}
@@ -28,7 +37,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			return valueFunc();
+			return valueFunc(exportInjectionScope, context);
 		}
 	}
 }

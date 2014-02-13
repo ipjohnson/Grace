@@ -177,6 +177,14 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
 
 		/// <summary>
+		/// Add a specific value for a particuar parameter in the constructor
+		/// </summary>
+		/// <typeparam name="TParam">type of parameter</typeparam>
+		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope,IInjectionContext,TParam> paramValue);
+
+		/// <summary>
 		/// Adds a constructor param of type TParam to the constructor
 		/// </summary>
 		/// <typeparam name="TParam"></typeparam>
@@ -384,6 +392,15 @@ namespace Grace.DependencyInjection
 		/// <param name="paramValue">Func(TParam) for the parameter</param>
 		/// <returns></returns>
 		IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
+
+		/// <summary>
+		/// Add a specific value for a particuar parameter in the constructor
+		/// </summary>
+		/// <typeparam name="TParam">type of parameter</typeparam>
+		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<T,TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue);
+
 
 		/// <summary>
 		/// Import a collection allowing you to specify a filter and a sort order

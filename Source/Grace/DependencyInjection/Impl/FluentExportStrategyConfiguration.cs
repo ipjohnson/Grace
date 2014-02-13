@@ -324,7 +324,6 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-
 	}
 
 	/// <summary>

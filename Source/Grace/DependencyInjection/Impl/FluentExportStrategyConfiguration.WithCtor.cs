@@ -34,6 +34,24 @@ namespace Grace.DependencyInjection.Impl
 			return new FluentWithCtorConfiguration<TParam>(currenConstructorParamInfo, this);
 		}
 
+
+		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		{
+			ProcessCurrentConstructorParamInfo();
+
+			currenConstructorParamInfo = new ConstructorParamInfo
+			{
+				ParameterType = typeof(TParam)
+			};
+
+			if (paramValue != null)
+			{
+				currenConstructorParamInfo.ValueProvider = new FuncValueProvider<TParam>(paramValue);
+			}
+
+			return new FluentWithCtorConfiguration<TParam>(currenConstructorParamInfo, this);
+		}
+
 		/// <summary>
 		/// Processes the current constructor parameter that was being configured
 		/// </summary>
@@ -66,6 +84,29 @@ namespace Grace.DependencyInjection.Impl
 			                             {
 				                             ParameterType = typeof(TParam)
 			                             };
+
+			if (paramValue != null)
+			{
+				currenConstructorParamInfo.ValueProvider = new FuncValueProvider<TParam>(paramValue);
+			}
+
+			return new FluentWithCtorConfiguration<T, TParam>(currenConstructorParamInfo, this);
+		}
+
+		/// <summary>
+		/// Add a specific value for a particuar parameter in the constructor
+		/// </summary>
+		/// <typeparam name="TParam">type of parameter</typeparam>
+		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+		/// <returns>configuration object</returns>
+		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		{
+			ProcessCurrentConstructorParamInfo();
+
+			currenConstructorParamInfo = new ConstructorParamInfo
+			{
+				ParameterType = typeof(TParam)
+			};
 
 			if (paramValue != null)
 			{
@@ -123,6 +164,13 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
+
+		public IFluentWithCtorConfiguration<TParam> UsingValueProvider(IExportValueProvider valueProvider)
+		{
+			currenConstructorParamInfo.ValueProvider = valueProvider;
+
+			return this;
+		}
 	}
 
 	public class FluentWithCtorConfiguration<T, TParam> : FluentBaseExportConfiguration<T>, IFluentWithCtorConfiguration<T, TParam>
@@ -159,6 +207,13 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentWithCtorConfiguration<T, TParam> Consider(ExportStrategyFilter filter)
 		{
 			constructorParamInfo.ExportStrategyFilter = filter;
+
+			return this;
+		}
+
+		public IFluentWithCtorConfiguration<T, TParam> UsingValueProvider(IExportValueProvider valueProvider)
+		{
+			constructorParamInfo.ValueProvider = valueProvider;
 
 			return this;
 		}
