@@ -15,6 +15,11 @@ namespace Grace.DependencyInjection
 		/// <param name="typeFilters"></param>
 		public TypeFilterGroup(params Func<Type, bool>[] typeFilters)
 		{
+			if (typeFilters == null)
+			{
+				throw new ArgumentNullException("typeFilters");
+			}
+
 			this.typeFilters = typeFilters;
 		}
 

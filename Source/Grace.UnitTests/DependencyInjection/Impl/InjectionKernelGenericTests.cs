@@ -106,5 +106,25 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			Assert.NotNull(basicServices);
 			Assert.Equal(2, basicServices.Count());
 		}
+
+		[Fact]
+		public void RecursiveGenericTest()
+		{
+			InjectionKernelManager injectionKernelManager =
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+			InjectionKernel injectionKernel =
+				new InjectionKernel(injectionKernelManager,
+					null,
+					null,
+					"RootScope",
+					DependencyInjectionContainer.CompareExportStrategies);
+
+			injectionKernel.Configure(c => c.Export(typeof(GenericEntityServuce<>)).As(typeof(IGenericEntityService<>)));
+
+			IGenericEntityService<GenericEntity> service = 
+				injectionKernel.Locate<IGenericEntityService<GenericEntity>>();
+
+			Assert.NotNull(service);
+		}
 	}
 }

@@ -11,7 +11,8 @@ namespace Grace.DependencyInjection.Impl
 	{
 		private readonly List<Type> exportAsTypes = new List<Type>(1);
 
-		public SimpleGenericExportStrategy(Type exportType) : base(exportType)
+		public SimpleGenericExportStrategy(Type exportType)
+			: base(exportType)
 		{
 
 		}
@@ -43,6 +44,17 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Type constraint in constraints)
 				{
+					if (constraint.GetTypeInfo().IsInterface)
+					{
+						if (closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						{
+							continue;
+						}
+
+						constraintsMatch = false;
+						break;
+					}
+
 					if (!constraint.GetTypeInfo().IsAssignableFrom(closingTypes[i].GetTypeInfo()))
 					{
 						constraintsMatch = false;
@@ -61,35 +73,51 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportStrategy CreateClosedStrategy(Type[] closingTypes)
 		{
-			Type closedType = exportType.MakeGenericType(closingTypes);
-			TypeInfo closedTypeInfo = closedType.GetTypeInfo();
-			SimpleExportStrategy newExportStrategy = new SimpleExportStrategy(closedType);
-		
-			foreach (string exportName in base.ExportNames)
+			try
 			{
-				newExportStrategy.AddExportName(exportName);
-			}
 
-			foreach (Type exportAsType in ExportTypes)
-			{
-				if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
+
+				Type closedType = exportType.MakeGenericType(closingTypes);
+				TypeInfo closedTypeInfo = closedType.GetTypeInfo();
+				SimpleExportStrategy newExportStrategy = new SimpleExportStrategy(closedType);
+
+				foreach (string exportName in base.ExportNames)
 				{
-					Type closingType = exportAsType.MakeGenericType(closingTypes);
-
-					newExportStrategy.AddExportType(closingType);
+					newExportStrategy.AddExportName(exportName);
 				}
-				else
+
+				foreach (Type exportAsType in ExportTypes)
 				{
-					newExportStrategy.AddExportType(exportAsType);
+					if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
+					{
+						Type closingType = exportAsType.MakeGenericType(closingTypes);
+
+						newExportStrategy.AddExportType(closingType);
+					}
+					else
+					{
+						newExportStrategy.AddExportType(exportAsType);
+					}
 				}
-			}
 
-			if (Lifestyle != null)
+				if (Lifestyle != null)
+				{
+					newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
+				}
+
+				return newExportStrategy;
+			}
+			catch (Exception exp)
 			{
-				newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
+				string errorMessage = string.Format("Exception thrown while trying to close generic export {0} with ",
+					exportType.FullName);
+
+				closingTypes.Aggregate(errorMessage, (error, t) => error + t.FullName);
+
+				Log.Error(errorMessage, exp);
 			}
 
-			return newExportStrategy;
+			return null;
 		}
 
 	}

@@ -24,7 +24,7 @@ namespace Grace.DependencyInjection.Impl
 			foreach (Attribute attribute in attributes)
 			{
 				IExportAttribute exportAttribute = attribute as IExportAttribute;
-				
+
 				if (exportAttribute != null)
 				{
 					foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
@@ -73,6 +73,17 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Type constraint in constraints)
 				{
+					if (constraint.GetTypeInfo().IsInterface)
+					{
+						if (closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						{
+							continue;
+						}
+
+						constraintsMatch = false;
+						break;
+					}
+
 					if (!constraint.GetTypeInfo().IsAssignableFrom(closingTypes[i].GetTypeInfo()))
 					{
 						constraintsMatch = false;
@@ -86,9 +97,23 @@ namespace Grace.DependencyInjection.Impl
 
 		public IExportStrategy CreateClosedStrategy(Type[] closingTypes)
 		{
-			Type closedType = exportType.MakeGenericType(closingTypes);
-			
-			return new ClosedAttributeExportStrategy(closedType,closedType.GetTypeInfo().GetCustomAttributes());
+			try
+			{
+				Type closedType = exportType.MakeGenericType(closingTypes);
+
+				return new ClosedAttributeExportStrategy(closedType, closedType.GetTypeInfo().GetCustomAttributes());
+			}
+			catch (Exception exp)
+			{
+				string errorMessage = string.Format("Exception thrown while trying to close generic export {0} with ",
+					exportType.FullName);
+
+				closingTypes.Aggregate(errorMessage, (error, t) => error + t.FullName);
+
+				Log.Error(errorMessage, exp);
+			}
+
+			return null;
 		}
 	}
 }

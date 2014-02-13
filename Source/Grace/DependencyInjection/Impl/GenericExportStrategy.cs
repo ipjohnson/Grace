@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
@@ -57,6 +58,18 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Type constraint in constraints)
 				{
+					if (constraint.GetTypeInfo().IsInterface)
+					{
+						if (constraint == closingTypes[i] ||
+							 closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						{
+							continue;
+						}
+
+						constraintsMatch = false;
+						break;
+					}
+
 					if (!constraint.GetTypeInfo().IsAssignableFrom(closingTypes[i].GetTypeInfo()))
 					{
 						constraintsMatch = false;
@@ -75,82 +88,96 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportStrategy CreateClosedStrategy(Type[] closingTypes)
 		{
-			Type closedType = exportType.MakeGenericType(closingTypes);
-			TypeInfo closedTypeInfo = closedType.GetTypeInfo();
-			ClosedGenericExportStrategy newExportStrategy = new ClosedGenericExportStrategy(closedType);
-
-			if (delegateInfo.ImportProperties != null)
+			try
 			{
-				foreach (ImportPropertyInfo importPropertyInfo in delegateInfo.ImportProperties)
+				Type closedType = exportType.MakeGenericType(closingTypes);
+				TypeInfo closedTypeInfo = closedType.GetTypeInfo();
+				ClosedGenericExportStrategy newExportStrategy = new ClosedGenericExportStrategy(closedType);
+
+				if (delegateInfo.ImportProperties != null)
 				{
-					PropertyInfo propertyInfo = closedTypeInfo.GetDeclaredProperty(importPropertyInfo.Property.Name);
-
-					ImportPropertyInfo newPropertyInfo = new ImportPropertyInfo
-																	 {
-																		 Property = propertyInfo,
-																		 ComparerObject = importPropertyInfo.ComparerObject,
-																		 ExportStrategyFilter = importPropertyInfo.ExportStrategyFilter,
-																		 ImportName = importPropertyInfo.ImportName,
-																		 IsRequired = importPropertyInfo.IsRequired,
-																		 ValueProvider = importPropertyInfo.ValueProvider
-																	 };
-
-					newExportStrategy.ImportProperty(newPropertyInfo);
-				}
-			}
-
-			if (delegateInfo.ImportMethods != null)
-			{
-				foreach (ImportMethodInfo importMethodInfo in delegateInfo.ImportMethods)
-				{
-					foreach (MethodInfo declaredMethod in closedTypeInfo.GetDeclaredMethods(importMethodInfo.MethodToImport.Name))
+					foreach (ImportPropertyInfo importPropertyInfo in delegateInfo.ImportProperties)
 					{
-						ParameterInfo[] importMethodParams = importMethodInfo.MethodToImport.GetParameters();
-						ParameterInfo[] declaredMethodParams = declaredMethod.GetParameters();
+						PropertyInfo propertyInfo = closedTypeInfo.GetDeclaredProperty(importPropertyInfo.Property.Name);
 
-						if (importMethodParams.Length == declaredMethodParams.Length)
+						ImportPropertyInfo newPropertyInfo = new ImportPropertyInfo
+																		 {
+																			 Property = propertyInfo,
+																			 ComparerObject = importPropertyInfo.ComparerObject,
+																			 ExportStrategyFilter = importPropertyInfo.ExportStrategyFilter,
+																			 ImportName = importPropertyInfo.ImportName,
+																			 IsRequired = importPropertyInfo.IsRequired,
+																			 ValueProvider = importPropertyInfo.ValueProvider
+																		 };
+
+						newExportStrategy.ImportProperty(newPropertyInfo);
+					}
+				}
+
+				if (delegateInfo.ImportMethods != null)
+				{
+					foreach (ImportMethodInfo importMethodInfo in delegateInfo.ImportMethods)
+					{
+						foreach (MethodInfo declaredMethod in closedTypeInfo.GetDeclaredMethods(importMethodInfo.MethodToImport.Name))
 						{
-							ImportMethodInfo newMethodInfo = new ImportMethodInfo
-							                                 {
-								                                 MethodToImport = declaredMethod
-							                                 };
+							ParameterInfo[] importMethodParams = importMethodInfo.MethodToImport.GetParameters();
+							ParameterInfo[] declaredMethodParams = declaredMethod.GetParameters();
 
-							// fill in method parameters
+							if (importMethodParams.Length == declaredMethodParams.Length)
+							{
+								ImportMethodInfo newMethodInfo = new ImportMethodInfo
+																			{
+																				MethodToImport = declaredMethod
+																			};
 
-							// TODO: match the parameters to make sure they are the same
-							newExportStrategy.ImportMethod(newMethodInfo);
+								// fill in method parameters
+
+								// TODO: match the parameters to make sure they are the same
+								newExportStrategy.ImportMethod(newMethodInfo);
+							}
 						}
 					}
 				}
-			}
 
-			foreach (string exportName in base.ExportNames)
-			{
-				newExportStrategy.AddExportName(exportName);
-			}
-
-			foreach (Type exportAsType in exportTypes)
-			{
-				if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
+				foreach (string exportName in base.ExportNames)
 				{
-					Type closingType = exportAsType.MakeGenericType(closingTypes);
-
-					newExportStrategy.AddExportType(closingType);
+					newExportStrategy.AddExportName(exportName);
 				}
-				else
+
+				foreach (Type exportAsType in exportTypes)
 				{
-					newExportStrategy.AddExportType(exportAsType);
+					if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
+					{
+						Type closingType = exportAsType.MakeGenericType(closingTypes);
+
+						newExportStrategy.AddExportType(closingType);
+					}
+					else
+					{
+						newExportStrategy.AddExportType(exportAsType);
+					}
 				}
-			}
 
-			if (Lifestyle != null)
+				if (Lifestyle != null)
+				{
+					newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
+				}
+
+				newExportStrategy.CreatingStrategy = this;
+
+				return newExportStrategy;
+			}
+			catch (Exception exp)
 			{
-				newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
+				string errorMessage = string.Format("Exception thrown while trying to close generic export {0} with ",
+					exportType.FullName);
+
+				closingTypes.Aggregate(errorMessage, (error, t) => error + t.FullName);
+
+				Log.Error(errorMessage, exp);
 			}
 
-			newExportStrategy.CreatingStrategy = this;
-
-			return newExportStrategy;
+			return null;
 		}
 	}
 }
