@@ -71,6 +71,9 @@ namespace Grace.Diagnostics
 			get { return injectionScope.GetAllStrategies(); }
 		}
 
+		/// <summary>
+		/// Exported names
+		/// </summary>
 		public IEnumerable<ExportListDebuggerView> ExportsByName
 		{
 			get
@@ -97,12 +100,13 @@ namespace Grace.Diagnostics
 				List<KeyValuePair<string, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<string, ExportListDebuggerView>>(returnValue);
 
-				sortList.Sort((x, y) => string.Compare(x.Key, y.Key));
-
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}
 		}
 
+		/// <summary>
+		/// Exported types
+		/// </summary>
 		public IEnumerable<ExportListDebuggerView> ExportsByType
 		{
 			get
@@ -128,8 +132,6 @@ namespace Grace.Diagnostics
 
 				List<KeyValuePair<Type, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<Type, ExportListDebuggerView>>(returnValue);
-
-				sortList.Sort((x, y) => string.Compare(x.Key.FullName, y.Key.FullName));
 
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}

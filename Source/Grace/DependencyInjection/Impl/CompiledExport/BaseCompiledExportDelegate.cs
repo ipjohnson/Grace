@@ -613,7 +613,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			if (string.IsNullOrEmpty(localExportName) && importType != null)
 			{
-				localExportName = ImportTypeByName(importType) ?
+				localExportName = InjectionKernel.ImportTypeByName(importType) ?
 										targetInfo.InjectionTargetName.ToLowerInvariant() :
 										importType.FullName;
 			}
@@ -660,7 +660,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						 owningScope != null &&
 						 importType != null &&
 						 !importType.IsConstructedGenericType &&
-						 !ImportTypeByName(importType))
+						 !InjectionKernel.ImportTypeByName(importType))
 					{
 						ImportForRootScope(importType, targetInfo, exportName, importVariable);
 					}
@@ -700,7 +700,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			if (string.IsNullOrEmpty(tempName))
 			{
-				if (ImportTypeByName(importType))
+				if (InjectionKernel.ImportTypeByName(importType))
 				{
 					tempName = targetInfo.InjectionTargetName.ToLowerInvariant();
 				}
@@ -789,7 +789,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			// for cases where we are importing a string or a primitive
 			// import by name rather than type
 			if (string.IsNullOrEmpty(exportName) &&
-				 (ImportTypeByName(importType)))
+				 (InjectionKernel.ImportTypeByName(importType)))
 			{
 				exportName = targetInfo.InjectionTargetName.ToLowerInvariant();
 			}
@@ -858,17 +858,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
 				objectImportExpression.Add(requestScopeIfExpression);
 			}
-		}
-
-		private static bool ImportTypeByName(Type importType)
-		{
-			return importType.GetTypeInfo().IsPrimitive ||
-					 importType.GetTypeInfo().IsEnum ||
-					 importType == typeof(string) ||
-					 importType == typeof(DateTime) ||
-					 importType == typeof(DateTimeOffset) ||
-					 importType == typeof(TimeSpan) ||
-					 importType == typeof(Guid);
 		}
 
 		private void ImportFromRequestingScopeWithFilter(Type importType,

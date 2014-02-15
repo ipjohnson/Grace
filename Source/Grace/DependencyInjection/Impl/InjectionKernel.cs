@@ -1220,6 +1220,24 @@ namespace Grace.DependencyInjection.Impl
 
 		#endregion
 
+		#region ImportTypeByName
+		/// <summary>
+		/// True if the type should be imported by name rather than type
+		/// </summary>
+		/// <param name="importType"></param>
+		/// <returns></returns>
+		public static bool ImportTypeByName(Type importType)
+		{
+			return importType.GetTypeInfo().IsPrimitive ||
+					 importType.GetTypeInfo().IsEnum ||
+					 importType == typeof(string) ||
+					 importType == typeof(DateTime) ||
+					 importType == typeof(DateTimeOffset) ||
+					 importType == typeof(TimeSpan) ||
+					 importType == typeof(Guid);
+		}
+		#endregion
+
 		#region Protected Methods
 
 		/// <summary>

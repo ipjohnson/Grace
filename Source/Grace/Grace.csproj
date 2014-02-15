@@ -112,6 +112,7 @@
     <Compile Include="DependencyInjection\Impl\CompiledExport\InjectionCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\SimpleCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\ConcreteAttributeExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\GenericDelegateExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ExportMetadata.cs" />
     <Compile Include="DependencyInjection\Impl\FluentBaseExportConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.ExportProperty.cs" />

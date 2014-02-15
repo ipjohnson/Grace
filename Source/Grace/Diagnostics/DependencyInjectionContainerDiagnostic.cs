@@ -82,6 +82,37 @@ namespace Grace.Diagnostics
 			}
 		}
 
+		public IEnumerable<ExportListDebuggerView> ExportsByType
+		{
+			get
+			{
+				Dictionary<Type, ExportListDebuggerView> returnValue = new Dictionary<Type, ExportListDebuggerView>();
+
+				foreach (IExportStrategy exportStrategy in container.GetAllStrategies())
+				{
+					foreach (Type exportType in exportStrategy.ExportTypes)
+					{
+						ExportListDebuggerView view;
+
+						if (!returnValue.TryGetValue(exportType, out view))
+						{
+							view = new ExportListDebuggerView(exportType.FullName);
+
+							returnValue[exportType] = view;
+						}
+
+						view.Add(exportStrategy);
+					}
+				}
+
+				List<KeyValuePair<Type, ExportListDebuggerView>> sortList =
+					new List<KeyValuePair<Type, ExportListDebuggerView>>(returnValue);
+
+				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
+			}
+		}
+
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string DebuggerPossibleMissingDependenciesString
 		{

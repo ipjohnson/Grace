@@ -49,6 +49,14 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration ExportAssembly([NotNull]Assembly assembly);
 
 		/// <summary>
+		/// Register types from an assembly containing a particular type
+		/// </summary>
+		/// <typeparam name="T">type in assembly you want to export</typeparam>
+		/// <returns>set configuration object</returns>
+		[NotNull]
+		IExportTypeSetConfiguration ExportAssemblyContaining<T>();
+
+		/// <summary>
 		/// Register types from a set of assemblies.
 		/// </summary>
 		/// <param name="assemblies">list of assemblies to export</param>

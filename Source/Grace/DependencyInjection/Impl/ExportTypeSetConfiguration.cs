@@ -308,9 +308,16 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new inspector to the export configuration
+		/// </summary>
+		/// <param name="inspector"></param>
+		/// <returns></returns>
 		public IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector)
 		{
-			throw new NotImplementedException();
+			inspectors.Add(inspector);
+
+			return this;
 		}
 
 		private List<Type> FilterTypes()
@@ -319,8 +326,7 @@ namespace Grace.DependencyInjection.Impl
 
 			foreach (Type exportedType in scanTypes)
 			{
-				if (exportedType.GetTypeInfo().IsInterface ||
-				    exportedType.GetTypeInfo().IsAbstract)
+				if (ShouldSkipType(exportedType))
 				{
 					continue;
 				}
@@ -368,6 +374,14 @@ namespace Grace.DependencyInjection.Impl
 			return filteredTypes;
 		}
 
+		private static bool ShouldSkipType(Type exportedType)
+		{
+			return exportedType.GetTypeInfo().IsInterface ||
+			       exportedType.GetTypeInfo().IsAbstract ||
+					 typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) || 
+					 typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
+		}
+
 		private IEnumerable<IExportStrategy> ScanTypesForExports(IEnumerable<Type> filteredTypes)
 		{
 			foreach (Type exportedType in filteredTypes)
@@ -396,14 +410,14 @@ namespace Grace.DependencyInjection.Impl
 
 			if (exportedType.GetTypeInfo().IsGenericTypeDefinition)
 			{
-				Type[] genericArgs = exportedType.GenericTypeArguments;
+				Type[] genericArgs = exportedType.GetTypeInfo().GenericTypeParameters;
 
 				foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
 				{
-					if (implementedInterface.GetTypeInfo().IsGenericTypeDefinition &&
+					if (implementedInterface.IsConstructedGenericType &&
 					    implementedInterface.GenericTypeArguments.Length == genericArgs.Length)
 					{
-						exportTypes.Add(implementedInterface);
+						exportTypes.Add(implementedInterface.GetGenericTypeDefinition());
 					}
 				}
 

@@ -280,7 +280,7 @@ namespace Grace.DependencyInjection.Impl
 				// I reverse the list because the sort goes from lowest to highest and it needs to be reversed
 				newList.Reverse();
 
-				exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList);
+				exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList.ToArray());
 
 				primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
 			}
