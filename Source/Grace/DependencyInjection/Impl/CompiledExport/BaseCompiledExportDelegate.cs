@@ -660,6 +660,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						 owningScope != null &&
 						 importType != null &&
 						 !importType.IsConstructedGenericType &&
+						 importType.GetTypeInfo().BaseType != typeof(MulticastDelegate) &&
 						 !InjectionKernel.ImportTypeByName(importType))
 					{
 						ImportForRootScope(importType, targetInfo, exportName, importVariable);
