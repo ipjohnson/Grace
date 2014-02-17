@@ -10,7 +10,7 @@
     <title>Grace.Moq</title>
     <summary>Grace.Moq is a companion library for Grace and Moq</summary>
     <description>Grace.Moq provides integration classes between Moq and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release provides a minor performance improvement when locating exports, as well as bug fix for resolving Views in MVC</releaseNotes>
+    <releaseNotes>This release adds the ability to import custom delegate as well as fixing a bug with registering open generics in bulk</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

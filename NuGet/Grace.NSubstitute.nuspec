@@ -10,7 +10,7 @@
     <title>Grace.NSubstitute</title>
     <summary>Grace.NSubstitute is a companion library for Grace and NSubstitute</summary>
     <description>Grace.NSubstitute provides integration classes between NSubstitute and Grace (Dependency Injection Contaniner)</description>
-    <releaseNotes>This release provides a minor performance improvement when locating exports, as well as bug fix for resolving Views in MVC</releaseNotes>
+    <releaseNotes>This release adds the ability to import custom delegate as well as fixing a bug with registering open generics in bulk</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

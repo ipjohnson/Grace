@@ -112,7 +112,13 @@
     <Compile Include="DependencyInjection\Impl\CompiledExport\InjectionCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\SimpleCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\ConcreteAttributeExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\BaseGenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\FiveArgGenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\FourArgGenericDelegateExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\DelegateFactory\GenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\OneArgGenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\ThreeArgGenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\TwoArgGenericDelegateExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ExportMetadata.cs" />
     <Compile Include="DependencyInjection\Impl\FluentBaseExportConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.ExportProperty.cs" />

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Grace.DependencyInjection.Exceptions;
+using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
 using Grace.Logging;
 
@@ -503,6 +504,10 @@ namespace Grace.DependencyInjection.Impl
 					{
 						returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
 					}
+					else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
+					{
+						returnValue = ProcessDelegateType(injectionContext, objectType, consider);
+					}
 
 					if (returnValue == null)
 					{
@@ -543,6 +548,64 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			return null;
+		}
+
+		private object ProcessDelegateType(IInjectionContext injectionContext, Type objectType, ExportStrategyFilter consider)
+		{
+			object returnValue = null;
+			MethodInfo invokeInfo = objectType.GetTypeInfo().GetDeclaredMethod("Invoke");
+
+			if (invokeInfo.ReturnType != typeof(void))
+			{
+				ParameterInfo[] parameterInfos = invokeInfo.GetParameters().ToArray();
+				Type openType = null;
+
+				switch (parameterInfos.Length)
+				{
+					case 0:
+						openType = typeof(GenericDelegateExportStrategy<,>);
+						break;
+					case 1:
+						openType = typeof(GenericDelegateExportStrategy<,,>);
+						break;
+					case 2:
+						openType = typeof(GenericDelegateExportStrategy<,,,>);
+						break;
+					case 3:
+						openType = typeof(GenericDelegateExportStrategy<,,,,>);
+						break;
+					case 4:
+						openType = typeof(GenericDelegateExportStrategy<,,,,,>);
+						break;
+					case 5:
+						openType = typeof(GenericDelegateExportStrategy<,,,,,,>);
+						break;
+				}
+
+				if (openType != null)
+				{
+					List<Type> closeList = new List<Type>
+					                       {
+						                       objectType,
+													  invokeInfo.ReturnType
+					                       };
+
+					closeList.AddRange(parameterInfos.Select(x => x.ParameterType));
+
+					Type closedType = openType.MakeGenericType(closeList.ToArray());
+
+					IExportStrategy exportStrategy = Activator.CreateInstance(closedType) as IExportStrategy;
+
+					if (exportStrategy != null)
+					{
+						AddStrategy(exportStrategy);
+
+						returnValue = exportStrategy.Activate(this, injectionContext, consider);
+					}
+				}
+			}
+
+			return returnValue;
 		}
 
 		/// <summary>
