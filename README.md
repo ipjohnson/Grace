@@ -39,11 +39,11 @@ Features in Grace
 * IDisposable objects created by the container will be tracked and disposed by the container unless configured not to.
 * Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. 
 * Supports special types
-   * IEnumerable<T> - supports resolving collections as IEnumerable as well as most other types of collections (List<T>, ReadOnlyCollection<T>, T[])
-   * Func<T> - supports resolving Func<T> automatically
-   * Lazy<T> - when resolved a Lazy<T> will be created that resolves T from the scope it was created in
-   * Owned<T> - object resolved within a Owned<T> will have their disposal lifecycle tied to the Owned<T> (similar to autofac)
-   * Meta<T> - objects resolved within a Meta<T> are resolved along with their metadata
+   * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable as well as most other types of collections (List&lt;T>, ReadOnlyCollection&lt;T&gt;, T[])
+   * Func&lt;T&gt; - supports resolving Func<T&gt; automatically
+   * Lazy&lt;T&gt; - when resolved a Lazy&lt;T&gt; will be created that resolves T from the scope it was created in
+   * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
+   * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
 
 
 Builds of Grace
@@ -54,5 +54,6 @@ Grace has public builds at [CodeBetter](http://teamcity.codebetter.com/project.h
 Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1138"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1138/statusIcon"/></a>
 
 CI Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1137"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1137/statusIcon"/></a>
+
 
 
