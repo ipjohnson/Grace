@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Web;
-using Grace.DependencyInjection;
-using Grace.DependencyInjection.Impl;
 
 namespace Grace.MVC.Extensions
 {

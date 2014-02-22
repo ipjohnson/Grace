@@ -11,6 +11,6 @@ namespace Grace.DependencyInjection
 		/// Called by the injection scope to add exports to the scope
 		/// </summary>
 		/// <param name="registrationBlock"></param>
-		void Configure([NotNull]IExportRegistrationBlock registrationBlock);
+		void Configure([NotNull] IExportRegistrationBlock registrationBlock);
 	}
 }

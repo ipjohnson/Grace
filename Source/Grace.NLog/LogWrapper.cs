@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NL = NLog;
 
 namespace Grace.NLog
 {
-
 	/// <summary>
 	/// Wrapper class around NLog.Logger
 	/// </summary>

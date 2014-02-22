@@ -198,7 +198,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 			if (returnValue == null && ParentScope != null)
 			{
-				returnValue = ParentScope.Locate(objectType,injectionContext, consider);
+				returnValue = ParentScope.Locate(objectType, injectionContext, consider);
 			}
 
 			return returnValue;
@@ -211,17 +211,24 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			throw new NotImplementedException();
 		}
 
-		public List<T> LocateAll<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<T> comparer = null)
+		public List<T> LocateAll<T>(IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<T> comparer = null)
 		{
 			return new List<T>();
 		}
 
-		public List<object> LocateAll(string name, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<object> comparer = null)
+		public List<object> LocateAll(string name,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<object> comparer = null)
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		public List<object> LocateAll(Type exportType,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null)
 		{
 			throw new NotImplementedException();
 		}

@@ -131,10 +131,10 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
+			                          });
 
 			IImportConstructorService constructorService = injectionKernel.Locate<IImportConstructorService>();
 
@@ -154,12 +154,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
+			                          });
 
 			IImportPropertyService importPropertyService = injectionKernel.Locate<IImportPropertyService>();
 
@@ -226,19 +226,19 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
-												  c.Export(typeof(ImportMethodService))
-													  .As(typeof(IImportMethodService))
-													  .ImportMethod("ImportMethod");
-												  c.Export(typeof(MultiplePropertyImportService))
-													  .As(typeof(IMultiplePropertyImportService))
-													  .AutoWireProperties();
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
+				                          c.Export(typeof(ImportMethodService))
+					                          .As(typeof(IImportMethodService))
+					                          .ImportMethod("ImportMethod");
+				                          c.Export(typeof(MultiplePropertyImportService))
+					                          .As(typeof(IMultiplePropertyImportService))
+					                          .AutoWireProperties();
+			                          });
 
 			IMultiplePropertyImportService multiplePropertyImportService =
 				injectionKernel.Locate<IMultiplePropertyImportService>();
@@ -287,12 +287,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(ImportMethodService))
-													  .As(typeof(IImportMethodService))
-													  .ImportMethod("ImportMethod");
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(ImportMethodService))
+					                          .As(typeof(IImportMethodService))
+					                          .ImportMethod("ImportMethod");
+			                          });
 
 			IImportMethodService importMethodService = injectionKernel.Locate<IImportMethodService>();
 
@@ -313,16 +313,16 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
-												  c.Export(typeof(ImportAllTypes))
-													  .ImportProperty("PropertyService")
-													  .ImportMethod("ImportMethod");
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(ImportConstructorService)).As(typeof(IImportConstructorService));
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
+				                          c.Export(typeof(ImportAllTypes))
+					                          .ImportProperty("PropertyService")
+					                          .ImportMethod("ImportMethod");
+			                          });
 
 			ImportAllTypes importAllTypes = injectionKernel.Locate<ImportAllTypes>();
 
@@ -430,10 +430,10 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(FauxBasicService)).As(typeof(IBasicService)).WithPriority(1);
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(FauxBasicService)).As(typeof(IBasicService)).WithPriority(1);
+			                          });
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -476,27 +476,27 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
+			                          {
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
 
-												  c.Export(typeof(ImportMethodService))
-													  .As(typeof(IImportMethodService))
-													  .ImportMethod("ImportMethod");
+				                          c.Export(typeof(ImportMethodService))
+					                          .As(typeof(IImportMethodService))
+					                          .ImportMethod("ImportMethod");
 
-												  c.Export(typeof(BasicService))
-													  .As(typeof(IBasicService))
-													  .AndCondition(
-														  new WhenCondition(
-															  (x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService)));
+				                          c.Export(typeof(BasicService))
+					                          .As(typeof(IBasicService))
+					                          .AndCondition(
+						                          new WhenCondition(
+							                          (x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService)));
 
-												  c.Export(typeof(FauxBasicService))
-													  .As(typeof(IBasicService))
-													  .AndCondition(
-														  new WhenCondition(
-															  (x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService)));
-											  });
+				                          c.Export(typeof(FauxBasicService))
+					                          .As(typeof(IBasicService))
+					                          .AndCondition(
+						                          new WhenCondition(
+							                          (x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService)));
+			                          });
 
 			IImportPropertyService propertyService = injectionKernel.Locate<IImportPropertyService>();
 
@@ -524,23 +524,23 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
+			                          {
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
 
-												  c.Export(typeof(ImportMethodService))
-													  .As(typeof(IImportMethodService))
-													  .ImportMethod("ImportMethod");
+				                          c.Export(typeof(ImportMethodService))
+					                          .As(typeof(IImportMethodService))
+					                          .ImportMethod("ImportMethod");
 
-												  c.Export(typeof(BasicService))
-													  .As(typeof(IBasicService))
-													  .When((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService));
+				                          c.Export(typeof(BasicService))
+					                          .As(typeof(IBasicService))
+					                          .When((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService));
 
-												  c.Export(typeof(FauxBasicService))
-													  .As(typeof(IBasicService))
-													  .When((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService));
-											  });
+				                          c.Export(typeof(FauxBasicService))
+					                          .As(typeof(IBasicService))
+					                          .When((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService));
+			                          });
 
 			IImportPropertyService propertyService = injectionKernel.Locate<IImportPropertyService>();
 
@@ -568,23 +568,23 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(ImportPropertyService))
-													  .As(typeof(IImportPropertyService))
-													  .ImportProperty("BasicService");
+			                          {
+				                          c.Export(typeof(ImportPropertyService))
+					                          .As(typeof(IImportPropertyService))
+					                          .ImportProperty("BasicService");
 
-												  c.Export(typeof(ImportMethodService))
-													  .As(typeof(IImportMethodService))
-													  .ImportMethod("ImportMethod");
+				                          c.Export(typeof(ImportMethodService))
+					                          .As(typeof(IImportMethodService))
+					                          .ImportMethod("ImportMethod");
 
-												  c.Export(typeof(BasicService))
-													  .As(typeof(IBasicService))
-													  .Unless((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService));
+				                          c.Export(typeof(BasicService))
+					                          .As(typeof(IBasicService))
+					                          .Unless((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportPropertyService));
 
-												  c.Export(typeof(FauxBasicService))
-													  .As(typeof(IBasicService))
-													  .Unless((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService));
-											  });
+				                          c.Export(typeof(FauxBasicService))
+					                          .As(typeof(IBasicService))
+					                          .Unless((x, y, z) => y.TargetInfo.InjectionType == typeof(ImportMethodService));
+			                          });
 
 			IImportPropertyService propertyService = injectionKernel.Locate<IImportPropertyService>();
 
@@ -612,13 +612,13 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(SimpleObjectA)).AsName("ISimpleObject").WithKey(1);
-												  c.Export(typeof(SimpleObjectB)).AsName("ISimpleObject").WithKey(2);
-												  c.Export(typeof(SimpleObjectC)).AsName("ISimpleObject").WithKey(3);
-												  c.Export(typeof(SimpleObjectD)).AsName("ISimpleObject").WithKey(4);
-												  c.Export(typeof(SimpleObjectE)).AsName("ISimpleObject").WithKey(5);
-											  });
+			                          {
+				                          c.Export(typeof(SimpleObjectA)).AsName("ISimpleObject").WithKey(1);
+				                          c.Export(typeof(SimpleObjectB)).AsName("ISimpleObject").WithKey(2);
+				                          c.Export(typeof(SimpleObjectC)).AsName("ISimpleObject").WithKey(3);
+				                          c.Export(typeof(SimpleObjectD)).AsName("ISimpleObject").WithKey(4);
+				                          c.Export(typeof(SimpleObjectE)).AsName("ISimpleObject").WithKey(5);
+			                          });
 
 			Assert.IsType(typeof(SimpleObjectA), injectionKernel.LocateByKey("ISimpleObject", 1));
 			Assert.IsType(typeof(SimpleObjectB), injectionKernel.LocateByKey("ISimpleObject", 2));
@@ -640,17 +640,17 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(SimpleObjectA))
-													  .AsName("ISimpleObject")
-													  .InEnvironment(ExportEnvironment.RunTime);
-												  c.Export(typeof(SimpleObjectB))
-													  .AsName("ISimpleObject")
-													  .InEnvironment(ExportEnvironment.UnitTest);
-												  c.Export(typeof(SimpleObjectC))
-													  .AsName("ISimpleObject")
-													  .InEnvironment(ExportEnvironment.DesignTime);
-											  });
+			                          {
+				                          c.Export(typeof(SimpleObjectA))
+					                          .AsName("ISimpleObject")
+					                          .InEnvironment(ExportEnvironment.RunTime);
+				                          c.Export(typeof(SimpleObjectB))
+					                          .AsName("ISimpleObject")
+					                          .InEnvironment(ExportEnvironment.UnitTest);
+				                          c.Export(typeof(SimpleObjectC))
+					                          .AsName("ISimpleObject")
+					                          .InEnvironment(ExportEnvironment.DesignTime);
+			                          });
 
 			IEnumerable<object> all = injectionKernel.LocateAll("ISimpleObject");
 
@@ -671,28 +671,28 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(SimpleObjectA))
-													  .AsName("ISimpleObject")
-													  .WithMetadata("Test", 0)
-													  .WithMetadata("Blah", 9);
-												  c.Export(typeof(SimpleObjectB))
-													  .AsName("ISimpleObject")
-													  .WithMetadata("Test", 1)
-													  .WithMetadata("Blah", 8);
-												  c.Export(typeof(SimpleObjectC))
-													  .AsName("ISimpleObject")
-													  .WithMetadata("Test", 2)
-													  .WithMetadata("Blah", 7);
-												  c.Export(typeof(SimpleObjectD))
-													  .AsName("ISimpleObject")
-													  .WithMetadata("Test", 3)
-													  .WithMetadata("Blah", 6);
-												  c.Export(typeof(SimpleObjectE))
-													  .AsName("ISimpleObject")
-													  .WithMetadata("Test", 4)
-													  .WithMetadata("Blah", 5);
-											  });
+			                          {
+				                          c.Export(typeof(SimpleObjectA))
+					                          .AsName("ISimpleObject")
+					                          .WithMetadata("Test", 0)
+					                          .WithMetadata("Blah", 9);
+				                          c.Export(typeof(SimpleObjectB))
+					                          .AsName("ISimpleObject")
+					                          .WithMetadata("Test", 1)
+					                          .WithMetadata("Blah", 8);
+				                          c.Export(typeof(SimpleObjectC))
+					                          .AsName("ISimpleObject")
+					                          .WithMetadata("Test", 2)
+					                          .WithMetadata("Blah", 7);
+				                          c.Export(typeof(SimpleObjectD))
+					                          .AsName("ISimpleObject")
+					                          .WithMetadata("Test", 3)
+					                          .WithMetadata("Blah", 6);
+				                          c.Export(typeof(SimpleObjectE))
+					                          .AsName("ISimpleObject")
+					                          .WithMetadata("Test", 4)
+					                          .WithMetadata("Blah", 5);
+			                          });
 
 			IEnumerable<object> simpleObjects =
 				injectionKernel.LocateAll("ISimpleObject",
@@ -715,10 +715,10 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(WithCtorParamClass)).WithCtorParam(() => "Hello").WithCtorParam(() => 5);
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(WithCtorParamClass)).WithCtorParam(() => "Hello").WithCtorParam(() => 5);
+			                          });
 
 			WithCtorParamClass paramClass = injectionKernel.Locate<WithCtorParamClass>();
 
@@ -742,12 +742,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(WithCtorParamClass))
-													  .WithCtorParam(() => "Hello").Named("stringParam")
-													  .WithCtorParam(() => 5).Named("intParam");
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(WithCtorParamClass))
+					                          .WithCtorParam(() => "Hello").Named("stringParam")
+					                          .WithCtorParam(() => 5).Named("intParam");
+			                          });
 
 			WithCtorParamClass paramClass = injectionKernel.Locate<WithCtorParamClass>();
 
@@ -771,12 +771,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(WithCtorParamClass))
-													  .WithCtorParam(() => "Hello")
-													  .WithCtorParam(() => 5);
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(WithCtorParamClass))
+					                          .WithCtorParam(() => "Hello")
+					                          .WithCtorParam(() => 5);
+			                          });
 
 			WithCtorParamClass paramClass = injectionKernel.Locate<WithCtorParamClass>();
 
@@ -800,12 +800,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(WithCtorParamClass))
-													  .WithCtorParam(() => "Hello").Named("stringParam")
-													  .WithCtorParam(() => 5).Named("intParam");
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(WithCtorParamClass))
+					                          .WithCtorParam(() => "Hello").Named("stringParam")
+					                          .WithCtorParam(() => 5).Named("intParam");
+			                          });
 
 			WithCtorParamClass paramClass = injectionKernel.Locate<WithCtorParamClass>();
 
@@ -832,11 +832,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				typeof(MultipleConstructorImport).GetTypeInfo().DeclaredConstructors.First(x => x.GetParameters().Length == 1);
 
 			injectionKernel.Configure(c =>
-											  {
-												  c.Export(typeof(BasicService)).As(typeof(IBasicService));
-												  c.Export(typeof(MultipleConstructorImport)).ImportConstructor(constructor);
-												  c.Export(typeof(ConstructorImportService)).As(typeof(IConstructorImportService));
-											  });
+			                          {
+				                          c.Export(typeof(BasicService)).As(typeof(IBasicService));
+				                          c.Export(typeof(MultipleConstructorImport)).ImportConstructor(constructor);
+				                          c.Export(typeof(ConstructorImportService)).As(typeof(IConstructorImportService));
+			                          });
 
 			MultipleConstructorImport import = injectionKernel.Locate<MultipleConstructorImport>();
 

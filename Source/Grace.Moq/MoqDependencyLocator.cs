@@ -28,7 +28,7 @@ namespace Grace.Moq
 				{
 					return true;
 				}
-				
+
 				if (resolveType.IsAbstract || resolveType.IsInterface)
 				{
 					return true;

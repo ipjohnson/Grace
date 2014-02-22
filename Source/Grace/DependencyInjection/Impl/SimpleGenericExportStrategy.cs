@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -14,10 +12,11 @@ namespace Grace.DependencyInjection.Impl
 		public SimpleGenericExportStrategy(Type exportType)
 			: base(exportType)
 		{
-
 		}
 
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			throw new NotImplementedException();
 		}
@@ -46,7 +45,9 @@ namespace Grace.DependencyInjection.Impl
 				{
 					if (constraint.GetTypeInfo().IsInterface)
 					{
-						if (closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						if (
+							closingTypes[i].GetTypeInfo()
+								.ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
 						{
 							continue;
 						}
@@ -75,8 +76,6 @@ namespace Grace.DependencyInjection.Impl
 		{
 			try
 			{
-
-
 				Type closedType = exportType.MakeGenericType(closingTypes);
 				TypeInfo closedTypeInfo = closedType.GetTypeInfo();
 				SimpleExportStrategy newExportStrategy = new SimpleExportStrategy(closedType);
@@ -119,6 +118,5 @@ namespace Grace.DependencyInjection.Impl
 
 			return null;
 		}
-
 	}
 }

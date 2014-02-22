@@ -72,12 +72,12 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration As(Type exportType)
 		{
 			if (!this.exportType.GetTypeInfo().IsGenericTypeDefinition &&
-				 !exportType.GetTypeInfo().IsAssignableFrom(this.exportType.GetTypeInfo()))
+			    !exportType.GetTypeInfo().IsAssignableFrom(this.exportType.GetTypeInfo()))
 			{
 				throw new ArgumentException(
-					string.Format("Exported type {0} cannot be cast to {1}", 
-										this.exportType.FullName,
-										exportType.FullName),
+					string.Format("Exported type {0} cannot be cast to {1}",
+						this.exportType.FullName,
+						exportType.FullName),
 					"exportType");
 			}
 
@@ -93,12 +93,12 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration As<T>()
 		{
 			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
-				 !typeof(T).GetTypeInfo().IsAssignableFrom(exportType.GetTypeInfo()))
+			    !typeof(T).GetTypeInfo().IsAssignableFrom(exportType.GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
-										this.exportType.FullName,
-										exportType.FullName));
+						this.exportType.FullName,
+						exportType.FullName));
 			}
 
 			exportStrategy.AddExportType(typeof(T));
@@ -200,7 +200,7 @@ namespace Grace.DependencyInjection.Impl
 				ParameterInfo[] parameters = runtimeMethod.GetParameters();
 
 				if (runtimeMethod.Name == activationMethod && parameters.Length == 0 ||
-					 (parameters.Length == 1 && parameters[0].ParameterType == typeof(IInjectionContext)))
+				    (parameters.Length == 1 && parameters[0].ParameterType == typeof(IInjectionContext)))
 				{
 					importMethod = runtimeMethod;
 					break;
@@ -275,10 +275,10 @@ namespace Grace.DependencyInjection.Impl
 				if (propertyInfo.CanWrite)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
-																		 {
-																			 Property = propertyInfo,
-																			 IsRequired = required
-																		 };
+					                                           {
+						                                           Property = propertyInfo,
+						                                           IsRequired = required
+					                                           };
 
 					exportStrategy.ImportProperty(newImportPropertyInfo);
 				}
@@ -330,7 +330,8 @@ namespace Grace.DependencyInjection.Impl
 	/// This class configures a particular type for export using fluent syntax
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public partial class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>, IExportStrategyProvider
+	public partial class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>,
+		IExportStrategyProvider
 	{
 		private readonly ICompiledExportStrategy exportStrategy;
 
@@ -388,13 +389,13 @@ namespace Grace.DependencyInjection.Impl
 		{
 			Type asType = typeof(TExportType);
 
-			if (!asType.GetTypeInfo().IsGenericTypeDefinition && 
-				 !asType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+			if (!asType.GetTypeInfo().IsGenericTypeDefinition &&
+			    !asType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
-										typeof(T).FullName,
-										asType.FullName));
+						typeof(T).FullName,
+						asType.FullName));
 			}
 
 			exportStrategy.AddExportType(asType);
@@ -410,12 +411,12 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration<T> As(Type exportType)
 		{
 			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
-				 !exportType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+			    !exportType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
-										typeof(T).FullName,
-										exportType.FullName),
+						typeof(T).FullName,
+						exportType.FullName),
 					"exportType");
 			}
 
@@ -651,10 +652,10 @@ namespace Grace.DependencyInjection.Impl
 				if (propertyInfo.CanWrite)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
-																		 {
-																			 IsRequired = required,
-																			 Property = propertyInfo
-																		 };
+					                                           {
+						                                           IsRequired = required,
+						                                           Property = propertyInfo
+					                                           };
 
 					exportStrategy.ImportProperty(newImportPropertyInfo);
 				}

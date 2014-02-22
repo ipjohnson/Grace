@@ -79,7 +79,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy strategy = new FauxExportStrategy(() => new BasicService())
 			                              {
-														ExportTypes = new[] { typeof(IBasicService) }
+				                              ExportTypes = new[] { typeof(IBasicService) }
 			                              };
 
 			injectionKernel.AddStrategy(strategy);
@@ -1028,7 +1028,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			FauxExportStrategy basicExport = new FauxExportStrategy(() => new BasicService());
 
 			basicExport.ExportNames = new string[0];
-			basicExport.ExportTypes = new [] { typeof(IBasicService) };
+			basicExport.ExportTypes = new[] { typeof(IBasicService) };
 
 			injectionKernel.Configure(c => c.AddExportStrategy(basicExport));
 

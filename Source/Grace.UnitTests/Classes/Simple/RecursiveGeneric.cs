@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.UnitTests.Classes.Simple
 {
 	public interface IGenericEntity<T> where T : IGenericEntity<T>
 	{
@@ -21,11 +15,9 @@ namespace Grace.UnitTests.Classes.Simple
 
 	public interface IGenericEntityService<T> where T : class, IGenericEntity<T>
 	{
-		
 	}
 
 	public class GenericEntityServuce<T> : IGenericEntityService<T> where T : class, IGenericEntity<T>
 	{
-		
 	}
 }

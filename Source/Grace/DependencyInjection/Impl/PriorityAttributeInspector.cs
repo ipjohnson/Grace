@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Impl
@@ -21,7 +18,7 @@ namespace Grace.DependencyInjection.Impl
 			IConfigurableExportStrategy configurableExportStrategy = exportStrategy as IConfigurableExportStrategy;
 
 			if (configurableExportStrategy != null &&
-				 configurableExportStrategy.Attributes != null)
+			    configurableExportStrategy.Attributes != null)
 			{
 				IExportPriorityAttribute attribute =
 					configurableExportStrategy.Attributes.FirstOrDefault(x => x is T) as IExportPriorityAttribute;

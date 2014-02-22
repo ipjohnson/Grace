@@ -7,24 +7,24 @@ namespace Grace.DependencyInjection
 	/// <summary>
 	/// This interface can be used to locate an export. It's used by IInjectionScope and IDependencyInjectionContainer
 	/// </summary>
-	public interface IExportLocator 
+	public interface IExportLocator
 	{
 		/// <summary>
 		/// Adds a secondary resolver to the container.
 		/// </summary>
 		/// <param name="newLocator">new secondary locator</param>
-		void AddSecondaryLocator([NotNull]ISecondaryExportLocator newLocator);
+		void AddSecondaryLocator([NotNull] ISecondaryExportLocator newLocator);
 
 		/// <summary>
 		/// List of Export Locators
 		/// </summary>
-		IEnumerable<ISecondaryExportLocator> SecondaryExportLocators { get; } 
+		IEnumerable<ISecondaryExportLocator> SecondaryExportLocators { get; }
 
 		/// <summary>
 		/// Add a strategy 
 		/// </summary>
 		/// <param name="inspector">strategy inspector</param>
-		void AddStrategyInspector([NotNull]IStrategyInspector inspector);
+		void AddStrategyInspector([NotNull] IStrategyInspector inspector);
 
 		/// <summary>
 		/// Creates a child scope from this scope
@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
 		/// <param name="disposalScopeProvider">new disposal scope for the child scope</param>
 		/// <returns>new child scope</returns>
 		[NotNull]
-		IInjectionScope CreateChildScope([NotNull]IConfigurationModule configurationModule,
+		IInjectionScope CreateChildScope([NotNull] IConfigurationModule configurationModule,
 			string scopeName = null,
 			IDisposalScopeProvider disposalScopeProvider = null);
 
@@ -54,13 +54,13 @@ namespace Grace.DependencyInjection
 		/// This method can be used to configure the root scope of the container
 		/// </summary>
 		/// <param name="registrationDelegate">registration delegate used to configure the locator</param>
-		void Configure([NotNull]ExportRegistrationDelegate registrationDelegate);
+		void Configure([NotNull] ExportRegistrationDelegate registrationDelegate);
 
 		/// <summary>
 		/// This method can be used to configure the root scope of the container
 		/// </summary>
 		/// <param name="configurationModule">configuration module used to configure the locator</param>
-		void Configure([NotNull]IConfigurationModule configurationModule);
+		void Configure([NotNull] IConfigurationModule configurationModule);
 
 		/// <summary>
 		/// Create an injection context
@@ -85,7 +85,9 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating export</param>
 		/// <returns>export object if found, other wise null</returns>
-		object Locate([NotNull]Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null);
+		object Locate([NotNull] Type objectType,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null);
 
 		/// <summary>
 		/// Locate an export by name
@@ -94,7 +96,9 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>export object if found, other wise null</returns>
-		object Locate([NotNull]string exportName, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null);
+		object Locate([NotNull] string exportName,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null);
 
 		/// <summary>
 		/// Locate all export of type T
@@ -105,7 +109,9 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>List of T, this will return an empty list if not exports are found</returns>
 		[NotNull]
-		List<T> LocateAll<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<T> comparer = null);
+		List<T> LocateAll<T>(IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<T> comparer = null);
 
 		/// <summary>
 		/// Locate All exports by the name provided
@@ -116,7 +122,10 @@ namespace Grace.DependencyInjection
 		/// <param name="comparer"></param>
 		/// <returns>List of objects, this will return an empty list if no exports are found</returns>
 		[NotNull]
-		List<object> LocateAll([NotNull]string name, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<object> comparer = null);
+		List<object> LocateAll([NotNull] string name,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<object> comparer = null);
 
 		/// <summary>
 		/// Locate all exports by type
@@ -129,6 +138,7 @@ namespace Grace.DependencyInjection
 		List<object> LocateAll(Type exportType,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null);
+
 		/// <summary>
 		/// The environment for this scope (always inherited from the root scope)
 		/// </summary>
@@ -156,7 +166,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext"></param>
 		/// <returns></returns>
 		[CanBeNull]
-		IExportStrategy GetStrategy([NotNull]Type exportType, IInjectionContext injectionContext = null);
+		IExportStrategy GetStrategy([NotNull] Type exportType, IInjectionContext injectionContext = null);
 
 		/// <summary>
 		/// Get the list of exported strategies sorted by best option.
@@ -166,7 +176,7 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFilter"></param>
 		/// <returns></returns>
 		[NotNull]
-		IEnumerable<IExportStrategy> GetStrategies([NotNull]string name,
+		IEnumerable<IExportStrategy> GetStrategies([NotNull] string name,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter exportFilter = null);
 
@@ -178,7 +188,7 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFilter"></param>
 		/// <returns></returns>
 		[NotNull]
-		IEnumerable<IExportStrategy> GetStrategies([NotNull]Type exportType,
+		IEnumerable<IExportStrategy> GetStrategies([NotNull] Type exportType,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter exportFilter = null);
 
@@ -188,25 +198,25 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType"></param>
 		/// <returns>can be null if nothing is registered by that name</returns>
 		[CanBeNull]
-		IExportStrategyCollection GetStrategyCollection([NotNull]Type exportType);
+		IExportStrategyCollection GetStrategyCollection([NotNull] Type exportType);
 
 		/// <summary>
 		/// Adds a new strategy to the container
 		/// </summary>
 		/// <param name="addStrategy"></param>
-		void AddStrategy([NotNull]IExportStrategy addStrategy);
+		void AddStrategy([NotNull] IExportStrategy addStrategy);
 
 		/// <summary>
 		/// Allows the caller to remove a strategy from the container
 		/// </summary>
 		/// <param name="knownStrategy">strategy to remove</param>
-		void RemoveStrategy([NotNull]IExportStrategy knownStrategy);
+		void RemoveStrategy([NotNull] IExportStrategy knownStrategy);
 
 		/// <summary>
 		/// Inject dependencies into a constructed object
 		/// </summary>
 		/// <param name="injectedObject">object to be injected</param>
 		/// <param name="injectionContext">injection context</param>
-		void Inject([NotNull]object injectedObject, IInjectionContext injectionContext = null);
+		void Inject([NotNull] object injectedObject, IInjectionContext injectionContext = null);
 	}
 }

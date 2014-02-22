@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl.CompiledExport
 {
 	public class SimpleCompiledExportDelegate : InstanceCompiledExportDelegate
 	{
 		public SimpleCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo) :
-			base(exportDelegateInfo,null)
+			base(exportDelegateInfo, null)
 		{
-
 		}
-
 
 		/// <summary>
 		/// This method generates the compiled delegate

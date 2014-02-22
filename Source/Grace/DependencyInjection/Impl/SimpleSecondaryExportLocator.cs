@@ -62,10 +62,8 @@ namespace Grace.DependencyInjection.Impl
 
 			return false;
 		}
-	
 
-
-	/// <summary>
+		/// <summary>
 		/// Resolve will be called when the injection scope can't locate a particular resource
 		/// </summary>
 		/// <param name="owningScope"></param>

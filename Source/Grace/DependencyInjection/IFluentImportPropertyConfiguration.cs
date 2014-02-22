@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection
 {
@@ -17,7 +13,7 @@ namespace Grace.DependencyInjection
 		IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
 	}
 
-	public interface IFluentImportPropertyConfiguration<T,TProp> : IFluentExportStrategyConfiguration<T>
+	public interface IFluentImportPropertyConfiguration<T, TProp> : IFluentExportStrategyConfiguration<T>
 	{
 		IFluentImportPropertyConfiguration<T, TProp> IsRequired(bool isRequired = true);
 

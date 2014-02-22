@@ -2,16 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Configuration
 {
 	public class BaseElementCollection<T> : ConfigurationElementCollection, IEnumerable<T> where T : ConfigurationElement
 	{
-		private string elementName;
+		private readonly string elementName;
 
 		public BaseElementCollection(string elementName)
 		{
@@ -50,6 +47,7 @@ namespace Grace.DependencyInjection.Configuration
 				yield return tObject;
 			}
 		}
+
 		/// <summary>
 		/// get the property value, note the first character will be made lower case
 		/// </summary>

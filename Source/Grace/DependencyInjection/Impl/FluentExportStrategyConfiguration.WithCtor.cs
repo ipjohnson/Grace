@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
@@ -34,15 +30,15 @@ namespace Grace.DependencyInjection.Impl
 			return new FluentWithCtorConfiguration<TParam>(currenConstructorParamInfo, this);
 		}
 
-
-		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(
+			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			ProcessCurrentConstructorParamInfo();
 
 			currenConstructorParamInfo = new ConstructorParamInfo
-			{
-				ParameterType = typeof(TParam)
-			};
+			                             {
+				                             ParameterType = typeof(TParam)
+			                             };
 
 			if (paramValue != null)
 			{
@@ -99,14 +95,15 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(
+			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			ProcessCurrentConstructorParamInfo();
 
 			currenConstructorParamInfo = new ConstructorParamInfo
-			{
-				ParameterType = typeof(TParam)
-			};
+			                             {
+				                             ParameterType = typeof(TParam)
+			                             };
 
 			if (paramValue != null)
 			{
@@ -131,7 +128,8 @@ namespace Grace.DependencyInjection.Impl
 	{
 		private readonly ConstructorParamInfo currenConstructorParamInfo;
 
-		public FluentWithCtorConfiguration(ConstructorParamInfo constructorParamInfo, IFluentExportStrategyConfiguration strategy)
+		public FluentWithCtorConfiguration(ConstructorParamInfo constructorParamInfo,
+			IFluentExportStrategyConfiguration strategy)
 			: base(strategy)
 		{
 			currenConstructorParamInfo = constructorParamInfo;
@@ -173,11 +171,13 @@ namespace Grace.DependencyInjection.Impl
 		}
 	}
 
-	public class FluentWithCtorConfiguration<T, TParam> : FluentBaseExportConfiguration<T>, IFluentWithCtorConfiguration<T, TParam>
+	public class FluentWithCtorConfiguration<T, TParam> : FluentBaseExportConfiguration<T>,
+		IFluentWithCtorConfiguration<T, TParam>
 	{
-		private ConstructorParamInfo constructorParamInfo;
+		private readonly ConstructorParamInfo constructorParamInfo;
 
-		public FluentWithCtorConfiguration(ConstructorParamInfo constructorParamInfo,IFluentExportStrategyConfiguration<T> strategy)
+		public FluentWithCtorConfiguration(ConstructorParamInfo constructorParamInfo,
+			IFluentExportStrategyConfiguration<T> strategy)
 			: base(strategy)
 		{
 			this.constructorParamInfo = constructorParamInfo;

@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			return new ReadOnlyCollection<T>(exportInjectionScope.LocateAll<T>(injectionContext: context, consider: consider));
+			return new ReadOnlyCollection<T>(exportInjectionScope.LocateAll<T>(context, consider));
 		}
 
 		/// <summary>

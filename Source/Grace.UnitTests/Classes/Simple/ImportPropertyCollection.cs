@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Grace.UnitTests.Classes.Simple
 {
 	public class ImportPropertyCollection
 	{
-		public List<ISimpleObject> SimpleObjects { get; set; } 
+		public List<ISimpleObject> SimpleObjects { get; set; }
 	}
 }

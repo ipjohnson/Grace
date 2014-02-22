@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Grace.Utilities
 {
@@ -34,10 +32,12 @@ namespace Grace.Utilities
 
 					if (dictionary.TryGetValue(key, out current))
 					{
-						var disposable = current as IDisposable;
+						IDisposable disposable = current as IDisposable;
 
 						if (disposable != null)
+						{
 							disposable.Dispose();
+						}
 					}
 
 					dictionary[key] = value;
@@ -132,11 +132,11 @@ namespace Grace.Utilities
 
 			try
 			{
-				var disposableItems = from item in dictionary.Values
-											 where item is IDisposable
-											 select item as IDisposable;
+				IEnumerable<IDisposable> disposableItems = from item in dictionary.Values
+					where item is IDisposable
+					select item as IDisposable;
 
-				foreach (var item in disposableItems)
+				foreach (IDisposable item in disposableItems)
 				{
 					item.Dispose();
 				}

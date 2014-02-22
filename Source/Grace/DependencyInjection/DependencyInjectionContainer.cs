@@ -30,8 +30,8 @@ namespace Grace.DependencyInjection
 			IDisposalScopeProvider disposalScopeProvider = null)
 		{
 			if (environment != ExportEnvironment.RunTime &&
-				 environment != ExportEnvironment.DesignTime &&
-				 environment != ExportEnvironment.UnitTest)
+			    environment != ExportEnvironment.DesignTime &&
+			    environment != ExportEnvironment.UnitTest)
 			{
 				throw new ArgumentException(
 					"Environment must be one of RunTime, DesignTime, or UnitTest, all else are invalid for this purpose",
@@ -45,9 +45,9 @@ namespace Grace.DependencyInjection
 			AutoRegisterUnknown = true;
 
 			RootScope = new InjectionKernel(injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer)
-							{
-								Environment = environment
-							};
+			            {
+				            Environment = environment
+			            };
 		}
 
 		/// <summary>
@@ -100,10 +100,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		public IEnumerable<ISecondaryExportLocator> SecondaryExportLocators
 		{
-			get
-			{
-				return RootScope.SecondaryExportLocators;
-			}
+			get { return RootScope.SecondaryExportLocators; }
 		}
 
 		/// <summary>
@@ -260,9 +257,11 @@ namespace Grace.DependencyInjection
 		/// <param name="comparer"></param>
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>List of T, this will return an empty list if not exports are found</returns>
-		public List<T> LocateAll<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<T> comparer = null)
+		public List<T> LocateAll<T>(IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<T> comparer = null)
 		{
-			return RootScope.LocateAll<T>(injectionContext, consider, comparer);
+			return RootScope.LocateAll(injectionContext, consider, comparer);
 		}
 
 		/// <summary>
@@ -273,7 +272,10 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter to use while locating</param>
 		/// <param name="comparer"></param>
 		/// <returns>List of objects, this will return an empty list if no exports are found</returns>
-		public List<object> LocateAll(string name, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, IComparer<object> comparer = null)
+		public List<object> LocateAll(string name,
+			IInjectionContext injectionContext = null,
+			ExportStrategyFilter consider = null,
+			IComparer<object> comparer = null)
 		{
 			return RootScope.LocateAll(name, injectionContext, consider, comparer);
 		}
@@ -363,7 +365,7 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Get the export strategy collection
 		/// </summary>
-		/// <param name="exportName"></param>
+		/// <param name="exportType"></param>
 		/// <returns>can be null if nothing is registered by that name</returns>
 		public IExportStrategyCollection GetStrategyCollection(Type exportType)
 		{
@@ -395,7 +397,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		public void Inject(object injectedObject, IInjectionContext injectionContext = null)
 		{
-			RootScope.Inject(injectedObject,injectionContext: injectionContext);
+			RootScope.Inject(injectedObject, injectionContext);
 		}
 
 		/// <summary>
@@ -442,7 +444,7 @@ namespace Grace.DependencyInjection
 		/// <returns>compare value</returns>
 		public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
 		{
-			return string.Compare(x.ActivationType.Name, y.ActivationType.Name,StringComparison.CurrentCulture);
+			return string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
 		}
 
 		/// <summary>
@@ -484,8 +486,8 @@ namespace Grace.DependencyInjection
 				{
 					returnValue = -1;
 				}
-				else if(x.ActivationType != null &&
-					y.ActivationType != null)
+				else if (x.ActivationType != null &&
+				         y.ActivationType != null)
 				{
 					// all things being equal sort alphabetically by class name
 					returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);

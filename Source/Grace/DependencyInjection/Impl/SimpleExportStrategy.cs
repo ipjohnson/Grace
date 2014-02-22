@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl.CompiledExport;
 using Grace.Utilities;
 
@@ -14,9 +11,11 @@ namespace Grace.DependencyInjection.Impl
 		private bool trackDisposable;
 		protected readonly CompiledExportDelegateInfo delegateInfo;
 		private ExportActivationDelegate activationDelegate;
-		private IEnumerable<ExportStrategyDependency> dependsOn; 
-		private static readonly SafeDictionary<Type,Tuple<ExportActivationDelegate,List<ExportStrategyDependency>>> delegateDictionary =
-			new SafeDictionary<Type, Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>>();
+		private IEnumerable<ExportStrategyDependency> dependsOn;
+
+		private static readonly SafeDictionary<Type, Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>>
+			delegateDictionary =
+				new SafeDictionary<Type, Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>>();
 
 		public SimpleExportStrategy(Type exportType)
 			: base(exportType)
@@ -24,7 +23,7 @@ namespace Grace.DependencyInjection.Impl
 			delegateInfo = new CompiledExportDelegateInfo
 			               {
 				               ActivationType = exportType,
-									Attributes = new Attribute[0]
+				               Attributes = new Attribute[0]
 			               };
 		}
 
@@ -42,8 +41,9 @@ namespace Grace.DependencyInjection.Impl
 
 				dependsOn = compiledExportDelegate.Dependencies;
 
-				delegateDictionary[exportType] = 
-					new Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>(activationDelegate, compiledExportDelegate.Dependencies);
+				delegateDictionary[exportType] =
+					new Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>(activationDelegate,
+						compiledExportDelegate.Dependencies);
 			}
 			else
 			{
@@ -54,13 +54,12 @@ namespace Grace.DependencyInjection.Impl
 
 		public override IEnumerable<ExportStrategyDependency> DependsOn
 		{
-			get
-			{
-				return dependsOn ?? base.DependsOn;
-			}
+			get { return dependsOn ?? base.DependsOn; }
 		}
 
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			if (lifestyle != null)
 			{
@@ -116,8 +115,8 @@ namespace Grace.DependencyInjection.Impl
 			delegateInfo.IsTransient = lifestyle == null || lifestyle.Transient;
 
 			if (!ExternallyOwned &&
-				 delegateInfo.IsTransient &&
-				 typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
+			    delegateInfo.IsTransient &&
+			    typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
 			{
 				trackDisposable = true;
 			}

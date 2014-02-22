@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
@@ -19,7 +14,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			container.Configure(c =>
 			                    {
 				                    c.SimpleExport<BasicService>().As<IBasicService>();
-										  c.SimpleExport<ConstructorImportService>().As<IConstructorImportService>();
+				                    c.SimpleExport<ConstructorImportService>().As<IConstructorImportService>();
 			                    });
 
 			IConstructorImportService transient = container.Locate<IConstructorImportService>();

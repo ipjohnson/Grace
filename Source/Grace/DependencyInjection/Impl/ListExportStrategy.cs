@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			return exportInjectionScope.LocateAll<T>(injectionContext: context, consider: consider);
+			return exportInjectionScope.LocateAll<T>(context, consider);
 		}
 
 		/// <summary>

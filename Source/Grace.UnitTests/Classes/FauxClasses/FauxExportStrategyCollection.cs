@@ -35,17 +35,20 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			return returnValue;
 		}
 
-		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TLazy : Lazy<T>
+		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TLazy : Lazy<T>
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TOwned : Owned<T> where T : class
+		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TOwned : Owned<T> where T : class
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TMeta : Meta<T>
+		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TMeta : Meta<T>
 		{
 			throw new NotImplementedException();
 		}

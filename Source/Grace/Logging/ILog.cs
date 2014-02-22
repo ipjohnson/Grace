@@ -38,7 +38,7 @@ namespace Grace.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="exp"></param>
-		void Debug([NotNull]object message, Exception exp = null);
+		void Debug([NotNull] object message, Exception exp = null);
 
 		/// <summary>
 		/// Log a Debug formatted message
@@ -53,7 +53,7 @@ namespace Grace.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="exp"></param>
-		void Info([NotNull]object message, Exception exp = null);
+		void Info([NotNull] object message, Exception exp = null);
 
 		/// <summary>
 		/// Log a Info formatted message
@@ -68,7 +68,7 @@ namespace Grace.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="exp"></param>
-		void Warn([NotNull]object message, Exception exp = null);
+		void Warn([NotNull] object message, Exception exp = null);
 
 		/// <summary>
 		/// Log a Warn formatted message
@@ -83,7 +83,7 @@ namespace Grace.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="exp"></param>
-		void Error([NotNull]object message, Exception exp = null);
+		void Error([NotNull] object message, Exception exp = null);
 
 		/// <summary>
 		/// Log an Error format
@@ -98,7 +98,7 @@ namespace Grace.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="exp"></param>
-		void Fatal([NotNull]object message, Exception exp = null);
+		void Fatal([NotNull] object message, Exception exp = null);
 
 		/// <summary>
 		/// Log an Fatal format

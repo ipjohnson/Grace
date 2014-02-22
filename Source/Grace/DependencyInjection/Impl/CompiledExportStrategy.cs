@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
@@ -27,10 +26,10 @@ namespace Grace.DependencyInjection.Impl
 				new List<Attribute>(exportType.GetTypeInfo().GetCustomAttributes(true)).ToArray();
 
 			delegateInfo = new CompiledExportDelegateInfo
-								{
-									ActivationType = exportType,
-									Attributes = typeAttributes
-								};
+			               {
+				               ActivationType = exportType,
+				               Attributes = typeAttributes
+			               };
 		}
 
 		/// <summary>
@@ -88,7 +87,9 @@ namespace Grace.DependencyInjection.Impl
 
 		public void ExportProperty(ExportPropertyInfo exportPropertyInfo)
 		{
-			PropertyExportStrategy propertyExportStrategy = new PropertyExportStrategy(exportPropertyInfo.PropertyInfo, this, exportPropertyInfo.ExportCondition);
+			PropertyExportStrategy propertyExportStrategy = new PropertyExportStrategy(exportPropertyInfo.PropertyInfo,
+				this,
+				exportPropertyInfo.ExportCondition);
 
 			if (exportPropertyInfo.ExportNames != null)
 			{
@@ -176,8 +177,8 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			if (!ExternallyOwned &&
-				 delegateInfo.IsTransient &&
-				 typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
+			    delegateInfo.IsTransient &&
+			    typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
 			{
 				delegateInfo.TrackDisposable = true;
 			}

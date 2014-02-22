@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
-using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -111,7 +105,8 @@ namespace Grace.DependencyInjection.Impl
 		}
 	}
 
-	public class FluentImportPropertyConfiguration<T, TProp> : FluentBaseExportConfiguration<T>, IFluentImportPropertyConfiguration<T, TProp>
+	public class FluentImportPropertyConfiguration<T, TProp> : FluentBaseExportConfiguration<T>,
+		IFluentImportPropertyConfiguration<T, TProp>
 	{
 		private readonly ImportPropertyInfo importPropertyInfo;
 

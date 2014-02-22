@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Impl
 {
 	public class ClosedAttributeExportStrategy : AttributeExportStrategy
 	{
-		public ClosedAttributeExportStrategy(Type exportType, IEnumerable<Attribute> attributes) : 
+		public ClosedAttributeExportStrategy(Type exportType, IEnumerable<Attribute> attributes) :
 			base(exportType, attributes)
 		{
-
 		}
 
 		/// <summary>
@@ -26,8 +22,8 @@ namespace Grace.DependencyInjection.Impl
 			ClosedAttributeExportStrategy strategy = obj as ClosedAttributeExportStrategy;
 
 			if (strategy != null &&
-				 strategy.CreatingStrategy == CreatingStrategy &&
-				 strategy.exportType == exportType)
+			    strategy.CreatingStrategy == CreatingStrategy &&
+			    strategy.exportType == exportType)
 			{
 				return true;
 			}
@@ -55,7 +51,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				if (provideExportType.GetTypeInfo().IsGenericTypeDefinition)
 				{
-					Type closedType = 
+					Type closedType =
 						provideExportType.MakeGenericType(exportType.GetTypeInfo().GenericTypeArguments);
 
 					AddExportType(closedType);

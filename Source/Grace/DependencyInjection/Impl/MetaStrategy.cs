@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -41,7 +39,6 @@ namespace Grace.DependencyInjection.Impl
 
 		public void Dispose()
 		{
-
 		}
 
 		public Type ActivationType
@@ -108,12 +105,11 @@ namespace Grace.DependencyInjection.Impl
 
 		public IExportMetadata Metadata
 		{
-			get { return new ExportMetadata(null,new Dictionary<string, object>()); }
+			get { return new ExportMetadata(null, new Dictionary<string, object>()); }
 		}
 
 		public void Initialize()
 		{
-
 		}
 
 		public bool MeetsCondition(IInjectionContext injectionContext)
@@ -128,7 +124,6 @@ namespace Grace.DependencyInjection.Impl
 
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
-
 		}
 
 		public IEnumerable<ExportStrategyDependency> DependsOn { get; private set; }

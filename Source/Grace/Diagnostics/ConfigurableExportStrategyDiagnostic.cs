@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 
@@ -11,7 +9,7 @@ namespace Grace.Diagnostics
 {
 	public class ConfigurableExportStrategyDiagnostic
 	{
-		private ConfigurableExportStrategy strategy;
+		private readonly ConfigurableExportStrategy strategy;
 
 		public ConfigurableExportStrategyDiagnostic(ConfigurableExportStrategy strategy)
 		{

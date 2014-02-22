@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
@@ -17,7 +14,8 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 	/// <typeparam name="TArg3">arguement three type</typeparam>
 	/// <typeparam name="TArg4">arguement four type</typeparam>
 	/// <typeparam name="TArg5">arguement five type</typeparam>
-	public class GenericDelegateExportStrategy<TDelegate, TReturn, TArg1, TArg2, TArg3, TArg4, TArg5> : BaseGenericDelegateExportStrategy
+	public class GenericDelegateExportStrategy<TDelegate, TReturn, TArg1, TArg2, TArg3, TArg4, TArg5> :
+		BaseGenericDelegateExportStrategy
 	{
 		private string[] argNames;
 
@@ -44,7 +42,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			Helper newHelper = new Helper(context, consider, argNames[0], argNames[1], argNames[2], argNames[3], argNames[4]);
 
@@ -81,7 +81,8 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 		static GenericDelegateExportStrategy()
 		{
-			activateMethodInfo = typeof(Helper).GetRuntimeMethod("Activate", new[] { typeof(TArg1), typeof(TArg2), typeof(TArg3), typeof(TArg4), typeof(TArg5) });
+			activateMethodInfo = typeof(Helper).GetRuntimeMethod("Activate",
+				new[] { typeof(TArg1), typeof(TArg2), typeof(TArg3), typeof(TArg4), typeof(TArg5) });
 		}
 
 		/// <summary>
@@ -107,7 +108,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			/// <param name="argName3"></param>
 			/// <param name="argName4"></param>
 			/// <param name="argName5"></param>
-			public Helper(IInjectionContext injectionContext, ExportStrategyFilter consider, string argName1, string argName2, string argName3, string argName4, string argName5)
+			public Helper(IInjectionContext injectionContext,
+				ExportStrategyFilter consider,
+				string argName1,
+				string argName2,
+				string argName3,
+				string argName4,
+				string argName5)
 			{
 				this.injectionContext = injectionContext;
 				this.argName1 = argName1;

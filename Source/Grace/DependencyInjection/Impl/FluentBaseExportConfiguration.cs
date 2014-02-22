@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -238,7 +235,8 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="disposalCleanupDelegate"></param>
 		/// <returns>configuration object</returns>
-		public IFluentExportStrategyConfiguration DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate)
+		public IFluentExportStrategyConfiguration DisposalCleanupDelegate(
+			BeforeDisposalCleanupDelegate disposalCleanupDelegate)
 		{
 			return strategy.DisposalCleanupDelegate(disposalCleanupDelegate);
 		}
@@ -270,7 +268,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(
+			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);
 		}
@@ -281,7 +280,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam"></typeparam>
 		/// <typeparam name="TItem"></typeparam>
 		/// <returns></returns>
-		public IFluentWithCtorCollectionConfiguration<TItem> WithCtorParamCollection<TParam, TItem>() where TParam : IEnumerable<TItem>
+		public IFluentWithCtorCollectionConfiguration<TItem> WithCtorParamCollection<TParam, TItem>()
+			where TParam : IEnumerable<TItem>
 		{
 			return strategy.WithCtorParamCollection<TParam, TItem>();
 		}
@@ -295,7 +295,7 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="T"></typeparam>
 	public class FluentBaseExportConfiguration<T> : IFluentExportStrategyConfiguration<T>
 	{
-		private IFluentExportStrategyConfiguration<T> strategy;
+		private readonly IFluentExportStrategyConfiguration<T> strategy;
 
 		/// <summary>
 		/// Default constructor
@@ -436,7 +436,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TItem"></typeparam>
 		/// <param name="property"></param>
 		/// <returns></returns>
-		public IFluentImportPropertyCollectionConfiguration<T, TItem> ImportCollectionProperty<TItem>(Expression<Func<T, IEnumerable<TItem>>> property)
+		public IFluentImportPropertyCollectionConfiguration<T, TItem> ImportCollectionProperty<TItem>(
+			Expression<Func<T, IEnumerable<TItem>>> property)
 		{
 			return strategy.ImportCollectionProperty(property);
 		}
@@ -587,7 +588,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
+		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(
+			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);
 		}
@@ -598,7 +600,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam"></typeparam>
 		/// <typeparam name="TItem"></typeparam>
 		/// <returns></returns>
-		public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
+		public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
+			where TParam : IEnumerable<TItem>
 		{
 			return strategy.WithCtorCollectionParam<TParam, TItem>();
 		}
@@ -608,7 +611,8 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="disposalCleanupDelegate"></param>
 		/// <returns></returns>
-		public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate)
+		public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(
+			BeforeDisposalCleanupDelegate disposalCleanupDelegate)
 		{
 			return strategy.DisposalCleanupDelegate(disposalCleanupDelegate);
 		}

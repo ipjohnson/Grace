@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.UnitTests.Classes.Attributed;
-using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
 namespace Grace.UnitTests.DependencyInjection
@@ -24,7 +18,7 @@ namespace Grace.UnitTests.DependencyInjection
 			container.Inject(service);
 
 			Assert.NotNull(service.BasicService);
-			Assert.IsType(typeof(AttributeBasicService),service.BasicService);
+			Assert.IsType(typeof(AttributeBasicService), service.BasicService);
 		}
 	}
 }

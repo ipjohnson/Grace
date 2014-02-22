@@ -225,10 +225,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 		public object Comparer { get; set; }
 
-		public bool IsRequired
-		{
-			get; set; 
-		}
+		public bool IsRequired { get; set; }
 
 		public string ImportName { get; set; }
 

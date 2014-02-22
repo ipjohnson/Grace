@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
@@ -48,7 +47,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<DisposableService>().As<IDisposableService>());
 
-			List<Owned<IDisposableService>> ownedList = 
+			List<Owned<IDisposableService>> ownedList =
 				container.LocateAll<Owned<IDisposableService>>();
 
 			Assert.NotNull(ownedList);
@@ -77,7 +76,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(ownedLazy);
 			Assert.NotNull(ownedLazy.Value);
 			Assert.NotNull(ownedLazy.Value.Value);
-			
+
 			bool disposedCalled = false;
 
 			ownedLazy.Value.Value.Disposing += (sender, args) => disposedCalled = true;
@@ -93,10 +92,11 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().WithMetadata(
-				"Hello","World"));
+				"Hello",
+				"World"));
 
 			Owned<Lazy<Meta<IDisposableService>>> ownedLazy =
-				container.Locate <Owned<Lazy<Meta<IDisposableService>>>>();
+				container.Locate<Owned<Lazy<Meta<IDisposableService>>>>();
 
 			Assert.NotNull(ownedLazy);
 			Assert.NotNull(ownedLazy.Value);
@@ -111,11 +111,10 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.True(disposedCalled);
 
-			var metadata = ownedLazy.Value.Value.Metadata.First();
+			KeyValuePair<string, object> metadata = ownedLazy.Value.Value.Metadata.First();
 
-			Assert.Equal("Hello",metadata.Key);
-			Assert.Equal("World",metadata.Value);
+			Assert.Equal("Hello", metadata.Key);
+			Assert.Equal("World", metadata.Value);
 		}
-
 	}
 }

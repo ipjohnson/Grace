@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
@@ -13,9 +10,10 @@ namespace Grace.DependencyInjection.Impl
 	{
 	}
 
-	public partial class FluentExportStrategyConfiguration<T> 
+	public partial class FluentExportStrategyConfiguration<T>
 	{
-		public IFluentImportPropertyCollectionConfiguration<T, TItem> ImportCollectionProperty<TItem>(Expression<Func<T, IEnumerable<TItem>>> property)
+		public IFluentImportPropertyCollectionConfiguration<T, TItem> ImportCollectionProperty<TItem>(
+			Expression<Func<T, IEnumerable<TItem>>> property)
 		{
 			MemberExpression member = property.Body as MemberExpression;
 
@@ -28,22 +26,23 @@ namespace Grace.DependencyInjection.Impl
 				member.Member.DeclaringType.GetTypeInfo().GetDeclaredProperty(member.Member.Name);
 
 			ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
-			                                        {
-				                                        Property = propertyInfo
-			                                        };
+			                                           {
+				                                           Property = propertyInfo
+			                                           };
 
 			exportStrategy.ImportProperty(newImportPropertyInfo);
 
-			return new FluentImportPropertyCollectionConfiguration<T, TItem>(newImportPropertyInfo,this);
+			return new FluentImportPropertyCollectionConfiguration<T, TItem>(newImportPropertyInfo, this);
 		}
 	}
 
 	public class FluentImportPropertyCollectionConfiguration<T, TItem> : FluentBaseExportConfiguration<T>,
 		IFluentImportPropertyCollectionConfiguration<T, TItem>
 	{
-		private ImportPropertyInfo newImportPropertyInfo;
+		private readonly ImportPropertyInfo newImportPropertyInfo;
 
-		public FluentImportPropertyCollectionConfiguration(ImportPropertyInfo newImportPropertyInfo, IFluentExportStrategyConfiguration<T> strategy)
+		public FluentImportPropertyCollectionConfiguration(ImportPropertyInfo newImportPropertyInfo,
+			IFluentExportStrategyConfiguration<T> strategy)
 			: base(strategy)
 		{
 			this.newImportPropertyInfo = newImportPropertyInfo;

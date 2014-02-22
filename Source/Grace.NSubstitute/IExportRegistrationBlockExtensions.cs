@@ -5,7 +5,7 @@ namespace Grace.NSubstitute
 	/// <summary>
 	/// C# extension classes for NSubstitute
 	/// </summary>
-   // ReSharper disable once InconsistentNaming
+	// ReSharper disable once InconsistentNaming
 	public static class IExportRegistrationBlockExtensions
 	{
 		/// <summary>

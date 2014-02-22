@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection
 
 		public IInjectionContext Clone()
 		{
-			InjectionContext injectionContext = new InjectionContext(DisposalScope,RequestingScope);
+			InjectionContext injectionContext = new InjectionContext(DisposalScope, RequestingScope);
 
 			if (exports != null)
 			{
@@ -241,7 +241,7 @@ namespace Grace.DependencyInjection
 		/// <param name="export"></param>
 		public void Add(object export)
 		{
-			Export(export.GetType(),(x,y) => export);
+			Export(export.GetType(), (x, y) => export);
 		}
 
 		/// <summary>

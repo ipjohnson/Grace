@@ -31,8 +31,8 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="exportType">type to export as</param>
 		/// <returns>configuration object</returns>
-		IFluentExportStrategyConfiguration As(Type exportType);	
-		
+		IFluentExportStrategyConfiguration As(Type exportType);
+
 		/// <summary>
 		/// Export as a particular type
 		/// </summary>
@@ -182,7 +182,7 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope,IInjectionContext,TParam> paramValue);
+		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue);
 
 		/// <summary>
 		/// Adds a constructor param of type TParam to the constructor
@@ -399,8 +399,8 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T,TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue);
-
+		IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(
+			Func<IInjectionScope, IInjectionContext, TParam> paramValue);
 
 		/// <summary>
 		/// Import a collection allowing you to specify a filter and a sort order
@@ -408,7 +408,8 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam"></typeparam>
 		/// <typeparam name="TItem"></typeparam>
 		/// <returns></returns>
-		IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>;
+		IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
+			where TParam : IEnumerable<TItem>;
 
 		/// <summary>
 		/// You can provide a cleanup method to be called 

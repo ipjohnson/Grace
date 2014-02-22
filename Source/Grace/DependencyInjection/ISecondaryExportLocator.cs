@@ -32,11 +32,11 @@ namespace Grace.DependencyInjection
 		/// <param name="resolveType">type being resolved</param>
 		/// <param name="consider">filter to use while resolving</param>
 		/// <returns></returns>
-		object Locate([NotNull]IInjectionScope owningScope,
-			[NotNull]IInjectionContext context,
-			[CanBeNull]string resolveName,
-			[CanBeNull]Type resolveType,
-			[CanBeNull]ExportStrategyFilter consider);
+		object Locate([NotNull] IInjectionScope owningScope,
+			[NotNull] IInjectionContext context,
+			[CanBeNull] string resolveName,
+			[CanBeNull] Type resolveType,
+			[CanBeNull] ExportStrategyFilter consider);
 
 		/// <summary>
 		/// LocateAll will be called every time a collection is resolved
@@ -49,11 +49,11 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>list of exports</returns>
 		[NotNull]
-		IEnumerable<object> LocateAll([NotNull]IInjectionScope owningScope,
-			[NotNull]IInjectionContext context,
-			[CanBeNull]string resolveName,
-			[CanBeNull]Type resolveType,
+		IEnumerable<object> LocateAll([NotNull] IInjectionScope owningScope,
+			[NotNull] IInjectionContext context,
+			[CanBeNull] string resolveName,
+			[CanBeNull] Type resolveType,
 			bool collectionEmpty,
-			[CanBeNull]ExportStrategyFilter consider);
+			[CanBeNull] ExportStrategyFilter consider);
 	}
 }

@@ -109,7 +109,7 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter method to use</param>
 		/// <returns>export T</returns>
 		public static T LocateByKey<T, TKey>(this IExportLocator locator,
-			[NotNull]TKey key,
+			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{
@@ -134,8 +134,8 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter method</param>
 		/// <returns>export object, null if no object found</returns>
 		public static object LocateByKey<TKey>(this IExportLocator locator,
-			[NotNull]string exportName,
-			[NotNull]TKey key,
+			[NotNull] string exportName,
+			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{
@@ -160,8 +160,8 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>export object, null if no export found</returns>
 		public static object LocateByKey<TKey>(this IExportLocator locator,
-			[NotNull]Type exportType,
-			[NotNull]TKey key,
+			[NotNull] Type exportType,
+			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{

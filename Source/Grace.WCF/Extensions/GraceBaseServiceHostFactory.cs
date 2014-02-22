@@ -7,7 +7,7 @@ namespace Grace.WCF.Extensions
 {
 	public abstract class GraceBaseServiceHostFactory : ServiceHostFactory
 	{
-		private IExportLocator exportLocator;
+		private readonly IExportLocator exportLocator;
 
 		protected GraceBaseServiceHostFactory(IExportLocator exportLocator)
 		{

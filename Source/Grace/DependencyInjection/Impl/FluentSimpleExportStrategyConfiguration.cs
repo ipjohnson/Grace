@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
 {
-	public class FluentSimpleExportStrategyConfiguration : IFluentSimpleExportStrategyConfiguration, IExportStrategyProvider
+	public class FluentSimpleExportStrategyConfiguration : IFluentSimpleExportStrategyConfiguration,
+		IExportStrategyProvider
 	{
-		private ConfigurableExportStrategy exportStrategy;
+		private readonly ConfigurableExportStrategy exportStrategy;
 
 		public FluentSimpleExportStrategyConfiguration(ConfigurableExportStrategy exportStrategy)
 		{
@@ -113,7 +111,7 @@ namespace Grace.DependencyInjection.Impl
 
 		public IFluentSimpleExportStrategyConfiguration WithMetadata(string metadataName, object metadataValue)
 		{
-			exportStrategy.AddMetadata(metadataName,metadataValue);
+			exportStrategy.AddMetadata(metadataName, metadataValue);
 
 			return this;
 		}

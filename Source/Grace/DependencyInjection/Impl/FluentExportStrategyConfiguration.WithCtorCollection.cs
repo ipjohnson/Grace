@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
 {
 	public partial class FluentExportStrategyConfiguration
 	{
-		public IFluentWithCtorCollectionConfiguration<TItem> WithCtorParamCollection<TParam, TItem>() where TParam : IEnumerable<TItem>
+		public IFluentWithCtorCollectionConfiguration<TItem> WithCtorParamCollection<TParam, TItem>()
+			where TParam : IEnumerable<TItem>
 		{
 			ConstructorParamInfo paramInfo = new ConstructorParamInfo
 			                                 {
 				                                 ParameterType = typeof(TParam)
 			                                 };
-
 
 			exportStrategy.WithCtorParam(paramInfo);
 
@@ -25,23 +22,26 @@ namespace Grace.DependencyInjection.Impl
 
 	public partial class FluentExportStrategyConfiguration<T>
 	{
-		public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
+		public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
+			where TParam : IEnumerable<TItem>
 		{
 			ConstructorParamInfo paramInfo = new ConstructorParamInfo
-			{
-				ParameterType = typeof(TParam)
-			};
+			                                 {
+				                                 ParameterType = typeof(TParam)
+			                                 };
 
 			exportStrategy.WithCtorParam(paramInfo);
 
 			return new FluentWithCtorCollectionConfiguration<T, TItem>(paramInfo, this);
 		}
 	}
+
 	/// <summary>
 	/// Configuration object for constructor parameters
 	/// </summary>
 	/// <typeparam name="TItem"></typeparam>
-	public class FluentWithCtorCollectionConfiguration<TItem> : FluentBaseExportConfiguration, IFluentWithCtorCollectionConfiguration<TItem>
+	public class FluentWithCtorCollectionConfiguration<TItem> : FluentBaseExportConfiguration,
+		IFluentWithCtorCollectionConfiguration<TItem>
 	{
 		private readonly ConstructorParamInfo paramInfo;
 
@@ -50,7 +50,8 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="paramInfo"></param>
 		/// <param name="strategy"></param>
-		public FluentWithCtorCollectionConfiguration(ConstructorParamInfo paramInfo, IFluentExportStrategyConfiguration strategy) : base(strategy)
+		public FluentWithCtorCollectionConfiguration(ConstructorParamInfo paramInfo,
+			IFluentExportStrategyConfiguration strategy) : base(strategy)
 		{
 			this.paramInfo = paramInfo;
 		}
@@ -107,7 +108,8 @@ namespace Grace.DependencyInjection.Impl
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TItem"></typeparam>
-	public class FluentWithCtorCollectionConfiguration<T, TItem> : FluentBaseExportConfiguration<T>, IFluentWithCtorCollectionConfiguration<T, TItem>
+	public class FluentWithCtorCollectionConfiguration<T, TItem> : FluentBaseExportConfiguration<T>,
+		IFluentWithCtorCollectionConfiguration<T, TItem>
 	{
 		private readonly ConstructorParamInfo paramInfo;
 
@@ -116,7 +118,8 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="paramInfo">param info to configure</param>
 		/// <param name="strategy">export strategy</param>
-		public FluentWithCtorCollectionConfiguration(ConstructorParamInfo paramInfo,IFluentExportStrategyConfiguration<T> strategy) : base(strategy)
+		public FluentWithCtorCollectionConfiguration(ConstructorParamInfo paramInfo,
+			IFluentExportStrategyConfiguration<T> strategy) : base(strategy)
 		{
 			this.paramInfo = paramInfo;
 		}

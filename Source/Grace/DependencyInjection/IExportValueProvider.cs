@@ -15,6 +15,8 @@ namespace Grace.DependencyInjection
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
 		/// <returns></returns>
-		object Activate([NotNull]IInjectionScope exportInjectionScope, [NotNull]IInjectionContext context, [CanBeNull]ExportStrategyFilter consider);
+		object Activate([NotNull] IInjectionScope exportInjectionScope,
+			[NotNull] IInjectionContext context,
+			[CanBeNull] ExportStrategyFilter consider);
 	}
 }

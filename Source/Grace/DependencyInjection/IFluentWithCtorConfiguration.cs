@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection
 {
@@ -25,14 +20,14 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> Named([NotNull]string name);
+		IFluentWithCtorConfiguration<TParam> Named([NotNull] string name);
 
 		/// <summary>
 		/// Name to use when resolving parameter
 		/// </summary>
 		/// <param name="importName"></param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> ImportName([NotNull]string importName);
+		IFluentWithCtorConfiguration<TParam> ImportName([NotNull] string importName);
 
 		/// <summary>
 		/// Applies a filter to be used when resolving a parameter constructor
@@ -40,14 +35,14 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="filter">filter delegate to be used when resolving parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> Consider([NotNull]ExportStrategyFilter filter);
+		IFluentWithCtorConfiguration<TParam> Consider([NotNull] ExportStrategyFilter filter);
 
 		/// <summary>
 		/// Provides a value for a constructor parameter
 		/// </summary>
 		/// <param name="valueProvider">value provider for parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> UsingValueProvider([NotNull]IExportValueProvider valueProvider);
+		IFluentWithCtorConfiguration<TParam> UsingValueProvider([NotNull] IExportValueProvider valueProvider);
 	}
 
 	/// <summary>
@@ -69,14 +64,14 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name">Name of parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> Named([NotNull]string name);
+		IFluentWithCtorConfiguration<T, TParam> Named([NotNull] string name);
 
 		/// <summary>
 		/// Name to use when resolving parameter
 		/// </summary>
 		/// <param name="importName">name to use when resolving parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> ImportName([NotNull]string importName);
+		IFluentWithCtorConfiguration<T, TParam> ImportName([NotNull] string importName);
 
 		/// <summary>
 		/// Applies a filter to be used when resolving the parameter
@@ -84,13 +79,13 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="filter">filter delegate to use when resolving parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> Consider([NotNull]ExportStrategyFilter filter);
+		IFluentWithCtorConfiguration<T, TParam> Consider([NotNull] ExportStrategyFilter filter);
 
 		/// <summary>
 		/// Value provider to use when resolving constructor parameter
 		/// </summary>
 		/// <param name="valueProvider"></param>
 		/// <returns></returns>
-		IFluentWithCtorConfiguration<T, TParam> UsingValueProvider([NotNull]IExportValueProvider valueProvider);
+		IFluentWithCtorConfiguration<T, TParam> UsingValueProvider([NotNull] IExportValueProvider valueProvider);
 	}
 }

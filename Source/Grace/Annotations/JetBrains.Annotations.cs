@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
+
 namespace JetBrains.Annotations
 {
 	/// <summary>
@@ -23,10 +24,12 @@ namespace JetBrains.Annotations
 	/// }
 	/// </code></example>
 	[AttributeUsage(
-	  AttributeTargets.Method | AttributeTargets.Parameter |
-	  AttributeTargets.Property | AttributeTargets.Delegate |
-	  AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-	internal sealed class CanBeNullAttribute : Attribute { }
+		AttributeTargets.Method | AttributeTargets.Parameter |
+		AttributeTargets.Property | AttributeTargets.Delegate |
+		AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+	internal sealed class CanBeNullAttribute : Attribute
+	{
+	}
 
 	/// <summary>
 	/// Indicates that the value of the marked element could never be <c>null</c>
@@ -37,10 +40,12 @@ namespace JetBrains.Annotations
 	/// }
 	/// </code></example>
 	[AttributeUsage(
-	  AttributeTargets.Method | AttributeTargets.Parameter |
-	  AttributeTargets.Property | AttributeTargets.Delegate |
-	  AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-	internal sealed class NotNullAttribute : Attribute { }
+		AttributeTargets.Method | AttributeTargets.Parameter |
+		AttributeTargets.Property | AttributeTargets.Delegate |
+		AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+	internal sealed class NotNullAttribute : Attribute
+	{
+	}
 
 	/// <summary>
 	/// Indicates that the marked method builds string by format pattern and (optional) arguments.
@@ -69,5 +74,4 @@ namespace JetBrains.Annotations
 
 		public string FormatParameterName { get; private set; }
 	}
-
 }

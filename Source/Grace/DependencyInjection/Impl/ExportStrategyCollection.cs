@@ -44,7 +44,8 @@ namespace Grace.DependencyInjection.Impl
 			get { return exportStrategies; }
 		}
 
-		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TLazy : Lazy<T>
+		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TLazy : Lazy<T>
 		{
 			List<TLazy> returnValue = new List<TLazy>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
@@ -55,9 +56,9 @@ namespace Grace.DependencyInjection.Impl
 				IExportStrategy testStrategy = localStrategies[i];
 
 				if (testStrategy.MeetsCondition(injectionContext) &&
-					 (filter == null ||
-					  !testStrategy.AllowingFiltering ||
-					  filter(injectionContext, testStrategy)))
+				    (filter == null ||
+				     !testStrategy.AllowingFiltering ||
+				     filter(injectionContext, testStrategy)))
 				{
 					try
 					{
@@ -70,7 +71,7 @@ namespace Grace.DependencyInjection.Impl
 					catch (Exception exp)
 					{
 						if (injectionKernel.Container == null ||
-							 injectionKernel.Container.ThrowExceptions)
+						    injectionKernel.Container.ThrowExceptions)
 						{
 							throw;
 						}
@@ -84,7 +85,8 @@ namespace Grace.DependencyInjection.Impl
 			return returnValue;
 		}
 
-		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TOwned : Owned<T> where T : class
+		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TOwned : Owned<T> where T : class
 		{
 			List<TOwned> returnValue = new List<TOwned>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
@@ -95,9 +97,9 @@ namespace Grace.DependencyInjection.Impl
 				IExportStrategy testStrategy = localStrategies[i];
 
 				if (testStrategy.MeetsCondition(injectionContext) &&
-					 (filter == null ||
-					  !testStrategy.AllowingFiltering ||
-					  filter(injectionContext, testStrategy)))
+				    (filter == null ||
+				     !testStrategy.AllowingFiltering ||
+				     filter(injectionContext, testStrategy)))
 				{
 					try
 					{
@@ -118,7 +120,7 @@ namespace Grace.DependencyInjection.Impl
 					catch (Exception exp)
 					{
 						if (injectionKernel.Container == null ||
-							 injectionKernel.Container.ThrowExceptions)
+						    injectionKernel.Container.ThrowExceptions)
 						{
 							throw;
 						}
@@ -132,7 +134,8 @@ namespace Grace.DependencyInjection.Impl
 			return returnValue;
 		}
 
-		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter) where TMeta : Meta<T>
+		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+			where TMeta : Meta<T>
 		{
 			List<TMeta> returnValue = new List<TMeta>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
@@ -143,21 +146,21 @@ namespace Grace.DependencyInjection.Impl
 				IExportStrategy testStrategy = localStrategies[i];
 
 				if (testStrategy.MeetsCondition(injectionContext) &&
-					 (filter == null ||
-					  !testStrategy.AllowingFiltering ||
-					  filter(injectionContext, testStrategy)))
+				    (filter == null ||
+				     !testStrategy.AllowingFiltering ||
+				     filter(injectionContext, testStrategy)))
 				{
 					try
 					{
-						Meta<T> meta = 
-							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter),testStrategy.Metadata);
+						Meta<T> meta =
+							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter), testStrategy.Metadata);
 
 						returnValue.Add((TMeta)meta);
 					}
 					catch (Exception exp)
 					{
 						if (injectionKernel.Container == null ||
-							 injectionKernel.Container.ThrowExceptions)
+						    injectionKernel.Container.ThrowExceptions)
 						{
 							throw;
 						}

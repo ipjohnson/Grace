@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		[NotNull]
 		IEnumerable<Type> ExportTypes { get; }
-			
+
 		/// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
@@ -104,7 +104,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="injectionContext">injection context</param>
 		/// <returns>true if the export should be used</returns>
-		bool MeetsCondition([NotNull]IInjectionContext injectionContext);
+		bool MeetsCondition([NotNull] IInjectionContext injectionContext);
 
 		/// <summary>
 		/// An export can specify it's own strategy
@@ -117,12 +117,12 @@ namespace Grace.DependencyInjection
 		/// Adds an enrich with delegate to the pipeline
 		/// </summary>
 		/// <param name="enrichWithDelegate">delegate called during activation</param>
-		void EnrichWithDelegate([NotNull]EnrichWithDelegate enrichWithDelegate);
+		void EnrichWithDelegate([NotNull] EnrichWithDelegate enrichWithDelegate);
 
 		/// <summary>
 		/// List of dependencies for this strategy
 		/// </summary>
 		[NotNull]
-		IEnumerable<ExportStrategyDependency> DependsOn { get; } 
+		IEnumerable<ExportStrategyDependency> DependsOn { get; }
 	}
 }

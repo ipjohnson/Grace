@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Conditions;
-using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -45,9 +40,10 @@ namespace Grace.DependencyInjection.Impl
 
 	public class FluentExportPropertyConfiguration : FluentBaseExportConfiguration, IFluentExportPropertyConfiguration
 	{
-		private ExportPropertyInfo exportPropertyInfo;
+		private readonly ExportPropertyInfo exportPropertyInfo;
 
-		public FluentExportPropertyConfiguration(ExportPropertyInfo exportPropertyInfo, IFluentExportStrategyConfiguration strategy)
+		public FluentExportPropertyConfiguration(ExportPropertyInfo exportPropertyInfo,
+			IFluentExportStrategyConfiguration strategy)
 			: base(strategy)
 		{
 			this.exportPropertyInfo = exportPropertyInfo;
@@ -75,11 +71,13 @@ namespace Grace.DependencyInjection.Impl
 		}
 	}
 
-	public class FluentExportPropertyConfiguration<T, TProp> : FluentBaseExportConfiguration<T>, IFluentExportPropertyConfiguration<T, TProp>
+	public class FluentExportPropertyConfiguration<T, TProp> : FluentBaseExportConfiguration<T>,
+		IFluentExportPropertyConfiguration<T, TProp>
 	{
-		private ExportPropertyInfo exportPropertyInfo;
+		private readonly ExportPropertyInfo exportPropertyInfo;
 
-		public FluentExportPropertyConfiguration(ExportPropertyInfo exportPropertyInfo, IFluentExportStrategyConfiguration<T> strategy)
+		public FluentExportPropertyConfiguration(ExportPropertyInfo exportPropertyInfo,
+			IFluentExportStrategyConfiguration<T> strategy)
 			: base(strategy)
 		{
 			this.exportPropertyInfo = exportPropertyInfo;

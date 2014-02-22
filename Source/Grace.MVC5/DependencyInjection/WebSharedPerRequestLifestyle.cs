@@ -12,7 +12,6 @@ namespace Grace.MVC.DependencyInjection
 
 		public void Dispose()
 		{
-
 		}
 
 		public bool Transient

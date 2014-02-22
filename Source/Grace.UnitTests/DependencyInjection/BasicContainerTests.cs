@@ -259,13 +259,13 @@ namespace Grace.UnitTests.DependencyInjection
 
 			InjectionContext context = new InjectionContext(container.RootScope)
 			                           {
-				                           {"DateTime", (x,y) => DateTime.Now}
+				                           { "DateTime", (x, y) => DateTime.Now }
 			                           };
 
 			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>(context);
 
 			Assert.NotNull(importName);
-			Assert.Equal(DateTime.Today ,importName.DateTime.Date);
+			Assert.Equal(DateTime.Today, importName.DateTime.Date);
 		}
 
 		[Fact]

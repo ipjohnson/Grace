@@ -110,10 +110,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public virtual IEnumerable<string> ExportNames
 		{
-			get
-			{
-				return exportNames;
-			}
+			get { return exportNames; }
 		}
 
 		/// <summary>

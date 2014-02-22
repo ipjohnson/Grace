@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Attributes
 {
 	public class ExportPriorityAttribute : Attribute, IExportPriorityAttribute
 	{
-		private int priority;
+		private readonly int priority;
 
 		public ExportPriorityAttribute(int priority)
 		{

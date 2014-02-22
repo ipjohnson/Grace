@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FakeItEasy;
 using Grace.FakeItEasy;
 using Grace.UnitTests.Classes.Simple;
@@ -46,8 +41,8 @@ namespace Grace.UnitTests.FakeItEasy
 			FakeContainer container = new FakeContainer();
 
 			container.Configure(c => c.Fake<IBasicService>().
-												Arrange(x => A.CallTo(() => x.TestMethod()).Returns(5)).
-												AndSingleton());
+				Arrange(x => A.CallTo(() => x.TestMethod()).Returns(5)).
+				AndSingleton());
 
 			ImportConstructorService importConstructorService =
 				container.Locate<ImportConstructorService>();
@@ -57,15 +52,14 @@ namespace Grace.UnitTests.FakeItEasy
 			A.CallTo(() => container.Locate<IBasicService>(null, null).TestMethod()).MustHaveHappened(Repeated.Exactly.Once);
 		}
 
-
 		[Fact]
 		public void ConfigureAssertTest()
 		{
 			FakeContainer container = new FakeContainer();
 
 			container.Configure(c => c.Fake<IBasicService>().
-												Arrange(x => A.CallTo(() => x.TestMethod()).Returns(5)).
-												Assert(x => A.CallTo(() => x.TestMethod()).MustHaveHappened(Repeated.Exactly.Twice)));
+				Arrange(x => A.CallTo(() => x.TestMethod()).Returns(5)).
+				Assert(x => A.CallTo(() => x.TestMethod()).MustHaveHappened(Repeated.Exactly.Twice)));
 
 			ImportConstructorService importConstructorService =
 				container.Locate<ImportConstructorService>();

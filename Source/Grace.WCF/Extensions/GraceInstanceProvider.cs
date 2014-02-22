@@ -3,7 +3,6 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
 using Grace.DependencyInjection;
-using Grace.WCF.LanguageExtensions;
 
 namespace Grace.WCF.Extensions
 {

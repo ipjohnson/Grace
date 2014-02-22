@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
@@ -16,6 +12,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 	public class GenericDelegateExportStrategy<TDelegate, TReturn> : BaseGenericDelegateExportStrategy
 	{
 		#region Helper
+
 		private static readonly MethodInfo helperMethodInfo;
 
 		static GenericDelegateExportStrategy()
@@ -58,9 +55,10 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				clonedContext.RequestingScope = requestingInjectionScope;
 				clonedContext.DisposalScope = disposalScope;
 
-				return requestingInjectionScope.Locate<TReturn>(clonedContext,consider);
+				return requestingInjectionScope.Locate<TReturn>(clonedContext, consider);
 			}
 		}
+
 		#endregion
 
 		/// <summary>
@@ -70,7 +68,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			Helper helper = new Helper(context, consider);
 
@@ -82,7 +82,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// </summary>
 		public override Type ActivationType
 		{
-			get {  return typeof(TDelegate); }
+			get { return typeof(TDelegate); }
 		}
 
 		/// <summary>

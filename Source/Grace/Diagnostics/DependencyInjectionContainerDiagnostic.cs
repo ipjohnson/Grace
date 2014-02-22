@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -11,8 +9,8 @@ namespace Grace.Diagnostics
 	public class DependencyInjectionContainerDiagnostic
 	{
 		private bool initialized;
-		private IDependencyInjectionContainer container;
-		private IEnumerable<PossibleMissingDependency> possibleMissingDependencies; 
+		private readonly IDependencyInjectionContainer container;
+		private IEnumerable<PossibleMissingDependency> possibleMissingDependencies;
 
 		public DependencyInjectionContainerDiagnostic(IDependencyInjectionContainer container)
 		{
@@ -112,7 +110,6 @@ namespace Grace.Diagnostics
 			}
 		}
 
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string DebuggerPossibleMissingDependenciesString
 		{
@@ -128,7 +125,7 @@ namespace Grace.Diagnostics
 
 			initialized = true;
 
-			possibleMissingDependencies = 
+			possibleMissingDependencies =
 				IInjectionScopeDiagnostic.CalculatePossibleMissingDependencies(container.RootScope);
 		}
 	}

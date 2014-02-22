@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<Func<Type, bool>> interfaceMatchList;
 		private readonly IEnumerable<Type> scanTypes;
 		private readonly List<Func<Type, bool>> whereClauses;
-		private readonly List<IExportStrategyInspector> inspectors; 
+		private readonly List<IExportStrategyInspector> inspectors;
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy exportStrategy in returnValues)
 				{
-					var strategy = exportStrategy;
+					IExportStrategy strategy = exportStrategy;
 
 					inspectors.Apply(x => x.Inspect(strategy));
 				}
@@ -378,8 +378,8 @@ namespace Grace.DependencyInjection.Impl
 		{
 			return exportedType.GetTypeInfo().IsInterface ||
 			       exportedType.GetTypeInfo().IsAbstract ||
-					 typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) || 
-					 typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
+			       typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) ||
+			       typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
 		}
 
 		private IEnumerable<IExportStrategy> ScanTypesForExports(IEnumerable<Type> filteredTypes)

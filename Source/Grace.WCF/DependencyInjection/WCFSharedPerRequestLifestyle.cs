@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.WCF.LanguageExtensions;
@@ -12,11 +9,10 @@ namespace Grace.WCF.DependencyInjection
 {
 	public class WCFSharedPerRequestLifestyle : ILifestyle
 	{
-		private string uniqueRequestKey = Guid.NewGuid().ToString();
+		private readonly string uniqueRequestKey = Guid.NewGuid().ToString();
 
 		public void Dispose()
 		{
-			
 		}
 
 		public bool Transient { get; private set; }

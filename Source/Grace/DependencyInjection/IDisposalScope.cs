@@ -13,12 +13,12 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="disposable"></param>
 		/// <param name="cleanupDelegate">logic that will be run directly before the object is disposed</param>
-		void AddDisposable([NotNull]IDisposable disposable, BeforeDisposalCleanupDelegate cleanupDelegate = null);
+		void AddDisposable([NotNull] IDisposable disposable, BeforeDisposalCleanupDelegate cleanupDelegate = null);
 
 		/// <summary>
 		/// Remove an object from the disposal scope
 		/// </summary>
 		/// <param name="disposable"></param>
-		void RemoveDisposable([NotNull]IDisposable disposable);
+		void RemoveDisposable([NotNull] IDisposable disposable);
 	}
 }

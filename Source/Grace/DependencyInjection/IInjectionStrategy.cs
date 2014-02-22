@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection
 {
@@ -26,6 +22,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="injectionContext"></param>
 		/// <param name="injectTarget"></param>
-		void Inject( IInjectionContext injectionContext, object injectTarget);
+		void Inject(IInjectionContext injectionContext, object injectTarget);
 	}
 }

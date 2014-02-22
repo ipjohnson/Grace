@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using global::FakeItEasy;
 
 namespace Grace.FakeItEasy
 {
 	public class FakeCollection : IFakeCollection
 	{
-		private List<Tuple<object, Action>> fakeCollection = new List<Tuple<object, Action>>();
+		private readonly List<Tuple<object, Action>> fakeCollection = new List<Tuple<object, Action>>();
 
 		public void AddFake<T>(T newT, Action<T> assertAction)
 		{

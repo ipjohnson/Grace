@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
@@ -41,7 +38,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			Helper newHelper = new Helper(context, consider, argNames[0], argNames[1]);
 
@@ -78,7 +77,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 		static GenericDelegateExportStrategy()
 		{
-			activateMethodInfo = typeof(Helper).GetRuntimeMethod("Activate", new[] { typeof(TArg1),typeof(TArg2) });
+			activateMethodInfo = typeof(Helper).GetRuntimeMethod("Activate", new[] { typeof(TArg1), typeof(TArg2) });
 		}
 
 		/// <summary>

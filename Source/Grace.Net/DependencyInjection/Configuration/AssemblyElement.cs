@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Grace.DependencyInjection.Configuration
 {
 	public class AssemblyElement : BaseElement
 	{
-		[ConfigurationProperty("scanForAttributes",DefaultValue = false,IsRequired = false)]
+		[ConfigurationProperty("scanForAttributes", DefaultValue = false, IsRequired = false)]
 		public bool ScanForAttributes
 		{
 			get { return (bool)this["scanForAttributes"]; }

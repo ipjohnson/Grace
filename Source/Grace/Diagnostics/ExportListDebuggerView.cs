@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
 {
-	[DebuggerDisplay("{DisplayValue,nq}",Name = "{NameDisplayValue,nq}")]
+	[DebuggerDisplay("{DisplayValue,nq}", Name = "{NameDisplayValue,nq}")]
 	public class ExportListDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private string name;
+		private readonly string name;
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private List<IExportStrategy> strategies;
- 
+		private readonly List<IExportStrategy> strategies;
+
 		public ExportListDebuggerView(string name)
 		{
 			this.name = name;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.UnitTests.Classes.Attributed;
 using Xunit;
@@ -16,8 +11,8 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void AttributedOpenGenericTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-																DependencyInjectionContainer.CompareExportStrategies,
-																new BlackList());
+				DependencyInjectionContainer.CompareExportStrategies,
+				new BlackList());
 
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
@@ -27,7 +22,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 
 			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
-			IAttributedOpenGenericTransient<int> transient = 
+			IAttributedOpenGenericTransient<int> transient =
 				injectionKernel.Locate<IAttributedOpenGenericTransient<int>>();
 
 			Assert.NotNull(transient);

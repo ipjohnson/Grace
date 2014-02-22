@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes.Interfaces;
-using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
 {
 	public class GenericAttributeExportStrategy : CompiledExportStrategy, IGenericExportStrategy
 	{
-		private IEnumerable<Attribute> attributes;
+		private readonly IEnumerable<Attribute> attributes;
 
 		public GenericAttributeExportStrategy(Type exportType, IEnumerable<Attribute> attributes)
 			: base(exportType)
@@ -75,7 +72,9 @@ namespace Grace.DependencyInjection.Impl
 				{
 					if (constraint.GetTypeInfo().IsInterface)
 					{
-						if (closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						if (
+							closingTypes[i].GetTypeInfo()
+								.ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
 						{
 							continue;
 						}

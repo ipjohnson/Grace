@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Impl.CompiledExport;
@@ -19,8 +18,6 @@ namespace Grace.DependencyInjection.Impl
 			: base(exportType)
 		{
 		}
-
-
 
 		/// <summary>
 		/// Activate the export
@@ -61,7 +58,8 @@ namespace Grace.DependencyInjection.Impl
 					if (constraint.GetTypeInfo().IsInterface)
 					{
 						if (constraint == closingTypes[i] ||
-							 closingTypes[i].GetTypeInfo().ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
+						    closingTypes[i].GetTypeInfo()
+							    .ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
 						{
 							continue;
 						}
@@ -101,14 +99,14 @@ namespace Grace.DependencyInjection.Impl
 						PropertyInfo propertyInfo = closedTypeInfo.GetDeclaredProperty(importPropertyInfo.Property.Name);
 
 						ImportPropertyInfo newPropertyInfo = new ImportPropertyInfo
-																		 {
-																			 Property = propertyInfo,
-																			 ComparerObject = importPropertyInfo.ComparerObject,
-																			 ExportStrategyFilter = importPropertyInfo.ExportStrategyFilter,
-																			 ImportName = importPropertyInfo.ImportName,
-																			 IsRequired = importPropertyInfo.IsRequired,
-																			 ValueProvider = importPropertyInfo.ValueProvider
-																		 };
+						                                     {
+							                                     Property = propertyInfo,
+							                                     ComparerObject = importPropertyInfo.ComparerObject,
+							                                     ExportStrategyFilter = importPropertyInfo.ExportStrategyFilter,
+							                                     ImportName = importPropertyInfo.ImportName,
+							                                     IsRequired = importPropertyInfo.IsRequired,
+							                                     ValueProvider = importPropertyInfo.ValueProvider
+						                                     };
 
 						newExportStrategy.ImportProperty(newPropertyInfo);
 					}
@@ -126,9 +124,9 @@ namespace Grace.DependencyInjection.Impl
 							if (importMethodParams.Length == declaredMethodParams.Length)
 							{
 								ImportMethodInfo newMethodInfo = new ImportMethodInfo
-																			{
-																				MethodToImport = declaredMethod
-																			};
+								                                 {
+									                                 MethodToImport = declaredMethod
+								                                 };
 
 								// fill in method parameters
 

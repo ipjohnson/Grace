@@ -121,7 +121,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			injectionKernel.Configure(c => c.Export(typeof(GenericEntityServuce<>)).As(typeof(IGenericEntityService<>)));
 
-			IGenericEntityService<GenericEntity> service = 
+			IGenericEntityService<GenericEntity> service =
 				injectionKernel.Locate<IGenericEntityService<GenericEntity>>();
 
 			Assert.NotNull(service);

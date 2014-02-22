@@ -53,28 +53,28 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		object Locate([NotNull]string name);
+		object Locate([NotNull] string name);
 
 		/// <summary>
 		/// Register an export by type for this injection context
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="exportFunction"></param>
-		void Export<T>([NotNull]ExportFunction<T> exportFunction);
+		void Export<T>([NotNull] ExportFunction<T> exportFunction);
 
 		/// <summary>
 		/// Export a type with an activation delegate
 		/// </summary>
 		/// <param name="exportType"></param>
 		/// <param name="activationDelegate"></param>
-		void Export([NotNull]Type exportType, [NotNull]ExportActivationDelegate activationDelegate);
+		void Export([NotNull] Type exportType, [NotNull] ExportActivationDelegate activationDelegate);
 
 		/// <summary>
 		/// Register an export by name for this injection context
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="activationDelegate"></param>
-		void Export([NotNull]string name, [NotNull] ExportActivationDelegate activationDelegate);
+		void Export([NotNull] string name, [NotNull] ExportActivationDelegate activationDelegate);
 
 		/// <summary>
 		/// Increment the resolve depth by one

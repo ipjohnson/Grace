@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
@@ -25,7 +22,6 @@ namespace Grace.DependencyInjection.Impl
 			base.Initialize();
 		}
 
-
 		private void ProcessPropertyAttributes()
 		{
 			foreach (PropertyInfo runtimeProperty in TargeType.GetRuntimeProperties())
@@ -38,7 +34,6 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Attribute customAttribute in runtimeProperty.GetCustomAttributes())
 				{
-
 					if (customAttribute is IImportAttribute)
 					{
 						importAttribute = customAttribute as IImportAttribute;
@@ -109,14 +104,14 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-					{
-						ComparerObject = comparer,
-						ExportStrategyFilter = filter,
-						ImportName = attributeInfo.ImportName,
-						IsRequired = attributeInfo.IsRequired,
-						Property = runtimeProperty,
-						ValueProvider = attributeInfo.ValueProvider
-					};
+					                                        {
+						                                        ComparerObject = comparer,
+						                                        ExportStrategyFilter = filter,
+						                                        ImportName = attributeInfo.ImportName,
+						                                        IsRequired = attributeInfo.IsRequired,
+						                                        Property = runtimeProperty,
+						                                        ValueProvider = attributeInfo.ValueProvider
+					                                        };
 
 					ImportProperty(importPropertyInfo);
 				}
@@ -138,10 +133,9 @@ namespace Grace.DependencyInjection.Impl
 							ImportAttributeInfo info = attribute.ProvideImportInfo(TargeType, declaredMethod.Name);
 
 							ImportMethodInfo methodInfo = new ImportMethodInfo
-							{
-								MethodToImport = declaredMethod
-							};
-
+							                              {
+								                              MethodToImport = declaredMethod
+							                              };
 
 							//ImportMethod(methodInfo);
 

@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
 	public abstract class BaseGenericDelegateExportStrategy : IExportStrategy
 	{
-		public abstract object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider);
+		public abstract object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider);
 
 		public void Dispose()
 		{
-
 		}
 
 		public abstract Type ActivationType { get; }
@@ -77,7 +75,6 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 		public virtual void Initialize()
 		{
-
 		}
 
 		public bool MeetsCondition(IInjectionContext injectionContext)
@@ -92,15 +89,11 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
-
 		}
 
 		public IEnumerable<ExportStrategyDependency> DependsOn
 		{
-			get
-			{
-				yield break;
-			}
+			get { yield break; }
 		}
 	}
 }

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Logging;
 
@@ -35,14 +30,14 @@ namespace Grace.DependencyInjection.Configuration
 
 			if (graceSection != null)
 			{
-				var assemblies = graceSection.Assemblies;
+				AssemblyElementCollection assemblies = graceSection.Assemblies;
 
 				foreach (AssemblyElement assemblyElement in assemblies)
 				{
 					ProcessAssembly(registrationBlock, assemblyElement);
 				}
 
-				var exports = graceSection.Exports;
+				ExportElementCollection exports = graceSection.Exports;
 
 				if (exports != null)
 				{
@@ -52,7 +47,7 @@ namespace Grace.DependencyInjection.Configuration
 					}
 				}
 
-				var modules = graceSection.Modules;
+				ModuleElementCollection modules = graceSection.Modules;
 
 				if (modules != null)
 				{
@@ -89,7 +84,7 @@ namespace Grace.DependencyInjection.Configuration
 
 			if (exportType != null)
 			{
-				var config = registrationBlock.Export(exportType);
+				IFluentExportStrategyConfiguration config = registrationBlock.Export(exportType);
 
 				if (exportElement.ExternallyOwned)
 				{
@@ -151,7 +146,6 @@ namespace Grace.DependencyInjection.Configuration
 								{
 									Logger.Error("Exception thrown while creating lifestyle container: " + lifeStyleType, "AppConfig", exp);
 								}
-
 							}
 							break;
 					}
@@ -181,7 +175,9 @@ namespace Grace.DependencyInjection.Configuration
 			}
 		}
 
-		private void ConfigureModule(IExportRegistrationBlock registrationBlock, IConfigurationModule configurationModule, ModuleElement element)
+		private void ConfigureModule(IExportRegistrationBlock registrationBlock,
+			IConfigurationModule configurationModule,
+			ModuleElement element)
 		{
 			foreach (PropetryElement propertyElement in element)
 			{

@@ -34,26 +34,26 @@ namespace Grace.DependencyInjection
 		/// Black lists a particular export (Fullname)
 		/// </summary>
 		/// <param name="exportType">full name of type to black list</param>
-		void BlackListExport([NotNull]string exportType);
+		void BlackListExport([NotNull] string exportType);
 
 		/// <summary>
 		/// Black list a particular export by Type
 		/// </summary>
 		/// <param name="exportType">type to black list</param>
-		void BlackListExportType([NotNull]Type exportType);
+		void BlackListExportType([NotNull] Type exportType);
 
 		/// <summary>
 		/// This method can be used to configure a particular scope in the container
 		/// </summary>
 		/// <param name="registrationDelegate">delegate to be used to configure the scope</param>
 		/// <param name="scopeName">scope name to configure</param>
-		void Configure([NotNull]string scopeName, [NotNull] ExportRegistrationDelegate registrationDelegate);
+		void Configure([NotNull] string scopeName, [NotNull] ExportRegistrationDelegate registrationDelegate);
 
 		/// <summary>
 		/// This method can be used to configure a particular scope in the container
 		/// </summary>
 		/// <param name="configurationModule">configuration module object to be used configure the scope</param>
 		/// <param name="scopeName">name of scope to configure</param>
-		void Configure([NotNull]string scopeName, [NotNull] IConfigurationModule configurationModule);
+		void Configure([NotNull] string scopeName, [NotNull] IConfigurationModule configurationModule);
 	}
 }

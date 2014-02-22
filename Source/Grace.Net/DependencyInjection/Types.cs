@@ -83,13 +83,15 @@ namespace Grace.DependencyInjection
 		/// <param name="throwsException"></param>
 		/// <param name="filter"></param>
 		/// <returns></returns>
-		public static IEnumerable<Type> FromDirectory(string directory,bool throwsException = false, Func<string, bool> filter = null)
+		public static IEnumerable<Type> FromDirectory(string directory,
+			bool throwsException = false,
+			Func<string, bool> filter = null)
 		{
 			List<Type> returnValue = new List<Type>();
 
 			if (Directory.Exists(directory))
 			{
-				foreach (string file in Directory.GetFiles(directory,"*.dll"))
+				foreach (string file in Directory.GetFiles(directory, "*.dll"))
 				{
 					if (!file.EndsWith(".dll") || (filter != null && !filter(file)))
 					{

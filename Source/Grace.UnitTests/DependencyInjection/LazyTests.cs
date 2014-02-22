@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
@@ -20,7 +18,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			LazyService.Created = false;
 
-			var lazy = container.Locate<Lazy<ILazyService>>();
+			Lazy<ILazyService> lazy = container.Locate<Lazy<ILazyService>>();
 
 			Assert.NotNull(lazy);
 			Assert.False(LazyService.Created);
@@ -40,7 +38,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			LazyService.Created = false;
 
-			var lazies = container.LocateAll<Lazy<ILazyService>>();
+			List<Lazy<ILazyService>> lazies = container.LocateAll<Lazy<ILazyService>>();
 
 			Assert.NotNull(lazies);
 			Assert.False(LazyService.Created);
@@ -49,7 +47,6 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.NotNull(service);
 			Assert.True(LazyService.Created);
-
 		}
 
 		[Fact]
@@ -61,7 +58,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			LazyService.Created = false;
 
-			var lazy = container.Locate<Lazy<Meta<ILazyService>>>();
+			Lazy<Meta<ILazyService>> lazy = container.Locate<Lazy<Meta<ILazyService>>>();
 
 			Assert.NotNull(lazy);
 			Assert.False(LazyService.Created);
@@ -74,7 +71,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(service);
 			Assert.True(LazyService.Created);
 
-			var metadata = lazy.Value.Metadata.First();
+			KeyValuePair<string, object> metadata = lazy.Value.Metadata.First();
 
 			Assert.Equal("Hello", metadata.Key);
 			Assert.Equal("World", metadata.Value);

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
@@ -27,9 +25,11 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			}
 		}
 
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
-			Helper newHelper = new Helper(context,consider, argName1);
+			Helper newHelper = new Helper(context, consider, argName1);
 
 			return activateMethodInfo.CreateDelegate(typeof(TDelegate), newHelper);
 		}

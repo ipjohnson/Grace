@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl
 {
 	public class PropertyAscendingComparer<T, TProp> : IComparer<T> where TProp : IComparable
 	{
-		private Func<T, TProp> valueFunc;
+		private readonly Func<T, TProp> valueFunc;
 
 		public PropertyAscendingComparer(Func<T, TProp> valueFunc)
 		{
@@ -34,7 +31,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				return xComparable.CompareTo(yComparable);
 			}
-			
+
 			if (yComparable == null)
 			{
 				return 0;

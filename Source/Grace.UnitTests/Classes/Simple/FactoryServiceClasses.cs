@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.UnitTests.Classes.Simple
 {
+
 	#region ISomePropertyService
+
 	public interface ISomePropertyService
 	{
 		object SomeProperty { get; }
@@ -31,6 +27,7 @@ namespace Grace.UnitTests.Classes.Simple
 
 		public object SomeProperty { get; private set; }
 	}
+
 	#endregion
 
 	#region IArrayOfObjectsPropertyService
@@ -69,14 +66,14 @@ namespace Grace.UnitTests.Classes.Simple
 	public class TwoArgParameterService : IArrayOfObjectsPropertyService
 	{
 		public delegate IArrayOfObjectsPropertyService ActivateWithBasicService(
-													string stringArg,
-													IBasicService basicService);
+			string stringArg,
+			IBasicService basicService);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicService(
-																			string stringArg);
+			string stringArg);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicServiceAndOutOfOrder(
-																			string stringArg);
+			string stringArg);
 
 		public TwoArgParameterService(string stringArg, IBasicService basicService)
 		{
@@ -86,21 +83,20 @@ namespace Grace.UnitTests.Classes.Simple
 		public object[] Parameters { get; private set; }
 	}
 
-
 	public class ThreeArgParameterService : IArrayOfObjectsPropertyService
 	{
 		public delegate IArrayOfObjectsPropertyService ActivateWithBasicService(
-															string stringArg,
-															int intArg,
-															IBasicService basicService);
+			string stringArg,
+			int intArg,
+			IBasicService basicService);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicService(
-																			string stringArg,
-																			int intArg);
+			string stringArg,
+			int intArg);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicServiceAndOutOfOrder(
-																			int intArg,
-																			string stringArg);
+			int intArg,
+			string stringArg);
 
 		public ThreeArgParameterService(string stringArg, int intArg, IBasicService basicService)
 		{
@@ -110,25 +106,23 @@ namespace Grace.UnitTests.Classes.Simple
 		public object[] Parameters { get; private set; }
 	}
 
-
-
 	public class FourArgParameterService : IArrayOfObjectsPropertyService
 	{
 		public delegate IArrayOfObjectsPropertyService ActivateWithBasicService(
-																	string stringArg,
-																	int intArg,
-																	double doubleArg,
-																	IBasicService basicService);
+			string stringArg,
+			int intArg,
+			double doubleArg,
+			IBasicService basicService);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicService(
-																			string stringArg,
-																			int intArg,
-																			double doubleArg);
+			string stringArg,
+			int intArg,
+			double doubleArg);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicServiceAndOutOfOrder(
-																			double doubleArg,
-																			int intArg,
-																			string stringArg);
+			double doubleArg,
+			int intArg,
+			string stringArg);
 
 		public FourArgParameterService(string stringArg, int intArg, double doubleArg, IBasicService basicService)
 		{
@@ -138,29 +132,32 @@ namespace Grace.UnitTests.Classes.Simple
 		public object[] Parameters { get; private set; }
 	}
 
-
 	public class FiveArgParameterService : IArrayOfObjectsPropertyService
 	{
 		public delegate IArrayOfObjectsPropertyService ActivateWithBasicService(
-																			string stringArg,
-																			int intArg,
-																			double doubleArg,
-																			decimal decimalArg,
-																			IBasicService basicService);
+			string stringArg,
+			int intArg,
+			double doubleArg,
+			decimal decimalArg,
+			IBasicService basicService);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicService(
-																			string stringArg,
-																			int intArg,
-																			double doubleArg,
-																			decimal decimalArg);
+			string stringArg,
+			int intArg,
+			double doubleArg,
+			decimal decimalArg);
 
 		public delegate IArrayOfObjectsPropertyService ActivateWithOutBasicServiceAndOutOfOrder(
-																			decimal decimalArg,
-																			string stringArg,
-																			double doubleArg,
-																			int intArg);
+			decimal decimalArg,
+			string stringArg,
+			double doubleArg,
+			int intArg);
 
-		public FiveArgParameterService(string stringArg, int intArg, double doubleArg, decimal decimalArg, IBasicService basicService)
+		public FiveArgParameterService(string stringArg,
+			int intArg,
+			double doubleArg,
+			decimal decimalArg,
+			IBasicService basicService)
 		{
 			Parameters = new object[] { stringArg, intArg, doubleArg, decimalArg, basicService };
 		}

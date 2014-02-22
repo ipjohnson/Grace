@@ -154,16 +154,14 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn, TOut>(@in =>
-												{
-													IInjectionContext newInjectionContext = clonedContext.Clone();
+			                           {
+				                           IInjectionContext newInjectionContext = clonedContext.Clone();
 
-													newInjectionContext.Export((scope, c) => @in);
+				                           newInjectionContext.Export((scope, c) => @in);
 
-													return clonedContext.RequestingScope.Locate<TOut>(newInjectionContext);
-												});
+				                           return clonedContext.RequestingScope.Locate<TOut>(newInjectionContext);
+			                           });
 		}
-
-
 
 		/// <summary>
 		/// This is type that will be activated, can be used for filtering
@@ -218,14 +216,14 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TOut>((in1, in2) =>
-														 {
-															 IInjectionContext newInjectionContext = clonedContext.Clone();
+			                                  {
+				                                  IInjectionContext newInjectionContext = clonedContext.Clone();
 
-															 newInjectionContext.Export((scope, c) => in1);
-															 newInjectionContext.Export((scope, c) => in2);
+				                                  newInjectionContext.Export((scope, c) => in1);
+				                                  newInjectionContext.Export((scope, c) => in2);
 
-															 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-														 });
+				                                  return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+			                                  });
 		}
 
 		/// <summary>
@@ -282,15 +280,15 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TIn3, TOut>((in1, in2, in3) =>
-																 {
-																	 IInjectionContext newInjectionContext = clonedContext.Clone();
+			                                        {
+				                                        IInjectionContext newInjectionContext = clonedContext.Clone();
 
-																	 newInjectionContext.Export((scope, c) => in1);
-																	 newInjectionContext.Export((scope, c) => in2);
-																	 newInjectionContext.Export((scope, c) => in3);
+				                                        newInjectionContext.Export((scope, c) => in1);
+				                                        newInjectionContext.Export((scope, c) => in2);
+				                                        newInjectionContext.Export((scope, c) => in3);
 
-																	 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-																 });
+				                                        return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+			                                        });
 		}
 
 		/// <summary>
@@ -348,17 +346,17 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext clonedContext = context.Clone();
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TOut>((in1, in2, in3, in4) =>
-																		 {
-																			 IInjectionContext newInjectionContext = clonedContext.Clone();
+			                                              {
+				                                              IInjectionContext newInjectionContext = clonedContext.Clone();
 
-																			 newInjectionContext.Export((scope, c) => in1);
-																			 newInjectionContext.Export((scope, c) => in2);
-																			 newInjectionContext.Export((scope, c) => in3);
-																			 newInjectionContext.Export((scope, c) => in4);
+				                                              newInjectionContext.Export((scope, c) => in1);
+				                                              newInjectionContext.Export((scope, c) => in2);
+				                                              newInjectionContext.Export((scope, c) => in3);
+				                                              newInjectionContext.Export((scope, c) => in4);
 
-																			 return
-																				 newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
-																		 });
+				                                              return
+					                                              newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+			                                              });
 		}
 
 		/// <summary>
@@ -403,7 +401,8 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="TIn4"></typeparam>
 	/// <typeparam name="TIn5"></typeparam>
 	/// <typeparam name="TOut"></typeparam>
-	public class GenericFuncExportStrategy<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> : BaseGenericFuncExportStrategy, IExportStrategy
+	public class GenericFuncExportStrategy<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> : BaseGenericFuncExportStrategy,
+		IExportStrategy
 	{
 		/// <summary>
 		/// Activate the export

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
@@ -59,10 +54,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-									  {
-										  c.Export<ReferenceArgSomePropertyService>().As<ISomePropertyService>();
-										  c.Export<BasicService>().As<IBasicService>();
-									  });
+			                    {
+				                    c.Export<ReferenceArgSomePropertyService>().As<ISomePropertyService>();
+				                    c.Export<BasicService>().As<IBasicService>();
+			                    });
 
 			SomePropertyServiceWithNone factory =
 				container.Locate<SomePropertyServiceWithNone>();
@@ -81,10 +76,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-									  {
-										  c.Export<ReferenceArgSomePropertyService>().As<ISomePropertyService>();
-										  c.Export<BasicService>().As<IBasicService>();
-									  });
+			                    {
+				                    c.Export<ReferenceArgSomePropertyService>().As<ISomePropertyService>();
+				                    c.Export<BasicService>().As<IBasicService>();
+			                    });
 
 			SomePropertyServiceWithBasicService factory =
 				container.Locate<SomePropertyServiceWithBasicService>();
@@ -106,11 +101,11 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<OneArgStringParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<OneArgStringParameterService.Activate>();
+			OneArgStringParameterService.Activate factory = container.Locate<OneArgStringParameterService.Activate>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah");
+			IArrayOfObjectsPropertyService instance = factory("Blah");
 
 			Assert.NotNull(instance);
 			Assert.Equal(1, instance.Parameters.Length);
@@ -124,13 +119,14 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<OneArgRefParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<OneArgRefParameterService.ActivateWithBasicService>();
+			OneArgRefParameterService.ActivateWithBasicService factory =
+				container.Locate<OneArgRefParameterService.ActivateWithBasicService>();
 
 			Assert.NotNull(factory);
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
-			var instance = factory(basicService);
+			IArrayOfObjectsPropertyService instance = factory(basicService);
 
 			Assert.NotNull(instance);
 			Assert.Equal(1, instance.Parameters.Length);
@@ -144,13 +140,14 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<TwoArgParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<TwoArgParameterService.ActivateWithBasicService>();
+			TwoArgParameterService.ActivateWithBasicService factory =
+				container.Locate<TwoArgParameterService.ActivateWithBasicService>();
 
 			Assert.NotNull(factory);
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
-			var instance = factory("Blah", basicService);
+			IArrayOfObjectsPropertyService instance = factory("Blah", basicService);
 
 			Assert.NotNull(instance);
 
@@ -164,19 +161,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-									  {
-										  c.Export<TwoArgParameterService>().As<IArrayOfObjectsPropertyService>();
-										  c.ExportInstance(basicService).As<IBasicService>();
-									  });
+			                    {
+				                    c.Export<TwoArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<TwoArgParameterService.ActivateWithOutBasicService>();
+			TwoArgParameterService.ActivateWithOutBasicService factory =
+				container.Locate<TwoArgParameterService.ActivateWithOutBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah");
+			IArrayOfObjectsPropertyService instance = factory("Blah");
 
 			Assert.NotNull(instance);
 
@@ -190,15 +188,16 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c => c.Export<ThreeArgParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<ThreeArgParameterService.ActivateWithBasicService>();
+			ThreeArgParameterService.ActivateWithBasicService factory =
+				container.Locate<ThreeArgParameterService.ActivateWithBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5, basicService);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5, basicService);
 
 			Assert.NotNull(instance);
 
@@ -213,19 +212,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-									  {
-										  c.Export<ThreeArgParameterService>().As<IArrayOfObjectsPropertyService>();
-										  c.ExportInstance(basicService).As<IBasicService>();
-									  });
+			                    {
+				                    c.Export<ThreeArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<ThreeArgParameterService.ActivateWithOutBasicService>();
+			ThreeArgParameterService.ActivateWithOutBasicService factory =
+				container.Locate<ThreeArgParameterService.ActivateWithOutBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5);
 
 			Assert.NotNull(instance);
 
@@ -240,19 +240,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-			{
-				c.Export<ThreeArgParameterService>().As<IArrayOfObjectsPropertyService>();
-				c.ExportInstance(basicService).As<IBasicService>();
-			});
+			                    {
+				                    c.Export<ThreeArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<ThreeArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
+			ThreeArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder factory =
+				container.Locate<ThreeArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory(5, "Blah");
+			IArrayOfObjectsPropertyService instance = factory(5, "Blah");
 
 			Assert.NotNull(instance);
 
@@ -267,15 +268,16 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c => c.Export<FourArgParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<FourArgParameterService.ActivateWithBasicService>();
+			FourArgParameterService.ActivateWithBasicService factory =
+				container.Locate<FourArgParameterService.ActivateWithBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5, 9.0, basicService);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5, 9.0, basicService);
 
 			Assert.NotNull(instance);
 			Assert.Equal(4, instance.Parameters.Length);
@@ -290,19 +292,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-			{
-				c.Export<FourArgParameterService>().As<IArrayOfObjectsPropertyService>();
-				c.ExportInstance(basicService).As<IBasicService>();
-			});
+			                    {
+				                    c.Export<FourArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<FourArgParameterService.ActivateWithOutBasicService>();
+			FourArgParameterService.ActivateWithOutBasicService factory =
+				container.Locate<FourArgParameterService.ActivateWithOutBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5, 9.0);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5, 9.0);
 
 			Assert.NotNull(instance);
 			Assert.Equal(4, instance.Parameters.Length);
@@ -310,7 +313,6 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.Equal(5, instance.Parameters[1]);
 			Assert.Equal(9.0, instance.Parameters[2]);
 			Assert.Equal(basicService, instance.Parameters[3]);
-
 		}
 
 		[Fact]
@@ -318,19 +320,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-			{
-				c.Export<FourArgParameterService>().As<IArrayOfObjectsPropertyService>();
-				c.ExportInstance(basicService).As<IBasicService>();
-			});
+			                    {
+				                    c.Export<FourArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<FourArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
+			FourArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder factory =
+				container.Locate<FourArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory(9.0, 5, "Blah");
+			IArrayOfObjectsPropertyService instance = factory(9.0, 5, "Blah");
 
 			Assert.NotNull(instance);
 			Assert.Equal(4, instance.Parameters.Length);
@@ -345,15 +348,16 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c => c.Export<FiveArgParameterService>().As<IArrayOfObjectsPropertyService>());
 
-			var factory = container.Locate<FiveArgParameterService.ActivateWithBasicService>();
+			FiveArgParameterService.ActivateWithBasicService factory =
+				container.Locate<FiveArgParameterService.ActivateWithBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5, 9.0, 14.0m, basicService);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5, 9.0, 14.0m, basicService);
 
 			Assert.NotNull(instance);
 			Assert.Equal(5, instance.Parameters.Length);
@@ -369,7 +373,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
 			                    {
@@ -377,11 +381,12 @@ namespace Grace.UnitTests.DependencyInjection
 				                    c.ExportInstance(basicService).As<IBasicService>();
 			                    });
 
-			var factory = container.Locate<FiveArgParameterService.ActivateWithOutBasicService>();
+			FiveArgParameterService.ActivateWithOutBasicService factory =
+				container.Locate<FiveArgParameterService.ActivateWithOutBasicService>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory("Blah", 5, 9.0, 14.0m);
+			IArrayOfObjectsPropertyService instance = factory("Blah", 5, 9.0, 14.0m);
 
 			Assert.NotNull(instance);
 			Assert.Equal(5, instance.Parameters.Length);
@@ -397,19 +402,20 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			var basicService = new BasicService();
+			BasicService basicService = new BasicService();
 
 			container.Configure(c =>
-			{
-				c.Export<FiveArgParameterService>().As<IArrayOfObjectsPropertyService>();
-				c.ExportInstance(basicService).As<IBasicService>();
-			});
+			                    {
+				                    c.Export<FiveArgParameterService>().As<IArrayOfObjectsPropertyService>();
+				                    c.ExportInstance(basicService).As<IBasicService>();
+			                    });
 
-			var factory = container.Locate<FiveArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
+			FiveArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder factory =
+				container.Locate<FiveArgParameterService.ActivateWithOutBasicServiceAndOutOfOrder>();
 
 			Assert.NotNull(factory);
 
-			var instance = factory(14.0m,"Blah",9.0,5);
+			IArrayOfObjectsPropertyService instance = factory(14.0m, "Blah", 9.0, 5);
 
 			Assert.NotNull(instance);
 			Assert.Equal(5, instance.Parameters.Length);

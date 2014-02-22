@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FakeItEasy;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
-using global::FakeItEasy;
 
 namespace Grace.FakeItEasy
 {
@@ -17,10 +13,11 @@ namespace Grace.FakeItEasy
 		public FakeExportStrategy()
 			: base(typeof(T))
 		{
-
 		}
 
-		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider)
 		{
 			if (lifestyle != null)
 			{

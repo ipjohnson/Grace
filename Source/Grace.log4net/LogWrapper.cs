@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 
 namespace Grace.log4net
 {
 	public class LogWrapper : Grace.Logging.ILog
 	{
-		private ILog log;
+		private readonly ILog log;
 
 		public LogWrapper(ILog log)
 		{
@@ -41,7 +37,6 @@ namespace Grace.log4net
 			get { return log.IsFatalEnabled; }
 		}
 
-
 		/// <summary>
 		/// Log Debug message
 		/// </summary>
@@ -71,7 +66,7 @@ namespace Grace.log4net
 		{
 			log.Info(message, exp);
 		}
-		
+
 		/// <summary>
 		/// Log a formatted Info message
 		/// </summary>
@@ -111,7 +106,7 @@ namespace Grace.log4net
 		{
 			log.Error(message, exp);
 		}
-		
+
 		/// <summary>
 		/// Log a formatted Error message
 		/// </summary>

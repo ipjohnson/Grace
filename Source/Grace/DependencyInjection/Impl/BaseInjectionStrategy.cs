@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
@@ -12,14 +8,14 @@ namespace Grace.DependencyInjection.Impl
 	{
 		private const string CONTEXT_KEY = "ObjectToInject";
 		private ExportActivationDelegate activationDelegate;
-		private CompiledExportDelegateInfo delegateInfo;
+		private readonly CompiledExportDelegateInfo delegateInfo;
 
 		public BaseInjectionStrategy(Type targeType)
 		{
 			delegateInfo = new CompiledExportDelegateInfo
 			               {
 				               ActivationType = targeType,
-									Attributes = targeType.GetTypeInfo().GetCustomAttributes()
+				               Attributes = targeType.GetTypeInfo().GetCustomAttributes()
 			               };
 
 			TargeType = targeType;
@@ -28,10 +24,8 @@ namespace Grace.DependencyInjection.Impl
 		public virtual void Initialize()
 		{
 			FuncCompiledExportDelegate exportDelegate = new FuncCompiledExportDelegate(delegateInfo,
-				(scope, context) =>
-				{
-					return context.Locate(CONTEXT_KEY);
-				}, null);
+				(scope, context) => { return context.Locate(CONTEXT_KEY); },
+				null);
 
 			activationDelegate = exportDelegate.CompileDelegate();
 		}
@@ -44,7 +38,6 @@ namespace Grace.DependencyInjection.Impl
 
 			activationDelegate(injectionContext.RequestingScope, injectionContext);
 		}
-
 
 		/// <summary>
 		/// Configure the export to import a method

@@ -7,9 +7,8 @@ namespace Grace.DependencyInjection.Impl
 	public class ConcreteAttributeExportStrategy : AttributeExportStrategy
 	{
 		public ConcreteAttributeExportStrategy(Type exportType)
-			: base(exportType,exportType.GetTypeInfo().GetCustomAttributes(true))
+			: base(exportType, exportType.GetTypeInfo().GetCustomAttributes(true))
 		{
-			
 		}
 
 		public ConcreteAttributeExportStrategy(Type exportType, IEnumerable<Attribute> attributes)

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.UnitTests.Classes.Simple
 {
 	public interface ILazyService
 	{
-		
 	}
 
 	public class LazyService : ILazyService

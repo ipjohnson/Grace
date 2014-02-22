@@ -13,7 +13,7 @@ namespace Grace.UnitTests.NSubstitute
 		{
 			SubstituteContainer container = new SubstituteContainer();
 
-			var located = container.Locate<ImportConstructorService>();
+			ImportConstructorService located = container.Locate<ImportConstructorService>();
 
 			Assert.NotNull(located);
 			Assert.NotNull(located.BasicService);

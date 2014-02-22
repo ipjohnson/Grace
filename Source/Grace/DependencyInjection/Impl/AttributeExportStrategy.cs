@@ -77,13 +77,13 @@ namespace Grace.DependencyInjection.Impl
 							if (customAttribute is IImportFilterAttribute)
 							{
 								filter = ((IImportFilterAttribute)customAttribute).
-													ProvideFilter(parameterInfo.ParameterType, parameterInfo.Name);
+									ProvideFilter(parameterInfo.ParameterType, parameterInfo.Name);
 							}
 
 							if (customAttribute is IImportSortCollectionAttribute)
 							{
 								comparer = ((IImportSortCollectionAttribute)customAttribute).
-													ProvideComparer(parameterInfo.ParameterType, parameterInfo.Name);
+									ProvideComparer(parameterInfo.ParameterType, parameterInfo.Name);
 							}
 						}
 
@@ -114,15 +114,15 @@ namespace Grace.DependencyInjection.Impl
 							}
 
 							ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
-																					  {
-																						  ComparerObject = comparer,
-																						  ExportStrategyFilter = filter,
-																						  ImportName = importName,
-																						  IsRequired = isRequired,
-																						  ParameterName = parameterInfo.Name,
-																						  ParameterType = parameterInfo.ParameterType,
-																						  ValueProvider = valueProvider
-																					  };
+							                                            {
+								                                            ComparerObject = comparer,
+								                                            ExportStrategyFilter = filter,
+								                                            ImportName = importName,
+								                                            IsRequired = isRequired,
+								                                            ParameterName = parameterInfo.Name,
+								                                            ParameterType = parameterInfo.ParameterType,
+								                                            ValueProvider = valueProvider
+							                                            };
 
 							WithCtorParam(constructorParamInfo);
 						}
@@ -143,7 +143,6 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Attribute customAttribute in runtimeProperty.GetCustomAttributes())
 				{
-
 					if (customAttribute is IImportAttribute)
 					{
 						importAttribute = customAttribute as IImportAttribute;
@@ -196,12 +195,12 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ExportPropertyInfo exportPropertyInfo = new ExportPropertyInfo
-																		 {
-																			 ExportCondition = condition,
-																			 ExportNames = propertyExportNames,
-																			 ExportTypes = propertyExportTypes,
-																			 PropertyInfo = runtimeProperty
-																		 };
+					                                        {
+						                                        ExportCondition = condition,
+						                                        ExportNames = propertyExportNames,
+						                                        ExportTypes = propertyExportTypes,
+						                                        PropertyInfo = runtimeProperty
+					                                        };
 
 					ExportProperty(exportPropertyInfo);
 				}
@@ -237,14 +236,14 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-																		 {
-																			 ComparerObject = comparer,
-																			 ExportStrategyFilter = filter,
-																			 ImportName = attributeInfo.ImportName,
-																			 IsRequired = attributeInfo.IsRequired,
-																			 Property = runtimeProperty,
-																			 ValueProvider = attributeInfo.ValueProvider
-																		 };
+					                                        {
+						                                        ComparerObject = comparer,
+						                                        ExportStrategyFilter = filter,
+						                                        ImportName = attributeInfo.ImportName,
+						                                        IsRequired = attributeInfo.IsRequired,
+						                                        Property = runtimeProperty,
+						                                        ValueProvider = attributeInfo.ValueProvider
+					                                        };
 
 					ImportProperty(importPropertyInfo);
 				}
@@ -266,10 +265,9 @@ namespace Grace.DependencyInjection.Impl
 							ImportAttributeInfo info = attribute.ProvideImportInfo(exportType, declaredMethod.Name);
 
 							ImportMethodInfo methodInfo = new ImportMethodInfo
-																	{
-																		MethodToImport = declaredMethod
-																	};
-
+							                              {
+								                              MethodToImport = declaredMethod
+							                              };
 
 							ImportMethod(methodInfo);
 
@@ -343,8 +341,6 @@ namespace Grace.DependencyInjection.Impl
 					IExportPriorityAttribute priorityAttribute = exportPriorityAttribute;
 
 					SetPriority(priorityAttribute.ProvidePriority(exportType));
-
-					continue;
 				}
 			}
 		}

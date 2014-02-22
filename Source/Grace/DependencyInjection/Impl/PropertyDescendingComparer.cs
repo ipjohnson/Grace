@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl
 {
 	public class PropertyDescendingComparer<T, TProp> : IComparer<T> where TProp : IComparable
 	{
-		private Func<T, TProp> valueFunc;
+		private readonly Func<T, TProp> valueFunc;
 
 		public PropertyDescendingComparer(Func<T, TProp> valueFunc)
 		{

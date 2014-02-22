@@ -8,13 +8,13 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="T"></typeparam>
 	public class FuncWithContextValueProvider<T> : IExportValueProvider
 	{
-		private readonly Func<IInjectionContext,T> valueFunc;
+		private readonly Func<IInjectionContext, T> valueFunc;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		/// <param name="valueFunc"></param>
-		public FuncWithContextValueProvider(Func<IInjectionContext,T> valueFunc)
+		public FuncWithContextValueProvider(Func<IInjectionContext, T> valueFunc)
 		{
 			this.valueFunc = valueFunc;
 		}

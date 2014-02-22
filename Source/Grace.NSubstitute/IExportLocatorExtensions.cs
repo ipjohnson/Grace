@@ -5,7 +5,7 @@ namespace Grace.NSubstitute
 	/// <summary>
 	/// C# extension class to enable NSubstitute on a Grace container or scope
 	/// </summary>
-   // ReSharper disable once InconsistentNaming
+	// ReSharper disable once InconsistentNaming
 	public static class IExportLocatorExtensions
 	{
 		/// <summary>

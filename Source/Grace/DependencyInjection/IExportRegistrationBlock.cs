@@ -22,7 +22,7 @@ namespace Grace.DependencyInjection
 		/// <param name="type">type to export</param>
 		/// <returns>configuration object</returns>
 		[NotNull]
-		IFluentExportStrategyConfiguration Export([NotNull]Type type);
+		IFluentExportStrategyConfiguration Export([NotNull] Type type);
 
 		/// <summary>
 		/// Export a class by it's type. This method allows you to specify things using linq expressions
@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection
 		/// <param name="types">collection of types to export</param>
 		/// <returns>set configuration object</returns>
 		[NotNull]
-		IExportTypeSetConfiguration Export([NotNull]IEnumerable<Type> types);
+		IExportTypeSetConfiguration Export([NotNull] IEnumerable<Type> types);
 
 		/// <summary>
 		/// Register types from an assembly for exports.
@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
 		/// <param name="assembly">assembly to export</param>
 		/// <returns>set configuration object</returns>
 		[NotNull]
-		IExportTypeSetConfiguration ExportAssembly([NotNull]Assembly assembly);
+		IExportTypeSetConfiguration ExportAssembly([NotNull] Assembly assembly);
 
 		/// <summary>
 		/// Register types from an assembly containing a particular type
@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection
 		/// <param name="assemblies">list of assemblies to export</param>
 		/// <returns>set configuration object</returns>
 		[NotNull]
-		IExportTypeSetConfiguration ExportAssemblies([NotNull]IEnumerable<Assembly> assemblies);
+		IExportTypeSetConfiguration ExportAssemblies([NotNull] IEnumerable<Assembly> assemblies);
 
 		/// <summary>
 		/// Export an instance of an object for a particular set of interfaces
@@ -70,7 +70,7 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T">instance type</typeparam>
 		/// <param name="instance">instance to export</param>
 		[NotNull]
-		IFluentExportInstanceConfiguration<T> ExportInstance<T>([NotNull]T instance);
+		IFluentExportInstanceConfiguration<T> ExportInstance<T>([NotNull] T instance);
 
 		/// <summary>
 		/// Export an instance of an object for a particular set of interfaces
@@ -79,7 +79,7 @@ namespace Grace.DependencyInjection
 		/// <param name="instanceFunction">Func that creates instance</param>
 		/// <returns>configuration object</returns>
 		[NotNull]
-		IFluentExportInstanceConfiguration<T> ExportInstance<T>([NotNull]ExportFunction<T> instanceFunction);
+		IFluentExportInstanceConfiguration<T> ExportInstance<T>([NotNull] ExportFunction<T> instanceFunction);
 
 		/// <summary>
 		/// Register an export function, it allows you to import properties, import method and activate methods
@@ -89,8 +89,8 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFunction">Function to create instance of T</param>
 		/// <returns>configuration object</returns>
 		[NotNull]
-		IFluentExportStrategyConfiguration<T> ExportFunc<T>([NotNull]ExportFunction<T> exportFunction);
-		
+		IFluentExportStrategyConfiguration<T> ExportFunc<T>([NotNull] ExportFunction<T> exportFunction);
+
 		/// <summary>
 		/// Simple export allows you to export a type with a smaller set of options.
 		/// This method should be used to register types in child containers because the registration process is
@@ -109,13 +109,13 @@ namespace Grace.DependencyInjection
 		/// <param name="type">export type</param>
 		/// <returns>configuration object</returns>
 		[NotNull]
-		IFluentSimpleExportStrategyConfiguration SimpleExport([NotNull]Type type);
+		IFluentSimpleExportStrategyConfiguration SimpleExport([NotNull] Type type);
 
 		/// <summary>
 		/// Add an export strategy directly to a scope
 		/// </summary>
 		/// <param name="strategy">new startegy</param>
-		void AddExportStrategy([NotNull]IExportStrategy strategy);
+		void AddExportStrategy([NotNull] IExportStrategy strategy);
 
 		/// <summary>
 		/// Using this the developer can provide C# extensions that add to the registration block
@@ -123,5 +123,4 @@ namespace Grace.DependencyInjection
 		/// <param name="strategyProvider">new strategy provider</param>
 		void AddExportProvider([NotNull] IExportStrategyProvider strategyProvider);
 	}
-
 }

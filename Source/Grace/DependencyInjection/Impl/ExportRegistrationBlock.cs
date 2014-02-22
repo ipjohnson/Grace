@@ -118,7 +118,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>set configuration object</returns>
 		public IExportTypeSetConfiguration ExportAssemblyContaining<T>()
 		{
-			ExportTypeSetConfiguration configuration = new ExportTypeSetConfiguration(owningScope, typeof(T).GetTypeInfo().Assembly.ExportedTypes);
+			ExportTypeSetConfiguration configuration = new ExportTypeSetConfiguration(owningScope,
+				typeof(T).GetTypeInfo().Assembly.ExportedTypes);
 
 			strategyProviders.Add(configuration);
 

@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using System.Web.Routing;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Attributes;
 
 namespace Grace.MVC.Extensions
 {
@@ -15,16 +14,16 @@ namespace Grace.MVC.Extensions
 			this.scopeProvider = scopeProvider;
 		}
 
-        	protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
-        	{
-            		if (controllerType == null)
-            		{
-                		return base.GetControllerInstance(requestContext, null);
-            		}
+		protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
+		{
+			if (controllerType == null)
+			{
+				return base.GetControllerInstance(requestContext, null);
+			}
 
-            		IInjectionScope scope = scopeProvider.ProvideInjectionScope();
+			IInjectionScope scope = scopeProvider.ProvideInjectionScope();
 
-            		return scope.Locate(controllerType) as IController;
-        	}
+			return scope.Locate(controllerType) as IController;
+		}
 	}
 }

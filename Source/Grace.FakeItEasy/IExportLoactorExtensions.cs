@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
 
 namespace Grace.FakeItEasy
@@ -10,7 +6,7 @@ namespace Grace.FakeItEasy
 	/// <summary>
 	/// Export locator extensions
 	/// </summary>
-   // ReSharper disable once InconsistentNaming
+	// ReSharper disable once InconsistentNaming
 	public static class IExportLoactorExtensions
 	{
 		/// <summary>
