@@ -11,6 +11,10 @@ namespace Grace.DependencyInjection.Attributes
 	{
 		private readonly Type attributeType;
 
+		/// <summary>
+		/// Default constructor that takes attribute type
+		/// </summary>
+		/// <param name="attributeType"></param>
 		public WhenTargetHasAttribute(Type attributeType)
 		{
 			this.attributeType = attributeType;
