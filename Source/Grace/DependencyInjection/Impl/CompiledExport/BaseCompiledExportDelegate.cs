@@ -14,18 +14,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 	/// </summary>
 	public abstract class BaseCompiledExportDelegate
 	{
-		protected static readonly MethodInfo injectionContextLocateMethod;
-		protected static readonly MethodInfo activateValueProviderMethod;
-		protected static readonly MethodInfo locateByNameMethod;
-		protected static readonly MethodInfo injectionScopeLocateAllMethod;
-		protected static readonly MethodInfo locateMethod;
-		protected static readonly MethodInfo collectionActivateMethod;
-		protected static readonly MethodInfo addToDisposalScopeMethod;
-		protected static readonly MethodInfo executeEnrichWithDelegateMethod;
-		protected static readonly MethodInfo incrementResolveDepth;
-		protected static readonly MethodInfo decrementResolveDepth;
-		protected static readonly ConstructorInfo disposalScopeMissingExceptionConstructor;
-		protected static readonly ConstructorInfo dependencyResolveExceptionConstructor;
+		protected static readonly MethodInfo InjectionContextLocateMethod;
+		protected static readonly MethodInfo ActivateValueProviderMethod;
+		protected static readonly MethodInfo LocateByNameMethod;
+		protected static readonly MethodInfo InjectionScopeLocateAllMethod;
+		protected static readonly MethodInfo LocateMethod;
+		protected static readonly MethodInfo CollectionActivateMethod;
+		protected static readonly MethodInfo AddToDisposalScopeMethod;
+		protected static readonly MethodInfo ExecuteEnrichWithDelegateMethod;
+		protected static readonly MethodInfo IncrementResolveDepth;
+		protected static readonly MethodInfo DecrementResolveDepth;
+		protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
+		protected static readonly ConstructorInfo DependencyResolveExceptionConstructor;
 		protected static readonly Attribute[] EmptyAttributesArray = new Attribute[0];
 
 		protected readonly IEnumerable<Attribute> activationTypeAttributes;
@@ -79,7 +79,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 		static BaseCompiledExportDelegate()
 		{
-			collectionActivateMethod = typeof(IExportStrategyCollection).GetRuntimeMethod("Activate",
+			CollectionActivateMethod = typeof(IExportStrategyCollection).GetRuntimeMethod("Activate",
 				new[]
 				{
 					typeof(string),
@@ -88,7 +88,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter)
 				});
 
-			locateMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
+			LocateMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
 				new[]
 				{
 					typeof(Type),
@@ -96,7 +96,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter)
 				});
 
-			locateByNameMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
+			LocateByNameMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
 				new[]
 				{
 					typeof(string),
@@ -104,17 +104,17 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter)
 				});
 
-			injectionScopeLocateAllMethod =
+			InjectionScopeLocateAllMethod =
 				typeof(IExportLocator).GetRuntimeMethods()
 					.First(f => f.Name == "LocateAll" && f.GetParameters().First().ParameterType == typeof(IInjectionContext));
 
-			injectionContextLocateMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
+			InjectionContextLocateMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
 
-			incrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("IncrementResolveDepth", new Type[0]);
+			IncrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("IncrementResolveDepth", new Type[0]);
 
-			decrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("DecrementResolveDepth", new Type[0]);
+			DecrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("DecrementResolveDepth", new Type[0]);
 
-			activateValueProviderMethod = typeof(IExportValueProvider).GetRuntimeMethod("Activate",
+			ActivateValueProviderMethod = typeof(IExportValueProvider).GetRuntimeMethod("Activate",
 				new[]
 				{
 					typeof(IInjectionScope),
@@ -122,19 +122,19 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter)
 				});
 
-			dependencyResolveExceptionConstructor = typeof(DependencyResolveException).GetTypeInfo().DeclaredConstructors.First();
+			DependencyResolveExceptionConstructor = typeof(DependencyResolveException).GetTypeInfo().DeclaredConstructors.First();
 
-			disposalScopeMissingExceptionConstructor =
+			DisposalScopeMissingExceptionConstructor =
 				typeof(DisposalScopeMissingException).GetTypeInfo().DeclaredConstructors.First();
 
-			addToDisposalScopeMethod = typeof(IDisposalScope).GetRuntimeMethod("AddDisposable",
+			AddToDisposalScopeMethod = typeof(IDisposalScope).GetRuntimeMethod("AddDisposable",
 				new[]
 				{
 					typeof(IDisposable),
 					typeof(BeforeDisposalCleanupDelegate)
 				});
 
-			executeEnrichWithDelegateMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("ExecuteEnrichWithDelegate",
+			ExecuteEnrichWithDelegateMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("ExecuteEnrichWithDelegate",
 				new[]
 				{
 					typeof(EnrichWithDelegate),
@@ -229,7 +229,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				CreateDisposableMethodExpression();
 			}
 
-			bodyExpressions.Add(Expression.Call(injectionContextParameter, decrementResolveDepth));
+			bodyExpressions.Add(Expression.Call(injectionContextParameter, DecrementResolveDepth));
 
 			if (!CreateEnrichmentExpression())
 			{
@@ -244,7 +244,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				methodExpressions.AddRange(disposalExpressions);
 			}
 
-			methodExpressions.Add(Expression.Call(injectionContextParameter, incrementResolveDepth));
+			methodExpressions.Add(Expression.Call(injectionContextParameter, IncrementResolveDepth));
 
 			methodExpressions.AddRange(GetImportExpressions());
 			methodExpressions.AddRange(instanceExpressions);
@@ -515,13 +515,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			Expression ifDisposalScopeNull =
 				Expression.IfThen(Expression.Equal(disposalScope, Expression.Constant(null)),
-					Expression.Throw(Expression.New(disposalScopeMissingExceptionConstructor,
+					Expression.Throw(Expression.New(DisposalScopeMissingExceptionConstructor,
 						Expression.Constant(exportDelegateInfo.ActivationType))));
 
 			disposalExpressions = new List<Expression> { assignExpression, ifDisposalScopeNull };
 
 			bodyExpressions.Add(Expression.Call(disposalScope,
-				addToDisposalScopeMethod,
+				AddToDisposalScopeMethod,
 				instanceVariable,
 				Expression.Convert(Expression.Constant(exportDelegateInfo.CleanupDelegate),
 					typeof(BeforeDisposalCleanupDelegate))));
@@ -542,7 +542,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			foreach (EnrichWithDelegate enrichmentDelegate in exportDelegateInfo.EnrichmentDelegates)
 			{
-				valueExpression = Expression.Call(executeEnrichWithDelegateMethod,
+				valueExpression = Expression.Call(ExecuteEnrichWithDelegateMethod,
 					Expression.Constant(enrichmentDelegate),
 					exportStrategyScopeParameter,
 					injectionContextParameter,
@@ -625,7 +625,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				Expression assignExpression =
 					Expression.Assign(importVariable,
 						Expression.Call(injectionContextParameter,
-							injectionContextLocateMethod,
+							InjectionContextLocateMethod,
 							Expression.Constant(localExportName)));
 
 				importInjectionContextExpressions.Add(assignExpression);
@@ -686,7 +686,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				string targetName = parameterInfo != null ? parameterInfo.Name : ((PropertyInfo)targetInfo.InjectionTarget).Name;
 
 				Expression throwException = Expression.Throw(
-					Expression.New(dependencyResolveExceptionConstructor,
+					Expression.New(DependencyResolveExceptionConstructor,
 						Expression.Constant(exportDelegateInfo.ActivationType),
 						Expression.Constant(targetName),
 						Expression.Constant(localExportName)));
@@ -704,20 +704,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			string exportName,
 			ParameterExpression importVariable)
 		{
-			string tempName = exportName;
-
-			if (string.IsNullOrEmpty(tempName))
-			{
-				if (InjectionKernel.ImportTypeByName(importType))
-				{
-					tempName = targetInfo.InjectionTargetName.ToLowerInvariant();
-				}
-				else
-				{
-					tempName = importType.FullName;
-				}
-			}
-
 			Expression importTypeExpression = Expression.Constant(importType);
 			Expression exportNameExpression = Expression.Constant(exportName);
 
@@ -735,7 +721,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					Expression.Equal(importVariable, Expression.Constant(null)),
 					Expression.Assign(importVariable,
 						Expression.Call(Expression.Constant(collection),
-							collectionActivateMethod,
+							CollectionActivateMethod,
 							exportNameExpression,
 							importTypeExpression,
 							injectionContextParameter,
@@ -750,7 +736,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateMethod,
+									LocateMethod,
 									Expression.Constant(importType),
 									injectionContextParameter,
 									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
@@ -762,7 +748,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateByNameMethod,
+									LocateByNameMethod,
 									injectionContextParameter,
 									Expression.Constant(exportName))));
 				}
@@ -778,7 +764,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				Expression assignRoot =
 					Expression.Assign(importVariable,
 						Expression.Call(Expression.Constant(collection),
-							collectionActivateMethod,
+							CollectionActivateMethod,
 							exportNameExpression,
 							importTypeExpression,
 							injectionContextParameter,
@@ -813,7 +799,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateMethod,
+									LocateMethod,
 									Expression.Constant(importType),
 									injectionContextParameter,
 									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
@@ -825,7 +811,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateByNameMethod,
+									LocateByNameMethod,
 									Expression.Constant(exportName),
 									injectionContextParameter,
 									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
@@ -845,7 +831,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateMethod,
+									LocateMethod,
 									Expression.Constant(importType),
 									injectionContextParameter,
 									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
@@ -857,7 +843,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateByNameMethod,
+									LocateByNameMethod,
 									Expression.Constant(exportName),
 									injectionContextParameter,
 									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
@@ -885,7 +871,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateMethod,
+									LocateMethod,
 									Expression.Constant(importType),
 									injectionContextParameter,
 									Expression.Constant(exportStrategyFilter))));
@@ -897,7 +883,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateByNameMethod,
+									LocateByNameMethod,
 									Expression.Constant(exportName),
 									injectionContextParameter,
 									Expression.Constant(exportStrategyFilter))));
@@ -917,7 +903,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateMethod,
+									LocateMethod,
 									Expression.Constant(importType),
 									injectionContextParameter,
 									Expression.Constant(exportStrategyFilter))));
@@ -929,7 +915,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
 								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									locateByNameMethod,
+									LocateByNameMethod,
 									Expression.Constant(exportName),
 									injectionContextParameter,
 									Expression.Constant(exportStrategyFilter))));
@@ -960,7 +946,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			{
 				Expression callValueProvider =
 					Expression.Call(Expression.Constant(valueProvider),
-						activateValueProviderMethod,
+						ActivateValueProviderMethod,
 						exportStrategyScopeParameter,
 						injectionContextParameter,
 						Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)));
@@ -1096,7 +1082,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				         genericType == typeof(IList<>) ||
 				         genericType == typeof(List<>))
 				{
-					MethodInfo closeMethod = injectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
+					MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
 					Type comparerType = typeof(IComparer<>).MakeGenericType(importType.GenericTypeArguments);
 
 					Expression callExpression =
@@ -1116,7 +1102,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				         genericType == typeof(IReadOnlyList<>))
 				{
 					Type closedType = typeof(ReadOnlyCollection<>).MakeGenericType(importType.GenericTypeArguments);
-					MethodInfo closeMethod = injectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
+					MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
 					Type comparerType = typeof(IComparer<>).MakeGenericType(importType.GenericTypeArguments);
 
 					Expression callExpression =
@@ -1184,7 +1170,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			else if (importType.IsArray)
 			{
 				Type closedList = typeof(List<>).MakeGenericType(importType.GetElementType());
-				MethodInfo closeMethod = injectionScopeLocateAllMethod.MakeGenericMethod(importType.GetElementType());
+				MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GetElementType());
 				Type comparerType = typeof(IComparer<>).MakeGenericType(importType.GetElementType());
 
 				Expression callExpression =

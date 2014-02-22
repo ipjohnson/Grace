@@ -9,7 +9,7 @@ namespace Grace.NSubstitute
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface ISubstituteExportStrategyConfiguration<T>
+	public interface ISubstituteExportStrategyConfiguration<out T>
 	{
 		/// <summary>
 		/// Export the type with the specified priority

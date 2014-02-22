@@ -12,7 +12,6 @@ namespace Grace.DependencyInjection.Impl
 	public class ExportInstanceConfiguration<T> : IFluentExportInstanceConfiguration<T>, IExportStrategyProvider
 	{
 		private readonly IConfigurableExportStrategy exportStrategy;
-		private readonly Type exportType;
 
 		/// <summary>
 		/// Default Constructor
@@ -21,7 +20,6 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportStrategy"></param>
 		public ExportInstanceConfiguration(Type exportType, IConfigurableExportStrategy exportStrategy)
 		{
-			this.exportType = exportType;
 			this.exportStrategy = exportStrategy;
 		}
 
@@ -188,12 +186,22 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposalCleanupDelegate"></param>
+		/// <returns></returns>
 		public IFluentExportInstanceConfiguration<T> DisposalCleanupDelegate(
 			BeforeDisposalCleanupDelegate disposalCleanupDelegate)
 		{
 			return this;
 		}
 
+		/// <summary>
+		/// Sets the export strategy 
+		/// </summary>
+		/// <param name="lifestyle"></param>
+		/// <returns></returns>
 		public IFluentExportInstanceConfiguration<T> UsingLifestyle(ILifestyle lifestyle)
 		{
 			exportStrategy.SetLifestyleContainer(lifestyle);

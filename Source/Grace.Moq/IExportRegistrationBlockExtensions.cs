@@ -5,6 +5,7 @@ namespace Grace.Moq
 	/// <summary>
 	/// Contains C# extensions for creating Moq objects
 	/// </summary>
+   // ReSharper disable once InconsistentNaming
 	public static class IExportRegistrationBlockExtensions
 	{
 		/// <summary>

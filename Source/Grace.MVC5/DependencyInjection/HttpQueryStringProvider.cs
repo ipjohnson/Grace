@@ -4,6 +4,9 @@ using Grace.DependencyInjection;
 
 namespace Grace.MVC.DependencyInjection
 {
+	/// <summary>
+	/// IExportValueProvider that fetches it's value from Http query  
+	/// </summary>
 	public class HttpQueryStringProvider : IExportValueProvider
 	{
 		public HttpQueryStringProvider(string parameterName = null)
@@ -13,17 +16,24 @@ namespace Grace.MVC.DependencyInjection
 
 		private string ParameterName { get; set; }
 
+		/// <summary>
+		/// Activate value
+		/// </summary>
+		/// <param name="exportInjectionScope">injection scope</param>
+		/// <param name="context">injection context</param>
+		/// <param name="consider">consider filter</param>
+		/// <returns>activated value</returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
 			string parameterName = ParameterName;
 
+			if (context.TargetInfo == null)
+			{
+				throw new Exception("Must be injecting into type");
+			}
+
 			if (string.IsNullOrEmpty(parameterName))
 			{
-				if (context.TargetInfo == null)
-				{
-					throw new Exception("Must be injecting into type");
-				}
-
 				parameterName = context.TargetInfo.InjectionTargetName;
 			}
 

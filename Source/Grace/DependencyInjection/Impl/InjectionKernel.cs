@@ -252,11 +252,10 @@ namespace Grace.DependencyInjection.Impl
 			InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, newProvider, ScopeName, comparer)
 			                              {
 				                              ParentScope = parentScope,
-				                              Environment = Environment
+				                              Environment = Environment,
+				                              exportsByName = exportsByName,
+				                              exportsByType = exportsByType
 			                              };
-
-			returnValue.exportsByName = exportsByName;
-			returnValue.exportsByType = exportsByType;
 
 			return returnValue;
 		}
@@ -1470,14 +1469,12 @@ namespace Grace.DependencyInjection.Impl
 			ExportStrategyFilter exportFilter)
 		{
 			List<T> returnValue = new List<T>();
-			Type genericType = null;
-			Type[] genericArgs = null;
 			bool specialType = false;
 
 			if (locateType != null && locateType.IsConstructedGenericType)
 			{
-				genericType = locateType.GetGenericTypeDefinition();
-				genericArgs = locateType.GetTypeInfo().GenericTypeArguments;
+				Type genericType = locateType.GetGenericTypeDefinition();
+				Type[] genericArgs = locateType.GetTypeInfo().GenericTypeArguments;
 
 				CheckForNewGenericExports<T>(injectionContext, locateType, genericType, genericArgs);
 

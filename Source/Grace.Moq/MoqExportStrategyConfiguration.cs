@@ -14,7 +14,6 @@ namespace Grace.Moq
 	public class MoqExportStrategyConfiguration<T> : IMoqExportStrategyConfiguration<T> where T : class
 	{
 		private readonly MoqExportStrategy<T> exportStrategy;
-		private readonly Type exportType;
 
 		/// <summary>
 		/// Default Constructor
@@ -22,7 +21,6 @@ namespace Grace.Moq
 		/// <param name="exportStrategy"></param>
 		public MoqExportStrategyConfiguration(MoqExportStrategy<T> exportStrategy)
 		{
-			this.exportType = typeof(T);
 			this.exportStrategy = exportStrategy;
 		}
 

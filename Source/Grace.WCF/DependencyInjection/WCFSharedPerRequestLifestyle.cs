@@ -15,7 +15,10 @@ namespace Grace.WCF.DependencyInjection
 		{
 		}
 
-		public bool Transient { get; private set; }
+		public bool Transient
+		{
+			get { return true;}
+		}
 
 		public object Locate(ExportActivationDelegate creationDelegate,
 			IInjectionScope injectionScope,

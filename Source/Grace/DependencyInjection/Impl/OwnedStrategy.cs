@@ -161,16 +161,30 @@ namespace Grace.DependencyInjection.Impl
 			return true;
 		}
 
+		/// <summary>
+		/// No secondary strategies
+		/// </summary>
+		/// <returns></returns>
 		public IEnumerable<IExportStrategy> SecondaryStrategies()
 		{
-			return new IExportStrategy[0];
+			yield break;
 		}
 
+		/// <summary>
+		/// No enrichment supported
+		/// </summary>
+		/// <param name="enrichWithDelegate">enrichment</param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
 		}
 
-		public IEnumerable<ExportStrategyDependency> DependsOn { get; private set; }
+		/// <summary>
+		/// Doesn't depend on anything
+		/// </summary>
+		public IEnumerable<ExportStrategyDependency> DependsOn
+		{
+			get { yield break;}
+		}
 
 		/// <summary>
 		/// Metadata associated with this strategy

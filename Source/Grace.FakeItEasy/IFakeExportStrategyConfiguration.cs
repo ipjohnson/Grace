@@ -9,7 +9,7 @@ namespace Grace.FakeItEasy
 	/// Configures a Fake object for export
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface IFakeExportStrategyConfiguration<T> where T : class
+	public interface IFakeExportStrategyConfiguration<out T> where T : class
 	{
 		/// <summary>
 		/// Export the type with the specified priority

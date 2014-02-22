@@ -93,14 +93,8 @@ namespace Grace.DependencyInjection.Impl
 						ExportStrategyFilter keyFilter =
 							(context, strategy) => IExportLocatorExtensions.CompareKeyFunction(attributeInfo.ImportKey, context, strategy);
 
-						if (filter != null)
-						{
-							filter = new ExportStrategyFilterGroup(keyFilter, filter);
-						}
-						else
-						{
-							filter = keyFilter;
-						}
+						filter = filter != null ? 
+									new ExportStrategyFilterGroup(keyFilter, filter) : keyFilter;
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
@@ -137,7 +131,7 @@ namespace Grace.DependencyInjection.Impl
 								                              MethodToImport = declaredMethod
 							                              };
 
-							//ImportMethod(methodInfo);
+							ImportMethod(methodInfo);
 
 							break;
 						}

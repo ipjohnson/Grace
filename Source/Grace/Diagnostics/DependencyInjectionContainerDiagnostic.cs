@@ -74,7 +74,7 @@ namespace Grace.Diagnostics
 				List<KeyValuePair<string, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<string, ExportListDebuggerView>>(returnValue);
 
-				sortList.Sort((x, y) => string.Compare(x.Key, y.Key));
+				sortList.Sort((x, y) => string.Compare(x.Key, y.Key,StringComparison.CurrentCulture));
 
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}

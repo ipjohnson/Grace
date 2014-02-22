@@ -6,6 +6,10 @@ using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
+	/// <summary>
+	/// Export strategy that registers very quickly but doesn't support advanced features like 
+	/// importing properties, method or specific values for constructor parameters
+	/// </summary>
 	public class SimpleExportStrategy : ConfigurableExportStrategy
 	{
 		private bool trackDisposable;
@@ -17,6 +21,10 @@ namespace Grace.DependencyInjection.Impl
 			delegateDictionary =
 				new SafeDictionary<Type, Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>>();
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="exportType">export type</param>
 		public SimpleExportStrategy(Type exportType)
 			: base(exportType)
 		{
@@ -27,6 +35,9 @@ namespace Grace.DependencyInjection.Impl
 			               };
 		}
 
+		/// <summary>
+		/// Initialize strategy
+		/// </summary>
 		public override void Initialize()
 		{
 			base.Initialize();
@@ -52,11 +63,21 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+		/// <summary>
+		/// Depends on strategies
+		/// </summary>
 		public override IEnumerable<ExportStrategyDependency> DependsOn
 		{
 			get { return dependsOn ?? base.DependsOn; }
 		}
 
+		/// <summary>
+		/// activate the strategy
+		/// </summary>
+		/// <param name="exportInjectionScope">injection scope</param>
+		/// <param name="context">injection context</param>
+		/// <param name="consider">consider filter</param>
+		/// <returns>activated object</returns>
 		public override object Activate(IInjectionScope exportInjectionScope,
 			IInjectionContext context,
 			ExportStrategyFilter consider)

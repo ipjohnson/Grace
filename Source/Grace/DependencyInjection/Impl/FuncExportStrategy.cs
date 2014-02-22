@@ -57,7 +57,13 @@ namespace Grace.DependencyInjection.Impl
 			get { return typeof(Func<T>).FullName; }
 		}
 
-		public bool AllowingFiltering { get; private set; }
+		/// <summary>
+		/// Allows filter of strategy
+		/// </summary>
+		public bool AllowingFiltering
+		{
+			get { return false; }
+		}
 
 		/// <summary>
 		/// Attributes associated with the export strategy. 
@@ -162,10 +168,16 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="enrichWithDelegate"></param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
-			throw new NotImplementedException();
+
 		}
 
-		public IEnumerable<ExportStrategyDependency> DependsOn { get; private set; }
+		/// <summary>
+		/// Doesn't depend on anything to construct
+		/// </summary>
+		public IEnumerable<ExportStrategyDependency> DependsOn
+		{
+			get { yield break; }
+		}
 
 		/// <summary>
 		/// Metadata associated with this strategy

@@ -8,6 +8,7 @@ namespace Grace.MVC.DependencyInjection
 	/// <summary>
 	/// C# extension class for registering different MVC types
 	/// </summary>
+   // ReSharper disable once InconsistentNaming
 	public static class IExportRegistrationBlockExtensions
 	{
 		/// <summary>

@@ -11,6 +11,7 @@ namespace Grace.DependencyInjection.Impl
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TItem"></typeparam>
+// ReSharper disable once InconsistentNaming
 	public class ICollectionExportStrategy<T, TItem> : ConfigurableExportStrategy
 	{
 		private Func<ICollection<TItem>> activateT;

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Grace.DependencyInjection
+namespace Grace.DependencyInjection.Impl
 {
+	/// <summary>
+	/// This is the configuration object for TypesThat, developers are not intended to use this
+	/// it is an internal class for Grace
+	/// </summary>
 	public class TypesThatConfiguration
 	{
 		private readonly List<Func<Type, bool>> filters = new List<Func<Type, bool>>(1);

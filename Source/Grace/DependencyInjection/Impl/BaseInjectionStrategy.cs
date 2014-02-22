@@ -24,8 +24,7 @@ namespace Grace.DependencyInjection.Impl
 		public virtual void Initialize()
 		{
 			FuncCompiledExportDelegate exportDelegate = new FuncCompiledExportDelegate(delegateInfo,
-				(scope, context) => { return context.Locate(CONTEXT_KEY); },
-				null);
+				(scope, context) => context.Locate(CONTEXT_KEY), null);
 
 			activationDelegate = exportDelegate.CompileDelegate();
 		}

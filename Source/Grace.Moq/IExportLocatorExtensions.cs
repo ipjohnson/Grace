@@ -6,6 +6,7 @@ namespace Grace.Moq
 	/// <summary>
 	/// Contains C# extension methods for IExportLocator
 	/// </summary>
+   // ReSharper disable once InconsistentNaming
 	public static class IExportLocatorExtensions
 	{
 		/// <summary>

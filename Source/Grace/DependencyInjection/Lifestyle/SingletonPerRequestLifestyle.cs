@@ -8,16 +8,16 @@ namespace Grace.DependencyInjection.Lifestyle
 	/// </summary>
 	public class SingletonPerRequestLifestyle : ILifestyle
 	{
-		private ILifestyle LifestyleContainer;
+		private ILifestyle lifestyleContainer;
 
 		/// <summary>
 		/// Dispose the container
 		/// </summary>
 		public void Dispose()
 		{
-			if (LifestyleContainer != null)
+			if (lifestyleContainer != null)
 			{
-				LifestyleContainer.Dispose();
+				lifestyleContainer.Dispose();
 			}
 		}
 
@@ -42,12 +42,12 @@ namespace Grace.DependencyInjection.Lifestyle
 			IInjectionContext injectionContext,
 			IExportStrategy exportStrategy)
 		{
-			if (LifestyleContainer == null)
+			if (lifestyleContainer == null)
 			{
-				LifestyleContainer = LocateContainer(exportStrategy.OwningScope, injectionContext);
+				lifestyleContainer = LocateContainer(exportStrategy.OwningScope, injectionContext);
 			}
 
-			return LifestyleContainer.Locate(creationDelegate, injectionScope, injectionContext, exportStrategy);
+			return lifestyleContainer.Locate(creationDelegate, injectionScope, injectionContext, exportStrategy);
 		}
 
 		/// <summary>

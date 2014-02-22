@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	[DebuggerDisplay("{DebugDisplayString,nq}")]
 	[DebuggerTypeProxy(typeof(DependencyInjectionContainerDiagnostic))]
-	public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler, IDisposable
+	public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler
 	{
 		private readonly BlackList blackList = new BlackList();
 		private readonly InjectionKernelManager injectionKernelManager;
@@ -544,8 +544,6 @@ namespace Grace.DependencyInjection
 			if (RootScope != null)
 			{
 				RootScope.Dispose();
-
-				RootScope = null;
 			}
 		}
 

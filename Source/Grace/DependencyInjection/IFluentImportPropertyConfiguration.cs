@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection
 		IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
 	}
 
-	public interface IFluentImportPropertyConfiguration<T, TProp> : IFluentExportStrategyConfiguration<T>
+	public interface IFluentImportPropertyConfiguration<T, in TProp> : IFluentExportStrategyConfiguration<T>
 	{
 		IFluentImportPropertyConfiguration<T, TProp> IsRequired(bool isRequired = true);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Grace.DependencyInjection
 {
-	public interface IFluentImportPropertyCollectionConfiguration<T, TItem> : IFluentExportStrategyConfiguration<T>
+	public interface IFluentImportPropertyCollectionConfiguration<T, out TItem> : IFluentExportStrategyConfiguration<T>
 	{
 		IFluentImportPropertyCollectionConfiguration<T, TItem> Consider(ExportStrategyFilter consider);
 

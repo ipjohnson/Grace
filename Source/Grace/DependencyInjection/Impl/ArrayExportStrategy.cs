@@ -159,15 +159,24 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// 
+		/// Doesn't allow for enrichment
 		/// </summary>
 		/// <param name="enrichWithDelegate"></param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
-			throw new NotImplementedException();
+
 		}
 
-		public IEnumerable<ExportStrategyDependency> DependsOn { get; private set; }
+		/// <summary>
+		/// Depends on nothing
+		/// </summary>
+		public IEnumerable<ExportStrategyDependency> DependsOn
+		{
+			get
+			{
+				yield break;
+			}
+		}
 
 		/// <summary>
 		/// Metadata associated with this strategy

@@ -24,14 +24,15 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			CreateCustomInitializeExpressions();
 
-			bodyExpressions.Add(Expression.Call(injectionContextParameter, decrementResolveDepth));
+			bodyExpressions.Add(Expression.Call(injectionContextParameter, DecrementResolveDepth));
 
 			// only add the return expression if there was no enrichment
 			CreateReturnExpression();
 
-			List<Expression> methodExpressions = new List<Expression>();
-
-			methodExpressions.Add(Expression.Call(injectionContextParameter, incrementResolveDepth));
+			List<Expression> methodExpressions = new List<Expression>
+			                                     {
+				                                     Expression.Call(injectionContextParameter, IncrementResolveDepth)
+			                                     };
 
 			methodExpressions.AddRange(GetImportExpressions());
 			methodExpressions.AddRange(instanceExpressions);

@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection
 	/// Configuration object for an imoprt collection
 	/// </summary>
 	/// <typeparam name="TItem"></typeparam>
-	public interface IFluentWithCtorCollectionConfiguration<TItem> : IFluentExportStrategyConfiguration
+	public interface IFluentWithCtorCollectionConfiguration<out TItem> : IFluentExportStrategyConfiguration
 	{
 		/// <summary>
 		/// Provide a filter for which exports should be used
@@ -44,7 +44,7 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	/// <typeparam name="TItem"></typeparam>
 	/// <typeparam name="T"></typeparam>
-	public interface IFluentWithCtorCollectionConfiguration<T, TItem> : IFluentExportStrategyConfiguration<T>
+	public interface IFluentWithCtorCollectionConfiguration<T, out TItem> : IFluentExportStrategyConfiguration<T>
 	{
 		/// <summary>
 		/// Provide a filter for which exports should be used

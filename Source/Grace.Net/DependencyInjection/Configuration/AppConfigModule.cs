@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using Grace.DependencyInjection.Lifestyle;
@@ -177,7 +178,7 @@ namespace Grace.DependencyInjection.Configuration
 
 		private void ConfigureModule(IExportRegistrationBlock registrationBlock,
 			IConfigurationModule configurationModule,
-			ModuleElement element)
+			IEnumerable<PropetryElement> element)
 		{
 			foreach (PropetryElement propertyElement in element)
 			{

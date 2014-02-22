@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {

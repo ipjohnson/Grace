@@ -38,13 +38,9 @@ namespace Grace.DependencyInjection.Conditions
 			}
 
 			string appSetting = ConfigurationManager.AppSettings[settingName];
-			bool returnValue = false;
 
-			if (string.IsNullOrEmpty(appSetting) ||
-			    string.Compare("false", appSetting, StringComparison.CurrentCultureIgnoreCase) == 0)
-			{
-				returnValue = true;
-			}
+			bool returnValue = string.IsNullOrEmpty(appSetting) ||
+			                   string.Compare("false", appSetting, StringComparison.CurrentCultureIgnoreCase) == 0;
 
 			if (cacheAnswer)
 			{
