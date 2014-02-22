@@ -91,7 +91,7 @@ namespace Grace.DependencyInjection
 		/// Value provider for method parameter
 		/// </summary>
 		/// <param name="valueProvider">value provider</param>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		IFluentMethodParameterConfiguration<T, TParam> UsingValueProvider(IExportValueProvider valueProvider);
-	}configuration object
+	}
 }
