@@ -20,6 +20,9 @@ namespace Grace.Data
 			get { return log ?? (log = Logger.GetLogger(GetType())); }
 		}
 
+		/// <summary>
+		/// Property change event
+		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>

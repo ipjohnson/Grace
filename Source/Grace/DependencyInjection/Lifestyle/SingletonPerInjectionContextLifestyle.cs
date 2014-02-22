@@ -9,9 +9,6 @@ namespace Grace.DependencyInjection.Lifestyle
 	{
 		private readonly string key = Guid.NewGuid().ToString();
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public void Dispose()
 		{
 		}
