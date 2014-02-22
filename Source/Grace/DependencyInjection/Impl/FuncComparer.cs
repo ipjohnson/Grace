@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl
 {
 	public class FuncComparer<TItem> : IComparer<TItem>
 	{
-		private Func<TItem, IComparable> valueFunc;
+		private readonly Func<TItem, IComparable> valueFunc;
 
 		public FuncComparer(Func<TItem, IComparable> valueFunc)
 		{

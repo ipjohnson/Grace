@@ -49,6 +49,19 @@ namespace Grace.DependencyInjection
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="assemblyPath"></param>
+		/// <param name="throwsException"></param>
+		/// <returns></returns>
+		public static IEnumerable<Type> FromAssembly(string assemblyPath, bool throwsException = false)
+		{
+			Assembly loadedAssembly = LoadAssemblyFromPath(assemblyPath, throwsException);
+
+			return loadedAssembly != null ? loadedAssembly.ExportedTypes : new Type[0];
+		}
+
+		/// <summary>
 		/// Allows the developer to pass a params list to the Register method
 		/// </summary>
 		/// <param name="types"></param>
@@ -67,22 +80,23 @@ namespace Grace.DependencyInjection
 		/// Returns a list of exported types from assemblies located in the directories provided
 		/// </summary>
 		/// <param name="directory"></param>
+		/// <param name="throwsException"></param>
 		/// <param name="filter"></param>
 		/// <returns></returns>
-		public static IEnumerable<Type> FromDirectory(string directory, Func<string, bool> filter = null)
+		public static IEnumerable<Type> FromDirectory(string directory,bool throwsException = false, Func<string, bool> filter = null)
 		{
 			List<Type> returnValue = new List<Type>();
 
 			if (Directory.Exists(directory))
 			{
-				foreach (string file in Directory.GetFiles(directory))
+				foreach (string file in Directory.GetFiles(directory,"*.dll"))
 				{
 					if (!file.EndsWith(".dll") || (filter != null && !filter(file)))
 					{
 						continue;
 					}
 
-					Assembly assembly = LoadAssemblyWithNoExceptions(file);
+					Assembly assembly = LoadAssemblyFromPath(file);
 
 					if (assembly != null)
 					{
@@ -98,8 +112,9 @@ namespace Grace.DependencyInjection
 		/// Loads and assembly and returns null if there where exceptions
 		/// </summary>
 		/// <param name="path"></param>
+		/// <param name="throwsException"></param>
 		/// <returns></returns>
-		public static Assembly LoadAssemblyWithNoExceptions(string path)
+		public static Assembly LoadAssemblyFromPath(string path, bool throwsException = false)
 		{
 			Assembly returnValue = null;
 
@@ -110,6 +125,11 @@ namespace Grace.DependencyInjection
 			catch (Exception exp)
 			{
 				Logger.Error("Exception thrown while loading assembly: " + path, typeof(Types).FullName, exp);
+
+				if (throwsException)
+				{
+					throw;
+				}
 			}
 
 			return returnValue;
