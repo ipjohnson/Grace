@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using Grace.DependencyInjection.Lifestyle;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
+	/// <summary>
+	/// Base class for generic func exports
+	/// </summary>
 	public class BaseGenericFuncExportStrategy
 	{
 		/// <summary>
@@ -151,15 +154,19 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return new Func<TIn, TOut>(@in =>
 			                           {
-				                           IInjectionContext newInjectionContext = clonedContext.Clone();
+				                           IInjectionContext newInjectionContext = context.Clone();
 
-				                           newInjectionContext.Export((scope, c) => @in);
+				                           newInjectionContext.RequestingScope = scope;
+				                           newInjectionContext.DisposalScope = disposal;
 
-				                           return clonedContext.RequestingScope.Locate<TOut>(newInjectionContext);
+				                           newInjectionContext.Export((s, c) => @in);
+
+				                           return scope.Locate<TOut>(newInjectionContext);
 			                           });
 		}
 
@@ -213,14 +220,18 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return new Func<TIn1, TIn2, TOut>((in1, in2) =>
 			                                  {
-				                                  IInjectionContext newInjectionContext = clonedContext.Clone();
+				                                  IInjectionContext newInjectionContext = context.Clone();
 
-				                                  newInjectionContext.Export((scope, c) => in1);
-				                                  newInjectionContext.Export((scope, c) => in2);
+				                                  newInjectionContext.RequestingScope = scope;
+				                                  newInjectionContext.DisposalScope = disposal;
+
+				                                  newInjectionContext.Export((s, c) => in1);
+				                                  newInjectionContext.Export((s, c) => in2);
 
 				                                  return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
 			                                  });
@@ -277,15 +288,19 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return new Func<TIn1, TIn2, TIn3, TOut>((in1, in2, in3) =>
 			                                        {
-				                                        IInjectionContext newInjectionContext = clonedContext.Clone();
+				                                        IInjectionContext newInjectionContext = context.Clone();
 
-				                                        newInjectionContext.Export((scope, c) => in1);
-				                                        newInjectionContext.Export((scope, c) => in2);
-				                                        newInjectionContext.Export((scope, c) => in3);
+				                                        newInjectionContext.RequestingScope = scope;
+				                                        newInjectionContext.DisposalScope = disposal;
+
+				                                        newInjectionContext.Export((s, c) => in1);
+				                                        newInjectionContext.Export((s, c) => in2);
+				                                        newInjectionContext.Export((s, c) => in3);
 
 				                                        return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
 			                                        });
@@ -343,16 +358,20 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TOut>((in1, in2, in3, in4) =>
 			                                              {
-				                                              IInjectionContext newInjectionContext = clonedContext.Clone();
+				                                              IInjectionContext newInjectionContext = context.Clone();
 
-				                                              newInjectionContext.Export((scope, c) => in1);
-				                                              newInjectionContext.Export((scope, c) => in2);
-				                                              newInjectionContext.Export((scope, c) => in3);
-				                                              newInjectionContext.Export((scope, c) => in4);
+				                                              newInjectionContext.RequestingScope = scope;
+				                                              newInjectionContext.DisposalScope = disposal;
+
+				                                              newInjectionContext.Export((s, c) => in1);
+				                                              newInjectionContext.Export((s, c) => in2);
+				                                              newInjectionContext.Export((s, c) => in3);
+				                                              newInjectionContext.Export((s, c) => in4);
 
 				                                              return
 					                                              newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
@@ -413,18 +432,19 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(
 				(in1, in2, in3, in4, in5) =>
 				{
-					IInjectionContext newInjectionContext = clonedContext.Clone();
+					IInjectionContext newInjectionContext = context.Clone();
 
-					newInjectionContext.Export((scope, c) => in1);
-					newInjectionContext.Export((scope, c) => in2);
-					newInjectionContext.Export((scope, c) => in3);
-					newInjectionContext.Export((scope, c) => in4);
-					newInjectionContext.Export((scope, c) => in5);
+					newInjectionContext.Export((s, c) => in1);
+					newInjectionContext.Export((s, c) => in2);
+					newInjectionContext.Export((s, c) => in3);
+					newInjectionContext.Export((s, c) => in4);
+					newInjectionContext.Export((s, c) => in5);
 
 					return
 						newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);

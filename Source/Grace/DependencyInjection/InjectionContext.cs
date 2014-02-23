@@ -10,7 +10,8 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public class InjectionContext : IInjectionContext, IEnumerable<KeyValuePair<string, ExportActivationDelegate>>
 	{
-		private Dictionary<string, ExportActivationDelegate> exports;
+		private Dictionary<string, ExportActivationDelegate> exportsByName;
+		private Dictionary<Type, ExportActivationDelegate> exportsByType; 
 		private Dictionary<string, object> extraData;
 		private int resolveDepth;
 
@@ -41,9 +42,9 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		public IEnumerator<KeyValuePair<string, ExportActivationDelegate>> GetEnumerator()
 		{
-			if (exports != null)
+			if (exportsByName != null)
 			{
-				foreach (KeyValuePair<string, ExportActivationDelegate> exportActivationDelegate in exports)
+				foreach (KeyValuePair<string, ExportActivationDelegate> exportActivationDelegate in exportsByName)
 				{
 					yield return exportActivationDelegate;
 				}
@@ -63,9 +64,14 @@ namespace Grace.DependencyInjection
 		{
 			InjectionContext injectionContext = new InjectionContext(DisposalScope, RequestingScope);
 
-			if (exports != null)
+			if (exportsByName != null)
 			{
-				injectionContext.exports = new Dictionary<string, ExportActivationDelegate>(exports);
+				injectionContext.exportsByName = new Dictionary<string, ExportActivationDelegate>(exportsByName);
+			}
+
+			if (exportsByType != null)
+			{
+				injectionContext.exportsByType = new Dictionary<Type, ExportActivationDelegate>(exportsByType);
 			}
 
 			if (extraData != null)
@@ -130,21 +136,20 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Locate an export by type
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Locate<T>()
+		public object Locate(Type type)
 		{
-			if (exports != null)
+			if (exportsByType != null)
 			{
 				ExportActivationDelegate activationDelegate;
 
-				if (exports.TryGetValue(typeof(T).FullName.ToLowerInvariant(), out activationDelegate))
+				if (exportsByType.TryGetValue(type, out activationDelegate))
 				{
-					return (T)activationDelegate(RequestingScope, this);
+					return activationDelegate(RequestingScope, this);
 				}
 			}
 
-			return default(T);
+			return null;
 		}
 
 		/// <summary>
@@ -154,11 +159,11 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		public object Locate(string name)
 		{
-			if (exports != null)
+			if (exportsByName != null)
 			{
 				ExportActivationDelegate activationDelegate;
 
-				if (exports.TryGetValue(name.ToLowerInvariant(), out activationDelegate))
+				if (exportsByName.TryGetValue(name.ToLowerInvariant(), out activationDelegate))
 				{
 					return activationDelegate(RequestingScope, this);
 				}
@@ -184,12 +189,12 @@ namespace Grace.DependencyInjection
 		/// <param name="activationDelegate"></param>
 		public void Export(Type exportType, ExportActivationDelegate activationDelegate)
 		{
-			if (exports == null)
+			if (exportsByType == null)
 			{
-				exports = new Dictionary<string, ExportActivationDelegate>();
+				exportsByType = new Dictionary<Type, ExportActivationDelegate>();
 			}
 
-			exports[exportType.FullName.ToLowerInvariant()] = activationDelegate;
+			exportsByType[exportType] = activationDelegate;
 		}
 
 		/// <summary>
@@ -201,12 +206,12 @@ namespace Grace.DependencyInjection
 		{
 			name = name.ToLowerInvariant();
 
-			if (exports == null)
+			if (exportsByName == null)
 			{
-				exports = new Dictionary<string, ExportActivationDelegate>();
+				exportsByName = new Dictionary<string, ExportActivationDelegate>();
 			}
 
-			exports[name] = activationDelegate;
+			exportsByName[name] = activationDelegate;
 		}
 
 		/// <summary>

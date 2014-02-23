@@ -29,7 +29,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			InjectionContext injectionContext = new InjectionContext(null, null);
 
-			IBasicService testValue = injectionContext.Locate<IBasicService>();
+			IBasicService testValue = (IBasicService)injectionContext.Locate(typeof(IBasicService));
 
 			Assert.Null(testValue);
 
@@ -37,7 +37,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			injectionContext.Export((x, y) => newValue);
 
-			testValue = injectionContext.Locate<IBasicService>();
+			testValue = (IBasicService)injectionContext.Locate(typeof(IBasicService));
 
 			Assert.NotNull(testValue);
 			Assert.True(ReferenceEquals(newValue, testValue));
@@ -77,7 +77,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			InjectionContext injectionContext = new InjectionContext(null, null);
 
-			IBasicService testValue = injectionContext.Locate<IBasicService>();
+			IBasicService testValue = (IBasicService)injectionContext.Locate(typeof(IBasicService));
 
 			Assert.Null(testValue);
 
@@ -85,7 +85,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			injectionContext.Export((x, y) => newValue);
 
-			Assert.Null(injectionContext.Locate<IImportConstructorService>());
+			Assert.Null(injectionContext.Locate(typeof(ImportConstructorService)));
 		}
 
 		[Fact]

@@ -15,6 +15,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 	{
 		private string argName1;
 
+		/// <summary>
+		/// Initialize
+		/// </summary>
 		public override void Initialize()
 		{
 			if (InjectionKernel.ImportTypeByName(typeof(TArg1)))
@@ -25,6 +28,15 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			}
 		}
 
+		/// <summary>
+		/// Activate the object
+		/// </summary>
+		/// <param name="exportInjectionScope">injetion scope</param>
+		/// <param name="context">context for the activation</param>
+		/// <param name="consider">consider filter</param>
+		/// <returns>
+		/// activated object
+		/// </returns>
 		public override object Activate(IInjectionScope exportInjectionScope,
 			IInjectionContext context,
 			ExportStrategyFilter consider)
@@ -34,16 +46,25 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			return activateMethodInfo.CreateDelegate(typeof(TDelegate), newHelper);
 		}
 
+		/// <summary>
+		/// Activation Type
+		/// </summary>
 		public override Type ActivationType
 		{
 			get { return typeof(TDelegate); }
 		}
 
+		/// <summary>
+		/// Activation name
+		/// </summary>
 		public override string ActivationName
 		{
 			get { return typeof(TDelegate).FullName; }
 		}
 
+		/// <summary>
+		/// List of export types
+		/// </summary>
 		public override IEnumerable<Type> ExportTypes
 		{
 			get { yield return typeof(TDelegate); }

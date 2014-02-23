@@ -14,7 +14,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 	/// </summary>
 	public abstract class BaseCompiledExportDelegate
 	{
-		protected static readonly MethodInfo InjectionContextLocateMethod;
+		protected static readonly MethodInfo InjectionContextLocateByTypeMethod;
+		protected static readonly MethodInfo InjectionContextLocateByNameMethod;
 		protected static readonly MethodInfo ActivateValueProviderMethod;
 		protected static readonly MethodInfo LocateByNameMethod;
 		protected static readonly MethodInfo InjectionScopeLocateAllMethod;
@@ -108,7 +109,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				typeof(IExportLocator).GetRuntimeMethods()
 					.First(f => f.Name == "LocateAll" && f.GetParameters().First().ParameterType == typeof(IInjectionContext));
 
-			InjectionContextLocateMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
+			InjectionContextLocateByTypeMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(Type) });
+			
+			InjectionContextLocateByNameMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
 
 			IncrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("IncrementResolveDepth", new Type[0]);
 
@@ -622,11 +625,26 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			if (exportDelegateInfo.IsTransient)
 			{
-				Expression assignExpression =
-					Expression.Assign(importVariable,
-						Expression.Call(injectionContextParameter,
-							InjectionContextLocateMethod,
-							Expression.Constant(localExportName)));
+				Expression assignExpression = null;
+
+				if(importType != null &&
+					string.IsNullOrEmpty(exportName) &&
+					!InjectionKernel.ImportTypeByName(importType))
+				{
+					assignExpression =
+						Expression.Assign(importVariable,
+							Expression.Call(injectionContextParameter,
+												 InjectionContextLocateByTypeMethod,
+												 Expression.Constant(importType)));
+				}
+				else
+				{
+					assignExpression =
+						Expression.Assign(importVariable,
+							Expression.Call(injectionContextParameter,
+												 InjectionContextLocateByNameMethod,
+												 Expression.Constant(localExportName)));
+				}
 
 				importInjectionContextExpressions.Add(assignExpression);
 			}
@@ -1201,13 +1219,17 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <returns></returns>
 		public static Func<T> CreateFunc<T>(IInjectionContext context, ExportStrategyFilter exportStrategyFilter)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return () =>
 			       {
-				       IInjectionContext injectionContext = clonedContext.Clone();
+				       IInjectionContext injectionContext = context.Clone();
 
-				       return injectionContext.RequestingScope.Locate<T>(injectionContext, exportStrategyFilter);
+				       injectionContext.RequestingScope = scope;
+				       injectionContext.DisposalScope = disposal;
+
+				       return scope.Locate<T>(injectionContext, exportStrategyFilter);
 			       };
 		}
 
@@ -1233,13 +1255,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		public static Func<Type, object> CreateFuncType(IInjectionContext context,
 			ExportStrategyFilter exportStrategyFilter)
 		{
-			IInjectionContext clonedContext = context.Clone();
+
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposal = context.DisposalScope;
 
 			return type =>
 			       {
-				       IInjectionContext newContext = clonedContext.Clone();
+				       IInjectionContext newContext = context.Clone();
 
-				       return newContext.RequestingScope.Locate(type, newContext, exportStrategyFilter);
+				       newContext.DisposalScope = disposal;
+				       newContext.RequestingScope = scope;
+
+				       return scope.Locate(type, newContext, exportStrategyFilter);
 			       };
 		}
 
@@ -1289,10 +1316,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <returns></returns>
 		public static Lazy<T> CreateLazy<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter)
 		{
-			IInjectionContext clonedContext = injectionContext.Clone();
+			IInjectionScope scope = injectionContext.RequestingScope;
+			IDisposalScope disposal = injectionContext.DisposalScope;
 
 			return new Lazy<T>(() =>
-				clonedContext.RequestingScope.Locate<T>(clonedContext, exportStrategyFilter));
+			                   {
+				                   IInjectionContext clonedContext = injectionContext.Clone();
+
+				                   clonedContext.RequestingScope = scope;
+				                   clonedContext.DisposalScope = disposal;
+
+										 return scope.Locate<T>(clonedContext, exportStrategyFilter);
+			                   });
 		}
 	}
 }

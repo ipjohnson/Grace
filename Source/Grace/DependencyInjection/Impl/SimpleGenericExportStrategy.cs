@@ -5,15 +5,27 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl
 {
+	/// <summary>
+	/// Represents an simple open generic export that can be closed
+	/// </summary>
 	public class SimpleGenericExportStrategy : ConfigurableExportStrategy, IGenericExportStrategy
 	{
-		private readonly List<Type> exportAsTypes = new List<Type>(1);
-
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="exportType">open type to export</param>
 		public SimpleGenericExportStrategy(Type exportType)
 			: base(exportType)
 		{
 		}
 
+		/// <summary>
+		/// Cannot activate this strategy, you must create a closed strategy
+		/// </summary>
+		/// <param name="exportInjectionScope"></param>
+		/// <param name="context"></param>
+		/// <param name="consider"></param>
+		/// <returns></returns>
 		public override object Activate(IInjectionScope exportInjectionScope,
 			IInjectionContext context,
 			ExportStrategyFilter consider)

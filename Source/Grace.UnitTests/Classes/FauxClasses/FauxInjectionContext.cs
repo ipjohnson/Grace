@@ -33,9 +33,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		{
 		}
 
-		public T Locate<T>()
+		public object Locate(Type type)
 		{
-			return default(T);
+			return null;
 		}
 
 		public object Locate(string name)

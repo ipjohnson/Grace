@@ -183,7 +183,7 @@
     <Compile Include="DependencyInjection\Impl\FuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\FuncValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\FuncWithContextValueProvider.cs" />
-    <Compile Include="DependencyInjection\Impl\GenericFuncExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\GenericFuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\GenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ICompiledExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IConfigurableExportStrategy.cs" />

@@ -5,16 +5,28 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
 {
+	/// <summary>
+	/// Configures a simple export strategy
+	/// </summary>
 	public class FluentSimpleExportStrategyConfiguration : IFluentSimpleExportStrategyConfiguration,
 		IExportStrategyProvider
 	{
 		private readonly ConfigurableExportStrategy exportStrategy;
 
+		/// <summary>
+		/// default constructor
+		/// </summary>
+		/// <param name="exportStrategy">export strategy to configure</param>
 		public FluentSimpleExportStrategyConfiguration(ConfigurableExportStrategy exportStrategy)
 		{
 			this.exportStrategy = exportStrategy;
 		}
 
+		/// <summary>
+		/// Defines the priority to export at
+		/// </summary>
+		/// <param name="priority">priority for export</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration WithPriority(int priority)
 		{
 			exportStrategy.SetPriority(priority);
@@ -22,6 +34,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export under a particular key
+		/// </summary>
+		/// <param name="key">key to associate with export</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration WithKey(object key)
 		{
 			exportStrategy.SetKey(key);
@@ -29,6 +46,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export as a particular type
+		/// </summary>
+		/// <param name="exportType">type to export as</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration As(Type exportType)
 		{
 			exportStrategy.AddExportType(exportType);
@@ -36,6 +58,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export as a particular type
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
 		public IFluentSimpleExportStrategyConfiguration As<T>()
 		{
 			exportStrategy.AddExportType(typeof(T));
@@ -43,6 +70,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Defines which environment this export should be exported in
+		/// </summary>
+		/// <param name="environment"></param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration InEnvironment(ExportEnvironment environment)
 		{
 			exportStrategy.SetEnvironment(environment);
@@ -50,6 +82,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export this type as a particular name
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration AsName(string name)
 		{
 			exportStrategy.AddExportName(name);
@@ -57,6 +94,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export will be treated as a singleton for the lifetime of the container
+		/// </summary>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration AndSingleton()
 		{
 			exportStrategy.SetLifestyleContainer(new SingletonLifestyle());
@@ -64,6 +105,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Export will be treated as a singleton for the lifetime of the scope
+		/// </summary>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration AndSingletonPerScope()
 		{
 			exportStrategy.SetLifestyleContainer(new SingletonPerScopeLifestyle());
@@ -71,6 +116,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Exports will be trated as a singleton using a weak reference
+		/// </summary>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration AndWeakSingleton()
 		{
 			exportStrategy.SetLifestyleContainer(new WeakSingletonLifestyle());
@@ -78,6 +127,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Mark the export as externally owned, doing so will absolve the container of having to call Dispose when done
+		/// </summary>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration ExternallyOwned()
 		{
 			exportStrategy.SetExternallyOwned();
@@ -85,6 +138,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Specify a custom Lifestyle container for export.
+		/// </summary>
+		/// <param name="lifestyle">Lifestyle container for the export</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle)
 		{
 			exportStrategy.SetLifestyleContainer(lifestyle);
@@ -92,16 +150,35 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="conditionDelegate">export condition delegate</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration When(ExportConditionDelegate conditionDelegate)
 		{
-			throw new NotImplementedException();
+			exportStrategy.AddCondition(new WhenCondition(conditionDelegate));
+
+			return this;
 		}
 
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="conditionDelegate">export condition delegate</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration Unless(ExportConditionDelegate conditionDelegate)
 		{
-			throw new NotImplementedException();
+			exportStrategy.AddCondition(new UnlessCondition(conditionDelegate));
+
+			return this;
 		}
 
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="condition">condition for export</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration AndCondition(IExportCondition condition)
 		{
 			exportStrategy.AddCondition(condition);
@@ -109,6 +186,12 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Adds metadata to an export
+		/// </summary>
+		/// <param name="metadataName">metadata name</param>
+		/// <param name="metadataValue">metadata value</param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration WithMetadata(string metadataName, object metadataValue)
 		{
 			exportStrategy.AddMetadata(metadataName, metadataValue);
@@ -116,6 +199,11 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Allows you to add custom activation logic to process before the object is returned.
+		/// </summary>
+		/// <param name="enrichWithDelegate"></param>
+		/// <returns>configuration object</returns>
 		public IFluentSimpleExportStrategyConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
 			exportStrategy.EnrichWithDelegate(enrichWithDelegate);
@@ -123,6 +211,10 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Provide a list of strategies
+		/// </summary>
+		/// <returns></returns>
 		public IEnumerable<IExportStrategy> ProvideStrategies()
 		{
 			yield return exportStrategy;

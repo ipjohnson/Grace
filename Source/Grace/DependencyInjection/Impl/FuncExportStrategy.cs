@@ -37,6 +37,9 @@ namespace Grace.DependencyInjection.Impl
 		{
 		}
 
+		/// <summary>
+		/// Initialize the strategy
+		/// </summary>
 		public void Initialize()
 		{
 		}

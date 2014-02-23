@@ -1109,7 +1109,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Get the export strategy collection
 		/// </summary>
-		/// <param name="exporType"></param>
+		/// <param name="exportType">type to locate</param>
 		/// <returns>can be null if nothing is registered by that name</returns>
 		public IExportStrategyCollection GetStrategyCollection(Type exportType)
 		{
@@ -1297,6 +1297,7 @@ namespace Grace.DependencyInjection.Impl
 			return importType.GetTypeInfo().IsPrimitive ||
 			       importType.GetTypeInfo().IsEnum ||
 			       importType == typeof(string) ||
+					 importType == typeof(decimal) ||
 			       importType == typeof(DateTime) ||
 			       importType == typeof(DateTimeOffset) ||
 			       importType == typeof(TimeSpan) ||
@@ -1609,6 +1610,14 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+		/// <summary>
+		/// Locates a list of Lazy&lt;T&gt;
+		/// </summary>
+		/// <typeparam name="TLazy">type of lazy T</typeparam>
+		/// <typeparam name="T">type to resolve</typeparam>
+		/// <param name="injectionContext">injection context</param>
+		/// <param name="exportFilter">export filter to apply</param>
+		/// <param name="returnList">return list</param>
 		protected void LocateListOfLazyExports<TLazy, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
 			List<TLazy> returnList) where TLazy : Lazy<T>
@@ -1621,6 +1630,14 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+		/// <summary>
+		/// Locates a list of Owned&lt;T&gt;
+		/// </summary>
+		/// <typeparam name="TOwned">type of owned T</typeparam>
+		/// <typeparam name="T">type to located</typeparam>
+		/// <param name="injectionContext">injection context</param>
+		/// <param name="exportFilter">export filter to apply</param>
+		/// <param name="returnList">list to return</param>
 		protected void LocateListOfOwnedExports<TOwned, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
 			List<TOwned> returnList)
@@ -1635,6 +1652,14 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+		/// <summary>
+		/// Locate a list of Meta&lt;T&gt;
+		/// </summary>
+		/// <typeparam name="TMeta">type of meta object</typeparam>
+		/// <typeparam name="T">type to locate</typeparam>
+		/// <param name="injectionContext">injection context</param>
+		/// <param name="exportFilter">export filter</param>
+		/// <param name="returnList">list to populate</param>
 		protected void LocateListOfMetaExports<TMeta, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
 			List<TMeta> returnList) where TMeta : Meta<T>

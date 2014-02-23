@@ -44,9 +44,8 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Locate an export by type
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		T Locate<T>();
+		object Locate(Type type);
 
 		/// <summary>
 		/// Locate an export by name

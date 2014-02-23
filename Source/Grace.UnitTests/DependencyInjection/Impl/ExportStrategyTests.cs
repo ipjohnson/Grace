@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.UnitTests.Classes.FauxClasses;
 using Grace.UnitTests.Classes.Simple;
