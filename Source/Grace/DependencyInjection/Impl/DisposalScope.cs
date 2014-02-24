@@ -10,8 +10,6 @@ namespace Grace.DependencyInjection.Impl
 	/// </summary>
 	public class DisposalScope : IDisposalScope
 	{
-		private static readonly string supplementalString = typeof(DisposalScope).FullName;
-
 		private readonly object disposablesLock = new object();
 		private List<Tuple<IDisposable, BeforeDisposalCleanupDelegate>> disposables;
 

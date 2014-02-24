@@ -440,6 +440,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				{
 					IInjectionContext newInjectionContext = context.Clone();
 
+					newInjectionContext.RequestingScope = scope;
+					newInjectionContext.DisposalScope = disposal;
+
 					newInjectionContext.Export((s, c) => in1);
 					newInjectionContext.Export((s, c) => in2);
 					newInjectionContext.Export((s, c) => in3);

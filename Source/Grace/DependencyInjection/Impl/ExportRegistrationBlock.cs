@@ -157,7 +157,7 @@ namespace Grace.DependencyInjection.Impl
 			InstanceStrategy<T> instanceStrategy = new InstanceStrategy<T>(instance);
 
 			ExportInstanceConfiguration<T> returnValue =
-				new ExportInstanceConfiguration<T>(typeof(T), instanceStrategy);
+				new ExportInstanceConfiguration<T>(instanceStrategy);
 
 			strategyProviders.Add(returnValue);
 
@@ -174,7 +174,7 @@ namespace Grace.DependencyInjection.Impl
 			InstanceFuncStrategy<T> instanceFuncStrategy = new InstanceFuncStrategy<T>(instanceFunction);
 
 			ExportInstanceConfiguration<T> returnValue =
-				new ExportInstanceConfiguration<T>(typeof(T), instanceFuncStrategy);
+				new ExportInstanceConfiguration<T>(instanceFuncStrategy);
 
 			strategyProviders.Add(returnValue);
 

@@ -547,6 +547,7 @@ namespace Grace.DependencyInjection
 			}
 		}
 
+      // ReSharper disable once UnusedMember.Local
 		private string DebugDisplayString
 		{
 			get { return "Exports: " + GetAllStrategies().Count(); }

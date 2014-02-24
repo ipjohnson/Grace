@@ -70,7 +70,6 @@ namespace Grace.DependencyInjection.Impl
 		/// Configure the export to import a method
 		/// </summary>
 		/// <param name="methodInfo"></param>
-		/// <param name="importValues"></param>
 		public void ImportMethod(ImportMethodInfo methodInfo)
 		{
 			delegateInfo.ImportMethod(methodInfo);

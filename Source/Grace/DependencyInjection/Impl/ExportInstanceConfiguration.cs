@@ -16,9 +16,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		/// <param name="exportType"></param>
 		/// <param name="exportStrategy"></param>
-		public ExportInstanceConfiguration(Type exportType, IConfigurableExportStrategy exportStrategy)
+		public ExportInstanceConfiguration(IConfigurableExportStrategy exportStrategy)
 		{
 			this.exportStrategy = exportStrategy;
 		}

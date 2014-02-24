@@ -402,6 +402,7 @@ namespace Grace.DependencyInjection.Impl
 			secondaryExports.Add(strategy);
 		}
 
+      // ReSharper disable once UnusedMember.Local
 		private string DebuggerDisplayString
 		{
 			get

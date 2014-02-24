@@ -119,6 +119,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			/// </summary>
 			/// <param name="arg1"></param>
 			/// <param name="arg2"></param>
+			/// <param name="arg3"></param>
 			/// <returns></returns>
 			public TReturn Activate(TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			{

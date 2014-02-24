@@ -97,8 +97,8 @@ namespace Grace.DependencyInjection.Impl
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
-						this.exportType.FullName,
-						exportType.FullName));
+						exportType.FullName,
+						typeof(T).FullName));
 			}
 
 			exportStrategy.AddExportType(typeof(T));

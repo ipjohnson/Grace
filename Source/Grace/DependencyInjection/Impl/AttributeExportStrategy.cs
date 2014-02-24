@@ -256,8 +256,6 @@ namespace Grace.DependencyInjection.Impl
 
 						if (attribute != null)
 						{
-							ImportAttributeInfo info = attribute.ProvideImportInfo(exportType, declaredMethod.Name);
-
 							ImportMethodInfo methodInfo = new ImportMethodInfo
 							                              {
 								                              MethodToImport = declaredMethod
