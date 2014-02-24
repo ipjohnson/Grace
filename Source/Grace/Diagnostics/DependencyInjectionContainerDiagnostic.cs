@@ -111,6 +111,7 @@ namespace Grace.Diagnostics
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string DebuggerPossibleMissingDependenciesString
 		{
 			get { return "Count = " + PossibleMissingDependencies.Count(); }

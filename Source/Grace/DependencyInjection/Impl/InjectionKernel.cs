@@ -1454,16 +1454,6 @@ namespace Grace.DependencyInjection.Impl
 			return null;
 		}
 
-		private object LocateOwned(Type tType, IInjectionContext injectionContext, ExportStrategyFilter consider)
-		{
-			return null;
-		}
-
-		private object LocateMeta(Type tType, IInjectionContext injectionContext, ExportStrategyFilter consider)
-		{
-			throw new NotImplementedException();
-		}
-
 		private List<T> InternalLocateAllWithContext<T>(IInjectionContext injectionContext,
 			string name,
 			Type locateType,

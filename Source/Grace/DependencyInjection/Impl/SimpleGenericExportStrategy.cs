@@ -89,7 +89,6 @@ namespace Grace.DependencyInjection.Impl
 			try
 			{
 				Type closedType = exportType.MakeGenericType(closingTypes);
-				TypeInfo closedTypeInfo = closedType.GetTypeInfo();
 				SimpleExportStrategy newExportStrategy = new SimpleExportStrategy(closedType);
 
 				foreach (string exportName in base.ExportNames)

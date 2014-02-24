@@ -11,6 +11,7 @@ namespace Grace.Diagnostics
 		public IExportStrategy Strategy { get; set; }
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string DebuggerDisplayString
 		{
 			get

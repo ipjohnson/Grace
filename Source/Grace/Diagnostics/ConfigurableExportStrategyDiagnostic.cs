@@ -76,24 +76,28 @@ namespace Grace.Diagnostics
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string DependencyDebugDisplayString
 		{
 			get { return "Count = " + strategy.DependsOn.Count(); }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string ExportNamesDisplayString
 		{
 			get { return "Count = " + strategy.ExportNames.Count(); }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string ExportTypesDisplayString
 		{
 			get { return "Count = " + strategy.ExportTypes.Count(); }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string HasConditionsDisplayString
 		{
 			get { return strategy.HasConditions.ToString(); }

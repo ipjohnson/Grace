@@ -31,6 +31,7 @@ namespace Grace.Diagnostics
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string DisplayValue
 		{
 			get
@@ -56,6 +57,7 @@ namespace Grace.Diagnostics
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+      // ReSharper disable once UnusedMember.Local
 		private string NameDisplayValue
 		{
 			get { return name + " "; }
