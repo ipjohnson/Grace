@@ -17,10 +17,10 @@ namespace Grace.DependencyInjection.Impl
 		private readonly Type exportType;
 
 		/// <summary>
-		/// 
+		/// Default constructor
 		/// </summary>
-		/// <param name="exportType"></param>
-		/// <param name="exportStrategy"></param>
+		/// <param name="exportType">type being exported</param>
+		/// <param name="exportStrategy">configurable strategy</param>
 		public FluentExportStrategyConfiguration(Type exportType, ICompiledExportStrategy exportStrategy)
 		{
 			this.exportType = exportType;
