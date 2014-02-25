@@ -156,11 +156,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn, TOut>(@in =>
 			                           {
-				                           IInjectionContext newInjectionContext = context.Clone();
+													IInjectionContext newInjectionContext = context.Clone();
 
+				                           newInjectionContext.TargetInfo = targetInfo;
 				                           newInjectionContext.RequestingScope = scope;
 				                           newInjectionContext.DisposalScope = disposal;
 
@@ -222,11 +224,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TOut>((in1, in2) =>
 			                                  {
 				                                  IInjectionContext newInjectionContext = context.Clone();
 
+				                                  newInjectionContext.TargetInfo = targetInfo;
 				                                  newInjectionContext.RequestingScope = scope;
 				                                  newInjectionContext.DisposalScope = disposal;
 
@@ -290,11 +294,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TIn3, TOut>((in1, in2, in3) =>
 			                                        {
 				                                        IInjectionContext newInjectionContext = context.Clone();
 
+				                                        newInjectionContext.TargetInfo = targetInfo;
 				                                        newInjectionContext.RequestingScope = scope;
 				                                        newInjectionContext.DisposalScope = disposal;
 
@@ -360,11 +366,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TOut>((in1, in2, in3, in4) =>
 			                                              {
 				                                              IInjectionContext newInjectionContext = context.Clone();
 
+				                                              newInjectionContext.TargetInfo = targetInfo;
 				                                              newInjectionContext.RequestingScope = scope;
 				                                              newInjectionContext.DisposalScope = disposal;
 
@@ -434,12 +442,14 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>(
 				(in1, in2, in3, in4, in5) =>
 				{
 					IInjectionContext newInjectionContext = context.Clone();
 
+					newInjectionContext.TargetInfo = targetInfo;
 					newInjectionContext.RequestingScope = scope;
 					newInjectionContext.DisposalScope = disposal;
 

@@ -88,6 +88,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		public class Helper
 		{
 			private readonly IInjectionContext injectionContext;
+			private readonly IInjectionScope scope;
+			private readonly IDisposalScope disposalScope;
+			private readonly IInjectionTargetInfo targetInfo;
 			private readonly string argName1;
 			private readonly string argName2;
 			private readonly string argName3;
@@ -108,6 +111,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				string argName3)
 			{
 				this.injectionContext = injectionContext;
+				scope = injectionContext.RequestingScope;
+				disposalScope = injectionContext.DisposalScope;
+				targetInfo = injectionContext.TargetInfo;
 				this.argName1 = argName1;
 				this.argName2 = argName2;
 				this.argName3 = argName3;
@@ -124,6 +130,10 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			public TReturn Activate(TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			{
 				IInjectionContext newInjectionContext = injectionContext.Clone();
+
+				newInjectionContext.RequestingScope = scope;
+				newInjectionContext.DisposalScope = disposalScope;
+				newInjectionContext.TargetInfo = targetInfo;
 
 				if (argName1 != null)
 				{

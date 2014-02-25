@@ -40,8 +40,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Annotations\JetBrains.Annotations.cs" />
+    <Compile Include="Data\ComplexData.cs" />
     <Compile Include="Data\ComplexDataChangedArgs.cs" />
     <Compile Include="Data\IComplexObject.cs" />
+    <Compile Include="Data\IComplexObjectExtensions.cs" />
     <Compile Include="Data\IExtraDataContainer.cs" />
     <Compile Include="Data\NotifyObject.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
@@ -180,7 +182,7 @@
     <Compile Include="DependencyInjection\Impl\ExportRegistrationBlock.cs" />
     <Compile Include="DependencyInjection\Impl\ExportStrategyListProvider.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.cs" />
-    <Compile Include="DependencyInjection\Impl\FuncExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\FuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\FuncValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\FuncWithContextValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\DelegateFactory\GenericFuncExportStrategy.cs" />

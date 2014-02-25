@@ -1221,6 +1221,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return () =>
 			       {
@@ -1228,6 +1229,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				       injectionContext.RequestingScope = scope;
 				       injectionContext.DisposalScope = disposal;
+				       injectionContext.TargetInfo = targetInfo;
 
 				       return scope.Locate<T>(injectionContext, exportStrategyFilter);
 			       };
@@ -1255,9 +1257,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		public static Func<Type, object> CreateFuncType(IInjectionContext context,
 			ExportStrategyFilter exportStrategyFilter)
 		{
-
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return type =>
 			       {
@@ -1265,6 +1267,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				       newContext.DisposalScope = disposal;
 				       newContext.RequestingScope = scope;
+				       newContext.TargetInfo = targetInfo;
 
 				       return scope.Locate(type, newContext, exportStrategyFilter);
 			       };
@@ -1318,6 +1321,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		{
 			IInjectionScope scope = injectionContext.RequestingScope;
 			IDisposalScope disposal = injectionContext.DisposalScope;
+			IInjectionTargetInfo targetInfo = injectionContext.TargetInfo;
 
 			return new Lazy<T>(() =>
 			                   {
@@ -1325,6 +1329,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				                   clonedContext.RequestingScope = scope;
 				                   clonedContext.DisposalScope = disposal;
+				                   clonedContext.TargetInfo = targetInfo;
 
 										 return scope.Locate<T>(clonedContext, exportStrategyFilter);
 			                   });

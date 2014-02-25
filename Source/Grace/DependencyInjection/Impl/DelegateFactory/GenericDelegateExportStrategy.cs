@@ -25,6 +25,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// </summary>
 		public class Helper
 		{
+			private readonly IInjectionTargetInfo targetInfo;
 			private readonly IInjectionContext context;
 			private readonly ExportStrategyFilter consider;
 			private readonly IInjectionScope requestingInjectionScope;
@@ -42,6 +43,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 				requestingInjectionScope = context.RequestingScope;
 				disposalScope = context.DisposalScope;
+				targetInfo = context.TargetInfo;
 			}
 
 			/// <summary>
@@ -52,6 +54,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			{
 				IInjectionContext clonedContext = context.Clone();
 
+				clonedContext.TargetInfo = targetInfo;
 				clonedContext.RequestingScope = requestingInjectionScope;
 				clonedContext.DisposalScope = disposalScope;
 

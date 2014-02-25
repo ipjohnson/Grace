@@ -19,10 +19,21 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
-			IInjectionContext clonedContext = context.Clone();
+			IInjectionScope scope = context.RequestingScope;
+			IDisposalScope disposalScope = context.DisposalScope;
+			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Lazy<T>(
-				() => exportInjectionScope.Locate<T>(clonedContext));
+				() =>
+				{
+					IInjectionContext cloneContext = context.Clone();
+
+					cloneContext.RequestingScope = scope;
+					cloneContext.DisposalScope = disposalScope;
+					cloneContext.TargetInfo = targetInfo;
+
+					return scope.Locate<T>(cloneContext, consider);
+				});
 		}
 
 		/// <summary>
