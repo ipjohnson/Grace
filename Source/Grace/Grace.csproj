@@ -198,6 +198,7 @@
     <Compile Include="DependencyInjection\Impl\OwnedStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ReadOnlyCollectionExportStrategy.cs" />
     <Compile Include="DependencyInjection\ISecondaryExportLocator.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\HybridLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\ILifestyle.cs" />
     <Compile Include="DependencyInjection\DependencyInjectionContainer.cs" />
     <Compile Include="DependencyInjection\Impl\ExportStrategyCollection.cs" />

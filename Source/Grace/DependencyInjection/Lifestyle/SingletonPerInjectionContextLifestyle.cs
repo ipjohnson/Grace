@@ -9,6 +9,9 @@ namespace Grace.DependencyInjection.Lifestyle
 	{
 		private readonly string key = Guid.NewGuid().ToString();
 
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
 		public void Dispose()
 		{
 		}
