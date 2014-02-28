@@ -17,7 +17,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly ILog log = Logger.GetLogger<ExportStrategyCollection>();
 		private bool disposed;
 		private ReadOnlyCollection<IExportStrategy> exportStrategies;
-		private IExportStrategy primaryStrategy;
+		private volatile IExportStrategy primaryStrategy;
 
 		/// <summary>
 		/// Default Constructor

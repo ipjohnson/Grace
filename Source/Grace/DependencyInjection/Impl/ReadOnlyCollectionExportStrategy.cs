@@ -8,16 +8,16 @@ namespace Grace.DependencyInjection.Impl
 	/// <summary>
 	/// Export strategy to create ReadOnlyCollection(T) objects
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">type to locate</typeparam>
 	public class ReadOnlyCollectionExportStrategy<T> : IExportStrategy
 	{
 		/// <summary>
 		/// Activate the export
 		/// </summary>
-		/// <param name="exportInjectionScope"></param>
-		/// <param name="context"></param>
-		/// <param name="consider"></param>
-		/// <returns></returns>
+		/// <param name="exportInjectionScope">export injection scope</param>
+		/// <param name="context">injection context</param>
+		/// <param name="consider">consider filter</param>
+		/// <returns>activated object</returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
 		{
 			return new ReadOnlyCollection<T>(exportInjectionScope.LocateAll<T>(context, consider));

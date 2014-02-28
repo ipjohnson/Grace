@@ -805,14 +805,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)), assignStatementExpression);
 				}
 
-				Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, rootIfExpression,targetInfo);
-				Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, requestScopeIfExpression, targetInfo);
+				//Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, rootIfExpression,targetInfo);
+				//Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, requestScopeIfExpression, targetInfo);
 
 				rootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
-				rootObjectImportExpressions.Add(tryCatchRootExpression);
+				rootObjectImportExpressions.Add(rootIfExpression);
 
 				nonRootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
-				nonRootObjectImportExpressions.Add(tryCatchRequestExpression);
+				nonRootObjectImportExpressions.Add(requestScopeIfExpression);
 			}
 			else
 			{
@@ -825,10 +825,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							injectionContextParameter,
 							Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter))));
 
-				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, assignRoot, targetInfo);
+				//Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, assignRoot, targetInfo);
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(tryCatchExpression);
+				objectImportExpression.Add(assignRoot);
 			}
 		}
 
@@ -861,7 +861,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			CatchBlock catchBlock = Expression.Catch(exceptionParameter, catchBody);
 
-			return Expression.TryCatch(expression, catchBlock);
+			return Expression.TryCatch(Expression.Block(typeof(void), expression), catchBlock);
 		}
 
 		private void ImportFromRequestingScope(Type importType,

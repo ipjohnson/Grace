@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
@@ -445,6 +446,9 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			object returnValue = null;
+
+			try
+			{
 			ExportStrategyCollection collection;
 
 			if (exportsByType.TryGetValue(objectType, out collection))
@@ -512,7 +516,25 @@ namespace Grace.DependencyInjection.Impl
 				returnValue = ProcessICollectionType(injectionContext, objectType, consider);
 			}
 
-			return returnValue ?? ResolveUnknownExport(objectType, null, injectionContext, consider);
+				if (returnValue == null)
+				{
+					returnValue = ResolveUnknownExport(objectType, null, injectionContext, consider);
+				}
+			}
+			catch (Exception exp)
+			{
+				if (kernelManager.Container != null &&
+					 kernelManager.Container.ThrowExceptions)
+				{
+					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from Locate by type {0} in scope {1} id {2}", objectType.FullName, ScopeName, ScopeId),
+					exp);
+			}
+
+			return returnValue;
 		}
 
 		/// <summary>
