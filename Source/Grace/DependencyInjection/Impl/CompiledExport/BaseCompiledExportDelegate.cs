@@ -29,6 +29,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
 		protected static readonly ConstructorInfo MissingDependencyExceptionConstructor;
 		protected static readonly ConstructorInfo LocationInformationEntryConstructor;
+		protected static readonly ConstructorInfo GeneralLocateExceptionConstructor;
 		protected static readonly Attribute[] EmptyAttributesArray = new Attribute[0];
 
 		protected readonly IEnumerable<Attribute> activationTypeAttributes;
@@ -50,7 +51,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected ParameterExpression exportStrategyScopeParameter;
 
 		/// <summary>
-		/// List of expressions that loacte the import from the injection context before resolving
+		/// List of expressions that locate the import from the injection context before resolving
 		/// </summary>
 		protected List<Expression> importInjectionContextExpressions;
 
@@ -127,13 +128,16 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter)
 				});
 
-			MissingDependencyExceptionConstructor = typeof(MissingDependencyException).GetTypeInfo().DeclaredConstructors.First();
+			MissingDependencyExceptionConstructor = typeof(MissingDependencyException).GetTypeInfo().DeclaredConstructors.First(x => x.GetParameters().Length == 3);
 
 			DisposalScopeMissingExceptionConstructor =
 				typeof(DisposalScopeMissingException).GetTypeInfo().DeclaredConstructors.First();
 
 			LocationInformationEntryConstructor =
 				typeof(LocationInformationEntry).GetTypeInfo().DeclaredConstructors.First();
+
+			GeneralLocateExceptionConstructor =
+				typeof(GeneralLocateException).GetTypeInfo().DeclaredConstructors.First();
 
 			AddToDisposalScopeMethod = typeof(IDisposalScope).GetRuntimeMethod("AddDisposable",
 				new[]
@@ -805,14 +809,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)), assignStatementExpression);
 				}
 
-				//Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, rootIfExpression,targetInfo);
-				//Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, requestScopeIfExpression, targetInfo);
+				Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, rootIfExpression, targetInfo);
+				Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, requestScopeIfExpression, targetInfo);
 
 				rootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
-				rootObjectImportExpressions.Add(rootIfExpression);
+				rootObjectImportExpressions.Add(tryCatchRootExpression);
 
 				nonRootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
-				nonRootObjectImportExpressions.Add(requestScopeIfExpression);
+				nonRootObjectImportExpressions.Add(tryCatchRequestExpression);
 			}
 			else
 			{
@@ -825,17 +829,26 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							injectionContextParameter,
 							Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter))));
 
-				//Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, assignRoot, targetInfo);
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, assignRoot, targetInfo);
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(assignRoot);
+				objectImportExpression.Add(tryCatchExpression);
 			}
 		}
 
 		private Expression CreateTryCatchUpdateException(string exportName, Type importType, Expression expression, IInjectionTargetInfo targetInfo)
 		{
-			ParameterExpression exceptionParameter = Expression.Parameter(typeof(LocateException));
+			CatchBlock catchBlock = CreateLocateExceptionCatchBlock(exportName, importType, targetInfo);
 
+			CatchBlock generalCatchBlock = CreateGeneralExceptionCatchBlock(exportName, importType, targetInfo);
+
+			return Expression.TryCatch(Expression.Block(typeof(void), expression), catchBlock, generalCatchBlock);
+		}
+
+		private CatchBlock CreateLocateExceptionCatchBlock(string exportName,
+			Type importType,
+			IInjectionTargetInfo targetInfo)
+		{
 			Expression exportNameExpression = Expression.Constant(exportName);
 
 			if (exportName == null)
@@ -850,18 +863,61 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				exportTypeExpression = Expression.Convert(exportTypeExpression, typeof(Type));
 			}
 
+			ParameterExpression exceptionParameter = Expression.Parameter(typeof(LocateException));
+
 			BlockExpression catchBody = Expression.Block(new[] { exceptionParameter },
 																		Expression.Call(exceptionParameter,
-																							 AddLocationInformationEntryMethod, 
-																							 Expression.New(LocationInformationEntryConstructor,
-																												exportNameExpression,
-																												exportTypeExpression, 
-																												Expression.Constant(targetInfo))),
+																			AddLocationInformationEntryMethod,
+																			Expression.New(LocationInformationEntryConstructor,
+																				exportNameExpression,
+																				exportTypeExpression,
+																				Expression.Constant(targetInfo))),
 																		Expression.Rethrow());
 
-			CatchBlock catchBlock = Expression.Catch(exceptionParameter, catchBody);
+			return Expression.Catch(exceptionParameter, catchBody); ;
+		}
 
-			return Expression.TryCatch(Expression.Block(typeof(void), expression), catchBlock);
+		private  CatchBlock CreateGeneralExceptionCatchBlock(string exportName,
+																					  Type importType,
+																					  IInjectionTargetInfo targetInfo)
+		{
+			Expression exportNameExpression = Expression.Constant(exportName);
+
+			if (exportName == null)
+			{
+				exportNameExpression = Expression.Convert(exportNameExpression, typeof(string));
+			}
+
+			Expression exportTypeExpression = Expression.Constant(importType);
+
+			if (importType == null)
+			{
+				exportTypeExpression = Expression.Convert(exportTypeExpression, typeof(Type));
+			}
+
+			ParameterExpression exceptionParameter = Expression.Parameter(typeof(Exception));
+
+			ParameterExpression generalException = Expression.Variable(typeof(GeneralLocateException));
+
+			Expression newExpression = Expression.New(GeneralLocateExceptionConstructor,
+																	exportNameExpression,
+																	exportTypeExpression,
+																	injectionContextParameter,
+																	exceptionParameter);
+
+			Expression addExpression = Expression.Call(generalException,
+																	 AddLocationInformationEntryMethod,
+																	 Expression.New(LocationInformationEntryConstructor,
+																						 exportNameExpression,
+																						 exportTypeExpression,
+																						 Expression.Constant(targetInfo)));
+
+			BlockExpression catchBody = Expression.Block(new[] { exceptionParameter, generalException },
+																		Expression.Assign(generalException, newExpression),
+																		addExpression,
+																		Expression.Throw(generalException));
+
+			return Expression.Catch(exceptionParameter, catchBody);
 		}
 
 		private void ImportFromRequestingScope(Type importType,

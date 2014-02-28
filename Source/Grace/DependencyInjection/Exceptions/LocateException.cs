@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Exceptions
 	/// </summary>
 	public class LocateException : Exception
 	{
-		private readonly List<LocationInformationEntry> locationInformation = new List<LocationInformationEntry>(); 
+		private readonly List<LocationInformationEntry> locationInformation = new List<LocationInformationEntry>();
 		private readonly string locateName;
 		private readonly Type locatingType;
 		private readonly IInjectionContext currentContext;
@@ -58,6 +58,21 @@ namespace Grace.DependencyInjection.Exceptions
 		/// <param name="locatingType">the type used when locating</param>
 		/// <param name="currentContext">the current context when the exception was generated</param>
 		public LocateException(string locateName, Type locatingType, IInjectionContext currentContext)
+		{
+			this.locateName = locateName;
+			this.locatingType = locatingType;
+			this.currentContext = currentContext.Clone();
+		}
+
+		/// <summary>
+		/// Constructor that takes inner exception
+		/// </summary>
+		/// <param name="locateName">locate name</param>
+		/// <param name="locatingType">locate type</param>
+		/// <param name="currentContext">injection context</param>
+		/// <param name="innerException">inner exception</param>
+		public LocateException(string locateName, Type locatingType, IInjectionContext currentContext, Exception innerException)
+			: base("", innerException)
 		{
 			this.locateName = locateName;
 			this.locatingType = locatingType;

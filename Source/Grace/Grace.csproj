@@ -91,6 +91,7 @@
     <Compile Include="DependencyInjection\Enumerations.cs" />
     <Compile Include="DependencyInjection\Exceptions\DependencyLoopException.cs" />
     <Compile Include="DependencyInjection\Exceptions\ExportMissingException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\ImportTypeMismatchException.cs" />
     <Compile Include="DependencyInjection\Exceptions\LocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\MissingDependencyException.cs" />

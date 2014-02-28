@@ -449,88 +449,106 @@ namespace Grace.DependencyInjection.Impl
 
 			try
 			{
-			ExportStrategyCollection collection;
+				ExportStrategyCollection collection;
 
-			if (exportsByType.TryGetValue(objectType, out collection))
-			{
-				returnValue = collection.Activate(null, objectType, injectionContext, consider);
-
-				if (returnValue != null)
-				{
-					return returnValue;
-				}
-			}
-
-			if (objectType.IsConstructedGenericType)
-			{
-				IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext);
-
-				// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
-				// and they have a singleton you have to use the same export strategy
-				if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
+				if (exportsByType.TryGetValue(objectType, out collection))
 				{
 					returnValue = collection.Activate(null, objectType, injectionContext, consider);
-				}
-			}
-
-			ReadOnlyCollection<ISecondaryExportLocator> tempSecondaryResolvers = secondaryResolvers;
-
-			if (returnValue == null && tempSecondaryResolvers != null)
-			{
-				foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
-				{
-					returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider);
 
 					if (returnValue != null)
 					{
-						break;
+						return returnValue;
 					}
 				}
-			}
 
-			if (returnValue == null && ParentScope != null)
-			{
-				returnValue = ParentScope.Locate(objectType, injectionContext, consider);
-			}
+				if (objectType.IsConstructedGenericType)
+				{
+					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext);
 
-			if (returnValue != null || injectionContext.RequestingScope != this)
-			{
-				return returnValue;
-			}
+					// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
+					// and they have a singleton you have to use the same export strategy
+					if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
+					{
+						returnValue = collection.Activate(null, objectType, injectionContext, consider);
+					}
+				}
 
-			if (objectType.IsConstructedGenericType)
-			{
-				returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider);
-			}
-			else if (objectType.IsArray)
-			{
-				returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
-			}
-			else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
-			{
-				returnValue = ProcessDelegateType(injectionContext, objectType, consider);
-			}
+				ReadOnlyCollection<ISecondaryExportLocator> tempSecondaryResolvers = secondaryResolvers;
 
-			if (returnValue == null)
-			{
-				returnValue = ProcessICollectionType(injectionContext, objectType, consider);
-			}
+				if (returnValue == null && tempSecondaryResolvers != null)
+				{
+					foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
+					{
+						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider);
+
+						if (returnValue != null)
+						{
+							break;
+						}
+					}
+				}
+
+				if (returnValue == null && ParentScope != null)
+				{
+					returnValue = ParentScope.Locate(objectType, injectionContext, consider);
+				}
+
+				if (returnValue != null || injectionContext.RequestingScope != this)
+				{
+					return returnValue;
+				}
+
+				if (objectType.IsConstructedGenericType)
+				{
+					returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider);
+				}
+				else if (objectType.IsArray)
+				{
+					returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
+				}
+				else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
+				{
+					returnValue = ProcessDelegateType(injectionContext, objectType, consider);
+				}
+
+				if (returnValue == null)
+				{
+					returnValue = ProcessICollectionType(injectionContext, objectType, consider);
+				}
 
 				if (returnValue == null)
 				{
 					returnValue = ResolveUnknownExport(objectType, null, injectionContext, consider);
 				}
 			}
-			catch (Exception exp)
+			catch (LocateException exp)
 			{
 				if (kernelManager.Container != null &&
-					 kernelManager.Container.ThrowExceptions)
+				    kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
 
 				log.Error(
-					string.Format("Exception was thrown from Locate by type {0} in scope {1} id {2}", objectType.FullName, ScopeName, ScopeId),
+					string.Format("Exception was thrown from Locate by type {0} in scope {1} id {2}",
+						objectType.FullName,
+						ScopeName,
+						ScopeId),
+					exp);
+			}
+			catch (Exception exp)
+			{
+				if (kernelManager.Container != null &&
+				    kernelManager.Container.ThrowExceptions)
+				{
+					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from Locate by type {0} in scope {1} id {2}",
+						objectType.FullName,
+						ScopeName,
+						ScopeId),
 					exp);
 			}
 
@@ -613,6 +631,18 @@ namespace Grace.DependencyInjection.Impl
 				{
 					return returnValue;
 				}
+			}
+			catch (LocateException exp)
+			{
+				if (kernelManager.Container != null &&
+					kernelManager.Container.ThrowExceptions)
+				{
+					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from Locate by name {0} in scope {1} id {2}", exportName, ScopeName, ScopeId),
+					exp);
 			}
 			catch (Exception exp)
 			{
