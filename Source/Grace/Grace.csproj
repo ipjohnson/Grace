@@ -92,6 +92,8 @@
     <Compile Include="DependencyInjection\Exceptions\DependencyLoopException.cs" />
     <Compile Include="DependencyInjection\Exceptions\ExportMissingException.cs" />
     <Compile Include="DependencyInjection\Exceptions\ImportTypeMismatchException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\LocateException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\MissingDependencyException.cs" />
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />

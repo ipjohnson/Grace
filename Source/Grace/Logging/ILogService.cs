@@ -10,15 +10,15 @@ namespace Grace.Logging
 		/// <summary>
 		/// Get a log instance based on type
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">type of logger to get</param>
+		/// <returns>ILog instance</returns>
 		ILog GetLogger(Type type);
 
 		/// <summary>
 		/// Get a log instance by name
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
+		/// <param name="name">logger name to get</param>
+		/// <returns>ILog instance</returns>
 		ILog GetLogger(string name);
 	}
 }

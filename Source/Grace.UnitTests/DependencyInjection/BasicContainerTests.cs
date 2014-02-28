@@ -207,7 +207,7 @@ namespace Grace.UnitTests.DependencyInjection
 			{
 				constructorService = container.Locate<IImportConstructorService>();
 			}
-			catch (Exception)
+			catch (Exception exp)
 			{
 				exceptionThrown = true;
 			}

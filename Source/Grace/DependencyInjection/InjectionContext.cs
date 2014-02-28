@@ -79,6 +79,7 @@ namespace Grace.DependencyInjection
 				injectionContext.extraData = new Dictionary<string, object>(extraData);
 			}
 
+			injectionContext.TargetInfo = TargetInfo;
 			injectionContext.resolveDepth = resolveDepth;
 			injectionContext.RequestingScope = RequestingScope;
 			injectionContext.DisposalScope = DisposalScope;

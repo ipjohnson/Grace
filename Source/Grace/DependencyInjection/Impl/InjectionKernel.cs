@@ -250,12 +250,12 @@ namespace Grace.DependencyInjection.Impl
 			IDisposalScopeProvider newProvider = (scopeProvider ?? disposalScopeProvider) ?? parentScopeProvider;
 
 			InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, newProvider, ScopeName, comparer)
-			                              {
-				                              ParentScope = parentScope,
-				                              Environment = Environment,
-				                              exportsByName = exportsByName,
-				                              exportsByType = exportsByType
-			                              };
+													{
+														ParentScope = parentScope,
+														Environment = Environment,
+														exportsByName = exportsByName,
+														exportsByType = exportsByType
+													};
 
 			return returnValue;
 		}
@@ -444,165 +444,75 @@ namespace Grace.DependencyInjection.Impl
 				injectionContext = CreateContext();
 			}
 
-			try
+			object returnValue = null;
+			ExportStrategyCollection collection;
+
+			if (exportsByType.TryGetValue(objectType, out collection))
 			{
-				object returnValue = null;
-				ExportStrategyCollection collection;
-
-				if (exportsByType.TryGetValue(objectType, out collection))
-				{
-					returnValue = collection.Activate(null, objectType, injectionContext, consider);
-
-					if (returnValue != null)
-					{
-						return returnValue;
-					}
-				}
-
-				if (objectType.IsConstructedGenericType)
-				{
-					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext);
-
-					// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
-					// and they have a singleton you have to use the same export strategy
-					if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
-					{
-						returnValue = collection.Activate(null, objectType, injectionContext, consider);
-					}
-				}
-
-				ReadOnlyCollection<ISecondaryExportLocator> tempSecondaryResolvers = secondaryResolvers;
-
-				if (returnValue == null && tempSecondaryResolvers != null)
-				{
-					foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
-					{
-						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider);
-
-						if (returnValue != null)
-						{
-							break;
-						}
-					}
-				}
-
-				if (returnValue == null && ParentScope != null)
-				{
-					returnValue = ParentScope.Locate(objectType, injectionContext, consider);
-				}
-
-				if (returnValue == null && injectionContext.RequestingScope == this)
-				{
-					if (objectType.IsConstructedGenericType)
-					{
-						returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider);
-					}
-					else if (objectType.IsArray)
-					{
-						returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
-					}
-					else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
-					{
-						returnValue = ProcessDelegateType(injectionContext, objectType, consider);
-					}
-
-					if (returnValue == null)
-					{
-						returnValue = ProcessICollectionType(injectionContext, objectType, consider);
-					}
-
-					if (returnValue == null)
-					{
-						returnValue = ResolveUnknownExport(objectType, null, injectionContext, consider);
-					}
-				}
+				returnValue = collection.Activate(null, objectType, injectionContext, consider);
 
 				if (returnValue != null)
 				{
 					return returnValue;
 				}
 			}
-			catch (Exception exp)
-			{
-				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
-				{
-					throw;
-				}
 
-				log.Error(
-					string.Format("Exception was thrown from Locate by type {0} in scope {1} id {2}",
-						objectType.FullName,
-						ScopeName,
-						ScopeId),
-					exp);
+			if (objectType.IsConstructedGenericType)
+			{
+				IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext);
+
+				// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
+				// and they have a singleton you have to use the same export strategy
+				if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
+				{
+					returnValue = collection.Activate(null, objectType, injectionContext, consider);
+				}
 			}
 
-			if (kernelManager.Container != null &&
-			    kernelManager.Container.ThrowExceptions)
+			ReadOnlyCollection<ISecondaryExportLocator> tempSecondaryResolvers = secondaryResolvers;
+
+			if (returnValue == null && tempSecondaryResolvers != null)
 			{
-				throw new ExportMissingException(objectType.FullName);
-			}
-
-			return null;
-		}
-
-		private object ProcessDelegateType(IInjectionContext injectionContext, Type objectType, ExportStrategyFilter consider)
-		{
-			object returnValue = null;
-			MethodInfo invokeInfo = objectType.GetTypeInfo().GetDeclaredMethod("Invoke");
-
-			if (invokeInfo.ReturnType != typeof(void))
-			{
-				ParameterInfo[] parameterInfos = invokeInfo.GetParameters().ToArray();
-				Type openType = null;
-
-				switch (parameterInfos.Length)
+				foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
 				{
-					case 0:
-						openType = typeof(GenericDelegateExportStrategy<,>);
-						break;
-					case 1:
-						openType = typeof(GenericDelegateExportStrategy<,,>);
-						break;
-					case 2:
-						openType = typeof(GenericDelegateExportStrategy<,,,>);
-						break;
-					case 3:
-						openType = typeof(GenericDelegateExportStrategy<,,,,>);
-						break;
-					case 4:
-						openType = typeof(GenericDelegateExportStrategy<,,,,,>);
-						break;
-					case 5:
-						openType = typeof(GenericDelegateExportStrategy<,,,,,,>);
-						break;
-				}
+					returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider);
 
-				if (openType != null)
-				{
-					List<Type> closeList = new List<Type>
-					                       {
-						                       objectType,
-						                       invokeInfo.ReturnType
-					                       };
-
-					closeList.AddRange(parameterInfos.Select(x => x.ParameterType));
-
-					Type closedType = openType.MakeGenericType(closeList.ToArray());
-
-					IExportStrategy exportStrategy = Activator.CreateInstance(closedType) as IExportStrategy;
-
-					if (exportStrategy != null)
+					if (returnValue != null)
 					{
-						AddStrategy(exportStrategy);
-
-						returnValue = exportStrategy.Activate(this, injectionContext, consider);
+						break;
 					}
 				}
 			}
 
-			return returnValue;
+			if (returnValue == null && ParentScope != null)
+			{
+				returnValue = ParentScope.Locate(objectType, injectionContext, consider);
+			}
+
+			if (returnValue != null || injectionContext.RequestingScope != this)
+			{
+				return returnValue;
+			}
+
+			if (objectType.IsConstructedGenericType)
+			{
+				returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider);
+			}
+			else if (objectType.IsArray)
+			{
+				returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
+			}
+			else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
+			{
+				returnValue = ProcessDelegateType(injectionContext, objectType, consider);
+			}
+
+			if (returnValue == null)
+			{
+				returnValue = ProcessICollectionType(injectionContext, objectType, consider);
+			}
+
+			return returnValue ?? ResolveUnknownExport(objectType, null, injectionContext, consider);
 		}
 
 		/// <summary>
@@ -685,7 +595,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -693,12 +603,6 @@ namespace Grace.DependencyInjection.Impl
 				log.Error(
 					string.Format("Exception was thrown from Locate by name {0} in scope {1} id {2}", exportName, ScopeName, ScopeId),
 					exp);
-			}
-
-			if (kernelManager.Container != null &&
-			    kernelManager.Container.ThrowExceptions)
-			{
-				throw new ExportMissingException(exportName);
 			}
 
 			return null;
@@ -737,7 +641,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -802,7 +706,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -858,7 +762,7 @@ namespace Grace.DependencyInjection.Impl
 			catch (Exception exp)
 			{
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -941,7 +845,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 				{
 					if (!returnValue.Contains(exportStrategy) &&
-					    (exportFilter == null || exportFilter(context, exportStrategy)))
+						 (exportFilter == null || exportFilter(context, exportStrategy)))
 					{
 						returnValue.Add(exportStrategy);
 					}
@@ -955,7 +859,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 				{
 					if (!returnValue.Contains(exportStrategy) &&
-					    (exportFilter == null || exportFilter(context, exportStrategy)))
+						 (exportFilter == null || exportFilter(context, exportStrategy)))
 					{
 						returnValue.Add(exportStrategy);
 					}
@@ -1024,8 +928,8 @@ namespace Grace.DependencyInjection.Impl
 						IGenericExportStrategy genericExportStrategy = strategy as IGenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-						    genericExportStrategy.MeetsCondition(injectionContext) &&
-						    genericExportStrategy.CheckGenericConstrataints(closingTypes))
+							 genericExportStrategy.MeetsCondition(injectionContext) &&
+							 genericExportStrategy.CheckGenericConstrataints(closingTypes))
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{
@@ -1071,7 +975,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (IExportStrategy exportStrategy in returnValue.ExportStrategies)
 				{
 					if (exportStrategy.MeetsCondition(context) &&
-					    (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
+						 (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
 					{
 						yield return exportStrategy;
 					}
@@ -1098,7 +1002,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (IExportStrategy exportStrategy in returnValue.ExportStrategies)
 				{
 					if (exportStrategy.MeetsCondition(context) &&
-					    (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
+						 (exportFilter == null || exportFilter(injectionContext, exportStrategy)))
 					{
 						yield return exportStrategy;
 					}
@@ -1295,13 +1199,13 @@ namespace Grace.DependencyInjection.Impl
 		public static bool ImportTypeByName(Type importType)
 		{
 			return importType.GetTypeInfo().IsPrimitive ||
-			       importType.GetTypeInfo().IsEnum ||
-			       importType == typeof(string) ||
+					 importType.GetTypeInfo().IsEnum ||
+					 importType == typeof(string) ||
 					 importType == typeof(decimal) ||
-			       importType == typeof(DateTime) ||
-			       importType == typeof(DateTimeOffset) ||
-			       importType == typeof(TimeSpan) ||
-			       importType == typeof(Guid);
+					 importType == typeof(DateTime) ||
+					 importType == typeof(DateTimeOffset) ||
+					 importType == typeof(TimeSpan) ||
+					 importType == typeof(Guid);
 		}
 
 		#endregion
@@ -1361,11 +1265,11 @@ namespace Grace.DependencyInjection.Impl
 				returnValue = kernelManager.Container.LocateMissingExport(injectionContext, resolveName, resolveType, consider);
 
 				if (returnValue == null &&
-				    kernelManager.Container.AutoRegisterUnknown &&
-				    resolveType != null &&
-				    string.IsNullOrEmpty(resolveName) &&
-				    !resolveType.GetTypeInfo().IsAbstract &&
-				    !resolveType.GetTypeInfo().IsGenericTypeDefinition)
+					 kernelManager.Container.AutoRegisterUnknown &&
+					 resolveType != null &&
+					 string.IsNullOrEmpty(resolveName) &&
+					 !resolveType.GetTypeInfo().IsAbstract &&
+					 !resolveType.GetTypeInfo().IsGenericTypeDefinition)
 				{
 					ConcreteAttributeExportStrategy strategy =
 						new ConcreteAttributeExportStrategy(resolveType,
@@ -1419,6 +1323,65 @@ namespace Grace.DependencyInjection.Impl
 
 			return null;
 		}
+
+		private object ProcessDelegateType(IInjectionContext injectionContext, Type objectType, ExportStrategyFilter consider)
+		{
+			object returnValue = null;
+			MethodInfo invokeInfo = objectType.GetTypeInfo().GetDeclaredMethod("Invoke");
+
+			if (invokeInfo.ReturnType != typeof(void))
+			{
+				ParameterInfo[] parameterInfos = invokeInfo.GetParameters().ToArray();
+				Type openType = null;
+
+				switch (parameterInfos.Length)
+				{
+					case 0:
+						openType = typeof(GenericDelegateExportStrategy<,>);
+						break;
+					case 1:
+						openType = typeof(GenericDelegateExportStrategy<,,>);
+						break;
+					case 2:
+						openType = typeof(GenericDelegateExportStrategy<,,,>);
+						break;
+					case 3:
+						openType = typeof(GenericDelegateExportStrategy<,,,,>);
+						break;
+					case 4:
+						openType = typeof(GenericDelegateExportStrategy<,,,,,>);
+						break;
+					case 5:
+						openType = typeof(GenericDelegateExportStrategy<,,,,,,>);
+						break;
+				}
+
+				if (openType != null)
+				{
+					List<Type> closeList = new List<Type>
+					                       {
+						                       objectType,
+						                       invokeInfo.ReturnType
+					                       };
+
+					closeList.AddRange(parameterInfos.Select(x => x.ParameterType));
+
+					Type closedType = openType.MakeGenericType(closeList.ToArray());
+
+					IExportStrategy exportStrategy = Activator.CreateInstance(closedType) as IExportStrategy;
+
+					if (exportStrategy != null)
+					{
+						AddStrategy(exportStrategy);
+
+						returnValue = exportStrategy.Activate(this, injectionContext, consider);
+					}
+				}
+			}
+
+			return returnValue;
+		}
+
 
 		private object ProcessArrayType<T>(IInjectionContext injectionContext, Type tType, ExportStrategyFilter consider)
 		{
@@ -1587,8 +1550,8 @@ namespace Grace.DependencyInjection.Impl
 						GenericExportStrategy genericExportStrategy = exportStrategy as GenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-						    genericExportStrategy.MeetsCondition(injectionContext) &&
-						    genericExportStrategy.CheckGenericConstrataints(genericArgs))
+							 genericExportStrategy.MeetsCondition(injectionContext) &&
+							 genericExportStrategy.CheckGenericConstrataints(genericArgs))
 						{
 							IExportStrategy newStrategy =
 								genericExportStrategy.CreateClosedStrategy(genericArgs);

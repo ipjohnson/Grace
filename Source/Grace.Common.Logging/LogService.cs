@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Grace.Logging;
-using l4n = log4net;
+using CommonLogging = Common.Logging;
 
-namespace Grace.log4net
+
+namespace Grace.Common.Logging
 {
 	/// <summary>
-	/// Log service that wraps log4net LogManager
+	/// Log wrapper around Common.Logging.LogManager
 	/// </summary>
-	public class LogService : ILogService
+	public class LogService : Grace.Logging.ILogService
 	{
-
 		/// <summary>
 		/// Get a log instance based on type
 		/// </summary>
@@ -19,9 +23,9 @@ namespace Grace.log4net
 		/// </returns>
 		public ILog GetLogger(Type type)
 		{
-			l4n.ILog log = l4n.LogManager.GetLogger(type);
+			var logger = CommonLogging.LogManager.GetLogger(type);
 
-			return new LogWrapper(log);
+			return new LogWrapper(logger);
 		}
 
 		/// <summary>
@@ -33,9 +37,9 @@ namespace Grace.log4net
 		/// </returns>
 		public ILog GetLogger(string name)
 		{
-			l4n.ILog log = l4n.LogManager.GetLogger(name);
+			var logger = CommonLogging.LogManager.GetLogger(name);
 
-			return new LogWrapper(log);
+			return new LogWrapper(logger);
 		}
 	}
 }

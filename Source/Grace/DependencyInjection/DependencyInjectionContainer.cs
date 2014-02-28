@@ -43,6 +43,7 @@ namespace Grace.DependencyInjection
 			injectionKernelManager = new InjectionKernelManager(this, localComparer, blackList);
 
 			AutoRegisterUnknown = true;
+			ThrowExceptions = true;
 
 			RootScope = new InjectionKernel(injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer)
 			            {

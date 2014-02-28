@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace", "Grace\Grace.csproj", "{2E64FA60-F2CD-428C-8413-D71B4BF5935A}"
 EndProject
@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2605CB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecFiles", "NuSpecFiles", "{F3A527B7-F1C4-4D78-AAE6-B908B6F93024}"
 	ProjectSection(SolutionItems) = preProject
+		..\NuGet\Grace.Common.Logging.nuspec = ..\NuGet\Grace.Common.Logging.nuspec
 		..\NuGet\Grace.FakeItEasy.nuspec = ..\NuGet\Grace.FakeItEasy.nuspec
 		..\NuGet\Grace.log4net.nuspec = ..\NuGet\Grace.log4net.nuspec
 		..\NuGet\Grace.Moq.nuspec = ..\NuGet\Grace.Moq.nuspec
@@ -55,6 +56,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{36C6B292-1625-491E-9807-DB189E2A3587}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Templates", "Grace.Templates\Grace.Templates.csproj", "{FA16AAB4-B28A-46B1-810C-876E333B1373}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Common.Logging", "Grace.Common.Logging\Grace.Common.Logging.csproj", "{D6695499-1CA3-455B-970E-FB0D2DAA18C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +113,10 @@ Global
 		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA16AAB4-B28A-46B1-810C-876E333B1373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,8 +128,9 @@ Global
 		{1EB4796E-9FEA-42F3-A206-E44CF4DF6ED2} = {F6A98F7E-8C40-47C6-B04D-878908608023}
 		{F971978C-23BA-4B5C-B6BB-467B621D4D51} = {3A1809AF-15A1-498A-97F5-79AD09EC8F81}
 		{C05F9C12-8915-4B43-9C83-9B63C8079936} = {3A1809AF-15A1-498A-97F5-79AD09EC8F81}
-		{FA16AAB4-B28A-46B1-810C-876E333B1373} = {36C6B292-1625-491E-9807-DB189E2A3587}
 		{EFED8FDA-9B2D-4353-8854-8FA2F767F2AB} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
 		{F83E7F91-BA18-4F06-A0BA-D2B86B2B10B0} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
+		{D6695499-1CA3-455B-970E-FB0D2DAA18C2} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
+		{FA16AAB4-B28A-46B1-810C-876E333B1373} = {36C6B292-1625-491E-9807-DB189E2A3587}
 	EndGlobalSection
 EndGlobal

@@ -3,35 +3,57 @@ using log4net;
 
 namespace Grace.log4net
 {
+	/// <summary>
+	/// Log wrapper around an ILog interface from log4net
+	/// </summary>
 	public class LogWrapper : Grace.Logging.ILog
 	{
 		private readonly ILog log;
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="log">take ILog to wrap</param>
 		public LogWrapper(ILog log)
 		{
 			this.log = log;
 		}
 
+		/// <summary>
+		/// Is Debug Log Level Enabled
+		/// </summary>
 		public bool IsDebugEnabled
 		{
 			get { return log.IsDebugEnabled; }
 		}
 
+		/// <summary>
+		/// Is Info Log Level  Enabled
+		/// </summary>
 		public bool IsInfoEnabled
 		{
 			get { return log.IsInfoEnabled; }
 		}
 
+		/// <summary>
+		/// Is Warn Log Level Enabled
+		/// </summary>
 		public bool IsWarnEnabled
 		{
 			get { return log.IsWarnEnabled; }
 		}
 
+		/// <summary>
+		/// Is Error Log Level Enabled
+		/// </summary>
 		public bool IsErrorEnabled
 		{
 			get { return log.IsErrorEnabled; }
 		}
 
+		/// <summary>
+		/// Is Fatal Log Level Enabled
+		/// </summary>
 		public bool IsFatalEnabled
 		{
 			get { return log.IsFatalEnabled; }
