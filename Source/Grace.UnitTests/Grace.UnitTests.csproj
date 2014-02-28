@@ -128,6 +128,7 @@
     <Compile Include="DependencyInjection\Attributes\WeakSingletonAttributeTests.cs" />
     <Compile Include="DependencyInjection\BasicContainerTests.cs" />
     <Compile Include="DependencyInjection\DelegateFactoryTests.cs" />
+    <Compile Include="DependencyInjection\ExceptionTests.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensionsTests.cs" />
     <Compile Include="DependencyInjection\InjectionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\UnlessConditionTests.cs" />
