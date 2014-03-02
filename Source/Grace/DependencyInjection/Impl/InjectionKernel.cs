@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Impl
 	/// InjectionKernel keeps a collection of exports to be used for resolving dependencies.
 	/// </summary>
 	[DebuggerDisplay("{DebugDisplayString,nq}")]
-	[DebuggerTypeProxy(typeof(IInjectionScopeDiagnostic))]
+	[DebuggerTypeProxy(typeof(InjectionScopeDiagnostic))]
 	public class InjectionKernel : DisposalScope, IInjectionScope, IMissingExportHandler
 	{
 		#region Private Static
@@ -186,6 +186,8 @@ namespace Grace.DependencyInjection.Impl
 		{
 			return CreateChildScope(configurationModule.Configure, scopeName, disposalScopeProvider);
 		}
+
+		public string Name { get; private set; }
 
 		/// <summary>
 		/// Adds a secondary resolver to the injection scope
@@ -1016,12 +1018,13 @@ namespace Grace.DependencyInjection.Impl
 		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext)
 		{
 			ExportStrategyCollection collection;
+			IInjectionContext context = injectionContext ?? CreateContext();
 
 			if (exportsByName.TryGetValue(name, out collection))
 			{
 				foreach (IExportStrategy exportStrategy in collection.ExportStrategies)
 				{
-					if (exportStrategy.MeetsCondition(injectionContext))
+					if (exportStrategy.MeetsCondition(context))
 					{
 						return exportStrategy;
 					}
@@ -1041,12 +1044,13 @@ namespace Grace.DependencyInjection.Impl
 		{
 			IExportStrategy exportStrategy = null;
 			ExportStrategyCollection collection;
+			IInjectionContext context = injectionContext ?? CreateContext();
 
 			if (exportsByType.TryGetValue(exportType, out collection))
 			{
 				foreach (IExportStrategy currentExportStrategy in collection.ExportStrategies)
 				{
-					if (currentExportStrategy.MeetsCondition(injectionContext))
+					if (currentExportStrategy.MeetsCondition(context))
 					{
 						return currentExportStrategy;
 					}
@@ -1066,12 +1070,12 @@ namespace Grace.DependencyInjection.Impl
 						IGenericExportStrategy genericExportStrategy = strategy as IGenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-							 genericExportStrategy.MeetsCondition(injectionContext) &&
+							 genericExportStrategy.MeetsCondition(context) &&
 							 genericExportStrategy.CheckGenericConstrataints(closingTypes))
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{
-								exportStrategy = genericExportStrategy.OwningScope.GetStrategy(exportType, injectionContext);
+								exportStrategy = genericExportStrategy.OwningScope.GetStrategy(exportType, context);
 							}
 							else
 							{

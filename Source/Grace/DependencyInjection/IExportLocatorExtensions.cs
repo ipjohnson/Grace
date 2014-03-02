@@ -14,14 +14,28 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// This method returns a summary of the exports contained in an ExportLocator
 		/// </summary>
-		/// <param name="locator"></param>
-		/// <param name="includeParent"></param>
-		/// <returns></returns>
-		public static string WhatDoIHave(this IExportLocator locator, bool includeParent = false)
+		/// <param name="locator">export locator to analyze</param>
+		/// <param name="includeParent">include parent scope, false by default</param>
+		/// <param name="consider">export filter to apply</param>
+		/// <param name="injectionContext">injection context to use when filtering</param>
+		/// <returns>diagnostic string</returns>
+		public static string WhatDoIHave(this IExportLocator locator, bool includeParent = false, ExportStrategyFilter consider = null, IInjectionContext injectionContext = null)
 		{
 			StringBuilder builder = new StringBuilder();
 
-			foreach (IExportStrategy exportStrategy in locator.GetAllStrategies())
+			if (injectionContext == null)
+			{
+				injectionContext = locator.CreateContext();
+			}
+
+			builder.AppendLine(new string('-', 80));
+
+			builder.AppendFormat("Exports for scope '{0}' with id {1}{2}",
+										locator.ScopeName,
+										locator.ScopeId,
+										Environment.NewLine);
+
+			foreach (IExportStrategy exportStrategy in locator.GetAllStrategies(consider))
 			{
 				builder.AppendLine(new string('-', 80));
 
@@ -56,8 +70,10 @@ namespace Grace.DependencyInjection
 					builder.AppendLine("Lifestyle: Transient");
 				}
 
+				builder.AppendLine("MeetsCondition: " + exportStrategy.MeetsCondition(injectionContext));
+
 				builder.AppendLine("Depends On");
-				
+
 				if (exportStrategy.DependsOn.Any())
 				{
 					foreach (ExportStrategyDependency exportStrategyDependency in exportStrategy.DependsOn)
@@ -105,7 +121,7 @@ namespace Grace.DependencyInjection
 
 				if (scope.ParentScope != null)
 				{
-					builder.Append(WhatDoIHave(scope.ParentScope, true));
+					builder.Append(WhatDoIHave(scope.ParentScope, true, consider, injectionContext));
 				}
 			}
 

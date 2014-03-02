@@ -10,6 +10,17 @@ namespace Grace.DependencyInjection
 	public interface IExportLocator
 	{
 		/// <summary>
+		/// Unique identifier for the instance of the injection scope
+		/// </summary>
+		Guid ScopeId { get; }
+
+		/// <summary>
+		/// The scopes name
+		/// </summary>
+		[CanBeNull]
+		string ScopeName { get; }
+
+		/// <summary>
 		/// Adds a secondary resolver to the container.
 		/// </summary>
 		/// <param name="newLocator">new secondary locator</param>

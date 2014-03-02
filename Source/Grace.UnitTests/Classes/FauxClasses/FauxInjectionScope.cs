@@ -55,6 +55,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			throw new NotImplementedException();
 		}
 
+		public string Name { get; private set; }
+
 		public void AddSecondaryLocator(ISecondaryExportLocator newLocator)
 		{
 			throw new NotImplementedException();

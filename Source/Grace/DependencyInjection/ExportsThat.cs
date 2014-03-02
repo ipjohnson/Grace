@@ -83,5 +83,25 @@ namespace Grace.DependencyInjection
 		{
 			return new ExportsThatConfiguration().AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}
+
+		/// <summary>
+		/// Creates a new Filter that selects only exports that export as a specific interface
+		/// </summary>
+		/// <typeparam name="T">export type</typeparam>
+		/// <returns>export configuration object</returns>
+		public static ExportsThatConfiguration AreExportedAs<T>()
+		{
+			return new ExportsThatConfiguration().AreExportedAs(typeof(T));
+		}
+
+		/// <summary>
+		/// Creates a new Filter that selects only exports that export as a specific interface
+		/// </summary>
+		/// <param name="exportType">export type</param>
+		/// <returns>export configuration object</returns>
+		public static ExportsThatConfiguration AreExportedAs(Type exportType)
+		{
+			return new ExportsThatConfiguration().AreExportedAs(exportType);
+		}
 	}
 }

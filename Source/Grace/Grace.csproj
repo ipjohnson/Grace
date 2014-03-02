@@ -223,7 +223,7 @@
     <Compile Include="Diagnostics\ConfigurableExportStrategyDiagnostic.cs" />
     <Compile Include="Diagnostics\DependencyInjectionContainerDiagnostic.cs" />
     <Compile Include="Diagnostics\ExportListDebuggerView.cs" />
-    <Compile Include="Diagnostics\IInjectionScopeDiagnostic.cs" />
+    <Compile Include="Diagnostics\InjectionScopeDiagnostic.cs" />
     <Compile Include="Diagnostics\PossibleMissingDependency.cs" />
     <Compile Include="LanguageExtensions\IEnumerableExtensions.cs" />
     <Compile Include="Logging\DebugConsoleLog.cs" />

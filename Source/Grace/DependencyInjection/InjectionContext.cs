@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection
 		/// <param name="requestingScope"></param>
 		public InjectionContext(IDisposalScope disposalScope, IInjectionScope requestingScope)
 		{
-			MaxResolveDepth = 150;
+			MaxResolveDepth = 50;
 			DisposalScope = disposalScope;
 			RequestingScope = requestingScope;
 		}

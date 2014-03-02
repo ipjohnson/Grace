@@ -134,6 +134,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Creates a new filter that selects only exports that exoprt as a particular interface
+		/// </summary>
+		/// <param name="exportType"></param>
+		/// <returns></returns>
+		public ExportsThatConfiguration AreExportedAs(Type exportType)
+		{
+			exportStrategyFilters.Add((context,strategy) => strategy.ExportTypes.Any(x => x == exportType));
+
+			return this;
+		}
+
+		/// <summary>
 		/// Converts the configuration to a filter automatically
 		/// </summary>
 		/// <param name="configuration">configuration object</param>
@@ -142,5 +154,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			return new ExportStrategyFilterGroup(configuration.exportStrategyFilters.ToArray());
 		}
+
+
 	}
 }

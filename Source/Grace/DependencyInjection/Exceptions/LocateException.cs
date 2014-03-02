@@ -235,8 +235,8 @@ namespace Grace.DependencyInjection.Exceptions
 	/// </summary>
 	public class LocateException : Exception
 	{
-		private const int MaxLocationInfo = 40;
-		private const int MaxExtraInfo = 40;
+		private const int MaxLocationInfo = 30;
+		private const int MaxExtraInfo = 30;
 		private readonly List<ILocationInformationEntry> locationInformation = new List<ILocationInformationEntry>();
 		private readonly Queue<ILocationInformationEntry> extraInfo = new Queue<ILocationInformationEntry>();
 		private int dropped;

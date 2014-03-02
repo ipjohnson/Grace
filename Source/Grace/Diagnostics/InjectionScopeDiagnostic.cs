@@ -11,8 +11,7 @@ namespace Grace.Diagnostics
 	/// Provides diagnostic information about an IInjectionScope
 	/// Used by visual studio for debugging
 	/// </summary>
-	// ReSharper disable once InconsistentNaming
-	public class IInjectionScopeDiagnostic
+	public class InjectionScopeDiagnostic
 	{
 		private bool initialize;
 		private IEnumerable<PossibleMissingDependency> possibleMissingDependencies;
@@ -22,7 +21,7 @@ namespace Grace.Diagnostics
 		/// Default constructor takes scope as only parameter
 		/// </summary>
 		/// <param name="injectionScope">injection scope to diagnose</param>
-		public IInjectionScopeDiagnostic(IInjectionScope injectionScope)
+		public InjectionScopeDiagnostic(IInjectionScope injectionScope)
 		{
 			this.injectionScope = injectionScope;
 		}

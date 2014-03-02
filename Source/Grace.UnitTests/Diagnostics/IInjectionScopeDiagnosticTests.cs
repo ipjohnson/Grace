@@ -12,7 +12,7 @@ namespace Grace.UnitTests.Diagnostics
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			IInjectionScopeDiagnostic diag = container.Locate<IInjectionScopeDiagnostic>();
+			InjectionScopeDiagnostic diag = container.Locate<InjectionScopeDiagnostic>();
 
 			Assert.Equal(0, diag.PossibleMissingDependencies.Count());
 		}

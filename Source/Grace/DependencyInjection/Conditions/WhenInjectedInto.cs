@@ -30,7 +30,7 @@ namespace Grace.DependencyInjection.Conditions
 		{
 			IInjectionTargetInfo targetInfo = injectionContext.TargetInfo;
 
-			if (targetInfo != null)
+			if (targetInfo != null && injectedType != null)
 			{
 				foreach (Type type in injectedType)
 				{

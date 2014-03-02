@@ -88,6 +88,22 @@ namespace Grace.DependencyInjection
 		}
 
 		/// <summary>
+		/// Name of scope
+		/// </summary>
+		public string ScopeName
+		{
+			get { return RootScope.ScopeName; }
+		}
+
+		/// <summary>
+		/// Unique Scope Id
+		/// </summary>
+		public Guid ScopeId
+		{
+			get { return RootScope.ScopeId; }
+		}
+
+		/// <summary>
 		/// Adds a secondary resolver to the container.
 		/// </summary>
 		/// <param name="newLocator">new secondary locator</param>

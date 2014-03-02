@@ -127,7 +127,7 @@ namespace Grace.Diagnostics
 			initialized = true;
 
 			possibleMissingDependencies =
-				IInjectionScopeDiagnostic.CalculatePossibleMissingDependencies(container.RootScope);
+				InjectionScopeDiagnostic.CalculatePossibleMissingDependencies(container.RootScope);
 		}
 	}
 }
