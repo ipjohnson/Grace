@@ -57,37 +57,40 @@ namespace Grace.DependencyInjection
 				}
 
 				builder.AppendLine("Depends On");
-
-				if(exportStrategy.DependsOn.Any())
+				
+				if (exportStrategy.DependsOn.Any())
 				{
 					foreach (ExportStrategyDependency exportStrategyDependency in exportStrategy.DependsOn)
-				{
-					builder.AppendLine("\tDependency Type: " + exportStrategyDependency.DependencyType);
-
-					builder.AppendLine("\tTarget Name: " + exportStrategyDependency.TargetName);
-
-					if (exportStrategyDependency.ImportType != null)
 					{
-						builder.AppendLine("\tImport Type: " + exportStrategyDependency.ImportType.FullName);
-					}
-					else
-					{
-						builder.AppendLine("\tImport Type: null");
-					}
+						builder.AppendLine();
 
-					if (exportStrategyDependency.ImportName != null)
-					{
-						builder.AppendLine("\tImport Name: " + exportStrategyDependency.ImportName);
-					}
-					else
-					{
-						builder.AppendLine("\tImport Name: null");
-					}
+						builder.AppendLine("\tDependency Type: " + exportStrategyDependency.DependencyType);
 
-					builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
+						builder.AppendLine("\tTarget Name: " + exportStrategyDependency.TargetName);
 
-					builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);
-				}}
+						if (exportStrategyDependency.ImportType != null)
+						{
+							builder.AppendLine("\tImport Type: " + exportStrategyDependency.ImportType.FullName);
+						}
+						else
+						{
+							builder.AppendLine("\tImport Type: null");
+						}
+
+						if (exportStrategyDependency.ImportName != null)
+						{
+							builder.AppendLine("\tImport Name: " + exportStrategyDependency.ImportName);
+						}
+						else
+						{
+							builder.AppendLine("\tImport Name: null");
+						}
+
+						builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
+
+						builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);
+					}
+				}
 				else
 				{
 					builder.AppendLine("\tnone");
