@@ -28,6 +28,7 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 			catch (MissingDependencyException exp)
 			{
+				Console.WriteLine(exp.Message);
 				// we should be throwing this exception
 			}
 		}
@@ -51,6 +52,8 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 			catch (GeneralLocateException exp)
 			{
+
+				Console.WriteLine(exp.Message);
 				// we should be throwing this exception
 			}
 		}
@@ -74,6 +77,8 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 			catch (CircularDependencyDetectedException exp)
 			{
+
+				Console.WriteLine(exp.Message);
 				// this is what we want
 			}
 
