@@ -55,5 +55,9 @@ Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId
 
 CI Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1137"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1137/statusIcon"/></a>
 
+Metrics by Ohloh:
 
+[
+![Ohloh project report for Grace IoC](https://www.ohloh.net/p/Grace-IoC/widgets/project_thin_badge.gif)
+](http://www.ohloh.net/p/Grace-IoC?ref=sample)
 
