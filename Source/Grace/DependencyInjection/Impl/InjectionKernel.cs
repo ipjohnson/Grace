@@ -523,8 +523,11 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (LocateException exp)
 			{
+				exp.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
+
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -538,10 +541,15 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
+				GeneralLocateException generalLocateException = new GeneralLocateException(null, objectType, injectionContext, exp);
+
+				generalLocateException.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
+
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
-					throw;
+					throw generalLocateException;
 				}
 
 				log.Error(
@@ -634,6 +642,9 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (LocateException exp)
 			{
+				exp.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(exportName, null, ScopeName, consider != null, false));
+
 				if (kernelManager.Container != null &&
 					kernelManager.Container.ThrowExceptions)
 				{
@@ -646,10 +657,15 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
+				GeneralLocateException generalLocateException = new GeneralLocateException(exportName, null, injectionContext, exp);
+
+				generalLocateException.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(exportName, null, ScopeName, consider != null, false));
+
 				if (kernelManager.Container != null &&
 					 kernelManager.Container.ThrowExceptions)
 				{
-					throw;
+					throw generalLocateException;
 				}
 
 				log.Error(
@@ -690,12 +706,36 @@ namespace Grace.DependencyInjection.Impl
 			{
 				returnValue = InternalLocateAllWithContext<T>(injectionContext, typeof(T).FullName, typeof(T), consider);
 			}
-			catch (Exception exp)
+			catch (LocateException exp)
 			{
+				exp.AddLocationInformationEntry(new InjectionScopeLocateEntry(null, typeof(T), ScopeName, consider != null, true));
+
 				if (kernelManager.Container != null &&
 					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from LocateAll<T> for type {0} in scope {1} id {2}",
+						typeof(T).FullName,
+						ScopeName,
+						ScopeId),
+					exp);
+
+				returnValue = new List<T>();
+
+			}
+			catch (Exception exp)
+			{
+				GeneralLocateException generalLocateException = new GeneralLocateException(null, typeof(T), injectionContext, exp);
+
+				generalLocateException.AddLocationInformationEntry(new InjectionScopeLocateEntry(null, typeof(T), ScopeName, consider != null, true));
+
+				if (kernelManager.Container != null &&
+					 kernelManager.Container.ThrowExceptions)
+				{
+					throw generalLocateException;
 				}
 
 				log.Error(
@@ -755,8 +795,29 @@ namespace Grace.DependencyInjection.Impl
 			{
 				returnValue = InternalLocateAllWithContext<object>(injectionContext, name, null, consider);
 			}
+			catch (LocateException exp)
+			{
+				exp.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
+
+				if (kernelManager.Container != null &&
+				    kernelManager.Container.ThrowExceptions)
+				{
+					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from LocateAll by name {0} in scope {1} id {2}", name, ScopeName, ScopeId),
+					exp);
+
+				returnValue = new List<object>();
+			}
 			catch (Exception exp)
 			{
+				GeneralLocateException generalLocateException = new GeneralLocateException(name,null,injectionContext,exp);
+
+				generalLocateException.AddLocationInformationEntry(new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
+
 				if (kernelManager.Container != null &&
 					 kernelManager.Container.ThrowExceptions)
 				{
@@ -811,12 +872,37 @@ namespace Grace.DependencyInjection.Impl
 			{
 				return InternalLocateAllWithContext<object>(injectionContext, exportType.FullName, exportType, consider);
 			}
-			catch (Exception exp)
+			catch (LocateException exp)
 			{
+				exp.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(null, exportType, ScopeName, consider != null, true));
+
 				if (kernelManager.Container != null &&
 					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
+				}
+
+				log.Error(
+					string.Format("Exception was thrown from LocateAll by type {0} in scope {1} id {2}",
+						exportType.FullName,
+						ScopeName,
+						ScopeId),
+					exp);
+
+				return new List<object>();
+			}
+			catch (Exception exp)
+			{
+				GeneralLocateException generalLocateException = new GeneralLocateException(null, exportType, injectionContext, exp);
+
+				generalLocateException.AddLocationInformationEntry(
+					new InjectionScopeLocateEntry(null, exportType, ScopeName, consider != null, true));
+				
+				if (kernelManager.Container != null &&
+					 kernelManager.Container.ThrowExceptions)
+				{
+					throw generalLocateException;
 				}
 
 				log.Error(

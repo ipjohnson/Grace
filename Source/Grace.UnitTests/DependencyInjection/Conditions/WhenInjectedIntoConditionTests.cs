@@ -23,7 +23,9 @@ namespace Grace.UnitTests.DependencyInjection.Conditions
 							new Attribute[0],
 							typeof(ImportPropertyService).GetProperty("BasicService"),
 							new Attribute[0],
-							new Attribute[0])
+							new Attribute[0],
+							null,
+							null)
 					},
 					new FauxExportStrategy(() => new object()));
 

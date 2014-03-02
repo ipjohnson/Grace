@@ -19,5 +19,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		public IEnumerable<Attribute> InjectionTargetAttributes { get; set; }
 
 		public IEnumerable<Attribute> InjectionMemberAttributes { get; set; }
+
+		public string LocateName { get; private set; }
+
+		public Type LocateType { get; private set; }
 	}
 }

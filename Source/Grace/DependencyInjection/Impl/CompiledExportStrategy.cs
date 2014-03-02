@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
@@ -26,10 +27,10 @@ namespace Grace.DependencyInjection.Impl
 				new List<Attribute>(exportType.GetTypeInfo().GetCustomAttributes(true)).ToArray();
 
 			delegateInfo = new CompiledExportDelegateInfo
-			               {
-				               ActivationType = exportType,
-				               Attributes = typeAttributes
-			               };
+								{
+									ActivationType = exportType,
+									Attributes = typeAttributes
+								};
 		}
 
 		/// <summary>
@@ -58,12 +59,29 @@ namespace Grace.DependencyInjection.Impl
 				}
 			}
 
-			if (lifestyle != null)
+			try
 			{
-				return lifestyle.Locate(activationDelegate, exportInjectionScope, context, this);
-			}
+				if (lifestyle != null)
+				{
+					return lifestyle.Locate(activationDelegate, exportInjectionScope, context, this);
+				}
 
-			return activationDelegate(exportInjectionScope, context);
+				return activationDelegate(exportInjectionScope, context);
+			}
+			catch (LocateException locateException)
+			{
+				locateException.AddLocationInformationEntry(new StrategyBeingActivated(this));
+
+				throw;
+			}
+			catch (Exception exp)
+			{
+				GeneralLocateException locateException = new GeneralLocateException(null,null,context,exp);
+
+				locateException.AddLocationInformationEntry(new StrategyBeingActivated(this));
+
+				throw locateException;
+			}
 		}
 
 		/// <summary>
@@ -176,8 +194,8 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			if (!ExternallyOwned &&
-			    delegateInfo.IsTransient &&
-			    typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
+				 delegateInfo.IsTransient &&
+				 typeof(IDisposable).GetTypeInfo().IsAssignableFrom(delegateInfo.ActivationType.GetTypeInfo()))
 			{
 				delegateInfo.TrackDisposable = true;
 			}

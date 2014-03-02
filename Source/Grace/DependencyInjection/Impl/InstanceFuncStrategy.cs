@@ -1,4 +1,7 @@
-﻿namespace Grace.DependencyInjection.Impl
+﻿using System;
+using Grace.DependencyInjection.Exceptions;
+
+namespace Grace.DependencyInjection.Impl
 {
 	/// <summary>
 	/// This strategy takes a func and calls it when ever
@@ -29,12 +32,35 @@
 			IInjectionContext context,
 			ExportStrategyFilter consider)
 		{
-			if (lifestyle != null)
+			try
 			{
-				return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
-			}
+				context.IncrementResolveDepth();
 
-			return InternalActivate(exportInjectionScope, context);
+				if (lifestyle != null)
+				{
+					return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
+				}
+
+				return InternalActivate(exportInjectionScope, context);
+			}
+			catch (LocateException exp)
+			{
+				exp.AddLocationInformationEntry(new StrategyBeingActivated(this));
+
+				throw;
+			}
+			catch (Exception exp)
+			{
+				GeneralLocateException locateException = new GeneralLocateException(null,null,context,exp);
+
+				locateException.AddLocationInformationEntry(new StrategyBeingActivated(this));
+
+				throw locateException;
+			}
+			finally
+			{
+				context.DecrementResolveDepth();
+			}
 		}
 
 		/// <summary>

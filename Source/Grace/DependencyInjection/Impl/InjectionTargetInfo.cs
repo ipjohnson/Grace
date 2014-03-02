@@ -17,11 +17,15 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="injectionTarget">the ParameterInfo or PropertyInfo being injected into</param>
 		/// <param name="injectionTargetAttributes">attributes on the ParameterInfo or PropertyInfo</param>
 		/// <param name="injectionMemberAttributes">attribute on the Method,Constructor, or Property</param>
+		/// <param name="locateName">name used when locating</param>
+		/// <param name="locateType">type used when locating</param>
 		public InjectionTargetInfo(Type injectionType,
 			IEnumerable<Attribute> injectionTypeAttributes,
 			object injectionTarget,
 			IEnumerable<Attribute> injectionTargetAttributes,
-			IEnumerable<Attribute> injectionMemberAttributes)
+			IEnumerable<Attribute> injectionMemberAttributes,
+			string locateName,
+			Type locateType)
 		{
 			if (injectionType == null)
 			{
@@ -58,6 +62,8 @@ namespace Grace.DependencyInjection.Impl
 			InjectionTarget = injectionTarget;
 			InjectionTargetAttributes = injectionTargetAttributes;
 			InjectionMemberAttributes = injectionMemberAttributes;
+			LocateName = locateName;
+			LocateType = locateType;
 		}
 
 		/// <summary>
@@ -110,5 +116,15 @@ namespace Grace.DependencyInjection.Impl
 		/// Attributes associated with Constructor, Property or Method that is being injected
 		/// </summary>
 		public IEnumerable<Attribute> InjectionMemberAttributes { get; private set; }
+
+		/// <summary>
+		/// Locate name being used
+		/// </summary>
+		public string LocateName { get; private set; }
+
+		/// <summary>
+		/// Locate type being used
+		/// </summary>
+		public Type LocateType { get; private set; }
 	}
 }

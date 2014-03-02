@@ -78,6 +78,7 @@
     <Compile Include="Classes\Simple\AttributedPropertyMultipleImport.cs" />
     <Compile Include="Classes\Simple\BasicService.cs" />
     <Compile Include="Classes\Simple\BasicServiceWrapper.cs" />
+    <Compile Include="Classes\Simple\CircularDependencyClasses.cs" />
     <Compile Include="Classes\Simple\ConstructorImportService.cs" />
     <Compile Include="Classes\Simple\DateTimeImport.cs" />
     <Compile Include="Classes\Simple\DisposableService.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Classes\Simple\ImportConstructorService.cs" />
     <Compile Include="Classes\Simple\DependencyInjectionContainerImportService.cs" />
     <Compile Include="Classes\Simple\ImportDateTimeByName.cs" />
+    <Compile Include="Classes\Simple\ImportDisposableService.cs" />
     <Compile Include="Classes\Simple\ImportIEnumerableService.cs" />
     <Compile Include="Classes\Simple\ImportListService.cs" />
     <Compile Include="Classes\Simple\ImportPropertyCollection.cs" />

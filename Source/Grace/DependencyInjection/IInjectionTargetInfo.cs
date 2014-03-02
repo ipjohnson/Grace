@@ -17,7 +17,6 @@ namespace Grace.DependencyInjection
 
 		/// <summary>
 		/// These are the attributes for the class that it's being injected into
-		/// Null if it's the root object in the dependency graph
 		/// </summary>
 		[NotNull]
 		IEnumerable<Attribute> InjectionTypeAttributes { get; }
@@ -51,5 +50,15 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		[NotNull]
 		IEnumerable<Attribute> InjectionMemberAttributes { get; }
+
+		/// <summary>
+		/// Locate name being used
+		/// </summary>
+		string LocateName { get; }
+
+		/// <summary>
+		/// Locate type being used
+		/// </summary>
+		Type LocateType { get; }
 	}
 }

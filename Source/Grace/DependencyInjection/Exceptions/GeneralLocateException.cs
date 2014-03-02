@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Exceptions
 {
@@ -22,6 +23,27 @@ namespace Grace.DependencyInjection.Exceptions
 			base(locateName, locatingType, currentContext, innerException)
 		{
 			
+		}
+
+		/// <summary>
+		/// Message
+		/// </summary>
+		[NotNull]
+		public override string Message
+		{
+			get
+			{
+				StringBuilder returnMessage = new StringBuilder();
+
+				returnMessage.Append("General exception was thrown while trying to activate strategy");
+				returnMessage.AppendLine();
+				returnMessage.Append(InnerException.Message);
+				returnMessage.AppendLine();
+
+				CreateMessageFromLocationInformation(returnMessage);
+
+				return returnMessage.ToString();
+			}
 		}
 	}
 }

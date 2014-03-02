@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Grace.DependencyInjection.Exceptions
 		public MissingDependencyException(string locateName, Type locatingType, IInjectionContext currentContext) :
 			base(locateName, locatingType, currentContext)
 		{
-
+			AddLocationInformationEntry(new LocationInformationEntry(locateName,locatingType,currentContext.TargetInfo));
 		}
 
 		/// <summary>
@@ -28,7 +29,32 @@ namespace Grace.DependencyInjection.Exceptions
 		/// </summary>
 		public override string Message
 		{
-			get { return string.Format("Could not locate {0} for {1} on {2}", LocateDisplayString,InjectionContext.TargetInfo.InjectionTargetName,InjectionContext.TargetInfo.InjectionType.FullName); }
+			get
+			{
+				StringBuilder outputString = new StringBuilder();
+
+				string dependencyType = null;
+
+				if (InjectionContext.TargetInfo.InjectionTarget is ParameterInfo)
+				{
+					dependencyType = "parameter";
+				}
+				else
+				{
+					dependencyType = "property";
+				}
+					
+				outputString.AppendFormat("Could not locate {0} for {1} {2} on {3}{4}{4}",
+					LocateDisplayString,
+					dependencyType,
+					InjectionContext.TargetInfo.InjectionTargetName,
+					InjectionContext.TargetInfo.InjectionType.Name,
+					Environment.NewLine);
+
+				CreateMessageFromLocationInformation(outputString);
+
+				return outputString.ToString();
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -22,6 +23,8 @@ namespace Grace.DependencyInjection
 
 			foreach (IExportStrategy exportStrategy in locator.GetAllStrategies())
 			{
+				builder.AppendLine(new string('-', 80));
+
 				builder.AppendLine("Export Type: " + exportStrategy.ActivationType.FullName);
 
 				foreach (string exportName in exportStrategy.ExportNames)
@@ -55,7 +58,9 @@ namespace Grace.DependencyInjection
 
 				builder.AppendLine("Depends On");
 
-				foreach (ExportStrategyDependency exportStrategyDependency in exportStrategy.DependsOn)
+				if(exportStrategy.DependsOn.Any())
+				{
+					foreach (ExportStrategyDependency exportStrategyDependency in exportStrategy.DependsOn)
 				{
 					builder.AppendLine("\tDependency Type: " + exportStrategyDependency.DependencyType);
 
@@ -63,11 +68,11 @@ namespace Grace.DependencyInjection
 
 					if (exportStrategyDependency.ImportType != null)
 					{
-						builder.Append("\tImport Type: " + exportStrategyDependency.ImportType.FullName);
+						builder.AppendLine("\tImport Type: " + exportStrategyDependency.ImportType.FullName);
 					}
 					else
 					{
-						builder.Append("\tImport Type: null");
+						builder.AppendLine("\tImport Type: null");
 					}
 
 					if (exportStrategyDependency.ImportName != null)
@@ -82,7 +87,13 @@ namespace Grace.DependencyInjection
 					builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
 
 					builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);
+				}}
+				else
+				{
+					builder.AppendLine("\tnone");
 				}
+
+				builder.AppendLine();
 			}
 
 			if (includeParent && locator is IInjectionScope)

@@ -45,15 +45,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					parameterAttributes = EmptyAttributesArray;
 				}
 
-				InjectionTargetInfo targetInfo =
-					new InjectionTargetInfo(exportDelegateInfo.ActivationType,
-						activationTypeAttributes,
-						parameterInfo,
-						parameterAttributes,
-						constructorAttributes);
-
 				IExportValueProvider valueProvider = null;
 				ExportStrategyFilter exportStrategyFilter = null;
+				string importName = null;
 				object comparerObject = null;
 
 				if (exportDelegateInfo.ConstructorParams != null)
@@ -63,6 +57,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						if (string.Compare(parameterInfo.Name, constructorParamInfo.ParameterName, StringComparison.OrdinalIgnoreCase) ==
 						    0)
 						{
+							importName = constructorParamInfo.ImportName;
 							exportStrategyFilter = constructorParamInfo.ExportStrategyFilter;
 							valueProvider = constructorParamInfo.ValueProvider;
 							comparerObject = constructorParamInfo.ComparerObject;
@@ -78,6 +73,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							    parameterInfo.ParameterType.GetTypeInfo().IsAssignableFrom(
 								    constructorParamInfo.ParameterType.GetTypeInfo()))
 							{
+								importName = constructorParamInfo.ImportName;
 								exportStrategyFilter = constructorParamInfo.ExportStrategyFilter;
 								valueProvider = constructorParamInfo.ValueProvider;
 								comparerObject = constructorParamInfo.ComparerObject;
@@ -87,11 +83,44 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					}
 				}
 
+				InjectionTargetInfo targetInfo = null;
+
+				if (importName != null)
+				{
+					targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+																		activationTypeAttributes,
+																		parameterInfo,
+																		parameterAttributes,
+																		constructorAttributes,
+																		importName,
+																		null);
+				}
+				else if (InjectionKernel.ImportTypeByName(parameterInfo.ParameterType))
+				{
+					targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+															activationTypeAttributes,
+															parameterInfo,
+															parameterAttributes,
+															constructorAttributes,
+															parameterInfo.Name,
+															null);		
+				}
+				else
+				{
+					targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+															activationTypeAttributes,
+															parameterInfo,
+															parameterAttributes,
+															constructorAttributes,
+															null,
+															parameterInfo.ParameterType);			
+				}
+
 				ParameterExpression parameterExpression =
 					CreateImportExpression(parameterInfo.ParameterType,
 						targetInfo,
 						ExportStrategyDependencyType.ConstructorParameter,
-						null,
+						importName,
 						parameterInfo.Name + "CVar",
 						true,
 						valueProvider,

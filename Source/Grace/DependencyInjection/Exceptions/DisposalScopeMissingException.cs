@@ -1,19 +1,48 @@
 ﻿using System;
+using System.Text;
 
 namespace Grace.DependencyInjection.Exceptions
 {
 	/// <summary>
 	/// This exception is thrown when an IDisposable object is requested and no disposal scope is present.
 	/// </summary>
-	public class DisposalScopeMissingException : Exception
+	public class DisposalScopeMissingException : LocateException
 	{
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
 		/// <param name="activationType"></param>
-		public DisposalScopeMissingException(Type activationType) :
-			base(string.Format("Activate type {0} without disposal scope", activationType))
+		/// <param name="injectionContext"></param>
+		public DisposalScopeMissingException(Type activationType, IInjectionContext injectionContext) :
+			base(null,null,injectionContext)
 		{
+			ActivationType = activationType;
+		}
+
+		/// <summary>
+		/// Type that was being activated
+		/// </summary>
+		public Type ActivationType { get; private set; }
+
+		/// <summary>
+		/// Message for exception
+		/// </summary>
+		public override string Message
+		{
+			get
+			{
+				StringBuilder builder = new StringBuilder();
+
+				builder.AppendFormat("Disposal Scope was missing when activating type {0}{1}",
+					ActivationType.Name,
+					Environment.NewLine);
+
+				builder.AppendLine();
+
+				CreateMessageFromLocationInformation(builder);
+
+				return builder.ToString();
+			}
 		}
 	}
 }

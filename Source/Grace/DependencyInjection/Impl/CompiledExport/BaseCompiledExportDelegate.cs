@@ -372,12 +372,38 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				attributes = EmptyAttributesArray;
 			}
 
-			InjectionTargetInfo targetInfo =
-				new InjectionTargetInfo(exportDelegateInfo.ActivationType,
-					activationTypeAttributes,
-					importPropertyInfo.Property,
-					attributes,
-					attributes);
+			InjectionTargetInfo targetInfo = null;
+
+			if (importPropertyInfo.ImportName != null)
+			{
+				targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+																	activationTypeAttributes,
+																	importPropertyInfo.Property,
+																	attributes,
+																	attributes,
+																	importPropertyInfo.ImportName,
+																	null);
+			}
+			else if (InjectionKernel.ImportTypeByName(importPropertyInfo.Property.PropertyType))
+			{
+				targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+																	activationTypeAttributes,
+																	importPropertyInfo.Property,
+																	attributes,
+																	attributes,
+																	importPropertyInfo.Property.Name,
+																	null);
+			}
+			else
+			{
+				targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+																		activationTypeAttributes,
+																		importPropertyInfo.Property,
+																		attributes,
+																		attributes,
+																		null,
+																		importPropertyInfo.Property.PropertyType);
+			}
 
 			ParameterExpression importVariable =
 				CreateImportExpression(importPropertyInfo.Property.PropertyType,
@@ -421,13 +447,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					MethodParamInfo methodParamInfo = null;
 					Attribute[] parameterAttributes = parameter.GetCustomAttributes(true).ToArray();
 
-					InjectionTargetInfo injectionTargetInfo = new InjectionTargetInfo
-						(exportDelegateInfo.ActivationType,
-							activationTypeAttributes,
-							parameter,
-							parameterAttributes,
-							methodAttributes);
-
 					if (importMethod.MethodParamInfos != null)
 					{
 						foreach (MethodParamInfo paramInfo in importMethod.MethodParamInfos)
@@ -455,6 +474,15 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 					if (methodParamInfo != null)
 					{
+						InjectionTargetInfo injectionTargetInfo = new InjectionTargetInfo
+																						(exportDelegateInfo.ActivationType,
+																							activationTypeAttributes,
+																							parameter,
+																							parameterAttributes,
+																							methodAttributes,
+																							methodParamInfo.ImportName,
+																							parameter.ParameterType);
+
 						ParameterExpression importParameter =
 							CreateImportExpression(parameter.ParameterType,
 								injectionTargetInfo,
@@ -470,6 +498,15 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					}
 					else
 					{
+						InjectionTargetInfo injectionTargetInfo = new InjectionTargetInfo
+																						(exportDelegateInfo.ActivationType,
+																							activationTypeAttributes,
+																							parameter,
+																							parameterAttributes,
+																							methodAttributes,
+																							null,
+																							parameter.ParameterType);
+
 						ParameterExpression importParameter =
 							CreateImportExpression(parameter.ParameterType,
 								injectionTargetInfo,
@@ -542,7 +579,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			Expression ifDisposalScopeNull =
 				Expression.IfThen(Expression.Equal(disposalScope, Expression.Constant(null)),
 					Expression.Throw(Expression.New(DisposalScopeMissingExceptionConstructor,
-						Expression.Constant(exportDelegateInfo.ActivationType))));
+						Expression.Constant(exportDelegateInfo.ActivationType), injectionContextParameter)));
 
 			disposalExpressions = new List<Expression> { assignExpression, ifDisposalScopeNull };
 
@@ -689,8 +726,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 									  TargetName = targetInfo.InjectionTargetName
 								  });
 
-			if (
-				!ProcessSpecialType(importVariable,
+			if (!ProcessSpecialType(importVariable,
 					importType,
 					targetInfo,
 					exportName,
@@ -723,8 +759,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			if (isRequired)
 			{
-				ParameterInfo parameterInfo = targetInfo.InjectionTarget as ParameterInfo;
-
 				Expression exportNameExpression = Expression.Constant(exportName);
 
 				if (exportName == null)
@@ -744,7 +778,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						exportNameExpression,
 						exportTypeExpression,
 						injectionContextParameter));
-
+				
 				Expression testExpression = Expression.Equal(importVariable, Expression.Constant(null));
 
 				isRequiredExpressions.Add(Expression.IfThen(testExpression, throwException));
@@ -865,8 +899,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			ParameterExpression exceptionParameter = Expression.Parameter(typeof(LocateException));
 
-			BlockExpression catchBody = Expression.Block(new[] { exceptionParameter },
-																		Expression.Call(exceptionParameter,
+			BlockExpression catchBody = Expression.Block(Expression.Call(exceptionParameter,
 																			AddLocationInformationEntryMethod,
 																			Expression.New(LocationInformationEntryConstructor,
 																				exportNameExpression,
@@ -877,7 +910,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			return Expression.Catch(exceptionParameter, catchBody); ;
 		}
 
-		private  CatchBlock CreateGeneralExceptionCatchBlock(string exportName,
+		private CatchBlock CreateGeneralExceptionCatchBlock(string exportName,
 																					  Type importType,
 																					  IInjectionTargetInfo targetInfo)
 		{

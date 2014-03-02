@@ -63,7 +63,14 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 			if (resolveDepth > MaxResolveDepth)
 			{
-				throw new DependencyLoopException();
+				if (TargetInfo != null)
+				{
+					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
+				}
+				else
+				{
+					throw new CircularDependencyDetectedException(null, null, this);
+				}
 			}
 		}
 

@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection
 	public class InjectionContext : IInjectionContext, IEnumerable<KeyValuePair<string, ExportActivationDelegate>>
 	{
 		private Dictionary<string, ExportActivationDelegate> exportsByName;
-		private Dictionary<Type, ExportActivationDelegate> exportsByType; 
+		private Dictionary<Type, ExportActivationDelegate> exportsByType;
 		private Dictionary<string, object> extraData;
 		private int resolveDepth;
 
@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection
 		/// <param name="requestingScope"></param>
 		public InjectionContext(IDisposalScope disposalScope, IInjectionScope requestingScope)
 		{
-			MaxResolveDepth = 1000;
+			MaxResolveDepth = 150;
 			DisposalScope = disposalScope;
 			RequestingScope = requestingScope;
 		}
@@ -229,7 +229,14 @@ namespace Grace.DependencyInjection
 
 			if (resolveDepth > MaxResolveDepth)
 			{
-				throw new DependencyLoopException();
+				if (TargetInfo != null)
+				{
+					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
+				}
+				else
+				{
+					throw new CircularDependencyDetectedException(null, null, this);
+				}
 			}
 		}
 

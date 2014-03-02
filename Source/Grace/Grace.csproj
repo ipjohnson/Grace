@@ -89,10 +89,8 @@
     <Compile Include="DependencyInjection\Conditions\WhenTargetHas.cs" />
     <Compile Include="DependencyInjection\Delegates.cs" />
     <Compile Include="DependencyInjection\Enumerations.cs" />
-    <Compile Include="DependencyInjection\Exceptions\DependencyLoopException.cs" />
-    <Compile Include="DependencyInjection\Exceptions\ExportMissingException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\CircularDependencyDetectedException.cs" />
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
-    <Compile Include="DependencyInjection\Exceptions\ImportTypeMismatchException.cs" />
     <Compile Include="DependencyInjection\Exceptions\LocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\MissingDependencyException.cs" />
     <Compile Include="DependencyInjection\ExportsThat.cs" />
@@ -217,7 +215,6 @@
     <Compile Include="DependencyInjection\Lifestyle\WeakSingletonLifestyle.cs" />
     <Compile Include="DependencyInjection\Meta.cs" />
     <Compile Include="DependencyInjection\Owned.cs" />
-    <Compile Include="DependencyInjection\Exceptions\DependencyResolveException.cs" />
     <Compile Include="DependencyInjection\ResolveUnknownExportArgs.cs" />
     <Compile Include="DependencyInjection\SortBy.cs" />
     <Compile Include="DependencyInjection\TypeFilterGroup.cs" />
