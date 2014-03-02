@@ -10,7 +10,7 @@
     <title>Grace.Net</title>
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
     <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
-    <releaseNotes>This release adds the ability to import custom delegate as well as fixing a bug with registering open generics in bulk</releaseNotes>
+    <releaseNotes>This release changes the way exceptions are generated from the container as well as the information they contain. This release also adds the ability to import custom delegates.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
