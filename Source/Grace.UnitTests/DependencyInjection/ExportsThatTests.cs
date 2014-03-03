@@ -12,10 +12,12 @@ namespace Grace.UnitTests.DependencyInjection
 		public void HaveAttribute()
 		{
 			ExportStrategyFilter filter = ExportsThat.HaveAttribute(typeof(SomeTestAttribute));
+
 			FauxExportStrategy failStrategy = new FauxExportStrategy(() => new object())
 			                                  {
 				                                  Attributes = new Attribute[0]
 			                                  };
+
 			FauxExportStrategy passStrategy = new FauxExportStrategy(() => new object())
 			                                  {
 				                                  Attributes = new Attribute[] { new SomeTestAttribute() }
@@ -55,10 +57,12 @@ namespace Grace.UnitTests.DependencyInjection
 		public void HaveAttributeGeneric()
 		{
 			ExportStrategyFilter filter = ExportsThat.HaveAttribute<SomeTestAttribute>();
+
 			FauxExportStrategy failStrategy = new FauxExportStrategy(() => new object())
 			                                  {
 				                                  Attributes = new Attribute[0]
 			                                  };
+
 			FauxExportStrategy passStrategy = new FauxExportStrategy(() => new object())
 			                                  {
 				                                  Attributes = new Attribute[] { new SomeTestAttribute() }
