@@ -44,6 +44,7 @@ Features in Grace
    * Lazy&lt;T&gt; - when resolved a Lazy&lt;T&gt; will be created that resolves T from the scope it was created in
    * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
+   * Custom Delegates - any delegate that returns a type can be automatically resolved. 
 
 
 Builds of Grace
