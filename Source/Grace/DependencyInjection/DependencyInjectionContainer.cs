@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection
 			    environment != ExportEnvironment.UnitTest)
 			{
 				throw new ArgumentException(
-					"Environment must be one of RunTime, DesignTime, or UnitTest, all else are invalid for this purpose",
+					"Environment must be one of RunTime, DesignTime, or UnitTest, all others are invalid for this purpose",
 					"environment");
 			}
 
