@@ -96,6 +96,7 @@
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
+    <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />
     <Compile Include="DependencyInjection\IExportLocator.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
     <Compile Include="DependencyInjection\IExportMetadata.cs" />

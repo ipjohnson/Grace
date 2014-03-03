@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.UnitTests.Classes.Simple;
@@ -300,6 +301,20 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.NotNull(importName);
 			Assert.Equal(DateTime.Today, importName.DateTime.Date);
+		}
+
+		[Fact]
+		public void QueryableExample()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => (from type in Types.FromThisAssembly() 
+											  where type.Namespace.Contains("Simple")
+											  select type)
+											 .ExportTo(c)
+											 .ByInterfaces());
+
+			IImportConstructorService constructorService = container.Locate<IImportConstructorService>();
 		}
 	}
 }
