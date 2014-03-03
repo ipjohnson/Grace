@@ -43,7 +43,12 @@ namespace Grace.DependencyInjection
 
 				foreach (string exportName in exportStrategy.ExportNames)
 				{
-					builder.AppendLine("Export Name: " + exportName);
+					builder.AppendLine("As Name: " + exportName);
+				}
+
+				foreach (Type exportType in exportStrategy.ExportTypes)
+				{
+					builder.AppendLine("As Type: " + exportType);
 				}
 
 				if (exportStrategy.Key != null)
