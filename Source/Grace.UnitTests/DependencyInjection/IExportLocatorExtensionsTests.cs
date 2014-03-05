@@ -61,7 +61,6 @@ namespace Grace.UnitTests.DependencyInjection
 
 				Assert.Contains("BasicService", whatDoIHave);
 				Assert.DoesNotContain("ConstructorImportService", whatDoIHave);
-				Assert.DoesNotContain("Singleton", whatDoIHave);
 			}
 		}
 
@@ -82,7 +81,6 @@ namespace Grace.UnitTests.DependencyInjection
 
 				Assert.Contains("BasicService", whatDoIHave);
 				Assert.DoesNotContain("ConstructorImportService", whatDoIHave);
-				Assert.DoesNotContain("Singleton", whatDoIHave);
 			}
 		}
 	}

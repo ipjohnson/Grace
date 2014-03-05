@@ -16,11 +16,11 @@ namespace Grace.MVC.DependencyInjection
 		/// </summary>
 		/// <param name="registrationBlock"></param>
 		/// <param name="types"></param>
-		public static void ExportController(this IExportRegistrationBlock registrationBlock, IEnumerable<Type> types)
+		public static IExportTypeSetConfiguration ExportController(this IExportRegistrationBlock registrationBlock, IEnumerable<Type> types)
 		{
-			registrationBlock.Export(types).
-				BasedOn(typeof(Controller)).
-				ExternallyOwned();
+			return registrationBlock.Export(types).
+											 BasedOn(typeof(Controller)).
+											 ExternallyOwned();
 		}
 	}
 }

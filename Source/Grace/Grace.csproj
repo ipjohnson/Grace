@@ -123,6 +123,7 @@
     <Compile Include="DependencyInjection\Impl\DelegateFactory\OneArgGenericDelegateExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\DelegateFactory\ThreeArgGenericDelegateExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\DelegateFactory\TwoArgGenericDelegateExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\ExportActivationValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\ExportMetadata.cs" />
     <Compile Include="DependencyInjection\Impl\FluentBaseExportConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.ExportProperty.cs" />
@@ -177,7 +178,6 @@
     <Compile Include="DependencyInjection\Impl\ConfigurableExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\DisposalScope.cs" />
     <Compile Include="DependencyInjection\Exceptions\DisposalScopeMissingException.cs" />
-    <Compile Include="DependencyInjection\Impl\ExportActivationDelegateFactory.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportFunctionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ExportInstanceConfiguration.cs" />

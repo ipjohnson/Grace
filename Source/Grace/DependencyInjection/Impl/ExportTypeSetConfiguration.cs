@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.CompiledExport;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.LanguageExtensions;
 
@@ -11,8 +12,21 @@ namespace Grace.DependencyInjection.Impl
 	/// <summary>
 	/// Exports a set of types based on a provided configuration
 	/// </summary>
-	public class ExportTypeSetConfiguration : IExportTypeSetConfiguration, IExportStrategyProvider
+	public class ExportTypeSetConfiguration : IExportTypeSetConfiguration, IIExportTypeSetImportPropertyConfiguration, IExportStrategyProvider
 	{
+		private class ImportGlobalPropertyInfo
+		{
+			public Type PropertyType { get; set; }
+
+			public string PropertyName { get; set; }
+
+			public bool IsRequired { get; set; }
+
+			public ExportStrategyFilter Consider { get; set; }
+
+			public IExportValueProvider ValueProvider { get; set; }
+		}
+
 		private readonly List<IExportCondition> conditions;
 		private readonly List<Func<Type, bool>> excludeClauses;
 		private readonly List<Type> exportBaseTypes;
@@ -22,6 +36,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly IEnumerable<Type> scanTypes;
 		private readonly List<Func<Type, bool>> whereClauses;
 		private readonly List<IExportStrategyInspector> inspectors;
+		private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
@@ -45,6 +60,7 @@ namespace Grace.DependencyInjection.Impl
 			whereClauses = new List<Func<Type, bool>>();
 			interfaceMatchList = new List<Func<Type, bool>>();
 			inspectors = new List<IExportStrategyInspector>();
+			importPropertiesList = new List<ImportGlobalPropertyInfo>();
 		}
 
 		/// <summary>
@@ -56,9 +72,9 @@ namespace Grace.DependencyInjection.Impl
 			List<IExportStrategy> returnValues = new List<IExportStrategy>();
 
 			if (exportInterfaces.Count == 0 &&
-			    exportBaseTypes.Count == 0 &&
-			    interfaceMatchList.Count == 0 &&
-			    !exportAllByInterface)
+				 exportBaseTypes.Count == 0 &&
+				 interfaceMatchList.Count == 0 &&
+				 !exportAllByInterface)
 			{
 				exportAttributedTypes = true;
 			}
@@ -74,9 +90,9 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			if (exportInterfaces.Count > 0 ||
-			    exportBaseTypes.Count > 0 ||
-			    interfaceMatchList.Count > 0 ||
-			    exportAllByInterface)
+				 exportBaseTypes.Count > 0 ||
+				 interfaceMatchList.Count > 0 ||
+				 exportAllByInterface)
 			{
 				returnValues.AddRange(ScanTypesForExports(filteredTypes));
 			}
@@ -320,6 +336,106 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Import properties of type TProperty and by name
+		/// </summary>
+		/// <typeparam name="TProperty">property type</typeparam>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		public IIExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>()
+		{
+			importPropertiesList.Add(new ImportGlobalPropertyInfo { PropertyType = typeof(TProperty), IsRequired = true });
+
+			return this;
+		}
+
+		/// <summary>
+		/// Property Name to import
+		/// </summary>
+		/// <param name="propertyName">property name</param>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		public IIExportTypeSetImportPropertyConfiguration Named(string propertyName)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].PropertyName = propertyName;
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Is it required
+		/// </summary>
+		/// <param name="value">is required</param>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		public IIExportTypeSetImportPropertyConfiguration IsRequired(bool value)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].IsRequired = value;
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Apply delegate to choose export
+		/// </summary>
+		/// <param name="consider">consider filter</param>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		public IIExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].Consider = consider;
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Using Value provider
+		/// </summary>
+		/// <param name="activationDelegate"></param>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		public IIExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].ValueProvider = new ExportActivationValueProvider(activationDelegate);
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Use value provider
+		/// </summary>
+		/// <param name="valueProvider">value provider</param>
+		/// <returns>
+		/// configuration object
+		/// </returns>
+		public IIExportTypeSetImportPropertyConfiguration UsingValueProvider(IExportValueProvider valueProvider)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].ValueProvider = valueProvider;
+			}
+
+			return this;
+		}
+
 		private List<Type> FilterTypes()
 		{
 			List<Type> filteredTypes = new List<Type>();
@@ -377,9 +493,9 @@ namespace Grace.DependencyInjection.Impl
 		private static bool ShouldSkipType(Type exportedType)
 		{
 			return exportedType.GetTypeInfo().IsInterface ||
-			       exportedType.GetTypeInfo().IsAbstract ||
-			       typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) ||
-			       typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
+					 exportedType.GetTypeInfo().IsAbstract ||
+					 typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) ||
+					 typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
 		}
 
 		private IEnumerable<IExportStrategy> ScanTypesForExports(IEnumerable<Type> filteredTypes)
@@ -415,7 +531,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
 				{
 					if (implementedInterface.IsConstructedGenericType &&
-					    implementedInterface.GenericTypeArguments.Length == genericArgs.Length)
+						 implementedInterface.GenericTypeArguments.Length == genericArgs.Length)
 					{
 						exportTypes.Add(implementedInterface.GetGenericTypeDefinition());
 					}
@@ -489,7 +605,7 @@ namespace Grace.DependencyInjection.Impl
 					if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
 					{
 						if (implementedInterface.IsConstructedGenericType &&
-						    implementedInterface.GetGenericTypeDefinition() == exportInterface)
+							 implementedInterface.GetGenericTypeDefinition() == exportInterface)
 						{
 							yield return implementedInterface;
 						}
@@ -594,6 +710,27 @@ namespace Grace.DependencyInjection.Impl
 			foreach (Type exportType in exportTypes)
 			{
 				exportStrategy.AddExportType(exportType);
+			}
+
+			foreach (ImportGlobalPropertyInfo importProperty in importPropertiesList)
+			{
+				foreach (PropertyInfo runtimeProperty in exportedType.GetRuntimeProperties())
+				{
+					if (runtimeProperty.CanWrite &&
+						 runtimeProperty.PropertyType.GetTypeInfo().IsAssignableFrom(importProperty.PropertyType.GetTypeInfo()))
+					{
+						if (importProperty.PropertyName == null ||
+							 importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
+						{
+							exportStrategy.ImportProperty(new ImportPropertyInfo
+																	{
+																		Property = runtimeProperty,
+																		IsRequired = importProperty.IsRequired,
+																		ValueProvider = importProperty.ValueProvider
+																	});
+						}
+					}
+				}
 			}
 
 			return exportStrategy;

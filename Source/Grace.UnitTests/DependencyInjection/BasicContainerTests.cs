@@ -316,5 +316,20 @@ namespace Grace.UnitTests.DependencyInjection
 
 			IImportConstructorService constructorService = container.Locate<IImportConstructorService>();
 		}
+
+		[Fact]
+		public void ImportPropertyExample()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly())
+												.ByInterfaces()
+												.ImportProperty<IBasicService>());
+
+			IImportPropertyService importService = container.Locate<IImportPropertyService>();
+
+			Assert.NotNull(importService);
+			Assert.NotNull(importService.BasicService);
+		}
 	}
 }
