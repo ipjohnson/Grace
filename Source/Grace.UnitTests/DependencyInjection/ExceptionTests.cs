@@ -77,7 +77,6 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 			catch (CircularDependencyDetectedException exp)
 			{
-
 				Console.WriteLine(exp.Message);
 				// this is what we want
 			}

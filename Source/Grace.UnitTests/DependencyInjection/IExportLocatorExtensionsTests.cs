@@ -28,9 +28,9 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export<ConstructorImportService>().AndSingleton());
+			container.Configure(c => c.Export<ConstructorImportService>().As<IConstructorImportService>());
 
-			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>().AndSingleton()))
 			{
 				string whatDoIHave = child.WhatDoIHave(true);
 
@@ -49,9 +49,9 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export<ConstructorImportService>().AndSingleton());
+			container.Configure(c => c.Export<ConstructorImportService>());
 
-			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>().AndSingleton()))
 			{
 				string whatDoIHave = child.WhatDoIHave();
 
@@ -70,9 +70,9 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export<ConstructorImportService>().AndSingleton());
+			container.Configure(c => c.Export<ConstructorImportService>());
 
-			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+			using (IInjectionScope child = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>().AndSingleton()))
 			{
 				string whatDoIHave = child.WhatDoIHave(includeParent: true, consider: ExportsThat.AreExportedAs<IBasicService>());
 

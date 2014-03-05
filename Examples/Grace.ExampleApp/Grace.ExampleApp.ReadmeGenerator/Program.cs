@@ -10,8 +10,12 @@ namespace Grace.ExampleApp.ReadmeGenerator
 	{
 		static void Main(string[] args)
 		{
+			ExampleFileProcessor processor = new ExampleFileProcessor();
 
-
+			foreach (ExampleEntry exampleEntry in processor.ProcessFile("ImportPropertyExamples.cs", ""))
+			{
+				
+			}
 		}
 	}
 }
