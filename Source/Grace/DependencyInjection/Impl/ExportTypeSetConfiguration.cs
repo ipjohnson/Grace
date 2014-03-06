@@ -726,7 +726,8 @@ namespace Grace.DependencyInjection.Impl
 																	{
 																		Property = runtimeProperty,
 																		IsRequired = importProperty.IsRequired,
-																		ValueProvider = importProperty.ValueProvider
+																		ValueProvider = importProperty.ValueProvider,
+																		ExportStrategyFilter = importProperty.Consider
 																	});
 						}
 					}
