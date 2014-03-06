@@ -7,15 +7,30 @@ using Grace.Logging;
 
 namespace Grace.DependencyInjection.Configuration
 {
+	/// <summary>
+	/// This class can be used to configure a container or a scope using app.config (or web.config)
+	/// usage container.Configure(new AppConfigModule());
+	/// </summary>
 	public class AppConfigModule : IConfigurationModule
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public AppConfigModule()
 		{
 			SectionName = "grace";
 		}
 
+		/// <summary>
+		/// Section name in the app.config 
+		/// By default section name is grace
+		/// </summary>
 		public string SectionName { get; set; }
 
+		/// <summary>
+		/// Configure the module
+		/// </summary>
+		/// <param name="registrationBlock">registration block</param>
 		public void Configure(IExportRegistrationBlock registrationBlock)
 		{
 			GraceConfigurationSection graceSection = null;
@@ -90,6 +105,13 @@ namespace Grace.DependencyInjection.Configuration
 				if (exportElement.ExternallyOwned)
 				{
 					config = config.ExternallyOwned();
+				}
+
+				config.InEnvironment(exportElement.Environment);
+
+				if (exportElement.AutoWireProperties)
+				{
+					config.AutoWireProperties();
 				}
 
 				foreach (AsElement asElement in exportElement)

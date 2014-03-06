@@ -20,10 +20,22 @@ namespace Grace.DependencyInjection.Configuration
 			get { return PropertyValue<bool>(); }
 		}
 
-		[ConfigurationProperty("lifeStyle", IsRequired = false)]
+		[ConfigurationProperty("lifeStyle", IsRequired = false, DefaultValue = null)]
 		public string LifeStyle
 		{
 			get { return PropertyValue<string>(); }
+		}
+
+		[ConfigurationProperty("environment", IsRequired = false, DefaultValue = ExportEnvironment.Any)]
+		public ExportEnvironment Environment
+		{
+			get { return PropertyValue<ExportEnvironment>(); }
+		}
+
+		[ConfigurationProperty("autoWireProperties", IsRequired = false, DefaultValue = false)]
+		public bool AutoWireProperties
+		{
+			get { return PropertyValue<bool>(); }
 		}
 	}
 }
