@@ -338,9 +338,9 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export(Types.FromThisAssembly())
-												.ByInterfaces()
-												.ImportProperty<IBasicService>()
-												.Consider((context,strategy) => strategy.ActivationType.Name == "BasicService"));
+											  .ByInterfaces()
+											  .ImportProperty<IBasicService>()
+													.Consider((context,strategy) => strategy.ActivationType.Name == "BasicService"));
 
 			IImportPropertyService importService = container.Locate<IImportPropertyService>();
 
