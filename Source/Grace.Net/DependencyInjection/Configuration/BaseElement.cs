@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace Grace.DependencyInjection.Configuration
 {
+	/// <summary>
+	/// Base configuration element
+	/// </summary>
 	public class BaseElement : ConfigurationElement
 	{
 		/// <summary>
