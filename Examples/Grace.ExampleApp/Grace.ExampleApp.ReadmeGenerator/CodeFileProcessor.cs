@@ -7,25 +7,34 @@ using System.Threading.Tasks;
 
 namespace Grace.ExampleApp.ReadmeGenerator
 {
-	public class ExampleEntry
+	public enum ClassType
 	{
-		public string ExampleName { get; set; }
+		Example,
+		Module,
+		Other,
+	}
+
+	public class ClassEntry
+	{
+		public string ClassName { get; set; }
 
 		public string Description { get; set; }
 
-		public string Example { get; set; }
+		public string Class { get; set; }
+
+		public ClassType ClassType { get; set; }
 	}
 
-	public interface IExampleFileProcessor
+	public interface ICodeFileProcessor
 	{
-		IEnumerable<ExampleEntry> ProcessFile(string examplePath, string outputDirectory);
+		IEnumerable<ClassEntry> GetClassEntries(string filePath, ClassType classType);
 	}
 
-	public class ExampleFileProcessor : IExampleFileProcessor
+	public class CodeFileProcessor : ICodeFileProcessor
 	{
-		public IEnumerable<ExampleEntry> ProcessFile(string examplePath, string outputDirectory)
+		public IEnumerable<ClassEntry> GetClassEntries(string filePath, ClassType classType)
 		{
-			List<string> lines = new List<string>(File.ReadAllLines(examplePath));
+			List<string> lines = new List<string>(File.ReadAllLines(filePath));
 
 			RemoveUsingAndNamspace(lines);
 
@@ -33,18 +42,19 @@ namespace Grace.ExampleApp.ReadmeGenerator
 
 			while (classIndex >= 0)
 			{
-				yield return ProcessExampleClass(lines, classIndex);
+				yield return ProcessExampleClass(lines, classIndex, classType);
 
 				classIndex = lines.FindLastIndex(x => x.Contains("public class "));
 			}
 		}
 
-		private ExampleEntry ProcessExampleClass(List<string> lines, int classIndex)
+		private ClassEntry ProcessExampleClass(List<string> lines, int classIndex, ClassType classType)
 		{
-			ExampleEntry returnEntry = new ExampleEntry
-			                           {
-				                           ExampleName = GetExampleName(lines[classIndex])
-			                           };
+			ClassEntry returnEntry = new ClassEntry
+			{
+				ClassName = GetClassName(lines[classIndex]),
+				ClassType = classType
+			};
 
 			int commentBeginIndex = classIndex - 1;
 
@@ -76,14 +86,14 @@ namespace Grace.ExampleApp.ReadmeGenerator
 				stringBuilder.AppendLine(lines[i]);
 			}
 
-			returnEntry.Example = stringBuilder.ToString();
+			returnEntry.Class = stringBuilder.ToString();
 
 			lines.RemoveRange(commentBeginIndex, lines.Count - commentBeginIndex);
-			
+
 			return returnEntry;
 		}
 
-		private string GetExampleName(string classString)
+		private string GetClassName(string classString)
 		{
 			int classIndex = classString.IndexOf("class ");
 			string returnValue = classString;

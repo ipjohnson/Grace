@@ -36,11 +36,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Grace">
-      <HintPath>..\packages\Grace.2.0.3\lib\portable-windows8+net45\Grace.dll</HintPath>
+    <Reference Include="Grace, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Grace.2.2.0-Nightly1154\lib\portable-windows8+net45\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Net">
-      <HintPath>..\packages\Grace.Net.2.0.3\lib\net45\Grace.Net.dll</HintPath>
+    <Reference Include="Grace.Net, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Grace.Net.2.2.0-Nightly1154\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -95,6 +97,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DependencyInjection\BasicFluentConfiguration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

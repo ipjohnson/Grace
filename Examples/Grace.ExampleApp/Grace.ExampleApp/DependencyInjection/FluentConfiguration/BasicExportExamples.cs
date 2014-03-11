@@ -25,7 +25,7 @@ namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 	}
 
 	/// <summary>
-	/// This example shows how to export a type with a particular name
+	/// This example shows how to export a type by a particular name
 	/// </summary>
 	public class ExportWithNameExample : IExample<FluentConfigurationSubModule>
 	{

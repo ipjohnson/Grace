@@ -6,16 +6,32 @@ using System.Threading.Tasks;
 
 namespace Grace.ExampleApp.ReadmeGenerator
 {
-	public interface IReadmeGenerator
+	public interface IProjectReadmeGenerator
 	{
-		void GenerateReadme();
+		void GenerateReadme(string outputPath, params string[] projectDirectories);
 	}
 
-	public class ProjectProcessor : IReadmeGenerator
+	public class ProjectProcessor : IProjectReadmeGenerator
 	{
-		public void GenerateReadme()
+		private IDirectoryProcessor directoryProcessor;
+		private Func<IModuleReadmeGenerator> moduleGenerator;
+
+		public ProjectProcessor(IDirectoryProcessor directoryProcessor,Func<IModuleReadmeGenerator> moduleGenerator)
 		{
-			
+			this.directoryProcessor = directoryProcessor;
+			this.moduleGenerator = moduleGenerator;
+		}
+
+		public void GenerateReadme(string outputPath, params string[] projectDirectories)
+		{
+			foreach (string projectDirectory in projectDirectories)
+			{
+				DirectoryEntry directoryEntry = directoryProcessor.ProcessDirectory(projectDirectory);
+
+				IModuleReadmeGenerator moduleReadmeGenerator = moduleGenerator();
+
+				moduleReadmeGenerator.ProcessDirectoryEntry(directoryEntry,outputPath + directoryEntry.DirectoryName);
+			}
 		}
 	}
 }

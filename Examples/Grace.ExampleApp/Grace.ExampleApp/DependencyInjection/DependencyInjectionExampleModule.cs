@@ -9,9 +9,9 @@ namespace Grace.ExampleApp.DependencyInjection
 {
 	public class DependencyInjectionExampleModule : IExampleModule
 	{
-		private readonly List<IExampleSubModule<DependencyInjectionExampleModule>> subModules;
+		private readonly IEnumerable<IExampleSubModule<DependencyInjectionExampleModule>> subModules;
 
-		public DependencyInjectionExampleModule(List<IExampleSubModule<DependencyInjectionExampleModule>> subModules)
+		public DependencyInjectionExampleModule(IEnumerable<IExampleSubModule<DependencyInjectionExampleModule>> subModules)
 		{
 			this.subModules = subModules;
 		}

@@ -8,9 +8,9 @@ namespace Grace.ExampleApp.DependencyInjection.SpecialTypes
 {
 	public class SpecialTypesSubModule : IExampleSubModule<DependencyInjectionExampleModule>
 	{
-		private List<IExample<SpecialTypesSubModule>> examples;
+		private IEnumerable<IExample<SpecialTypesSubModule>> examples;
 
-		public SpecialTypesSubModule(List<IExample<SpecialTypesSubModule>> examples)
+		public SpecialTypesSubModule(IEnumerable<IExample<SpecialTypesSubModule>> examples)
 		{
 			this.examples = examples;
 		}

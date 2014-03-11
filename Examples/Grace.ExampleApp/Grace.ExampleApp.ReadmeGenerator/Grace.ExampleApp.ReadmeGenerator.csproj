@@ -32,11 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Grace">
-      <HintPath>..\packages\Grace.2.0.3\lib\portable-windows8+net45\Grace.dll</HintPath>
+    <Reference Include="Grace, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Grace.2.2.0-Nightly1154\lib\portable-windows8+net45\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Net">
-      <HintPath>..\packages\Grace.Net.2.0.3\lib\net45\Grace.Net.dll</HintPath>
+    <Reference Include="Grace.Net, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Grace.Net.2.2.0-Nightly1154\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,8 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExampleFileProcessor.cs" />
-    <Compile Include="ModuleFileProcessor.cs" />
+    <Compile Include="CodeFileProcessor.cs" />
+    <Compile Include="DirectoryProcessor.cs" />
+    <Compile Include="ExampleReadmeGenerator.cs" />
+    <Compile Include="ModuleReadmeGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadmeFileOutput.cs" />
