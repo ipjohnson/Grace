@@ -530,8 +530,7 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
 				{
-					if (implementedInterface.IsConstructedGenericType &&
-						 implementedInterface.GenericTypeArguments.Length == genericArgs.Length)
+					if (implementedInterface.IsConstructedGenericType)
 					{
 						exportTypes.Add(implementedInterface.GetGenericTypeDefinition());
 					}

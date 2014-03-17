@@ -56,6 +56,15 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Export the type by it's interfaces
+		/// </summary>
+		/// <returns>configuration object</returns>
+		public IFluentExportStrategyConfiguration ByInterfaces()
+		{
+			return strategy.ByInterfaces();
+		}
+
+		/// <summary>
 		/// Export as a particular type
 		/// </summary>
 		/// <returns>configuration object</returns>

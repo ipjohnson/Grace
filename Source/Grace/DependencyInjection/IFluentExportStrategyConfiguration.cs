@@ -40,6 +40,12 @@ namespace Grace.DependencyInjection
 		IFluentExportStrategyConfiguration As<T>();
 
 		/// <summary>
+		/// Export the type by it's interfaces
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IFluentExportStrategyConfiguration ByInterfaces();
+
+		/// <summary>
 		/// Defines which environment this export should be exported in
 		/// </summary>
 		/// <param name="environment"></param>

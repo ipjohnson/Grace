@@ -803,7 +803,7 @@ namespace Grace.DependencyInjection.Impl
 					new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
 
 				if (kernelManager.Container != null &&
-				    kernelManager.Container.ThrowExceptions)
+					 kernelManager.Container.ThrowExceptions)
 				{
 					throw;
 				}
@@ -816,7 +816,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException generalLocateException = new GeneralLocateException(name,null,injectionContext,exp);
+				GeneralLocateException generalLocateException = new GeneralLocateException(name, null, injectionContext, exp);
 
 				generalLocateException.AddLocationInformationEntry(new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
 
@@ -900,7 +900,7 @@ namespace Grace.DependencyInjection.Impl
 
 				generalLocateException.AddLocationInformationEntry(
 					new InjectionScopeLocateEntry(null, exportType, ScopeName, consider != null, true));
-				
+
 				if (kernelManager.Container != null &&
 					 kernelManager.Container.ThrowExceptions)
 				{
@@ -1070,8 +1070,7 @@ namespace Grace.DependencyInjection.Impl
 						IGenericExportStrategy genericExportStrategy = strategy as IGenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-							 genericExportStrategy.MeetsCondition(context) &&
-							 genericExportStrategy.CheckGenericConstrataints(closingTypes))
+							 genericExportStrategy.MeetsCondition(context))
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{
@@ -1079,7 +1078,7 @@ namespace Grace.DependencyInjection.Impl
 							}
 							else
 							{
-								exportStrategy = genericExportStrategy.CreateClosedStrategy(closingTypes);
+								exportStrategy = genericExportStrategy.CreateClosedStrategy(exportType);
 							}
 
 							if (exportStrategy != null)
@@ -1692,13 +1691,15 @@ namespace Grace.DependencyInjection.Impl
 						GenericExportStrategy genericExportStrategy = exportStrategy as GenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-							 genericExportStrategy.MeetsCondition(injectionContext) &&
-							 genericExportStrategy.CheckGenericConstrataints(genericArgs))
+							 genericExportStrategy.MeetsCondition(injectionContext))
 						{
 							IExportStrategy newStrategy =
-								genericExportStrategy.CreateClosedStrategy(genericArgs);
+								genericExportStrategy.CreateClosedStrategy(locateType);
 
-							AddStrategy(newStrategy);
+							if (newStrategy != null)
+							{
+								AddStrategy(newStrategy);
+							}
 						}
 					}
 				}

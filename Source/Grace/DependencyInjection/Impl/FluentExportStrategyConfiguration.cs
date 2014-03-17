@@ -72,7 +72,7 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration As(Type exportType)
 		{
 			if (!this.exportType.GetTypeInfo().IsGenericTypeDefinition &&
-			    !exportType.GetTypeInfo().IsAssignableFrom(this.exportType.GetTypeInfo()))
+				 !exportType.GetTypeInfo().IsAssignableFrom(this.exportType.GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
@@ -93,7 +93,7 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration As<T>()
 		{
 			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
-			    !typeof(T).GetTypeInfo().IsAssignableFrom(exportType.GetTypeInfo()))
+				 !typeof(T).GetTypeInfo().IsAssignableFrom(exportType.GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
@@ -102,6 +102,34 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			exportStrategy.AddExportType(typeof(T));
+
+			return this;
+		}
+
+		/// <summary>
+		/// Export the type by the interfaces it implements
+		/// </summary>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration ByInterfaces()
+		{
+			if (exportStrategy.ActivationType.GetTypeInfo().IsInterface)
+			{
+				exportStrategy.AddExportType(exportStrategy.ActivationType);
+			}
+			else
+			{
+				foreach (Type interfaceTypes in exportStrategy.ActivationType.GetTypeInfo().ImplementedInterfaces)
+				{
+					if (exportStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+					{
+						exportStrategy.AddExportType(interfaceTypes.GetGenericTypeDefinition());
+					}
+					else
+					{
+						exportStrategy.AddExportType(interfaceTypes);
+					}
+				}
+			}
 
 			return this;
 		}
@@ -200,7 +228,7 @@ namespace Grace.DependencyInjection.Impl
 				ParameterInfo[] parameters = runtimeMethod.GetParameters();
 
 				if (runtimeMethod.Name == activationMethod && parameters.Length == 0 ||
-				    (parameters.Length == 1 && parameters[0].ParameterType == typeof(IInjectionContext)))
+					 (parameters.Length == 1 && parameters[0].ParameterType == typeof(IInjectionContext)))
 				{
 					importMethod = runtimeMethod;
 					break;
@@ -275,10 +303,10 @@ namespace Grace.DependencyInjection.Impl
 				if (propertyInfo.CanWrite)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
-					                                           {
-						                                           Property = propertyInfo,
-						                                           IsRequired = required
-					                                           };
+																			 {
+																				 Property = propertyInfo,
+																				 IsRequired = required
+																			 };
 
 					exportStrategy.ImportProperty(newImportPropertyInfo);
 				}
@@ -390,7 +418,7 @@ namespace Grace.DependencyInjection.Impl
 			Type asType = typeof(TExportType);
 
 			if (!asType.GetTypeInfo().IsGenericTypeDefinition &&
-			    !asType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+				 !asType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
@@ -411,7 +439,7 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration<T> As(Type exportType)
 		{
 			if (!exportType.GetTypeInfo().IsGenericTypeDefinition &&
-			    !exportType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+				 !exportType.GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
 			{
 				throw new ArgumentException(
 					string.Format("Exported type {0} cannot be cast to {1}",
@@ -435,10 +463,19 @@ namespace Grace.DependencyInjection.Impl
 			{
 				exportStrategy.AddExportType(exportStrategy.ActivationType);
 			}
-
-			foreach (Type interfaceTypes in exportStrategy.ActivationType.GetTypeInfo().ImplementedInterfaces)
+			else
 			{
-				exportStrategy.AddExportType(interfaceTypes);
+				foreach (Type interfaceTypes in exportStrategy.ActivationType.GetTypeInfo().ImplementedInterfaces)
+				{
+					if (exportStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+					{
+						exportStrategy.AddExportType(interfaceTypes.GetGenericTypeDefinition());
+					}
+					else
+					{
+						exportStrategy.AddExportType(interfaceTypes);
+					}
+				}
 			}
 
 			return this;
@@ -652,10 +689,10 @@ namespace Grace.DependencyInjection.Impl
 				if (propertyInfo.CanWrite)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
-					                                           {
-						                                           IsRequired = required,
-						                                           Property = propertyInfo
-					                                           };
+																			 {
+																				 IsRequired = required,
+																				 Property = propertyInfo
+																			 };
 
 					exportStrategy.ImportProperty(newImportPropertyInfo);
 				}

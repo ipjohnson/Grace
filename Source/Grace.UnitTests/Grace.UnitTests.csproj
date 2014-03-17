@@ -112,8 +112,11 @@
     <Compile Include="Classes\Simple\LazyImportService.cs" />
     <Compile Include="Classes\Simple\LazyService.cs" />
     <Compile Include="Classes\Simple\MultipleConstructorImport.cs" />
+    <Compile Include="Classes\Simple\MultipleOpenGeneric.cs" />
+    <Compile Include="Classes\Simple\MultipleOutOfOrderOpenGeneric.cs" />
     <Compile Include="Classes\Simple\MultiplePropertyImportService.cs" />
     <Compile Include="Classes\Simple\MultipleSimpleObjects.cs" />
+    <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
     <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
     <Compile Include="Classes\Simple\SimpleModule.cs" />
     <Compile Include="Classes\Simple\SomeTestAttribute.cs" />
@@ -132,6 +135,7 @@
     <Compile Include="DependencyInjection\DelegateFactoryTests.cs" />
     <Compile Include="DependencyInjection\ExceptionTests.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensionsTests.cs" />
+    <Compile Include="DependencyInjection\Impl\OpenGenericUtilitiesTests.cs" />
     <Compile Include="DependencyInjection\InjectionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\UnlessConditionTests.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenConditionTests.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="DependencyInjection\Lifestyle\ThreadStaticContainerTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\WeakReferenceContainerTests.cs" />
     <Compile Include="DependencyInjection\MetaTests.cs" />
+    <Compile Include="DependencyInjection\OpenGenericContainerTests.cs" />
     <Compile Include="DependencyInjection\OwnedTests.cs" />
     <Compile Include="DependencyInjection\SecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\ThatTests.cs" />

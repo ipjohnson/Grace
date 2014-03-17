@@ -10,5 +10,6 @@
 
 	public class ConstrainedService<T> : IGenericService<T> where T : IBasicService
 	{
+
 	}
 }

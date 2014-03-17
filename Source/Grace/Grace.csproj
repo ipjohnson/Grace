@@ -139,6 +139,7 @@
     <Compile Include="DependencyInjection\Impl\IGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceFuncStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\MetaStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\OpenGenericUtilities.cs" />
     <Compile Include="DependencyInjection\Impl\PriorityAttributeInspector.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyDescendingComparer.cs" />
     <Compile Include="DependencyInjection\Impl\PropertyExportStrategy.cs" />

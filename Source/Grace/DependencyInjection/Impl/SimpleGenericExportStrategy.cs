@@ -32,63 +32,18 @@ namespace Grace.DependencyInjection.Impl
 		{
 			throw new NotImplementedException();
 		}
-
-		/// <summary>
-		/// Checks to make sure the closing types meet generic constraints
-		/// </summary>
-		/// <param name="closingTypes"></param>
-		/// <returns></returns>
-		public bool CheckGenericConstrataints(Type[] closingTypes)
-		{
-			Type[] exportingTypes = exportType.GetTypeInfo().GenericTypeParameters;
-
-			if (closingTypes.Length != exportingTypes.Length)
-			{
-				return false;
-			}
-
-			bool constraintsMatch = true;
-
-			for (int i = 0; i < exportingTypes.Length && constraintsMatch; i++)
-			{
-				Type[] constraints = exportingTypes[i].GetTypeInfo().GetGenericParameterConstraints();
-
-				foreach (Type constraint in constraints)
-				{
-					if (constraint.GetTypeInfo().IsInterface)
-					{
-						if (
-							closingTypes[i].GetTypeInfo()
-								.ImplementedInterfaces.Any(x => x.GetTypeInfo().GUID == constraint.GetTypeInfo().GUID))
-						{
-							continue;
-						}
-
-						constraintsMatch = false;
-						break;
-					}
-
-					if (!constraint.GetTypeInfo().IsAssignableFrom(closingTypes[i].GetTypeInfo()))
-					{
-						constraintsMatch = false;
-						break;
-					}
-				}
-			}
-
-			return constraintsMatch;
-		}
-
+		
 		/// <summary>
 		/// Creates a new closed export strategy that can be activated
 		/// </summary>
-		/// <param name="closingTypes"></param>
+		/// <param name="requestingType"></param>
 		/// <returns></returns>
-		public IExportStrategy CreateClosedStrategy(Type[] closingTypes)
+		public IExportStrategy CreateClosedStrategy(Type requestingType)
 		{
-			try
+			Type closedType = OpenGenericUtilities.CreateClosedExportTypeFromRequestingType(exportType, requestingType);
+
+			if(closedType != null)
 			{
-				Type closedType = exportType.MakeGenericType(closingTypes);
 				SimpleExportStrategy newExportStrategy = new SimpleExportStrategy(closedType);
 
 				foreach (string exportName in base.ExportNames)
@@ -96,17 +51,39 @@ namespace Grace.DependencyInjection.Impl
 					newExportStrategy.AddExportName(exportName);
 				}
 
-				foreach (Type exportAsType in ExportTypes)
+				foreach (string exportName in base.ExportNames)
 				{
-					if (exportAsType.GetTypeInfo().IsGenericTypeDefinition)
-					{
-						Type closingType = exportAsType.MakeGenericType(closingTypes);
+					newExportStrategy.AddExportName(exportName);
+				}
 
-						newExportStrategy.AddExportType(closingType);
-					}
-					else
+				if (exportTypes != null)
+				{
+					foreach (Type type in exportTypes)
 					{
-						newExportStrategy.AddExportType(exportAsType);
+						Type newExportType = null;
+
+						if (type.GetTypeInfo().IsInterface)
+						{
+							newExportType =
+								closedType.GetTypeInfo()
+									.ImplementedInterfaces.FirstOrDefault(x => x.GetTypeInfo().GUID == type.GetTypeInfo().GUID);
+						}
+						else
+						{
+							Type parentType = closedType.GetTypeInfo().BaseType;
+
+							while (parentType != null && parentType.GetTypeInfo().GUID != type.GetTypeInfo().GUID)
+							{
+								parentType = parentType.GetTypeInfo().BaseType;
+							}
+
+							newExportType = parentType;
+						}
+
+						if (newExportType != null)
+						{
+							newExportStrategy.AddExportType(newExportType);
+						}
 					}
 				}
 
@@ -115,17 +92,22 @@ namespace Grace.DependencyInjection.Impl
 					newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
 				}
 
+				if (enrichWithDelegates != null)
+				{
+					foreach (var item in enrichWithDelegates)
+					{
+						newExportStrategy.EnrichWithDelegate(item);
+					}
+				}
+
+				foreach (var item in Metadata)
+				{
+					newExportStrategy.AddMetadata(item.Key, item.Value);
+				}
+
 				return newExportStrategy;
 			}
-			catch (Exception exp)
-			{
-				string errorMessage = string.Format("Exception thrown while trying to close generic export {0} with ",
-					exportType.FullName);
 
-				closingTypes.Aggregate(errorMessage, (error, t) => error + t.FullName);
-
-				Log.Error(errorMessage, exp);
-			}
 
 			return null;
 		}
