@@ -25,8 +25,43 @@ namespace Grace.DependencyInjection.Impl
 			{
 				return CreateClosedExportTypeFromInterfaceRequestingType(exportedType, requestedType);
 			}
+			else
+			{
+				return CreateClosedExportTypeFromClassRequestingType(exportedType, requestedType);
+			}
+		}
 
-			return null;
+		private static Type CreateClosedExportTypeFromClassRequestingType(Type exportedType, Type requestedType)
+		{
+			Type returnType = null;
+			TypeInfo exportedTypeInfo = exportedType.GetTypeInfo();
+			TypeInfo requestedTypeInfo = requestedType.GetTypeInfo();
+
+			if (exportedTypeInfo.GUID == requestedTypeInfo.GUID)
+			{
+				returnType = requestedType;
+			}
+			else
+			{
+				Type parentType = exportedTypeInfo.BaseType;
+
+				while (parentType != null && parentType.GetTypeInfo().GUID != requestedTypeInfo.GUID)
+				{
+					parentType = parentType.GetTypeInfo().BaseType;
+				}
+
+				if (parentType != null)
+				{
+					Dictionary<Type, Type> parameterTypeToRealTypeMap;
+
+					if (TypeMeetRequirements(exportedType, requestedType, parentType, out parameterTypeToRealTypeMap))
+					{
+						returnType = CreateClosedTypeWithParameterMap(exportedType, parameterTypeToRealTypeMap);
+					}
+				}
+			}
+
+			return returnType;
 		}
 
 		private static Type CreateClosedExportTypeFromInterfaceRequestingType(Type exportedType, Type requestedType)
