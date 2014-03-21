@@ -17,6 +17,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly IInjectionScope owningScope;
 		private readonly List<IExportStrategyProvider> strategyProviders = new List<IExportStrategyProvider>();
 		private ExportStrategyListProvider exportStrategyList;
+		private readonly List<IExportStrategyInspector> inspectors = new List<IExportStrategyInspector>(); 
 
 		/// <summary>
 		/// Default constructor
@@ -255,6 +256,15 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Adds an inspector to this registration block
+		/// </summary>
+		/// <param name="inspector">inspector</param>
+		public void AddInspector(IExportStrategyInspector inspector)
+		{
+			inspectors.Add(inspector);
+		}
+
+		/// <summary>
 		/// Get all exports for the registration block
 		/// </summary>
 		/// <returns></returns>
@@ -275,10 +285,16 @@ namespace Grace.DependencyInjection.Impl
 
 						if (provideStrategy.ExportNames.Any())
 						{
-							provideStrategy.ExportNames.Aggregate((x, y) => string.Concat(x, ',', y));
+							exportNames =
+								provideStrategy.ExportNames.Aggregate((x, y) => string.Concat(x, ',', y));
 						}
 
 						Log.InfoFormat("Exporting type {0} as {1}", provideStrategy.ActivationType.FullName, exportNames);
+					}
+
+					foreach (IExportStrategyInspector exportStrategyInspector in inspectors)
+					{
+						exportStrategyInspector.Inspect(provideStrategy);
 					}
 
 					yield return provideStrategy;

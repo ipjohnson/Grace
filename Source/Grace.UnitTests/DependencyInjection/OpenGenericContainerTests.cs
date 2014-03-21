@@ -117,5 +117,33 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.True(enrichmentCalled);
 		}
+
+		[Fact]
+		public void PrioritizeSemiClosedGenerics()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+										  c.Export(typeof(BaseGenericClass<,,,>));
+				                    c.Export(typeof(PartialClosedClass<,,>)).As(typeof(BaseGenericClass<,,,>));
+				                    c.Export(typeof(EvenMoreClosedClass<,>)).As(typeof(BaseGenericClass<,,,>));
+										  c.PrioritizePartiallyClosedGenerics();
+			                    });
+
+			var openObject = container.Locate<BaseGenericClass<int, string, double, DateTime>>();
+
+			Assert.NotNull(openObject);
+
+			var semiClosed = container.Locate<BaseGenericClass<int, string, double, double>>();
+
+			Assert.NotNull(semiClosed);
+			Assert.IsType<PartialClosedClass<int, string, double>>(semiClosed);
+
+			var reallyClosed = container.Locate<BaseGenericClass<int, string, string, double>>();
+			
+			Assert.NotNull(reallyClosed);
+			Assert.IsType<EvenMoreClosedClass<int, string>>(reallyClosed);
+		}
 	}
 }

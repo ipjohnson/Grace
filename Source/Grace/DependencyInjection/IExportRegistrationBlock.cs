@@ -122,5 +122,11 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="strategyProvider">new strategy provider</param>
 		void AddExportProvider([NotNull] IExportStrategyProvider strategyProvider);
+
+		/// <summary>
+		/// Adds an inspector to this registration block
+		/// </summary>
+		/// <param name="inspector">inspector</param>
+		void AddInspector(IExportStrategyInspector inspector);
 	}
 }
