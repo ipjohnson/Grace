@@ -1144,6 +1144,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				returnValue = true;
 			}
+			else if (importType == typeof(IInjectionContext))
+			{
+				objectImportExpression.Add(
+					Expression.Assign(importVariable, injectionContextParameter));
+
+				returnValue = true;
+			}
 			else if (importType == typeof(IInjectionScope) ||
 						importType == typeof(IExportLocator))
 			{
