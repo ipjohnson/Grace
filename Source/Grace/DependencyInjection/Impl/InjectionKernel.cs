@@ -1014,8 +1014,9 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
+		/// <param name="exportFilter"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext)
+		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
 		{
 			ExportStrategyCollection collection;
 			IInjectionContext context = injectionContext ?? CreateContext();
@@ -1024,7 +1025,8 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy exportStrategy in collection.ExportStrategies)
 				{
-					if (exportStrategy.MeetsCondition(context))
+					if (exportStrategy.MeetsCondition(context) &&
+						 (exportFilter == null || exportFilter(context, exportStrategy)))
 					{
 						return exportStrategy;
 					}
@@ -1039,8 +1041,9 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
+		/// <param name="exportFilter"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext)
+		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext, ExportStrategyFilter exportFilter = null)
 		{
 			IExportStrategy exportStrategy = null;
 			ExportStrategyCollection collection;
@@ -1050,7 +1053,8 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy currentExportStrategy in collection.ExportStrategies)
 				{
-					if (currentExportStrategy.MeetsCondition(context))
+					if (currentExportStrategy.MeetsCondition(context) &&
+						 (exportFilter == null || exportFilter(injectionContext, currentExportStrategy)))
 					{
 						return currentExportStrategy;
 					}
@@ -1070,7 +1074,8 @@ namespace Grace.DependencyInjection.Impl
 						IGenericExportStrategy genericExportStrategy = strategy as IGenericExportStrategy;
 
 						if (genericExportStrategy != null &&
-							 genericExportStrategy.MeetsCondition(context))
+							 genericExportStrategy.MeetsCondition(context) &&
+							 (exportFilter == null || exportFilter(context, genericExportStrategy)))
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{

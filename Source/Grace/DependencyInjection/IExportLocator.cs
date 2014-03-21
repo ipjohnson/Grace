@@ -167,17 +167,19 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
+		/// <param name="exportFilter"></param>
 		/// <returns></returns>
-		IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null);
+		IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null);
 
 		/// <summary>
 		/// Finds the best matching strategy exported by the name provided
 		/// </summary>
-		/// <param name="exportType"></param>
-		/// <param name="injectionContext"></param>
+		/// <param name="exportType">type to locate</param>
+		/// <param name="injectionContext">injection context</param>
+		/// <param name="exportFilter">export filter</param>
 		/// <returns></returns>
 		[CanBeNull]
-		IExportStrategy GetStrategy([NotNull] Type exportType, IInjectionContext injectionContext = null);
+		IExportStrategy GetStrategy([NotNull] Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null);
 
 		/// <summary>
 		/// Get the list of exported strategies sorted by best option.

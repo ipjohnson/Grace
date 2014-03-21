@@ -334,8 +334,9 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
+		/// <param name="exportFilter"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null)
+		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
 		{
 			return RootScope.GetStrategy(name, injectionContext);
 		}
@@ -345,8 +346,9 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
+		/// <param name="exportFilter"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null)
+		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
 		{
 			return RootScope.GetStrategy(exportType, injectionContext);
 		}

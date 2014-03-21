@@ -43,9 +43,7 @@ namespace Grace.DependencyInjection.Impl
 			IInjectionContext context,
 			ExportStrategyFilter consider)
 		{
-			IEnumerable<IExportStrategy> strategies = exportInjectionScope.GetStrategies(typeof(T), context, consider);
-
-			IExportStrategy strategy = strategies.FirstOrDefault();
+			IExportStrategy strategy =  exportInjectionScope.GetStrategy(typeof(T), context, consider);
 
 			if (strategy == null && exportInjectionScope.ParentScope != null)
 			{

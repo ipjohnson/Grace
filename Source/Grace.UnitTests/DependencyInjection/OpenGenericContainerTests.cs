@@ -82,5 +82,40 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.NotNull(resolvedInstance);
 		}
+
+		[Fact]
+		public void MetaDataOnOpenGeneric()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(typeof(BaseGenericClass<,,,>)).WithMetadata("Hello","World"));
+
+			var resolvedInstance = container.Locate<Meta<BaseGenericClass<int, string, double, DateTime>>>();
+
+			Assert.NotNull(resolvedInstance);
+			Assert.NotNull(resolvedInstance.Value);
+
+			Assert.Equal("World", resolvedInstance.Metadata["Hello"]);
+		}
+
+		[Fact]
+		public void EnrichmentDelegateOnOpenGeneric()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			bool enrichmentCalled = false;
+
+			container.Configure(c => c.Export(typeof(BaseGenericClass<,,,>)).EnrichWith((scope, context, x) =>
+			                                                                            {
+				                                                                            enrichmentCalled = true;
+				                                                                            return x;
+			                                                                            }));
+
+			var genericObject = container.Locate<BaseGenericClass<int, string, double, DateTime>>();
+
+			Assert.NotNull(genericObject);
+
+			Assert.True(enrichmentCalled);
+		}
 	}
 }
