@@ -10,7 +10,7 @@
     <title>Grace.MVC4</title>
     <summary>Grace.MVC4 is a companion library for Grace and MVC 4</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC4 classes to integrate Grace and MVC 4</description>
-    <releaseNotes>This release changes the way exceptions are generated from the container as well as the information they contain. This release also adds the ability to import custom delegates.</releaseNotes>
+    <releaseNotes>This release adds support for partially closed generics as well as bug fixes for open generics.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
