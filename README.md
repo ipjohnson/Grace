@@ -20,7 +20,7 @@ Getting Grace
 
 [NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, Windows Phone 8 and WinRT.
 
-[Visual Studio Templates](http://visualstudiogallery.msdn.microsoft.com/db6d9cb6-bb84-4c98-82b7-2edc4388cdef) are avaliable for creating new MVC, WCF, and Nancy applications as well
+[Visual Studio Templates](http://visualstudiogallery.msdn.microsoft.com/db6d9cb6-bb84-4c98-82b7-2edc4388cdef) are avaliable for creating new MVC 5, WCF, and Nancy applications
 
 
 Documented Grace
@@ -36,15 +36,17 @@ Features in Grace
 * Fluent interface or Attributes for configuration allowing for maximum flexibility
 * Supports child containers
 * Contextual binding support (similar to NInject)
-* IDisposable objects created by the container will be tracked and disposed by the container unless configured not to.
+* IDisposable objects created by the container will be tracked and disposed by the container unless configured otherwise.
 * Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. 
 * Supports special types
-   * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable as well as most other types of collections (List&lt;T>, ReadOnlyCollection&lt;T&gt;, T[])
+   * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable&lt;T&gt; as well as most other types of collections List&lt;T&gt;, ReadOnlyCollection&lt;T&gt;, T[] and any collection that implements ICollection&lt;T&gt;
    * Func&lt;T&gt; - supports resolving Func<T&gt; automatically
    * Lazy&lt;T&gt; - when resolved a Lazy&lt;T&gt; will be created that resolves T from the scope it was created in
    * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
+* Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC & WCF out of the box), WeakSingleton and more. If none of the provided life styles meet your need you can always implement your own ILifeStyle class.
+
 
 
 Builds of Grace
