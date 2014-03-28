@@ -545,7 +545,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (exportTypes.Count > 0)
 			{
-				returnValue = CreateCompiledExportStrategy(exportedType, generic, false, exportTypes);
+				returnValue = CreateCompiledExportStrategy(exportedType, generic, exportTypes);
 			}
 
 			return returnValue;
@@ -564,35 +564,47 @@ namespace Grace.DependencyInjection.Impl
 		private IExportStrategy ExportGenericTypeIfMatchesInterface(Type exportedType)
 		{
 			List<Type> exportTypes = new List<Type>();
-			IExportStrategy returnValue = null;
+			Type matchingType;
 
-			bool exportAsSelf = MatchesExportBaseType(exportedType);
+			bool exportAsSelfAndBase = MatchesExportBaseType(exportedType, out matchingType);
 
 			exportTypes.AddRange(FindMatchingExportInterfaces(exportedType));
 
-			if (exportAsSelf || exportTypes.Count > 0)
+			if (exportAsSelfAndBase || exportTypes.Count > 0)
 			{
-				returnValue = CreateCompiledExportStrategy(exportedType, true, exportAsSelf, exportTypes);
+				if (exportAsSelfAndBase)
+				{
+					exportTypes.Add(matchingType.GetGenericTypeDefinition());
+					exportTypes.Add(exportedType);
+				}
+
+				return CreateCompiledExportStrategy(exportedType, true, exportTypes);
 			}
 
-			return returnValue;
+			return null;
 		}
 
 		private IExportStrategy ExportNonGenericTypeIfMatchesInterface(Type exportedType)
 		{
 			List<Type> exportTypes = new List<Type>();
-			IExportStrategy returnValue = null;
+			Type matchingType;
 
-			bool exportAsSelf = MatchesExportBaseType(exportedType);
+			bool exportAsSelf = MatchesExportBaseType(exportedType, out matchingType);
 
 			exportTypes.AddRange(FindMatchingExportInterfaces(exportedType));
 
 			if (exportAsSelf || exportTypes.Count > 0)
 			{
-				returnValue = CreateCompiledExportStrategy(exportedType, false, exportAsSelf, exportTypes);
+				if (exportAsSelf)
+				{
+					exportTypes.Add(matchingType);
+					exportTypes.Add(exportedType);
+				}
+
+				return CreateCompiledExportStrategy(exportedType, false, exportTypes);
 			}
 
-			return returnValue;
+			return null;
 		}
 
 		private IEnumerable<Type> FindMatchingExportInterfaces(Type exportedType)
@@ -606,7 +618,7 @@ namespace Grace.DependencyInjection.Impl
 						if (implementedInterface.IsConstructedGenericType &&
 							 implementedInterface.GetGenericTypeDefinition() == exportInterface)
 						{
-							yield return implementedInterface;
+							yield return exportInterface;
 						}
 					}
 					else if (exportInterface.GetTypeInfo().IsAssignableFrom(implementedInterface.GetTypeInfo()))
@@ -625,9 +637,11 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
-		private bool MatchesExportBaseType(Type exportedType)
+		private bool MatchesExportBaseType(Type exportedType, out Type matchingType)
 		{
 			bool matchesBaseType = false;
+
+			matchingType = null;
 
 			foreach (Type exportBaseType in exportBaseTypes)
 			{
@@ -637,14 +651,10 @@ namespace Grace.DependencyInjection.Impl
 
 					while (baseType != null)
 					{
-						if (baseType.IsConstructedGenericType)
+						if (baseType.IsConstructedGenericType &&
+							 baseType.GetGenericTypeDefinition() == exportBaseType)
 						{
-							matchesBaseType = true;
-							break;
-						}
-
-						if (baseType == exportBaseType)
-						{
+							matchingType = baseType;
 							matchesBaseType = true;
 							break;
 						}
@@ -660,6 +670,7 @@ namespace Grace.DependencyInjection.Impl
 					{
 						if (baseType == exportBaseType)
 						{
+							matchingType = baseType;
 							matchesBaseType = true;
 							break;
 						}
@@ -674,7 +685,6 @@ namespace Grace.DependencyInjection.Impl
 
 		private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType,
 			bool generic,
-			bool exportAsSelf,
 			IEnumerable<Type> exportTypes)
 		{
 			ICompiledExportStrategy exportStrategy;
@@ -700,11 +710,6 @@ namespace Grace.DependencyInjection.Impl
 
 			exportStrategy.SetPriority(priority);
 			exportStrategy.SetEnvironment(exportEnvironment);
-
-			if (exportAsSelf)
-			{
-				exportStrategy.AddExportType(exportedType);
-			}
 
 			foreach (Type exportType in exportTypes)
 			{

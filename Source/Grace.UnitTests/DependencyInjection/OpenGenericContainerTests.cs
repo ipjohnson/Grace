@@ -58,7 +58,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.NotNull(resolvedInstance);
 		}
-		
+
 		[Fact]
 		public void ResolveConcretePartiallyClosedGeneric()
 		{
@@ -88,7 +88,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export(typeof(BaseGenericClass<,,,>)).WithMetadata("Hello","World"));
+			container.Configure(c => c.Export(typeof(BaseGenericClass<,,,>)).WithMetadata("Hello", "World"));
 
 			var resolvedInstance = container.Locate<Meta<BaseGenericClass<int, string, double, DateTime>>>();
 
@@ -106,10 +106,10 @@ namespace Grace.UnitTests.DependencyInjection
 			bool enrichmentCalled = false;
 
 			container.Configure(c => c.Export(typeof(BaseGenericClass<,,,>)).EnrichWith((scope, context, x) =>
-			                                                                            {
-				                                                                            enrichmentCalled = true;
-				                                                                            return x;
-			                                                                            }));
+																												 {
+																													 enrichmentCalled = true;
+																													 return x;
+																												 }));
 
 			var genericObject = container.Locate<BaseGenericClass<int, string, double, DateTime>>();
 
@@ -124,12 +124,12 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
+									  {
 										  c.Export(typeof(BaseGenericClass<,,,>));
-				                    c.Export(typeof(PartialClosedClass<,,>)).As(typeof(BaseGenericClass<,,,>));
-				                    c.Export(typeof(EvenMoreClosedClass<,>)).As(typeof(BaseGenericClass<,,,>));
+										  c.Export(typeof(PartialClosedClass<,,>)).As(typeof(BaseGenericClass<,,,>));
+										  c.Export(typeof(EvenMoreClosedClass<,>)).As(typeof(BaseGenericClass<,,,>));
 										  c.PrioritizePartiallyClosedGenerics();
-			                    });
+									  });
 
 			var openObject = container.Locate<BaseGenericClass<int, string, double, DateTime>>();
 
@@ -141,9 +141,86 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.IsType<PartialClosedClass<int, string, double>>(semiClosed);
 
 			var reallyClosed = container.Locate<BaseGenericClass<int, string, string, double>>();
-			
+
 			Assert.NotNull(reallyClosed);
 			Assert.IsType<EvenMoreClosedClass<int, string>>(reallyClosed);
+		}
+
+		[Fact]
+		public void BulkRegisterOpenGenericClasses()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).
+																 BasedOn(typeof(BaseGenericClass<,,,>)).
+																 PrioritizePartiallyClosedGenerics());
+
+			var openObject = container.Locate<BaseGenericClass<int, string, double, DateTime>>();
+
+			Assert.NotNull(openObject);
+
+			var semiClosed = container.Locate<BaseGenericClass<int, string, double, double>>();
+
+			Assert.NotNull(semiClosed);
+			Assert.IsType<PartialClosedClass<int, string, double>>(semiClosed);
+
+			var reallyClosed = container.Locate<BaseGenericClass<int, string, string, double>>();
+
+			Assert.NotNull(reallyClosed);
+			Assert.IsType<EvenMoreClosedClass<int, string>>(reallyClosed);
+		}
+
+
+		[Fact]
+		public void BulkRegisterOpenGenericByInterface()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).
+																 ByInterface(typeof(IOpenGenericPartiallyClosedInterface<,,,>)).
+																 PrioritizePartiallyClosedGenerics());
+
+			var openImpl = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, DateTime, float>>();
+
+			Assert.NotNull(openImpl);
+
+			var partiallyClosed = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, DateTime, string>>();
+
+			Assert.NotNull(partiallyClosed);
+			Assert.IsType<PartiallyClosedInterface<string, int, DateTime>>(partiallyClosed);
+
+			var moreClosed = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, double, string>>();
+
+			Assert.NotNull(moreClosed);
+			Assert.IsType<EvenMoreClosedInterface<string, int>>(moreClosed);
+
+
+		}
+
+		[Fact]
+		public void BulkRegisterOpenGenericByInterfaces()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).
+																 ByInterfaces().
+																 PrioritizePartiallyClosedGenerics());
+
+			var openImpl = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, DateTime, float>>();
+
+			Assert.NotNull(openImpl);
+
+			var partiallyClosed = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, DateTime, string>>();
+
+			Assert.NotNull(partiallyClosed);
+			Assert.IsType<PartiallyClosedInterface<string, int, DateTime>>(partiallyClosed);
+
+			var moreClosed = container.Locate<IOpenGenericPartiallyClosedInterface<string, int, double, string>>();
+
+			Assert.NotNull(moreClosed);
+			Assert.IsType<EvenMoreClosedInterface<string, int>>(moreClosed);
+
+
 		}
 	}
 }

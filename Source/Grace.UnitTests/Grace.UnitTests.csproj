@@ -117,6 +117,7 @@
     <Compile Include="Classes\Simple\MultiplePropertyImportService.cs" />
     <Compile Include="Classes\Simple\MultipleSimpleObjects.cs" />
     <Compile Include="Classes\Simple\OpenGenericNonInterfaceExportClasses.cs" />
+    <Compile Include="Classes\Simple\OpenGenericPartiallyClosedInterface.cs" />
     <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
     <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
     <Compile Include="Classes\Simple\SimpleModule.cs" />

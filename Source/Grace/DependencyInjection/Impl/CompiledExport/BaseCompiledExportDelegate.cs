@@ -1154,16 +1154,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			else if (importType == typeof(IInjectionScope) ||
 						importType == typeof(IExportLocator))
 			{
-				if (exportDelegateInfo.IsTransient)
-				{
-					objectImportExpression.Add(
-						Expression.Assign(importVariable, Expression.Property(injectionContextParameter, "RequestingScope")));
-				}
-				else
-				{
-					objectImportExpression.Add(
-						Expression.Assign(importVariable, exportStrategyScopeParameter));
-				}
+				objectImportExpression.Add(
+					exportDelegateInfo.IsTransient
+						? Expression.Assign(importVariable, Expression.Property(injectionContextParameter, "RequestingScope"))
+						: Expression.Assign(importVariable, exportStrategyScopeParameter));
 
 				returnValue = true;
 			}
