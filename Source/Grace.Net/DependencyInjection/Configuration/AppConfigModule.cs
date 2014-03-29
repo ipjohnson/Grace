@@ -260,8 +260,8 @@ namespace Grace.DependencyInjection.Configuration
 			{
 				returnType =
 					AppDomain.CurrentDomain.GetAssemblies()
-						.SelectMany(x => x.ExportedTypes)
-						.FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
+												  .SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes)
+												  .FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
 			}
 
 			return returnType;
