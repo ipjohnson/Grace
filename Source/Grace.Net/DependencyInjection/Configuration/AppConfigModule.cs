@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.LanguageExtensions;
 using Grace.Logging;
 
 namespace Grace.DependencyInjection.Configuration
@@ -176,9 +178,93 @@ namespace Grace.DependencyInjection.Configuration
 			}
 		}
 
-		private Type ConvertStringToType(string type)
+		private Type ConvertStringToType(string typeString)
 		{
-			return Type.GetType(type);
+			if (typeString.IndexOf('.') < 0)
+			{
+				Type returnType = null;
+				string toLowerType = typeString.ToLowerInvariant();
+				
+				switch (toLowerType)
+				{
+					case "int":
+					case "int32":
+					case "integer":
+						returnType = typeof(int);
+						break;
+						
+					case "uint":
+					case "uint32":
+					case "unsignedinteger":
+						returnType = typeof(uint);
+						break;
+						
+					case "long":
+					case "int64":
+						returnType = typeof(long);
+						break;
+
+					case "ulong":
+					case "uint64":
+					case "unsignedlong":
+						returnType = typeof(ulong);
+						break;
+
+					case "double":
+						returnType = typeof(double);
+						break;
+
+					case "decimal":
+						returnType = typeof(decimal);
+						break;
+
+					case "float":
+						returnType = typeof(float);
+						break;
+
+					case "datetime":
+						returnType = typeof(DateTime);
+						break;
+
+					case "timespan":
+						returnType = typeof(TimeSpan);
+						break;
+
+					case "string":
+						returnType = typeof(string);
+						break;
+
+					default:
+						returnType = ScanLoadedAssembliesForType(typeString);
+						break;
+				}
+
+				return returnType;
+			}
+
+			return Type.GetType(typeString);
+		}
+
+		private Type ScanLoadedAssembliesForType(string typeString)
+		{
+			string lower = typeString.ToLowerInvariant();
+			Assembly entryAssembly = Assembly.GetEntryAssembly();
+			Type returnType = null;
+
+			if (entryAssembly != null)
+			{
+				returnType = entryAssembly.ExportedTypes.FirstOrDefault(x => x.Name == typeString);
+			}
+
+			if (returnType == null)
+			{
+				returnType =
+					AppDomain.CurrentDomain.GetAssemblies()
+						.SelectMany(x => x.ExportedTypes)
+						.FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
+			}
+
+			return returnType;
 		}
 
 		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)

@@ -22,5 +22,21 @@ namespace Grace.LanguageExtensions
 				action(t);
 			}
 		}
+
+		/// <summary>
+		/// Operates on an IEnumerable and creates a new IEnumerable that is sorted
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="enumerable"></param>
+		/// <param name="comparison"></param>
+		/// <returns></returns>
+		public static List<T> Sort<T>(this IEnumerable<T> enumerable, Comparison<T> comparison)
+		{
+			List<T> list = new List<T>(enumerable);
+
+			list.Sort(comparison);
+
+			return list;
+		}
 	}
 }

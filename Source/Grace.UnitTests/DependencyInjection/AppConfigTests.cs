@@ -52,6 +52,22 @@ namespace Grace.UnitTests.DependencyInjection
 			IConstructorImportService importService = container.Locate<IConstructorImportService>();
 
 			Assert.NotNull(importService);
+
+			Assert.Equal(5, container.Locate("IntProperty"));
+		}
+
+		[Fact]
+		public void ConfigureWithXmlThirdSectionWithShortNames()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.ConfigureWithXml("thirdGrace");
+
+			IConstructorImportService importService = container.Locate<IConstructorImportService>();
+
+			Assert.NotNull(importService);
+
+			Assert.Equal(5, container.Locate("IntProperty"));
 		}
 	}
 }
