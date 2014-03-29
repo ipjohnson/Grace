@@ -184,7 +184,7 @@ namespace Grace.DependencyInjection.Configuration
 			{
 				Type returnType = null;
 				string toLowerType = typeString.ToLowerInvariant();
-				
+
 				switch (toLowerType)
 				{
 					case "int":
@@ -192,13 +192,13 @@ namespace Grace.DependencyInjection.Configuration
 					case "integer":
 						returnType = typeof(int);
 						break;
-						
+
 					case "uint":
 					case "uint32":
 					case "unsignedinteger":
 						returnType = typeof(uint);
 						break;
-						
+
 					case "long":
 					case "int64":
 						returnType = typeof(long);
@@ -259,12 +259,49 @@ namespace Grace.DependencyInjection.Configuration
 			if (returnType == null)
 			{
 				returnType =
-					AppDomain.CurrentDomain.GetAssemblies()
-												  .SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes)
-												  .FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
+					AppDomain.CurrentDomain.GetAssemblies().
+												   SortEnumerable(SortAssemblies).
+												   ReverseEnumerable().
+												   SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes).
+												   FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
 			}
 
 			return returnType;
+		}
+
+		private static int SortAssemblies(Assembly x, Assembly y)
+		{
+			if (x.GlobalAssemblyCache && y.GlobalAssemblyCache ||
+				!x.GlobalAssemblyCache && !y.GlobalAssemblyCache)
+			{
+				bool xSystemLib = IsSystemLibrary(x.FullName);
+				bool ySystemLib = IsSystemLibrary(y.FullName);
+
+				if (xSystemLib && ySystemLib ||
+				    !xSystemLib && !ySystemLib)
+				{
+					return string.Compare(y.FullName, x.FullName, StringComparison.CurrentCultureIgnoreCase);
+				}
+				
+				if (xSystemLib)
+				{
+					return -1;
+				}
+
+				return 1;
+			}
+			
+			if (x.GlobalAssemblyCache)
+			{
+				return -1;
+			}
+			
+			return 1;
+		}
+
+		private static bool IsSystemLibrary(string assemblyName)
+		{
+			return assemblyName == "mscorlib" || assemblyName.StartsWith("System.");
 		}
 
 		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)

@@ -2,6 +2,10 @@
 
 namespace Grace.DependencyInjection
 {
+	/// <summary>
+	/// Export locator extensions
+	/// </summary>
+   // ReSharper disable once InconsistentNaming
 	public static class IExportLocatorExtensions
 	{
 		/// <summary>
