@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Lifestyle;
@@ -55,6 +56,13 @@ namespace Grace.DependencyInjection.Configuration
 					ProcessAssembly(registrationBlock, assemblyElement);
 				}
 
+				AssemblyDirectoryElementCollection directories = graceSection.Plugins;
+
+				foreach (AssemblyDirectoryElement assemblyDirectoryElement in directories)
+				{
+					ProcessDirecotry(registrationBlock, assemblyDirectoryElement);
+				}
+
 				ExportElementCollection exports = graceSection.Exports;
 
 				if (exports != null)
@@ -91,6 +99,49 @@ namespace Grace.DependencyInjection.Configuration
 						{
 							Logger.Error("Exception thrown while trying to load modue: " + moduleElement.Type, "AppConfig", exp);
 						}
+					}
+				}
+			}
+		}
+
+		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)
+		{
+			Assembly newAssembly = Assembly.Load(assemblyElement.Path);
+
+			if (assemblyElement.ScanForAttributes)
+			{
+				registrationBlock.Export(Types.FromAssembly(newAssembly));
+			}
+			else
+			{
+				ExportInterfaceElementCollection exportInterfaces = assemblyElement.ExportInterfaces;
+
+				if (exportInterfaces != null && exportInterfaces.Count > 0)
+				{
+					ProcessExportInterfaces(registrationBlock, exportInterfaces, Types.FromAssembly(newAssembly));
+				}
+			}
+		}
+
+		private void ProcessDirecotry(IExportRegistrationBlock registrationBlock, AssemblyDirectoryElement assemblyDirectoryElement)
+		{
+			var assemblyFiles = Directory.GetFiles(assemblyDirectoryElement.Path, "*.dll");
+
+			foreach (string assemblyFile in assemblyFiles)
+			{
+				Assembly newAssembly = Assembly.Load(assemblyFile);
+
+				if (assemblyDirectoryElement.ScanForAttributes)
+				{
+					registrationBlock.Export(Types.FromAssembly(newAssembly));
+				}
+				else
+				{
+					ExportInterfaceElementCollection exportInterfaces = assemblyDirectoryElement.ExportInterfaces;
+
+					if (exportInterfaces != null && exportInterfaces.Count > 0)
+					{
+						ProcessExportInterfaces(registrationBlock, exportInterfaces, Types.FromAssembly(newAssembly));
 					}
 				}
 			}
@@ -133,49 +184,173 @@ namespace Grace.DependencyInjection.Configuration
 					}
 				}
 
-				if (string.IsNullOrEmpty(exportElement.LifeStyle))
+				ILifestyle lifeStyle = ConvertStringToLifestyle(exportElement.LifeStyle);
+
+				if (lifeStyle != null)
 				{
-					switch (exportElement.LifeStyle)
+					config.UsingLifestyle(lifeStyle);
+				}
+			}
+		}
+
+		private Type ScanLoadedAssembliesForType(string typeString)
+		{
+			string lower = typeString.ToLowerInvariant();
+			Assembly entryAssembly = Assembly.GetEntryAssembly();
+			Type returnType = null;
+
+			if (entryAssembly != null)
+			{
+				returnType = entryAssembly.ExportedTypes.FirstOrDefault(x => x.Name == typeString);
+			}
+
+			if (returnType == null)
+			{
+				returnType =
+					AppDomain.CurrentDomain.GetAssemblies().
+													SortEnumerable(SortAssemblies).
+													ReverseEnumerable().
+													SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes).
+													FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
+			}
+
+			return returnType;
+		}
+
+		private static int SortAssemblies(Assembly x, Assembly y)
+		{
+			if (x.GlobalAssemblyCache && y.GlobalAssemblyCache ||
+				!x.GlobalAssemblyCache && !y.GlobalAssemblyCache)
+			{
+				bool xSystemLib = IsSystemLibrary(x.FullName);
+				bool ySystemLib = IsSystemLibrary(y.FullName);
+
+				if (xSystemLib && ySystemLib ||
+					 !xSystemLib && !ySystemLib)
+				{
+					return string.Compare(y.FullName, x.FullName, StringComparison.CurrentCultureIgnoreCase);
+				}
+
+				if (xSystemLib)
+				{
+					return -1;
+				}
+
+				return 1;
+			}
+
+			if (x.GlobalAssemblyCache)
+			{
+				return -1;
+			}
+
+			return 1;
+		}
+		
+		private void ProcessExportInterfaces(IExportRegistrationBlock registrationBlock,
+														 ExportInterfaceElementCollection exportInterfaces, 
+														 IEnumerable<Type> exportTypes)
+		{
+			foreach (ExportInterfaceElement exportInterfaceElement in exportInterfaces)
+			{
+				Type interfaceType = ConvertStringToType(exportInterfaceElement.Type);
+				ILifestyle lifestyle = ConvertStringToLifestyle(exportInterfaceElement.LifeStyle);
+
+				var config = registrationBlock.Export(exportTypes).
+														 ByInterface(interfaceType);
+
+				if (lifestyle != null)
+				{
+					config.WithLifestyle(lifestyle);
+				}
+
+				if (exportInterfaceElement.ExternallyOwned)
+				{
+					config.ExternallyOwned();
+				}
+			}
+		}
+
+		private void ConfigureModule(IExportRegistrationBlock registrationBlock,
+			IConfigurationModule configurationModule,
+			IEnumerable<PropetryElement> element)
+		{
+			foreach (PropetryElement propertyElement in element)
+			{
+				PropertyInfo propertyInfo =
+					configurationModule.GetType().GetRuntimeProperty(propertyElement.Name);
+
+				if (propertyInfo != null && propertyInfo.CanWrite)
+				{
+					object finalValue = null;
+
+					if (propertyInfo.PropertyType == typeof(string))
 					{
-						case "Singleton":
-							config = config.AndSingleton();
-							break;
-						case "WeakSingleton":
-							config = config.AndWeakSingleton();
-							break;
-						case "SingletonPerInjection":
-						case "PerInjection":
-							config = config.UsingLifestyle(new SingletonPerInjectionContextLifestyle());
-							break;
-						case "SingletonPerScope":
-						case "PerScope":
-							config = config.AndSingletonPerScope();
-							break;
-						case "SingletonPerRequest":
-						case "PerRequest":
-							config = config.UsingLifestyle(new SingletonPerRequestLifestyle());
-							break;
+						finalValue = propertyElement.Value;
+					}
+					else
+					{
+						finalValue = Convert.ChangeType(propertyElement.Value, propertyInfo.PropertyType);
+					}
 
-						default:
-							Type lifeStyleType = ConvertStringToType(exportElement.LifeStyle);
-
-							if (lifeStyleType != null)
-							{
-								try
-								{
-									ILifestyle lifestyle = Activator.CreateInstance(lifeStyleType) as ILifestyle;
-
-									config = config.UsingLifestyle(lifestyle);
-								}
-								catch (Exception exp)
-								{
-									Logger.Error("Exception thrown while creating lifestyle container: " + lifeStyleType, "AppConfig", exp);
-								}
-							}
-							break;
+					if (finalValue != null)
+					{
+						propertyInfo.SetValue(configurationModule, finalValue);
 					}
 				}
 			}
+
+			configurationModule.Configure(registrationBlock);
+		}
+
+		private static bool IsSystemLibrary(string assemblyName)
+		{
+			return assemblyName == "mscorlib" || assemblyName.StartsWith("System.");
+		}
+		
+		private ILifestyle ConvertStringToLifestyle(string lifeStyle)
+		{
+			if (string.IsNullOrEmpty(lifeStyle))
+			{
+				switch (lifeStyle)
+				{
+					case "Singleton":
+						return new SingletonLifestyle();
+
+					case "WeakSingleton":
+						return new WeakSingletonLifestyle();
+
+					case "SingletonPerInjection":
+					case "PerInjection":
+						return new SingletonPerInjectionContextLifestyle();
+
+					case "SingletonPerScope":
+					case "PerScope":
+						return new SingletonPerScopeLifestyle();
+
+					case "SingletonPerRequest":
+					case "PerRequest":
+						return new SingletonPerRequestLifestyle();
+
+					default:
+						Type lifeStyleType = ConvertStringToType(lifeStyle);
+
+						if (lifeStyleType != null)
+						{
+							try
+							{
+								return Activator.CreateInstance(lifeStyleType) as ILifestyle;
+							}
+							catch (Exception exp)
+							{
+								Logger.Error("Exception thrown while creating lifestyle container: " + lifeStyleType, "AppConfig", exp);
+							}
+						}
+						break;
+				}
+			}
+
+			return null;
 		}
 
 		private Type ConvertStringToType(string typeString)
@@ -243,121 +418,6 @@ namespace Grace.DependencyInjection.Configuration
 			}
 
 			return Type.GetType(typeString);
-		}
-
-		private Type ScanLoadedAssembliesForType(string typeString)
-		{
-			string lower = typeString.ToLowerInvariant();
-			Assembly entryAssembly = Assembly.GetEntryAssembly();
-			Type returnType = null;
-
-			if (entryAssembly != null)
-			{
-				returnType = entryAssembly.ExportedTypes.FirstOrDefault(x => x.Name == typeString);
-			}
-
-			if (returnType == null)
-			{
-				returnType =
-					AppDomain.CurrentDomain.GetAssemblies().
-												   SortEnumerable(SortAssemblies).
-												   ReverseEnumerable().
-												   SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes).
-												   FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
-			}
-
-			return returnType;
-		}
-
-		private static int SortAssemblies(Assembly x, Assembly y)
-		{
-			if (x.GlobalAssemblyCache && y.GlobalAssemblyCache ||
-				!x.GlobalAssemblyCache && !y.GlobalAssemblyCache)
-			{
-				bool xSystemLib = IsSystemLibrary(x.FullName);
-				bool ySystemLib = IsSystemLibrary(y.FullName);
-
-				if (xSystemLib && ySystemLib ||
-				    !xSystemLib && !ySystemLib)
-				{
-					return string.Compare(y.FullName, x.FullName, StringComparison.CurrentCultureIgnoreCase);
-				}
-				
-				if (xSystemLib)
-				{
-					return -1;
-				}
-
-				return 1;
-			}
-			
-			if (x.GlobalAssemblyCache)
-			{
-				return -1;
-			}
-			
-			return 1;
-		}
-
-		private static bool IsSystemLibrary(string assemblyName)
-		{
-			return assemblyName == "mscorlib" || assemblyName.StartsWith("System.");
-		}
-
-		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)
-		{
-			try
-			{
-				Assembly newAssembly = Assembly.Load(assemblyElement.Path);
-
-				if (assemblyElement.ScanForAttributes)
-				{
-					registrationBlock.Export(Types.FromAssembly(newAssembly));
-				}
-			}
-			catch (Exception exp)
-			{
-				Logger.Error("Exception thrown while loading assembly", "AppConfig", exp);
-			}
-		}
-
-		private void ConfigureModule(IExportRegistrationBlock registrationBlock,
-			IConfigurationModule configurationModule,
-			IEnumerable<PropetryElement> element)
-		{
-			foreach (PropetryElement propertyElement in element)
-			{
-				PropertyInfo propertyInfo =
-					configurationModule.GetType().GetRuntimeProperty(propertyElement.Name);
-
-				if (propertyInfo != null && propertyInfo.CanWrite)
-				{
-					object finalValue = null;
-
-					if (propertyInfo.PropertyType == typeof(string))
-					{
-						finalValue = propertyElement.Value;
-					}
-					else
-					{
-						try
-						{
-							finalValue = Convert.ChangeType(propertyElement.Value, propertyInfo.PropertyType);
-						}
-						catch (Exception exp)
-						{
-							Logger.Error("Exceptuion thrown while converting property: " + propertyElement.Name, "AppConfig", exp);
-						}
-					}
-
-					if (finalValue != null)
-					{
-						propertyInfo.SetValue(configurationModule, finalValue);
-					}
-				}
-			}
-
-			configurationModule.Configure(registrationBlock);
 		}
 	}
 }

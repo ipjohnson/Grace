@@ -19,6 +19,15 @@ namespace Grace.DependencyInjection.Configuration
 		}
 
 		/// <summary>
+		/// Plugins scans directories for exports
+		/// </summary>
+		[ConfigurationProperty("plugins", IsRequired = false, IsDefaultCollection = true)]
+		public AssemblyDirectoryElementCollection Plugins
+		{
+			get { return PropertyValue<AssemblyDirectoryElementCollection>(); }
+		}
+
+		/// <summary>
 		/// Modules to load
 		/// </summary>
 		[ConfigurationProperty("modules", IsRequired = false, IsDefaultCollection = true)]

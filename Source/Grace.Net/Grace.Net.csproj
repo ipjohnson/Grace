@@ -56,12 +56,16 @@
     <Compile Include="DependencyInjection\Conditions\WhenAppSettingPresent.cs" />
     <Compile Include="DependencyInjection\Configuration\AppConfigModule.cs" />
     <Compile Include="DependencyInjection\Configuration\AsElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\AssemblyDirectoryElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\AssemblyDirectoryElementCollection.cs" />
     <Compile Include="DependencyInjection\Configuration\BaseElement.cs" />
     <Compile Include="DependencyInjection\Configuration\BaseElementCollection.cs" />
     <Compile Include="DependencyInjection\Configuration\ExportElement.cs" />
     <Compile Include="DependencyInjection\Configuration\ExportElementCollection.cs" />
     <Compile Include="DependencyInjection\Configuration\AssemblyElement.cs" />
     <Compile Include="DependencyInjection\Configuration\AssemblyElementCollection.cs" />
+    <Compile Include="DependencyInjection\Configuration\ExportInterfaceElement.cs" />
+    <Compile Include="DependencyInjection\Configuration\ExportInterfaceElementCollection.cs" />
     <Compile Include="DependencyInjection\Configuration\GraceConfigurationSection.cs" />
     <Compile Include="DependencyInjection\Configuration\ModuleElement.cs" />
     <Compile Include="DependencyInjection\Configuration\ModuleElementCollection.cs" />

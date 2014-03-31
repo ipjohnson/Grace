@@ -1,11 +1,13 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Configuration
 {
-	/// <summary>
-	/// app.config element for loading an assembly
-	/// </summary>
-	public class AssemblyElement : BaseElement
+	public class AssemblyDirectoryElement : BaseElement
 	{
 		/// <summary>
 		/// Scan for types that have been attributed in assembly
@@ -15,7 +17,7 @@ namespace Grace.DependencyInjection.Configuration
 		{
 			get { return PropertyValue<bool>(); }
 		}
-
+		
 		/// <summary>
 		/// Path to assembly file
 		/// </summary>
@@ -26,8 +28,9 @@ namespace Grace.DependencyInjection.Configuration
 		}
 
 		/// <summary>
-		/// Interfaces to export
+		/// Exported interfaces
 		/// </summary>
+		[ConfigurationProperty("path", IsRequired = false)]
 		public ExportInterfaceElementCollection ExportInterfaces
 		{
 			get { return PropertyValue<ExportInterfaceElementCollection>(); }
