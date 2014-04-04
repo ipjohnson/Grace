@@ -10,6 +10,7 @@ namespace Grace.DependencyInjection.Impl
 	public class ExportsThatConfiguration
 	{
 		private readonly List<ExportStrategyFilter> exportStrategyFilters = new List<ExportStrategyFilter>();
+		private bool useOr = false;
 
 		/// <summary>
 		/// Tests to see if a type has an attribute
@@ -100,8 +101,8 @@ namespace Grace.DependencyInjection.Impl
 			if (includeSubnamespaces)
 			{
 				exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Namespace == @namespace ||
-				                                                 strategy.ActivationType.Namespace != null &&
-				                                                 strategy.ActivationType.Namespace.StartsWith(@namespace + "."));
+																				 strategy.ActivationType.Namespace != null &&
+																				 strategy.ActivationType.Namespace.StartsWith(@namespace + "."));
 			}
 			else
 			{
@@ -140,9 +141,22 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public ExportsThatConfiguration AreExportedAs(Type exportType)
 		{
-			exportStrategyFilters.Add((context,strategy) => strategy.ExportTypes.Any(x => x == exportType));
+			exportStrategyFilters.Add((context, strategy) => strategy.ExportTypes.Any(x => x == exportType));
 
 			return this;
+		}
+
+		/// <summary>
+		/// Use or logic instead of and
+		/// </summary>
+		public ExportsThatConfiguration Or
+		{
+			get
+			{
+				useOr = true;
+
+				return this;
+			}
 		}
 
 		/// <summary>
@@ -152,9 +166,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>new filter method</returns>
 		public static implicit operator ExportStrategyFilter(ExportsThatConfiguration configuration)
 		{
-			return new ExportStrategyFilterGroup(configuration.exportStrategyFilters.ToArray());
+			return new ExportStrategyFilterGroup(configuration.exportStrategyFilters.ToArray()) { UseOr = configuration.useOr };
 		}
-
-
 	}
 }

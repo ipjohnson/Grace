@@ -96,5 +96,31 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.False(filter(new FauxInjectionContext(), failStrategy));
 			Assert.False(filter(new FauxInjectionContext(), failStrategy2));
 		}
+
+		[Fact]
+		public void OrFiltered()
+		{
+			ExportStrategyFilter filter = ExportsThat.HaveAttribute<SomeTestAttribute>(attribute => attribute.TestValue == 5).Or.
+																	HaveAttribute<SomeTestAttribute>(attribute => attribute.TestValue == 3);
+
+			FauxExportStrategy failStrategy = new FauxExportStrategy(() => new object())
+			{
+				Attributes = new Attribute[] { new SomeTestAttribute { TestValue = 0 } }
+			};
+
+			FauxExportStrategy passStrategy = new FauxExportStrategy(() => new object())
+			{
+				Attributes = new Attribute[] { new SomeTestAttribute { TestValue = 5 } }
+			};
+
+			FauxExportStrategy passStrategy2 = new FauxExportStrategy(() => new object())
+			{
+				Attributes = new Attribute[] { new SomeTestAttribute{TestValue = 3} }
+			};
+
+			Assert.True(filter(new FauxInjectionContext(), passStrategy));
+			Assert.True(filter(new FauxInjectionContext(), passStrategy2));
+			Assert.False(filter(new FauxInjectionContext(), failStrategy));
+		}
 	}
 }

@@ -17,6 +17,11 @@
 		}
 
 		/// <summary>
+		/// Use Or logic instead of and logic
+		/// </summary>
+		public bool UseOr { get; set; }
+
+		/// <summary>
 		/// Converts export filter group to export strategy filter
 		/// </summary>
 		/// <param name="exportStrategyGroup"></param>
@@ -34,6 +39,19 @@
 		/// <returns>true if the strategy matches</returns>
 		private bool InternalExportStrategyFilter(IInjectionContext context, IExportStrategy strategy)
 		{
+			if (UseOr)
+			{
+				foreach (ExportStrategyFilter exportStrategyFilter in filters)
+				{
+					if (exportStrategyFilter(context, strategy))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			foreach (ExportStrategyFilter exportStrategyFilter in filters)
 			{
 				if (!exportStrategyFilter(context, strategy))
