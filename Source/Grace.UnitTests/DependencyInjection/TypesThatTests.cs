@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Grace.UnitTests.DependencyInjection
 {
-	public class ThatTests
+	public class TypesThatTests
 	{
 		[Fact]
 		public void AreInTheSameNamespace()
@@ -105,6 +105,19 @@ namespace Grace.UnitTests.DependencyInjection
 		}
 
 		[Fact]
+		public void OrFilteredTest()
+		{
+			Func<Type, bool> haveFilter = TypesThat.EndWith("A").Or.EndWith("B");
+
+			Assert.True(haveFilter(typeof(AttributedSimpleObjectA)));
+
+			Assert.True(haveFilter(typeof(AttributedSimpleObjectB)));
+
+			Assert.False(haveFilter(typeof(AttributedSimpleObjectC)));
+
+		}
+
+		[Fact]
 		public void ComplexHaveAttribute()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
@@ -133,5 +146,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(simpleObjects);
 			Assert.Equal(1, simpleObjects.Count());
 		}
+
+
 	}
 }

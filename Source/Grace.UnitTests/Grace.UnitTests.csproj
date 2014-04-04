@@ -170,7 +170,7 @@
     <Compile Include="DependencyInjection\OpenGenericContainerTests.cs" />
     <Compile Include="DependencyInjection\OwnedTests.cs" />
     <Compile Include="DependencyInjection\SecondaryDependencyResolverTests.cs" />
-    <Compile Include="DependencyInjection\ThatTests.cs" />
+    <Compile Include="DependencyInjection\TypesThatTests.cs" />
     <Compile Include="Diagnostics\IInjectionScopeDiagnosticTests.cs" />
     <Compile Include="FakeItEasy\FakeItEasyTests.cs" />
     <Compile Include="Logging\DebugConsoleLogServiceTests.cs" />

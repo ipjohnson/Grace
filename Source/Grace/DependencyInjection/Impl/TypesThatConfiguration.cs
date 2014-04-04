@@ -12,6 +12,7 @@ namespace Grace.DependencyInjection.Impl
 	public class TypesThatConfiguration
 	{
 		private readonly List<Func<Type, bool>> filters = new List<Func<Type, bool>>(1);
+		private bool useOr = false;
 
 		/// <summary>
 		/// Tests to see if a type has an attribute
@@ -112,8 +113,8 @@ namespace Grace.DependencyInjection.Impl
 			if (includeSubnamespaces)
 			{
 				newFilter = type => type.Namespace == @namespace ||
-				                    type.Namespace != null &&
-				                    type.Namespace.StartsWith(@namespace + ".");
+										  type.Namespace != null &&
+										  type.Namespace.StartsWith(@namespace + ".");
 			}
 			else
 			{
@@ -148,13 +149,26 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Or together the filters rather than using And
+		/// </summary>
+		public TypesThatConfiguration Or
+		{
+			get
+			{
+				useOr = true;
+
+				return this;
+			}
+		}
+
+		/// <summary>
 		/// Automatically convert from TypefilterGroup to Func(Type,bool)
 		/// </summary>
 		/// <param name="configuration"></param>
 		/// <returns></returns>
 		public static implicit operator Func<Type, bool>(TypesThatConfiguration configuration)
 		{
-			return new TypeFilterGroup(configuration.filters.ToArray());
+			return new TypeFilterGroup(configuration.filters.ToArray()) { UseOr = configuration.useOr };
 		}
 	}
 }

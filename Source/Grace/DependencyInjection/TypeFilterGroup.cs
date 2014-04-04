@@ -24,6 +24,11 @@ namespace Grace.DependencyInjection
 		}
 
 		/// <summary>
+		/// Or together the filters rather than And them
+		/// </summary>
+		public bool UseOr { get; set; }
+
+		/// <summary>
 		/// Automatically convert from TypefilterGroup to Func(Type,bool)
 		/// </summary>
 		/// <param name="group"></param>
@@ -35,6 +40,19 @@ namespace Grace.DependencyInjection
 
 		private bool InternalFilter(Type type)
 		{
+			if (UseOr)
+			{
+				foreach (Func<Type, bool> typeFilter in typeFilters)
+				{
+					if (typeFilter(type))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			foreach (Func<Type, bool> typeFilter in typeFilters)
 			{
 				if (!typeFilter(type))
