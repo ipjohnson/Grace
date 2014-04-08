@@ -10,7 +10,7 @@
     <title>Grace.WCF</title>
     <summary>Grace.WCF is a companion library for Grace and WCF</summary>
     <description>Grace.WCF provides integration classes between WCF and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release adds support for partially closed generics as well as bug fixes for open generics.</releaseNotes>
+    <releaseNotes>This release contains bug fixes for registering open generics in bulk, added support for configuring exports from App.Config</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
