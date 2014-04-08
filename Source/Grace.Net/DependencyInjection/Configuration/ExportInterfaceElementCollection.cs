@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection.Configuration
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public ExportInterfaceElementCollection() : base("exportInterface")
+		public ExportInterfaceElementCollection() : base("interface")
 		{
 
 		}

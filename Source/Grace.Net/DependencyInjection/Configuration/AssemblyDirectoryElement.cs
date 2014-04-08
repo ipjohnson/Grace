@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Configuration
 {
+	/// <summary>
+	/// Cofiguration object that loads all assemblies from a directory
+	/// </summary>
 	public class AssemblyDirectoryElement : BaseElement
 	{
 		/// <summary>
@@ -30,7 +33,7 @@ namespace Grace.DependencyInjection.Configuration
 		/// <summary>
 		/// Exported interfaces
 		/// </summary>
-		[ConfigurationProperty("path", IsRequired = false)]
+		[ConfigurationProperty("exportInterfaces", IsRequired = false)]
 		public ExportInterfaceElementCollection ExportInterfaces
 		{
 			get { return PropertyValue<ExportInterfaceElementCollection>(); }

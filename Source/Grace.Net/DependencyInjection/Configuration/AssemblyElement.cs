@@ -28,6 +28,7 @@ namespace Grace.DependencyInjection.Configuration
 		/// <summary>
 		/// Interfaces to export
 		/// </summary>
+		[ConfigurationProperty("exportInterfaces", IsRequired = false)]
 		public ExportInterfaceElementCollection ExportInterfaces
 		{
 			get { return PropertyValue<ExportInterfaceElementCollection>(); }

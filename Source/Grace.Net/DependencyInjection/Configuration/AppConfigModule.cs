@@ -38,14 +38,7 @@ namespace Grace.DependencyInjection.Configuration
 		{
 			GraceConfigurationSection graceSection = null;
 
-			try
-			{
-				graceSection = ConfigurationManager.GetSection(SectionName) as GraceConfigurationSection;
-			}
-			catch (Exception exp)
-			{
-				Logger.Error("Exception throw while trying to fetch configuration section: " + SectionName, "AppConfig", exp);
-			}
+			graceSection = ConfigurationManager.GetSection(SectionName) as GraceConfigurationSection;
 
 			if (graceSection != null)
 			{
@@ -79,25 +72,19 @@ namespace Grace.DependencyInjection.Configuration
 				{
 					foreach (ModuleElement moduleElement in modules)
 					{
-						try
+
+						Type moduleType = ConvertStringToType(moduleElement.Type);
+
+						if (moduleType != null)
 						{
-							Type moduleType = ConvertStringToType(moduleElement.Type);
+							IConfigurationModule configurationModule =
+								(IConfigurationModule)Activator.CreateInstance(moduleType);
 
-							if (moduleType != null)
-							{
-								IConfigurationModule configurationModule =
-									(IConfigurationModule)Activator.CreateInstance(moduleType);
-
-								ConfigureModule(registrationBlock, configurationModule, moduleElement);
-							}
-							else
-							{
-								Logger.Error("Could not locate type: " + moduleElement.Type, "AppConfig");
-							}
+							ConfigureModule(registrationBlock, configurationModule, moduleElement);
 						}
-						catch (Exception exp)
+						else
 						{
-							Logger.Error("Exception thrown while trying to load modue: " + moduleElement.Type, "AppConfig", exp);
+							Logger.Error("Could not locate type: " + moduleElement.Type, "AppConfig");
 						}
 					}
 				}
@@ -106,7 +93,9 @@ namespace Grace.DependencyInjection.Configuration
 
 		private void ProcessAssembly(IExportRegistrationBlock registrationBlock, AssemblyElement assemblyElement)
 		{
-			Assembly newAssembly = Assembly.Load(assemblyElement.Path);
+			AssemblyName assemblyName = AssemblyName.GetAssemblyName(assemblyElement.Path);
+
+			Assembly newAssembly = Assembly.Load(assemblyName);
 
 			if (assemblyElement.ScanForAttributes)
 			{
@@ -129,7 +118,9 @@ namespace Grace.DependencyInjection.Configuration
 
 			foreach (string assemblyFile in assemblyFiles)
 			{
-				Assembly newAssembly = Assembly.Load(assemblyFile);
+				AssemblyName assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
+
+				Assembly newAssembly = Assembly.Load(assemblyName);
 
 				if (assemblyDirectoryElement.ScanForAttributes)
 				{
@@ -246,9 +237,9 @@ namespace Grace.DependencyInjection.Configuration
 
 			return 1;
 		}
-		
+
 		private void ProcessExportInterfaces(IExportRegistrationBlock registrationBlock,
-														 ExportInterfaceElementCollection exportInterfaces, 
+														 ExportInterfaceElementCollection exportInterfaces,
 														 IEnumerable<Type> exportTypes)
 		{
 			foreach (ExportInterfaceElement exportInterfaceElement in exportInterfaces)
@@ -307,7 +298,7 @@ namespace Grace.DependencyInjection.Configuration
 		{
 			return assemblyName == "mscorlib" || assemblyName.StartsWith("System.");
 		}
-		
+
 		private ILifestyle ConvertStringToLifestyle(string lifeStyle)
 		{
 			if (string.IsNullOrEmpty(lifeStyle))
@@ -337,14 +328,7 @@ namespace Grace.DependencyInjection.Configuration
 
 						if (lifeStyleType != null)
 						{
-							try
-							{
-								return Activator.CreateInstance(lifeStyleType) as ILifestyle;
-							}
-							catch (Exception exp)
-							{
-								Logger.Error("Exception thrown while creating lifestyle container: " + lifeStyleType, "AppConfig", exp);
-							}
+							return Activator.CreateInstance(lifeStyleType) as ILifestyle;
 						}
 						break;
 				}
