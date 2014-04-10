@@ -1,4 +1,6 @@
-﻿using Grace.DependencyInjection;
+﻿using System.Configuration;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Configuration;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
@@ -68,6 +70,22 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(importService);
 
 			Assert.Equal(5, container.Locate("IntProperty"));
+		}
+
+		[Fact]
+		public void RegisterConfigurationSection()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.ExportConfigurationSection<GraceConfigurationSection>("grace"));
+
+			var section = container.Locate<GraceConfigurationSection>();
+
+			Assert.NotNull(section);
+
+			Assert.Equal(1, section.Exports.Count);
+
+			Assert.Equal(1, section.Modules.Count);
 		}
 	}
 }

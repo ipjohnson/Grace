@@ -72,6 +72,7 @@
     <Compile Include="DependencyInjection\Configuration\PropetryElement.cs" />
     <Compile Include="DependencyInjection\Configuration\PropetryElementCollection.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
+    <Compile Include="DependencyInjection\IExportRegistrationBlockExtensions.cs" />
     <Compile Include="DependencyInjection\Types.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
