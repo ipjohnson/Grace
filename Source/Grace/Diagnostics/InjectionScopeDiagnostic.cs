@@ -95,6 +95,8 @@ namespace Grace.Diagnostics
 				List<KeyValuePair<string, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<string, ExportListDebuggerView>>(returnValue);
 
+				sortList.Sort((x, y) => string.CompareOrdinal(x.Key, y.Key));
+
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}
 		}
@@ -127,6 +129,8 @@ namespace Grace.Diagnostics
 
 				List<KeyValuePair<Type, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<Type, ExportListDebuggerView>>(returnValue);
+
+				sortList.Sort((x, y) => String.CompareOrdinal(x.Key.FullName, y.Key.FullName));
 
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}
@@ -171,18 +175,20 @@ namespace Grace.Diagnostics
 					{
 					}
 					else if (exportStrategyDependency.ImportType != null &&
-					         LocateExportByType(locator, exportStrategyDependency))
+								LocateExportByType(locator, exportStrategyDependency))
 					{
 						continue;
 					}
 
 					possibleMissingDependencies.Add(new PossibleMissingDependency
-					                                {
-						                                Dependency = exportStrategyDependency,
-						                                Strategy = exportStrategy
-					                                });
+															  {
+																  Dependency = exportStrategyDependency,
+																  Strategy = exportStrategy
+															  });
 				}
 			}
+
+			possibleMissingDependencies.Sort((x, y) => string.CompareOrdinal(x.Dependency.DebuggerDisplayString, y.Dependency.DebuggerDisplayString));
 
 			return possibleMissingDependencies;
 		}
@@ -200,8 +206,8 @@ namespace Grace.Diagnostics
 			}
 
 			if (exportStrategyDependency.ImportType.GetTypeInfo().IsClass &&
-			    !exportStrategyDependency.ImportType.GetTypeInfo().IsAbstract &&
-			    !exportStrategyDependency.ImportType.GetTypeInfo().IsInterface)
+				 !exportStrategyDependency.ImportType.GetTypeInfo().IsAbstract &&
+				 !exportStrategyDependency.ImportType.GetTypeInfo().IsInterface)
 			{
 				return true;
 			}
@@ -232,7 +238,7 @@ namespace Grace.Diagnostics
 		private static bool TestForSpecialType(IExportLocator locator, Type importType)
 		{
 			if (importType == typeof(IDisposalScope) || importType == typeof(IExportLocator) ||
-			    importType == typeof(IInjectionScope) || importType == typeof(IDependencyInjectionContainer))
+				 importType == typeof(IInjectionScope) || importType == typeof(IDependencyInjectionContainer))
 			{
 				return true;
 			}
@@ -282,13 +288,13 @@ namespace Grace.Diagnostics
 		private static bool TestForListSpecialType(Type openType)
 		{
 			if (openType == typeof(IEnumerable<>) || openType == typeof(ICollection<>) ||
-			    openType == typeof(IList<>) || openType == typeof(List<>))
+				 openType == typeof(IList<>) || openType == typeof(List<>))
 			{
 				return true;
 			}
 
 			if (openType == typeof(IReadOnlyCollection<>) || openType == typeof(IReadOnlyList<>) ||
-			    openType == typeof(ReadOnlyCollection<>) || openType == typeof(ReadOnlyObservableCollection<>))
+				 openType == typeof(ReadOnlyCollection<>) || openType == typeof(ReadOnlyObservableCollection<>))
 			{
 				return true;
 			}
@@ -296,7 +302,7 @@ namespace Grace.Diagnostics
 			foreach (Type implementedInterface in openType.GetTypeInfo().ImplementedInterfaces)
 			{
 				if (implementedInterface.IsConstructedGenericType &&
-				    implementedInterface.GetGenericTypeDefinition() == typeof(IList<>))
+					 implementedInterface.GetGenericTypeDefinition() == typeof(IList<>))
 				{
 					return true;
 				}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
@@ -530,6 +531,11 @@ namespace Grace.DependencyInjection.Impl
 
 				foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
 				{
+					if (ShouldSkipExportInterface(implementedInterface))
+					{
+						continue;
+					}
+
 					if (implementedInterface.IsConstructedGenericType)
 					{
 						exportTypes.Add(implementedInterface.GetGenericTypeDefinition());
@@ -540,7 +546,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			else
 			{
-				exportTypes.AddRange(exportedType.GetTypeInfo().ImplementedInterfaces);
+				exportTypes.AddRange(exportedType.GetTypeInfo().ImplementedInterfaces.Where(x => !ShouldSkipExportInterface(x)));
 			}
 
 			if (exportTypes.Count > 0)
@@ -635,6 +641,31 @@ namespace Grace.DependencyInjection.Impl
 					}
 				}
 			}
+		}
+
+		private bool ShouldSkipExportInterface(Type exportInterface)
+		{
+			if (exportInterface == typeof(IDisposable))
+			{
+				return true;
+			}
+
+			Type genericInterface = exportInterface;
+
+			if (exportInterface.IsConstructedGenericType)
+			{
+				genericInterface = exportInterface.GetGenericTypeDefinition();
+			}
+
+			if (genericInterface == typeof(IEnumerable<>) ||
+				 genericInterface == typeof(ICollection<>) ||
+				 genericInterface == typeof(IList<>) ||
+				 genericInterface == typeof(IDictionary<,>))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private bool MatchesExportBaseType(Type exportedType, out Type matchingType)

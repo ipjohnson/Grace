@@ -3,7 +3,7 @@ using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
 {
-	[DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "Missing Dependency")]
+	[DebuggerDisplay("{DebuggerValueDisplayString,nq}", Name = "{DebuggerNameDisplayString,nq}")]
 	public class PossibleMissingDependency
 	{
 		public ExportStrategyDependency Dependency { get; set; }
@@ -12,7 +12,7 @@ namespace Grace.Diagnostics
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
       // ReSharper disable once UnusedMember.Local
-		private string DebuggerDisplayString
+		private string DebuggerNameDisplayString
 		{
 			get
 			{
@@ -24,5 +24,13 @@ namespace Grace.Diagnostics
 				return Dependency.ImportName;
 			}
 		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		// ReSharper disable once UnusedMember.Local
+		private string DebuggerValueDisplayString
+		{
+			get { return "For " + Strategy.ActivationType.FullName; }
+		}
+
 	}
 }

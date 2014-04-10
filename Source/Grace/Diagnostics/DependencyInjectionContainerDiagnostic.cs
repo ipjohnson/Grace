@@ -74,7 +74,7 @@ namespace Grace.Diagnostics
 				List<KeyValuePair<string, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<string, ExportListDebuggerView>>(returnValue);
 
-				sortList.Sort((x, y) => string.Compare(x.Key, y.Key,StringComparison.CurrentCulture));
+				sortList.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.CurrentCulture));
 
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}
@@ -106,12 +106,14 @@ namespace Grace.Diagnostics
 				List<KeyValuePair<Type, ExportListDebuggerView>> sortList =
 					new List<KeyValuePair<Type, ExportListDebuggerView>>(returnValue);
 
+				sortList.Sort((x, y) => string.CompareOrdinal(x.Key.FullName, y.Key.FullName));
+
 				return new List<ExportListDebuggerView>(sortList.Select(x => x.Value));
 			}
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-      // ReSharper disable once UnusedMember.Local
+		// ReSharper disable once UnusedMember.Local
 		private string DebuggerPossibleMissingDependenciesString
 		{
 			get { return "Count = " + PossibleMissingDependencies.Count(); }

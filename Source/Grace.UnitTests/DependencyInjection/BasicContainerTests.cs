@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.Diagnostics;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
@@ -9,6 +10,16 @@ namespace Grace.UnitTests.DependencyInjection
 {
 	public class BasicContainerTests
 	{
+		[Fact]
+		public void ExportWholeAssembly()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterfaces());
+
+			var diag = container.Locate<InjectionScopeDiagnostic>();
+		}
+
 		[Fact]
 		public void BlackOutListTest()
 		{

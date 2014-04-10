@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Impl
 	/// <summary>
 	/// This is the base export class, it provides method to configure itself
 	/// </summary>
-	[DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "Export")]
+	[DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "{DebuggerNameDisplayString,nq}")]
 	[DebuggerTypeProxy(typeof(ConfigurableExportStrategyDiagnostic))]
 	public abstract class ConfigurableExportStrategy : IConfigurableExportStrategy
 	{
@@ -402,23 +402,29 @@ namespace Grace.DependencyInjection.Impl
 			secondaryExports.Add(strategy);
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
       // ReSharper disable once UnusedMember.Local
 		private string DebuggerDisplayString
 		{
 			get
 			{
-				string returnValue = ActivationType.FullName;
+				string returnValue = null;
 
 				if (exportNames.Count > 0)
 				{
 					string exportName = exportNames[0];
-					int periodIndex = exportName.LastIndexOf('.');
+					
+					returnValue = "  as  " + exportName;
 
-					if (periodIndex > 0)
+					if (exportNames.Count > 1)
 					{
-						exportName = exportName.Substring(periodIndex + 1);
+						returnValue += " ...";
 					}
-
+				}
+				else if (exportTypes.Count > 0)
+				{
+					string exportName = exportTypes[0].FullName;
+					
 					returnValue += "  as  " + exportName;
 
 					if (exportNames.Count > 1)
@@ -428,6 +434,16 @@ namespace Grace.DependencyInjection.Impl
 				}
 
 				return returnValue;
+			}
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		// ReSharper disable once UnusedMember.Local
+		private string DebuggerNameDisplayString
+		{
+			get
+			{
+				return ActivationType.FullName;
 			}
 		}
 
