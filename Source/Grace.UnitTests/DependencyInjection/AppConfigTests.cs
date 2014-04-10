@@ -87,5 +87,23 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.Equal(1, section.Modules.Count);
 		}
+
+		[Fact]
+		public void ExportAppSettings()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+				                    c.ExportAppSettingsByName();
+				                    c.Export<IntConstructorClass>().ByInterfaces();
+			                    });
+
+			var intClass = container.Locate<IIntConstructorClass>();
+
+			Assert.NotNull(intClass);
+
+			Assert.Equal(5, intClass.TestValue);
+		}
 	}
 }

@@ -110,6 +110,7 @@
     <Compile Include="Classes\Simple\ImportPropertySimpleObject.cs" />
     <Compile Include="Classes\Simple\ImportReadOnlyCollectionService.cs" />
     <Compile Include="Classes\Simple\InheritClasses.cs" />
+    <Compile Include="Classes\Simple\IntConstructorClass.cs" />
     <Compile Include="Classes\Simple\LazyImportService.cs" />
     <Compile Include="Classes\Simple\LazyService.cs" />
     <Compile Include="Classes\Simple\MultipleConstructorImport.cs" />

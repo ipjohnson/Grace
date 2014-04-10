@@ -26,6 +26,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected static readonly MethodInfo ExecuteEnrichWithDelegateMethod;
 		protected static readonly MethodInfo IncrementResolveDepth;
 		protected static readonly MethodInfo DecrementResolveDepth;
+		protected static readonly MethodInfo ConvertNamedExportToPropertyTypeMethod;
 		protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
 		protected static readonly ConstructorInfo MissingDependencyExceptionConstructor;
 		protected static readonly ConstructorInfo LocationInformationEntryConstructor;
@@ -154,6 +155,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(IInjectionContext),
 					typeof(object)
 				});
+
+			ConvertNamedExportToPropertyTypeMethod =
+				typeof(BaseCompiledExportDelegate).GetRuntimeMethod("ConvertNamedExportToPropertyType",
+					new[]
+					{
+						typeof(object), 
+						typeof(Type)
+					});
 
 			AddLocationInformationEntryMethod = typeof(LocateException).GetRuntimeMethod("AddLocationInformationEntry",
 				new[]
@@ -701,9 +710,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				{
 					assignExpression =
 						Expression.Assign(importVariable,
-							Expression.Call(injectionContextParameter,
-												 InjectionContextLocateByNameMethod,
-												 Expression.Constant(localExportName)));
+							Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+								Expression.Call(injectionContextParameter,
+													 InjectionContextLocateByNameMethod,
+													 Expression.Constant(localExportName)),
+								Expression.Constant(targetInfo.InjectionTargetType)));
 				}
 
 
@@ -778,7 +789,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						exportNameExpression,
 						exportTypeExpression,
 						injectionContextParameter));
-				
+
 				Expression testExpression = Expression.Equal(importVariable, Expression.Constant(null));
 
 				isRequiredExpressions.Add(Expression.IfThen(testExpression, throwException));
@@ -988,11 +999,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						= Expression.IfThen(
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
-								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									LocateByNameMethod,
-									Expression.Constant(exportName),
-									injectionContextParameter,
-									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
+								Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+									Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+										LocateByNameMethod,
+										Expression.Constant(exportName),
+										injectionContextParameter,
+										Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter))),
+									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
@@ -1020,11 +1033,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						= Expression.IfThen(
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
-								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									LocateByNameMethod,
-									Expression.Constant(exportName),
-									injectionContextParameter,
-									Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)))));
+								Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+									Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+										LocateByNameMethod,
+										Expression.Constant(exportName),
+										injectionContextParameter,
+										Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter))),
+									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
@@ -1060,11 +1075,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						= Expression.IfThen(
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
-								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									LocateByNameMethod,
-									Expression.Constant(exportName),
-									injectionContextParameter,
-									Expression.Constant(exportStrategyFilter))));
+								Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+									Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+										LocateByNameMethod,
+										Expression.Constant(exportName),
+										injectionContextParameter,
+										Expression.Constant(exportStrategyFilter)),
+									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
@@ -1092,11 +1109,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						= Expression.IfThen(
 							Expression.Equal(importVariable, Expression.Constant(null)),
 							Expression.Assign(importVariable,
-								Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
-									LocateByNameMethod,
-									Expression.Constant(exportName),
-									injectionContextParameter,
-									Expression.Constant(exportStrategyFilter))));
+								Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+									Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+										LocateByNameMethod,
+										Expression.Constant(exportName),
+										injectionContextParameter,
+										Expression.Constant(exportStrategyFilter)),
+									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
@@ -1494,6 +1513,25 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 										 return scope.Locate<T>(clonedContext, exportStrategyFilter);
 									 });
+		}
+
+		/// <summary>
+		/// Converts a object value to a new type
+		/// </summary>
+		/// <param name="targetValue">value to convert</param>
+		/// <param name="targetType">type to convert to</param>
+		/// <returns>return value</returns>
+		public static object ConvertNamedExportToPropertyType(object targetValue, Type targetType)
+		{
+			if (targetValue != null)
+			{
+				if (targetValue.GetType() != targetType)
+				{
+					return Convert.ChangeType(targetValue, targetType);
+				}
+			}
+
+			return targetValue;
 		}
 	}
 }

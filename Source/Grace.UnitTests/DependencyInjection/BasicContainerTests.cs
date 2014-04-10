@@ -361,6 +361,24 @@ namespace Grace.UnitTests.DependencyInjection
 		}
 
 		[Fact]
+		public void ContextConvertType()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export<IntConstructorClass>().ByInterfaces());
+
+			var context = container.CreateContext();
+
+			context.Export("testValue",(s,c) => "5");
+
+			var intClass = container.Locate<IIntConstructorClass>(context);
+
+			Assert.NotNull(intClass);
+
+			Assert.Equal(5, intClass.TestValue); 
+		}
+
+		[Fact]
 		public void StaticConstructorTest()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
