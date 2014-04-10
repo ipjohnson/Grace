@@ -348,5 +348,18 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(importService.BasicService);
 			Assert.IsType<BasicService>(importService.BasicService);
 		}
+
+		[Fact]
+		public void StaticConstructorTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export<StaticConstructorClass>().As<IStaticConstructorClass>());
+
+			IStaticConstructorClass constructorClass =
+				container.Locate<IStaticConstructorClass>();
+
+			Assert.NotNull(constructorClass);
+		}
 	}
 }

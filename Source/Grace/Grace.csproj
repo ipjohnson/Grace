@@ -93,6 +93,7 @@
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\LocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\MissingDependencyException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\PublicConstructorNotFoundException.cs" />
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.CompiledExport
 {
@@ -27,6 +28,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		{
 			ConstructorInfo constructorInfo = exportDelegateInfo.ImportConstructor ??
 			                                  PickConstructor(exportDelegateInfo.ActivationType);
+
+			if (constructorInfo == null)
+			{
+				throw new PublicConstructorNotFoundException(exportDelegateInfo.ActivationType);
+			}
 
 			List<Expression> parameterExpressions = new List<Expression>();
 			Attribute[] constructorAttributes = constructorInfo.GetCustomAttributes(true).ToArray();
@@ -143,8 +149,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected virtual ConstructorInfo PickConstructor(Type activationType)
 		{
 			return activationType.GetTypeInfo().DeclaredConstructors.
-				OrderByDescending(x => x.GetParameters().Count()).
-				First();
+															Where(x => x.IsPublic && !x.IsStatic).
+															OrderByDescending(x => x.GetParameters().Count()).
+															FirstOrDefault();
 		}
 	}
 }
