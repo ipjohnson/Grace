@@ -120,9 +120,11 @@ namespace Grace.DependencyInjection
 		{
 			Assembly returnValue = null;
 
+			AssemblyName name = AssemblyName.GetAssemblyName(path);
+
 			try
 			{
-				returnValue = Assembly.LoadFile(path);
+				returnValue = Assembly.Load(name);
 			}
 			catch (Exception exp)
 			{
