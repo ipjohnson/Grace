@@ -8,7 +8,6 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
-
    /// <summary>
    /// C# extensions for registration block
    /// </summary>
