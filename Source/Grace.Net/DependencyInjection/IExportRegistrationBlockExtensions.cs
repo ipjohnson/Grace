@@ -38,8 +38,7 @@ namespace Grace.DependencyInjection
 			foreach (string appSettingKey in ConfigurationManager.AppSettings.AllKeys)
 			{
 				registrationBlock.ExportInstance(ConfigurationManager.AppSettings[appSettingKey]).
-									   AsName(appSettingKey).
-										UsingLifestyle(new SingletonLifestyle());
+									   AsName(appSettingKey);
 			}
 	   }
 
@@ -52,8 +51,7 @@ namespace Grace.DependencyInjection
 			foreach (ConnectionStringSettings connectionString in ConfigurationManager.ConnectionStrings)
 			{
 				registrationBlock.ExportInstance(connectionString.ConnectionString).
-										AsName(connectionString.Name).
-										UsingLifestyle(new SingletonLifestyle());
+										AsName(connectionString.Name);
 			}
 	   }
 	}
