@@ -58,6 +58,7 @@ namespace Grace.Utilities
 		public bool TryGetValue(TKey key, out TValue value)
 		{
 			padlock.EnterReadLock();
+
 			try
 			{
 				return dictionary.TryGetValue(key, out value);
