@@ -10,7 +10,7 @@
     <title>Grace.FakeItEasy</title>
     <summary>Grace.FakeItEasy is a companion library for Grace and FakeItEasy</summary>
     <description>Grace.FakeItEasy provides integration classes between Fake it Easy and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release contains bug fixes for registering open generics in bulk, added support for configuring exports from App.Config</releaseNotes>
+    <releaseNotes>This release includes a new feature to export connection strings automatically, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

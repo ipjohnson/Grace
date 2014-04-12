@@ -10,7 +10,7 @@
     <title>Grace.NLog</title>
     <summary>Grace.NLog provides a logging service using NLog and Grace</summary>
     <description>Grace.NLog provides integration class between NLog and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release contains bug fixes for registering open generics in bulk, added support for configuring exports from App.Config</releaseNotes>
+    <releaseNotes>This release includes a new feature to export connection strings automatically, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

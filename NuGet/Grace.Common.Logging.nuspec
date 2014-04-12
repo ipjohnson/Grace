@@ -10,7 +10,7 @@
     <title>Grace.Common.Logging</title>
     <summary>Grace.Common.Logging provides a logging service using Grace</summary>
     <description>Grace.Common.Logging provides integration class between Common.Logging and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release contains bug fixes for registering open generics in bulk, added support for configuring exports from App.Config</releaseNotes>
+    <releaseNotes>This release includes a new feature to export connection strings automatically, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

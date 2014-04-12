@@ -10,7 +10,7 @@
     <title>Grace</title>
     <description>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</description>
     <summary>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</summary>
-    <releaseNotes>This release contains bug fixes for registering open generics in bulk, added support for configuring exports from App.Config</releaseNotes>
+    <releaseNotes>This release includes a new feature to export connection strings automatically, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
