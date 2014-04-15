@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.Diagnostics;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
@@ -86,11 +87,11 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.RunTime);
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-				                    c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-				                    c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-			                    });
+									  {
+										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
+										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
+										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
+									  });
 
 			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
 
@@ -106,11 +107,11 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.UnitTest);
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-				                    c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-				                    c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-			                    });
+									  {
+										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
+										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
+										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
+									  });
 
 			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
 
@@ -126,11 +127,11 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.DesignTime);
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-				                    c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-				                    c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-			                    });
+									  {
+										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
+										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
+										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
+									  });
 
 			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
 
@@ -286,10 +287,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<ImportDateTimeByName>();
-				                    c.ExportInstance((x, y) => DateTime.Now).AsName("DateTime");
-			                    });
+									  {
+										  c.Export<ImportDateTimeByName>();
+										  c.ExportInstance((x, y) => DateTime.Now).AsName("DateTime");
+									  });
 
 			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>();
 
@@ -303,10 +304,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<ImportDateTimeByName>();
-				                    c.ExportFunc((scope, context) => DateTime.Now).AsName("DateTime");
-			                    });
+									  {
+										  c.Export<ImportDateTimeByName>();
+										  c.ExportFunc((scope, context) => DateTime.Now).AsName("DateTime");
+									  });
 
 			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>();
 
@@ -319,7 +320,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => (from type in Types.FromThisAssembly() 
+			container.Configure(c => (from type in Types.FromThisAssembly()
 											  where type.Namespace.Contains("Simple")
 											  select type)
 											 .ExportTo(c)
@@ -351,7 +352,7 @@ namespace Grace.UnitTests.DependencyInjection
 			container.Configure(c => c.Export(Types.FromThisAssembly())
 											  .ByInterfaces()
 											  .ImportProperty<IBasicService>()
-													.Consider((context,strategy) => strategy.ActivationType.Name == "BasicService"));
+													.Consider((context, strategy) => strategy.ActivationType.Name == "BasicService"));
 
 			IImportPropertyService importService = container.Locate<IImportPropertyService>();
 
@@ -369,13 +370,13 @@ namespace Grace.UnitTests.DependencyInjection
 
 			var context = container.CreateContext();
 
-			context.Export("testValue",(s,c) => "5");
+			context.Export("testValue", (s, c) => "5");
 
 			var intClass = container.Locate<IIntConstructorClass>(context);
 
 			Assert.NotNull(intClass);
 
-			Assert.Equal(5, intClass.TestValue); 
+			Assert.Equal(5, intClass.TestValue);
 		}
 
 		[Fact]
@@ -389,6 +390,29 @@ namespace Grace.UnitTests.DependencyInjection
 				container.Locate<IStaticConstructorClass>();
 
 			Assert.NotNull(constructorClass);
+		}
+
+		[Fact]
+		public void MissingConstructorParamTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+									  {
+										  c.Export<WithCtorParamClass>().ByInterfaces();
+										  c.ExportInstance((scope, context) => 5).AsName("intParam");
+									  });
+
+			try
+			{
+				container.Locate<IWithCtorParamClass>();
+
+				throw new Exception("Should not have gotten here");
+			}
+			catch (MissingDependencyException missingException)
+			{
+				Assert.Contains("stringParam", missingException.Message);
+			}
 		}
 	}
 }

@@ -1,8 +1,17 @@
 ﻿namespace Grace.UnitTests.Classes.Simple
 {
-	public class WithCtorParamClass
+	public interface IWithCtorParamClass
 	{
-		public WithCtorParamClass(IBasicService basicService, string stringParam, int intParam)
+		IBasicService BasicService { get; }
+
+		string StringParam { get; }
+
+		int IntParam { get; }
+	}
+
+	public class WithCtorParamClass : IWithCtorParamClass
+	{
+		public WithCtorParamClass(string stringParam, int intParam, IBasicService basicService)
 		{
 			BasicService = basicService;
 

@@ -52,11 +52,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected ParameterExpression exportStrategyScopeParameter;
 
 		/// <summary>
-		/// List of expressions that locate the import from the injection context before resolving
-		/// </summary>
-		protected List<Expression> importInjectionContextExpressions;
-
-		/// <summary>
 		/// The IInjectionContext parameter
 		/// </summary>
 		protected ParameterExpression injectionContextParameter;
@@ -70,11 +65,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Variable that represents the instance being constructed
 		/// </summary>
 		protected ParameterExpression instanceVariable;
-
-		/// <summary>
-		/// List of expressions that test if an import is null
-		/// </summary>
-		protected List<Expression> isRequiredExpressions;
 
 		protected List<ParameterExpression> localVariables;
 
@@ -230,11 +220,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected virtual void Initialize()
 		{
 			localVariables = new List<ParameterExpression>();
-			importInjectionContextExpressions = new List<Expression>();
 			objectImportExpression = new List<Expression>();
 			rootObjectImportExpressions = new List<Expression>();
 			nonRootObjectImportExpressions = new List<Expression>();
-			isRequiredExpressions = new List<Expression>();
 			instanceExpressions = new List<Expression>();
 			bodyExpressions = new List<Expression>();
 		}
@@ -294,11 +282,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 		protected IEnumerable<Expression> GetImportExpressions()
 		{
-			foreach (Expression importInjectionContextExpression in importInjectionContextExpressions)
-			{
-				yield return importInjectionContextExpression;
-			}
-
 			foreach (Expression expression in objectImportExpression)
 			{
 				yield return expression;
@@ -314,11 +297,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						exportStrategyScopeParameter);
 
 				yield return Expression.IfThenElse(testExpression, rootScopeBlock, nonRootScopeBlock);
-			}
-
-			foreach (Expression isRequiredExpression in isRequiredExpressions)
-			{
-				yield return isRequiredExpression;
 			}
 		}
 
@@ -692,35 +670,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			localVariables.Add(importVariable);
 
-			if (exportDelegateInfo.IsTransient)
-			{
-				Expression assignExpression = null;
-
-				if (importType != null &&
-					string.IsNullOrEmpty(exportName) &&
-					!InjectionKernel.ImportTypeByName(importType))
-				{
-					assignExpression =
-						Expression.Assign(importVariable,
-							Expression.Call(injectionContextParameter,
-												 InjectionContextLocateByTypeMethod,
-												 Expression.Constant(importType)));
-				}
-				else
-				{
-					assignExpression =
-						Expression.Assign(importVariable,
-							Expression.Call(ConvertNamedExportToPropertyTypeMethod,
-								Expression.Call(injectionContextParameter,
-													 InjectionContextLocateByNameMethod,
-													 Expression.Constant(localExportName)),
-								Expression.Constant(targetInfo.InjectionTargetType)));
-				}
-
-
-				importInjectionContextExpressions.Add(assignExpression);
-			}
-
 			string dependencyName = localExportName;
 
 			if (importType != null && dependencyName == importType.FullName)
@@ -747,7 +696,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			{
 				if (exportStrategyFilter != null)
 				{
-					ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter);
+					ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter, isRequired);
 				}
 				else
 				{
@@ -759,49 +708,84 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						 importType.GetTypeInfo().BaseType != typeof(MulticastDelegate) &&
 						 !InjectionKernel.ImportTypeByName(importType))
 					{
-						ImportForRootScope(importType, targetInfo, exportName, importVariable);
+						ImportForRootScope(importType, targetInfo, exportName, importVariable, isRequired);
 					}
 					else
 					{
-						ImportFromRequestingScope(importType, targetInfo, exportName, importVariable);
+						ImportFromRequestingScope(importType, targetInfo, exportName, importVariable, isRequired);
 					}
 				}
-			}
-
-			if (isRequired)
-			{
-				Expression exportNameExpression = Expression.Constant(exportName);
-
-				if (exportName == null)
-				{
-					exportNameExpression = Expression.Convert(exportNameExpression, typeof(string));
-				}
-
-				Expression exportTypeExpression = Expression.Constant(importType);
-
-				if (importType == null)
-				{
-					exportTypeExpression = Expression.Convert(exportTypeExpression, typeof(Type));
-				}
-
-				Expression throwException = Expression.Throw(
-					Expression.New(MissingDependencyExceptionConstructor,
-						exportNameExpression,
-						exportTypeExpression,
-						injectionContextParameter));
-
-				Expression testExpression = Expression.Equal(importVariable, Expression.Constant(null));
-
-				isRequiredExpressions.Add(Expression.IfThen(testExpression, throwException));
 			}
 
 			return importVariable;
 		}
 
-		private void ImportForRootScope(Type importType,
+		private ConditionalExpression CreateRequiredStatement(Type importType,
+			string exportName,
+			ParameterExpression importVariable)
+		{
+			Expression exportNameExpression = Expression.Constant(exportName);
+
+			if (exportName == null)
+			{
+				exportNameExpression = Expression.Convert(exportNameExpression, typeof(string));
+			}
+
+			Expression exportTypeExpression = Expression.Constant(importType);
+
+			if (importType == null)
+			{
+				exportTypeExpression = Expression.Convert(exportTypeExpression, typeof(Type));
+			}
+
+			Expression throwException = Expression.Throw(
+				Expression.New(MissingDependencyExceptionConstructor,
+					exportNameExpression,
+					exportTypeExpression,
+					injectionContextParameter));
+
+			Expression testExpression = Expression.Equal(importVariable, Expression.Constant(null));
+
+			var requiredStatement = Expression.IfThen(testExpression, throwException);
+			return requiredStatement;
+		}
+
+		private Expression CreateInjectionContextLocateStatement(Type importType,
 			IInjectionTargetInfo targetInfo,
 			string exportName,
 			ParameterExpression importVariable)
+		{
+			Expression assignExpression;
+
+			if (importType != null &&
+				 string.IsNullOrEmpty(exportName) &&
+				 !InjectionKernel.ImportTypeByName(importType))
+			{
+				assignExpression =
+					Expression.Assign(importVariable,
+						Expression.Call(injectionContextParameter,
+							InjectionContextLocateByTypeMethod,
+							Expression.Constant(importType)));
+			}
+			else
+			{
+				assignExpression =
+					Expression.Assign(importVariable,
+						Expression.Call(ConvertNamedExportToPropertyTypeMethod,
+							Expression.Call(injectionContextParameter,
+								InjectionContextLocateByNameMethod,
+								Expression.Constant(exportName.ToLowerInvariant())),
+							Expression.Constant(targetInfo.InjectionTargetType)));
+			}
+
+			return assignExpression;
+		}
+
+		private void ImportForRootScope(Type importType,
+			IInjectionTargetInfo targetInfo,
+			string exportName,
+			ParameterExpression importVariable,
+			bool isRequired)
 		{
 			Expression importTypeExpression = Expression.Constant(importType);
 			Expression exportNameExpression = Expression.Constant(exportName);
@@ -854,14 +838,31 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							Expression.Equal(importVariable, Expression.Constant(null)), assignStatementExpression);
 				}
 
-				Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, rootIfExpression, targetInfo);
-				Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, requestScopeIfExpression, targetInfo);
+				Expression rootContextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																														targetInfo,
+																														exportName,
+																														importVariable);
+
+				Expression requestContextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																														targetInfo,
+																														exportName,
+																														importVariable);
+
+
+				Expression tryCatchRootExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, rootContextLocateExpression, rootIfExpression);
+				Expression tryCatchRequestExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, requestContextLocateExpression, requestScopeIfExpression);
 
 				rootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
 				rootObjectImportExpressions.Add(tryCatchRootExpression);
 
 				nonRootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
 				nonRootObjectImportExpressions.Add(tryCatchRequestExpression);
+
+				if (isRequired)
+				{
+					rootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
+					nonRootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 			else
 			{
@@ -874,20 +875,30 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							injectionContextParameter,
 							Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter))));
 
-				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, assignRoot, targetInfo);
+				Expression contextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																										targetInfo,
+																										exportName,
+																										importVariable);
+
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo,contextLocateExpression, assignRoot);
 
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
 				objectImportExpression.Add(tryCatchExpression);
+
+				if (isRequired)
+				{
+					objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 		}
 
-		private Expression CreateTryCatchUpdateException(string exportName, Type importType, Expression expression, IInjectionTargetInfo targetInfo)
+		private Expression CreateTryCatchUpdateException(string exportName, Type importType, IInjectionTargetInfo targetInfo, params Expression[] expressions)
 		{
 			CatchBlock catchBlock = CreateLocateExceptionCatchBlock(exportName, importType, targetInfo);
 
 			CatchBlock generalCatchBlock = CreateGeneralExceptionCatchBlock(exportName, importType, targetInfo);
 
-			return Expression.TryCatch(Expression.Block(typeof(void), expression), catchBlock, generalCatchBlock);
+			return Expression.TryCatch(Expression.Block(typeof(void), expressions), catchBlock, generalCatchBlock);
 		}
 
 		private CatchBlock CreateLocateExceptionCatchBlock(string exportName,
@@ -967,7 +978,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		private void ImportFromRequestingScope(Type importType,
 			IInjectionTargetInfo targetInfo,
 			string exportName,
-			ParameterExpression importVariable)
+			ParameterExpression importVariable,
+			bool isRequired)
 		{
 			// for cases where we are importing a string or a primitive
 			// import by name rather than type
@@ -1008,8 +1020,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
+				Expression contextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																										targetInfo,
+																										exportName,
+																										importVariable);
+
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, contextLocateExpression, requestScopeIfExpression);
+
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(requestScopeIfExpression);
+				objectImportExpression.Add(tryCatchExpression);
+
+				if (isRequired)
+				{
+					objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 			else
 			{
@@ -1042,8 +1066,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
+				Expression contextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																										targetInfo,
+																										exportName,
+																										importVariable);
+
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, contextLocateExpression, requestScopeIfExpression);
+
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(requestScopeIfExpression);
+				objectImportExpression.Add(tryCatchExpression);
+
+				if (isRequired)
+				{
+					objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 		}
 
@@ -1051,7 +1087,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			IInjectionTargetInfo targetInfo,
 			string exportName,
 			ParameterExpression importVariable,
-			ExportStrategyFilter exportStrategyFilter)
+			ExportStrategyFilter exportStrategyFilter,
+			bool isRequired)
 		{
 			if (exportDelegateInfo.IsTransient)
 			{
@@ -1084,8 +1121,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
+				Expression contextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																										targetInfo,
+																										exportName,
+																										importVariable);
+
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, contextLocateExpression, requestScopeIfExpression);
+
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(requestScopeIfExpression);
+				objectImportExpression.Add(tryCatchExpression);
+
+				if (isRequired)
+				{
+					objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 			else
 			{
@@ -1118,8 +1167,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 									Expression.Constant(targetInfo.InjectionTargetType))));
 				}
 
+				Expression contextLocateExpression = CreateInjectionContextLocateStatement(importType,
+																										targetInfo,
+																										exportName,
+																										importVariable);
+
+				Expression tryCatchExpression = CreateTryCatchUpdateException(exportName, importType, targetInfo, contextLocateExpression, requestScopeIfExpression);
+
 				objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
-				objectImportExpression.Add(requestScopeIfExpression);
+				objectImportExpression.Add(tryCatchExpression);
+
+				if (isRequired)
+				{
+					objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
+				}
 			}
 		}
 
