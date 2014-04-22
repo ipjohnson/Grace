@@ -300,7 +300,9 @@ namespace Grace.DependencyInjection.Impl
 		{
 			foreach (PropertyInfo propertyInfo in exportType.GetRuntimeProperties())
 			{
-				if (propertyInfo.CanWrite)
+				if (propertyInfo.CanWrite &&
+					 propertyInfo.SetMethod.IsPublic && 
+					!propertyInfo.SetMethod.IsStatic)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
 																			 {
@@ -686,7 +688,9 @@ namespace Grace.DependencyInjection.Impl
 		{
 			foreach (PropertyInfo propertyInfo in typeof(T).GetRuntimeProperties())
 			{
-				if (propertyInfo.CanWrite && !propertyInfo.SetMethod.IsStatic)
+				if (propertyInfo.CanWrite && 
+					 propertyInfo.SetMethod.IsPublic &&
+					!propertyInfo.SetMethod.IsStatic)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
 																			 {

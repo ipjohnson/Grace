@@ -393,6 +393,74 @@ namespace Grace.UnitTests.DependencyInjection
 		}
 
 		[Fact]
+		public void AutowireStaticPropertyTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+				                    c.Export<BasicService>().As<IBasicService>();
+				                    c.Export<StaticPropertyClass>().ByInterfaces().AutoWireProperties();
+			                    });
+
+			IStaticPropertyClass propertyClass = container.Locate<IStaticPropertyClass>();
+
+			Assert.NotNull(propertyClass);
+			Assert.NotNull(propertyClass.BasicService);
+
+			Assert.Null(StaticPropertyClass.SomeOtherService);
+		}
+
+		[Fact]
+		public void ImportPropertyWithStaticPropertyTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterfaces().ImportProperty<IBasicService>());
+
+			IStaticPropertyClass propertyClass = container.Locate<IStaticPropertyClass>();
+
+			Assert.NotNull(propertyClass);
+			Assert.NotNull(propertyClass.BasicService);
+
+			Assert.Null(StaticPropertyClass.SomeOtherService);
+		}
+
+		[Fact]
+		public void ProtectedPropertyAutoWireTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+				                    c.Export<BasicService>().As<IBasicService>();
+				                    c.Export<PropertedPropertyImportClass>().ByInterfaces().AutoWireProperties();
+			                    });
+
+			IPropertedPropertyImportClass propertyClass = container.Locate<IPropertedPropertyImportClass>();
+
+			Assert.NotNull(propertyClass);
+			Assert.NotNull(propertyClass.BasicService);
+
+			Assert.True(propertyClass.ProtectedIsNull);
+		}
+
+		[Fact]
+		public void ProtetedPropertyImportPropertyTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).ByInterfaces().ImportProperty<IBasicService>());
+
+			IPropertedPropertyImportClass propertyClass = container.Locate<IPropertedPropertyImportClass>();
+
+			Assert.NotNull(propertyClass);
+			Assert.NotNull(propertyClass.BasicService);
+
+			Assert.True(propertyClass.ProtectedIsNull);
+		}
+
+		[Fact]
 		public void MissingConstructorParamTest()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();

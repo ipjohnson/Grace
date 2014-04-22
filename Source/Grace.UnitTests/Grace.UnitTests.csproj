@@ -121,10 +121,12 @@
     <Compile Include="Classes\Simple\OpenGenericNonInterfaceExportClasses.cs" />
     <Compile Include="Classes\Simple\OpenGenericPartiallyClosedInterface.cs" />
     <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
+    <Compile Include="Classes\Simple\PropertedPropertyImportClass.cs" />
     <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
     <Compile Include="Classes\Simple\SimpleModule.cs" />
     <Compile Include="Classes\Simple\SomeTestAttribute.cs" />
     <Compile Include="Classes\Simple\StaticConstructorClass.cs" />
+    <Compile Include="Classes\Simple\StaticPropertyClass.cs" />
     <Compile Include="Classes\Simple\Transient.cs" />
     <Compile Include="Classes\Simple\WithCtorParamClass.cs" />
     <Compile Include="DependencyInjection\AppConfigTests.cs" />
