@@ -17,12 +17,8 @@
     <tags>IoC Dependency Injection Container Portable Library</tags>
   </metadata>
   <files>    
-    <file src="lib\portable-windows8+net45\Grace.dll" target="lib\portable-windows8+net45\Grace.dll" />
-    <file src="lib\portable-windows8+net45\Grace.xml" target="lib\portable-windows8+net45\Grace.xml" />
-    <file src="lib\windowsphone8\Grace.dll" target="lib\windowsphone8\Grace.dll" />
-    <file src="lib\windowsphone8\Grace.xml" 
-          target="lib\windowsphone8\Grace.xml" />
-    
+    <file src="lib\portable-net45+wp80+win\Grace.dll" target="lib\portable-windows8+net45\Grace.dll" />
+    <file src="lib\portable-net45+wp80+win\Grace.xml" target="lib\portable-windows8+net45\Grace.xml" />
   </files>
 </package> 
 

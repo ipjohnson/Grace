@@ -259,11 +259,8 @@
 xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
 xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
 
-xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\portable-windows8+net45\"
-xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\portable-windows8+net45\"
-
-xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\windowsphone8\"
-xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\windowsphone8\"</PostBuildEvent>
+xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\portable-net45+wp80+win\"
+xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\portable-net45+wp80+win\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
