@@ -752,6 +752,7 @@ namespace Grace.DependencyInjection.Impl
 				foreach (PropertyInfo runtimeProperty in exportedType.GetRuntimeProperties())
 				{
 					if (runtimeProperty.CanWrite &&
+						 !runtimeProperty.SetMethod.IsStatic && 
 						 runtimeProperty.PropertyType.GetTypeInfo().IsAssignableFrom(importProperty.PropertyType.GetTypeInfo()))
 					{
 						if (importProperty.PropertyName == null ||
