@@ -686,7 +686,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			foreach (PropertyInfo propertyInfo in typeof(T).GetRuntimeProperties())
 			{
-				if (propertyInfo.CanWrite)
+				if (propertyInfo.CanWrite && !propertyInfo.SetMethod.IsStatic)
 				{
 					ImportPropertyInfo newImportPropertyInfo = new ImportPropertyInfo
 																			 {
