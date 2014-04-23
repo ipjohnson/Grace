@@ -10,7 +10,7 @@
     <title>Grace.MVC4</title>
     <summary>Grace.MVC4 is a companion library for Grace and MVC 4</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC4 classes to integrate Grace and MVC 4</description>
-    <releaseNotes>This release includes a new feature to export connection strings from the App.config, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
+    <releaseNotes>This bug fix release, included is a fix for importing properties on classes with static properties. Also included is a fix that allows the nuget package to install into portable class libraries.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

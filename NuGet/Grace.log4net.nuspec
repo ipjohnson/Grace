@@ -10,7 +10,7 @@
     <title>Grace.log4net</title>
     <summary>Grace.log4net provides a logging service using log4net and Grace</summary>
     <description>Grace.log4net provides integration classes between log4net and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This release includes a new feature to export connection strings from the App.config, it also contains a bug fix for registering classes with static constructors.</releaseNotes>
+    <releaseNotes>This bug fix release, included is a fix for importing properties on classes with static properties. Also included is a fix that allows the nuget package to install into portable class libraries.</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
