@@ -19,6 +19,8 @@
   <files>    
     <file src="lib\portable-net45+wp80+win\Grace.dll" target="lib\portable-net45+wp80+win\Grace.dll" />
     <file src="lib\portable-net45+wp80+win\Grace.xml" target="lib\portable-net45+wp80+win\Grace.xml" />
+    <file src="lib\portable-net45+wp80+win\Grace.dll" target="lib\portable-win81+wpa81\Grace.dll" />
+    <file src="lib\portable-net45+wp80+win\Grace.xml" target="lib\portable-win81+wpa81\Grace.xml" />
   </files>
 </package> 
 
