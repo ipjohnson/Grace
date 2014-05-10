@@ -45,7 +45,9 @@
     <Compile Include="Data\IComplexObject.cs" />
     <Compile Include="Data\IComplexObjectExtensions.cs" />
     <Compile Include="Data\IExtraDataContainer.cs" />
+    <Compile Include="Data\IReflectionService.cs" />
     <Compile Include="Data\NotifyObject.cs" />
+    <Compile Include="Data\ReflectionService.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByInterfacesAttribute.cs" />
@@ -245,10 +247,22 @@
     <Compile Include="Utilities\TaskHelper.cs" />
     <Compile Include="Utilities\WeakAction.cs" />
     <Compile Include="Utilities\WeakFunc.cs" />
+    <Compile Include="Validation\IAsyncValidationRule.cs" />
+    <Compile Include="Validation\IAttributeValidationRuleProvider.cs" />
+    <Compile Include="Validation\IRuleExecutionContext.cs" />
+    <Compile Include="Validation\ISyncValidationRule.cs" />
+    <Compile Include="Validation\IValidationContext.cs" />
+    <Compile Include="Validation\IValidationRule.cs" />
+    <Compile Include="Validation\IValidationRuleProvider.cs" />
+    <Compile Include="Validation\IValidationRuleResult.cs" />
+    <Compile Include="Validation\IValidationRuleResultPart.cs" />
+    <Compile Include="Validation\IValidationService.cs" />
+    <Compile Include="Validation\IValidationStandardsSelector.cs" />
+    <Compile Include="Validation\IValidationStateChangedHandler.cs" />
+    <Compile Include="Validation\ValidationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="Validation\" />
   </ItemGroup>
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.props" Condition="$(teamcity_build_id) != ''" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" Condition="$(teamcity_build_id) != ''" />

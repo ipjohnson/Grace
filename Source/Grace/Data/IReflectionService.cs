@@ -20,6 +20,13 @@ namespace Grace.Data
 	/// </summary>
 	public interface IReflectionService
 	{
+		/// <summary>
+		/// Gets a named property value from an object
+		/// </summary>
+		/// <param name="valueObject">target object</param>
+		/// <param name="propertyName">property name (can be nested A.B.C.D)</param>
+		/// <returns>property value</returns>
+		object GetPropertyValue(object valueObject, string propertyName);
 
 		/// <summary>
 		/// Gets a named property value from an object
@@ -31,8 +38,16 @@ namespace Grace.Data
 		/// <returns>property value</returns>
 		object GetPropertyValue(object valueObject,
 										string propertyName,
-										object index = null,
-										bool throwIfPathMissing = false);
+										object index,
+										bool throwIfPathMissing);
+
+		/// <summary>
+		/// Sets a value into a named Property
+		/// </summary>
+		/// <param name="valueObject">target object</param>
+		/// <param name="propertyName">property name to fetch</param>
+		/// <param name="newValue"></param>
+		bool SetPropertyValue(object valueObject, string propertyName, object newValue);
 
 		/// <summary>
 		/// Sets a value into a named Property
@@ -45,8 +60,8 @@ namespace Grace.Data
 		bool SetPropertyValue(object valueObject,
 									 string propertyName,
 									 object newValue,
-									 object index = null,
-									 bool createIfPathMissing = false);
+									 object index,
+									 bool createIfPathMissing);
 
 		/// <summary>
 		/// Calls a method in the target by a specified name.
