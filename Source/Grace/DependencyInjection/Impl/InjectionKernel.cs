@@ -984,8 +984,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 				{
-					if (!returnValue.Contains(exportStrategy) &&
-						 (exportFilter == null || exportFilter(context, exportStrategy)))
+					if (exportFilter == null || exportFilter(context, exportStrategy))
 					{
 						returnValue.Add(exportStrategy);
 					}
@@ -998,8 +997,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy exportStrategy in exportStrategyCollection.ExportStrategies)
 				{
-					if (!returnValue.Contains(exportStrategy) &&
-						 (exportFilter == null || exportFilter(context, exportStrategy)))
+					if (exportFilter == null || exportFilter(context, exportStrategy))
 					{
 						returnValue.Add(exportStrategy);
 					}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -226,5 +227,59 @@ namespace Grace.DependencyInjection
 
 			return key.Equals(strategy.Key);
 		}
+
+		/// <summary>
+		/// Locate all objects that are tagged with a particular piece of metadata
+		/// </summary>
+		/// <param name="exportLocator">export locator</param>
+		/// <param name="metadataName">metadata name to locate</param>
+		/// <param name="metadataValue">metadata value to test against, if null then any value metadata value will match</param>
+		/// <param name="includeParent">locate in parent scope</param>
+		/// <returns>returns list of objects</returns>
+		public static List<T> LocateAllWithMetadata<T>(this IExportLocator exportLocator,
+			string metadataName,
+			object metadataValue = null,
+			bool includeParent = true)
+		{
+			List<T> returnList = new List<T>();
+			IInjectionScope currentScope = exportLocator as IInjectionScope;
+
+			if (currentScope == null)
+			{
+				IDependencyInjectionContainer container = exportLocator as IDependencyInjectionContainer;
+
+				if (container == null)
+				{
+					throw new Exception("This method only works on IInjectionScope an IDependencyInjectionContainer");
+				}
+
+				currentScope = container.RootScope;
+			}
+
+			while (currentScope != null)
+			{
+				foreach (IExportStrategy exportStrategy in currentScope.GetAllStrategies(
+						(c, e) =>
+							{
+								object value;
+
+								return e.Metadata.TryGetValue(metadataName, out value) &&
+								       (metadataValue == null || metadataValue.Equals(value));
+							}))
+				{
+					IInjectionContext context = exportLocator.CreateContext();
+
+					T newT = (T)exportStrategy.Activate(currentScope, context, null);
+
+					returnList.Add(newT);
+				}
+
+				currentScope = includeParent ? currentScope.ParentScope : null;
+			}
+
+			return returnList;
+		}
+
+
 	}
 }

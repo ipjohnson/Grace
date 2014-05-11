@@ -50,6 +50,7 @@
     <Compile Include="Data\ReflectionService.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\ExportByClassNameAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByInterfacesAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenClassHasAttribute.cs" />

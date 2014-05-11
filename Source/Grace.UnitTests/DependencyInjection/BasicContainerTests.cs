@@ -398,10 +398,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<BasicService>().As<IBasicService>();
-				                    c.Export<StaticPropertyClass>().ByInterfaces().AutoWireProperties();
-			                    });
+									  {
+										  c.Export<BasicService>().As<IBasicService>();
+										  c.Export<StaticPropertyClass>().ByInterfaces().AutoWireProperties();
+									  });
 
 			IStaticPropertyClass propertyClass = container.Locate<IStaticPropertyClass>();
 
@@ -432,10 +432,10 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<BasicService>().As<IBasicService>();
-				                    c.Export<PropertedPropertyImportClass>().ByInterfaces().AutoWireProperties();
-			                    });
+									  {
+										  c.Export<BasicService>().As<IBasicService>();
+										  c.Export<PropertedPropertyImportClass>().ByInterfaces().AutoWireProperties();
+									  });
 
 			IPropertedPropertyImportClass propertyClass = container.Locate<IPropertedPropertyImportClass>();
 
@@ -481,6 +481,48 @@ namespace Grace.UnitTests.DependencyInjection
 			{
 				Assert.Contains("stringParam", missingException.Message);
 			}
+		}
+
+		[Fact]
+		public void LocateAllWithMetadataTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+									  {
+										  c.Export<SimpleObjectA>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+										  c.Export<SimpleObjectB>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+										  c.Export<SimpleObjectC>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+										  c.Export<SimpleObjectD>().As<ISimpleObject>().WithMetadata("Metadata", "Group2");
+										  c.Export<SimpleObjectE>().As<ISimpleObject>().WithMetadata("Metadata", "Group2");
+									  });
+			var list = container.LocateAllWithMetadata<ISimpleObject>("Metadata");
+
+			Assert.NotNull(list);
+
+			Assert.Equal(5, list.Count());
+		}
+
+		[Fact]
+		public void LocateAllWithMetadataFiltered()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			{
+				c.Export<SimpleObjectA>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+				c.Export<SimpleObjectB>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+				c.Export<SimpleObjectC>().As<ISimpleObject>().WithMetadata("Metadata", "Group1");
+				c.Export<SimpleObjectD>().As<ISimpleObject>().WithMetadata("Metadata", "Group2");
+				c.Export<SimpleObjectE>().As<ISimpleObject>().WithMetadata("Metadata", "Group2");
+			});
+
+			var list = container.LocateAllWithMetadata<ISimpleObject>("Metadata","Group1");
+
+			Assert.NotNull(list);
+
+			Assert.Equal(3, list.Count());
+			
 		}
 	}
 }
