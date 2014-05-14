@@ -271,9 +271,11 @@
   <ItemGroup>
     <Folder Include="Configuration\" />
   </ItemGroup>
+  <!--
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.props" Condition="$(teamcity_build_id) != ''" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" Condition="$(teamcity_build_id) != ''" />
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.targets" Condition="$(teamcity_build_id) != ''" />
+  -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" Condition="$(teamcity_build_id) == ''" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"

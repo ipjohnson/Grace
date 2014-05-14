@@ -398,14 +398,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			List<Expression> expressionList = null;
 
-			// in the case of after construction we want to put the import statements in the body
-			if (importPropertyInfo.AfterConstruction)
-			{
-				bodyExpressions.Add(
-					Expression.Assign(Expression.PropertyOrField(injectionContextParameter, "Instance"), instanceVariable));
+			//// in the case of after construction we want to put the import statements in the body
+			//if (importPropertyInfo.AfterConstruction)
+			//{
+			//	bodyExpressions.Add(
+			//		Expression.Assign(Expression.PropertyOrField(injectionContextParameter, "Instance"), instanceVariable));
 
-				expressionList = bodyExpressions;
-			}
+			//	expressionList = bodyExpressions;
+			//}
 
 			importVariable = CreateImportExpression(importPropertyInfo.Property.PropertyType,
 																		targetInfo,
