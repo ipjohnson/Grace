@@ -266,6 +266,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		public ImportPropertyInfo()
 		{
 			IsRequired = true;
+			AfterConstruction = false;
 		}
 
 		/// <summary>
