@@ -406,7 +406,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				expressionList = bodyExpressions;
 			}
-				
+
 			importVariable = CreateImportExpression(importPropertyInfo.Property.PropertyType,
 																		targetInfo,
 																		ExportStrategyDependencyType.Property,
@@ -417,7 +417,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 																		importPropertyInfo.ExportStrategyFilter,
 																		importPropertyInfo.ComparerObject,
 																		expressionList);
-			
+
 
 			Expression assign = Expression.Assign(Expression.Property(instanceVariable, importPropertyInfo.Property),
 				Expression.Convert(importVariable, importPropertyInfo.Property.PropertyType));
@@ -1261,7 +1261,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			IExportValueProvider valueProvider,
 			ExportStrategyFilter exportStrategyFilter,
 			object comparerObject,
-			List<Expression>  expressionList)
+			List<Expression> expressionList)
 		{
 			bool returnValue = false;
 

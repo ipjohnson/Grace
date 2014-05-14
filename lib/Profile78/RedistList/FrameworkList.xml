@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<FileList Redist="Microsoft-Windows-CLRCoreComp.PortableLibrary.4.0" Name=".NET Portable Subset (.NET Framework 4.5, Windows Phone 8, Windows Store apps (Windows 8))" RuntimeVersion="4.5">
+<FileList Redist="Microsoft-Windows-CLRCoreComp.PortableLibrary.4.0" Name=".NET Portable Subset (.NET Framework 4.5, Windows 8, Windows Phone Silverlight 8)" RuntimeVersion="4.5">
     <File AssemblyName="Microsoft.CSharp" Version="4.0.0.0" PublicKeyToken="b03f5f7f11d50a3a" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
     <File AssemblyName="mscorlib" Version="4.0.0.0" PublicKeyToken="b77a5c561934e089" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
     <File AssemblyName="System" Version="4.0.0.0" PublicKeyToken="b77a5c561934e089" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />

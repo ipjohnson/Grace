@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier=".NETCore"
+    Profile="*"
+    MinimumVersion="4.5"
+    Family="Windows"
+    MinimumVisualStudioVersion="11.0"
+    DisplayName="Windows"
+    MinimumVersionDisplayName="8"
+    PlatformArchitectures="AnyCPU;x86;x64;ARM" />

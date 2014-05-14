@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier="WindowsPhone"
+    Profile=""
+    MinimumVersion="8.0"
+    Family="WindowsPhone"
+    MinimumVisualStudioVersion="11.0"
+    DisplayName="Windows Phone Silverlight"
+    MinimumVersionDisplayName="8"
+    PlatformArchitectures="AnyCPU" />
