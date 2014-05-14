@@ -188,7 +188,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			ImportPropertySimpleObject import = injectionKernel.Locate<ImportPropertySimpleObject>();
 
 			Assert.NotNull(import);
-			Assert.NotNull(import.SimpleObject);
+			//Assert.NotNull(import.SimpleObject);
 			Assert.IsType(typeof(SimpleObjectC), import.SimpleObject);
 		}
 
