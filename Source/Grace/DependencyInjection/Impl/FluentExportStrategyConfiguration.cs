@@ -354,6 +354,18 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
+
+		/// <summary>
+		/// Enrich with a linq expression
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			exportStrategy.EnrichWithExpression(provider);
+
+			return this;
+		}
 	}
 
 	/// <summary>
@@ -739,6 +751,19 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration<T> EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
 			exportStrategy.EnrichWithDelegate(enrichWithDelegate);
+
+			return this;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public IFluentExportStrategyConfiguration<T> EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			exportStrategy.EnrichWithExpression(provider);
 
 			return this;
 		}

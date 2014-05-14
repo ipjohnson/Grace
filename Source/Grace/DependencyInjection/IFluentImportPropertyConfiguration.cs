@@ -34,6 +34,12 @@ namespace Grace.DependencyInjection
 		/// <param name="provider">value provider</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
+
+		/// <summary>
+		/// Import the property value after construction. Usually this is done before construction
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration AfterConstruction();
 	}
 
 	/// <summary>
@@ -65,10 +71,23 @@ namespace Grace.DependencyInjection
 		IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<TProp> valueFunc);
 
 		/// <summary>
+		/// Provide value for import property
+		/// </summary>
+		/// <param name="valueFunc">value func</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<IInjectionScope,IInjectionContext,TProp> valueFunc);
+
+		/// <summary>
 		/// specify value provider for property import
 		/// </summary>
 		/// <param name="provider">value provider</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration<T, TProp> UsingValueProvider(IExportValueProvider provider);
+
+		/// <summary>
+		/// Import the property value after construction. Usually this is done before construction
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration<T, TProp> AfterConstruction();
 	}
 }

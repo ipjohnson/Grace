@@ -13,6 +13,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		private BeforeDisposalCleanupDelegate cleanupDelegate;
 		private List<ConstructorParamInfo> constructorParamInfos;
 		private List<EnrichWithDelegate> enrichWithDelegates;
+		private List<ICustomEnrichmentLinqExpressionProvider> enrichmentExpressionProviders; 
 		private List<ImportMethodInfo> importMethods;
 		private List<ImportPropertyInfo> importProperties;
 
@@ -90,6 +91,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		}
 
 		/// <summary>
+		/// Get a list of enrichment expression providers
+		/// </summary>
+		public IEnumerable<ICustomEnrichmentLinqExpressionProvider> EnrichmentExpressionProviders
+		{
+			get { return enrichmentExpressionProviders; }
+		}
+
+		/// <summary>
 		/// Adds a constructor parameter info
 		/// </summary>
 		/// <param name="paramInfo"></param>
@@ -156,6 +165,20 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			}
 
 			enrichWithDelegates.Add(enrichWithDelegate);
+		}
+
+		/// <summary>
+		/// Add a custom enrichment expression provider
+		/// </summary>
+		/// <param name="provider">expression provider</param>
+		public void EnrichmentExpressionProvider(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			if (enrichmentExpressionProviders == null)
+			{
+				enrichmentExpressionProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
+			}
+
+			enrichmentExpressionProviders.Add(provider);
 		}
 
 		/// <summary>
@@ -274,6 +297,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// IComparer(T) to be used to sort collections
 		/// </summary>
 		public object ComparerObject { get; set; }
+
+		/// <summary>
+		/// Import the property after construction
+		/// </summary>
+		public bool AfterConstruction { get; set; }
 	}
 
 	/// <summary>

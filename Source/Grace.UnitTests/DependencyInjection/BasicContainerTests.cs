@@ -517,12 +517,39 @@ namespace Grace.UnitTests.DependencyInjection
 				c.Export<SimpleObjectE>().As<ISimpleObject>().WithMetadata("Metadata", "Group2");
 			});
 
-			var list = container.LocateAllWithMetadata<ISimpleObject>("Metadata","Group1");
+			var list = container.LocateAllWithMetadata<ISimpleObject>("Metadata", "Group1");
 
 			Assert.NotNull(list);
 
 			Assert.Equal(3, list.Count());
-			
+
+		}
+
+		[Fact]
+		public void ImportPropertyAfterConstruction()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+				                    c.Export<ImportPropertyService>().
+											 As<IImportPropertyService>().
+					                   ImportProperty(x => x.BasicService).AfterConstruction();
+
+										  c.ExportInstance((scope, context) =>
+															  {
+																  Assert.NotNull(context.Instance);
+																  Assert.IsType<BasicService>(context.Instance);
+
+																  return new BasicService();
+															  }).As<IBasicService>();
+			                    });
+
+
+			var value = container.Locate<IImportPropertyService>();
+
+			Assert.NotNull(value);
+			Assert.NotNull(value.BasicService);
 		}
 	}
 }

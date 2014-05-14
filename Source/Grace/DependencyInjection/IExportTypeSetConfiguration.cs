@@ -139,51 +139,73 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector);
 
 		/// <summary>
+		/// Enrich all with a particular delegate
+		/// </summary>
+		/// <param name="enrichWithDelegate">enrichment delegate</param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate);
+
+		/// <summary>
+		/// Enrich all with linq expressions
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+
+		/// <summary>
 		/// Import properties of type TProperty and by name
 		/// </summary>
 		/// <typeparam name="TProperty">property type</typeparam>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>();
+		IExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>();
+
 	}
 
 	/// <summary>
 	/// Configuration object 
 	/// </summary>
-	public interface IIExportTypeSetImportPropertyConfiguration : IExportTypeSetConfiguration
+	public interface IExportTypeSetImportPropertyConfiguration : IExportTypeSetConfiguration
 	{
 		/// <summary>
 		/// Property Name to import
 		/// </summary>
 		/// <param name="propertyName">property name</param>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration Named(string propertyName);
+		IExportTypeSetImportPropertyConfiguration Named(string propertyName);
 
 		/// <summary>
 		/// Is it required
 		/// </summary>
 		/// <param name="value">is required</param>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration IsRequired(bool value);
+		IExportTypeSetImportPropertyConfiguration IsRequired(bool value);
 
 		/// <summary>
 		/// Apply delegate to choose export
 		/// </summary>
 		/// <param name="consider">consider filter</param>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider);
+		IExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider);
 
 		/// <summary>
 		/// Using Value provider
 		/// </summary>
 		/// <param name="activationDelegate"></param>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate);
+		IExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate);
 
 		/// <summary>
 		/// Use value provider
 		/// </summary>
 		/// <param name="valueProvider">value provider</param>
 		/// <returns>configuration object</returns>
-		IIExportTypeSetImportPropertyConfiguration UsingValueProvider(IExportValueProvider valueProvider);
+		IExportTypeSetImportPropertyConfiguration UsingValueProvider(IExportValueProvider valueProvider);
+
+		/// <summary>
+		/// Import the property after the instance has been constructed.
+		/// The Instance property on IInjectionContext will be populated
+		/// </summary>
+		/// <returns></returns>
+		IExportTypeSetImportPropertyConfiguration AfterConstruction();
 	}
 }

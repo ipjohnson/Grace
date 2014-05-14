@@ -124,14 +124,15 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				ParameterExpression parameterExpression =
 					CreateImportExpression(parameterInfo.ParameterType,
-						targetInfo,
-						ExportStrategyDependencyType.ConstructorParameter,
-						importName,
-						parameterInfo.Name + "CVar",
-						true,
-						valueProvider,
-						exportStrategyFilter,
-						comparerObject);
+													targetInfo,
+													ExportStrategyDependencyType.ConstructorParameter,
+													importName,
+													parameterInfo.Name + "CVar",
+													true,
+													valueProvider,
+													exportStrategyFilter,
+													comparerObject,
+													null);
 
 				parameterExpressions.Add(Expression.Convert(parameterExpression, parameterInfo.ParameterType));
 			}

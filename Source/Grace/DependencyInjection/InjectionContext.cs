@@ -103,6 +103,11 @@ namespace Grace.DependencyInjection
 		public IInjectionTargetInfo TargetInfo { get; set; }
 
 		/// <summary>
+		/// When importing a property after construction this will contain the instance that is being injected
+		/// </summary>
+		public object Instance { get; set; }
+
+		/// <summary>
 		/// Extra data associated with the injection request. 
 		/// </summary>
 		/// <param name="dataName"></param>

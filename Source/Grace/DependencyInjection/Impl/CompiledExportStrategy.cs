@@ -178,6 +178,15 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Adds custom provider
+		/// </summary>
+		/// <param name="provider"></param>
+		public void EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			delegateInfo.EnrichmentExpressionProvider(provider);
+		}
+
+		/// <summary>
 		/// Gets the CompiledExportDelegateInfo definition for this export
 		/// </summary>
 		/// <returns></returns>

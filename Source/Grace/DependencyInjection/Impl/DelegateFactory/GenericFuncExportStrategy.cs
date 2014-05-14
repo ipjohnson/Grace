@@ -119,6 +119,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="enrichWithDelegate"></param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
+
 		}
 
 		/// <summary>

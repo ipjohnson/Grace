@@ -261,6 +261,16 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Using this method you can add your own linq expressions to the creation process
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			return strategy.EnrichWithExpression(provider);
+		}
+
+		/// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
 		/// </summary>
 		/// <typeparam name="TParam">type of parameter</typeparam>
@@ -634,6 +644,16 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration<T> EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
 			return strategy.EnrichWith(enrichWithDelegate);
+		}
+
+		/// <summary>
+		/// USing this method you can add custom Linq Expressions to the expression tree 
+		/// </summary>
+		/// <param name="provider">provider class</param>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration<T> EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			return strategy.EnrichWithExpression(provider);
 		}
 	}
 }

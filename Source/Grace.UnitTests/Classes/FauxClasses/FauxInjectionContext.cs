@@ -24,6 +24,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public IInjectionTargetInfo TargetInfo { get; set; }
 
+		public object Instance { get; set; }
+
 		public object GetExtraData(string dataName)
 		{
 			return null;

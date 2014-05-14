@@ -37,6 +37,12 @@ namespace Grace.DependencyInjection
 		IInjectionTargetInfo TargetInfo { get; set; }
 
 		/// <summary>
+		/// When importing a property after construction this will contain the instance that is being injected
+		/// </summary>
+		[CanBeNull]
+		object Instance { get; set; }
+
+		/// <summary>
 		/// Max resolve depth allowed
 		/// </summary>
 		int MaxResolveDepth { get; set; }
@@ -45,7 +51,7 @@ namespace Grace.DependencyInjection
 		/// Locate an export by type
 		/// </summary>
 		/// <returns></returns>
-		object Locate(Type type);
+		object Locate([NotNull] Type type);
 
 		/// <summary>
 		/// Locate an export by name

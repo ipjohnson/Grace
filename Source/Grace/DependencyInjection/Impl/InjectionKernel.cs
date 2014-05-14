@@ -326,13 +326,14 @@ namespace Grace.DependencyInjection.Impl
 					{
 						foreach (string exportName in exportStrategy.ExportNames)
 						{
+							string lowerName = exportName.ToLowerInvariant();
 							ExportStrategyCollection currentCollection;
 
-							if (!newExportsByName.TryGetValue(exportName, out currentCollection))
+							if (!newExportsByName.TryGetValue(lowerName, out currentCollection))
 							{
 								currentCollection = new ExportStrategyCollection(this, Environment, comparer);
 
-								newExportsByName[exportName] = currentCollection;
+								newExportsByName[lowerName] = currentCollection;
 							}
 
 							currentCollection.AddExport(exportStrategy);
@@ -1018,6 +1019,8 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection;
 			IInjectionContext context = injectionContext ?? CreateContext();
+
+			name = name.ToLowerInvariant();
 
 			if (exportsByName.TryGetValue(name, out collection))
 			{

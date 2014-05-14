@@ -49,9 +49,11 @@
     <Compile Include="Data\NotifyObject.cs" />
     <Compile Include="Data\ReflectionService.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\DesignTimeOnlyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByClassNameAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByInterfacesAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\ExportEnvironmentAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenClassHasAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenInjectedIntoAttribute.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="DependencyInjection\Attributes\SingletonPerInjectionContextAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\SingletonPerRequestAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\SingletonPerScopeAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\UnitTestOnlyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\WeakSingletonAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\WhenClassHasAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\WhenInjectedIntoAttribute.cs" />
@@ -100,6 +103,8 @@
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
+    <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
+    <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
     <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />
     <Compile Include="DependencyInjection\IExportLocator.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
@@ -119,6 +124,7 @@
     <Compile Include="DependencyInjection\Impl\BaseInjectionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ClosedAttributeExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ClosedGenericExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\CompiledExport\CustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\InjectionCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\SimpleCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\ConcreteAttributeExportStrategy.cs" />

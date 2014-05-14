@@ -289,6 +289,8 @@ namespace Grace.DependencyInjection.Impl
 			enrichWithDelegates.Add(enrichWithDelegate);
 		}
 
+
+
 		/// <summary>
 		/// List of dependencies for this strategy
 		/// </summary>
