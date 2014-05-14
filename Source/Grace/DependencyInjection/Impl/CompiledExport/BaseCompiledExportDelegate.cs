@@ -708,7 +708,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			object comparerObject,
 			List<Expression> expressionList)
 		{
-			bool canShortCut = false;
+			bool canShortCut = true;
 			ParameterExpression importVariable = Expression.Variable(typeof(object), variableName);
 			string localExportName = exportName;
 
@@ -721,8 +721,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			if (expressionList == null)
 			{
-				canShortCut = true;
 				expressionList = objectImportExpression;
+			}
+			else
+			{
+				canShortCut = false;
 			}
 
 			localVariables.Add(importVariable);
