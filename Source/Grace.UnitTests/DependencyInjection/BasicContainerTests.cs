@@ -539,7 +539,7 @@ namespace Grace.UnitTests.DependencyInjection
 										  c.ExportInstance((scope, context) =>
 															  {
 																  Assert.NotNull(context.Instance);
-																  Assert.IsType<BasicService>(context.Instance);
+																  Assert.IsType<ImportPropertyService>(context.Instance);
 
 																  return new BasicService();
 															  }).As<IBasicService>();
