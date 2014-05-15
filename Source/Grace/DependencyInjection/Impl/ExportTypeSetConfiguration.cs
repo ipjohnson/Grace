@@ -40,6 +40,8 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<Func<Type, bool>> whereClauses;
 		private readonly List<IExportStrategyInspector> inspectors;
 		private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
+		private readonly List<EnrichWithDelegate> enrichWithDelegates;
+		private readonly List<ICustomEnrichmentLinqExpressionProvider> enrichmentProviders;
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
@@ -64,6 +66,8 @@ namespace Grace.DependencyInjection.Impl
 			interfaceMatchList = new List<Func<Type, bool>>();
 			inspectors = new List<IExportStrategyInspector>();
 			importPropertiesList = new List<ImportGlobalPropertyInfo>();
+			enrichWithDelegates = new List<EnrichWithDelegate>();
+			enrichmentProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
 		}
 
 		/// <summary>
@@ -107,6 +111,26 @@ namespace Grace.DependencyInjection.Impl
 					IExportStrategy strategy = exportStrategy;
 
 					inspectors.Apply(x => x.Inspect(strategy));
+				}
+			}
+
+			foreach (IExportStrategy exportStrategy in returnValues)
+			{
+				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				{
+					exportStrategy.EnrichWithDelegate(enrichWithDelegate);
+				}
+
+				ICompiledExportStrategy compiledExport = exportStrategy as ICompiledExportStrategy;
+
+				if (compiledExport == null)
+				{
+					continue;
+				}
+
+				foreach (ICustomEnrichmentLinqExpressionProvider customEnrichmentLinqExpressionProvider in enrichmentProviders)
+				{
+					compiledExport.EnrichWithExpression(customEnrichmentLinqExpressionProvider);
 				}
 			}
 
