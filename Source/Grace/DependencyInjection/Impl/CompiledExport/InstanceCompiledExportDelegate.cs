@@ -131,8 +131,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 													true,
 													valueProvider,
 													exportStrategyFilter,
-													comparerObject,
-													null);
+													comparerObject);
 
 				parameterExpressions.Add(Expression.Convert(parameterExpression, parameterInfo.ParameterType));
 			}
