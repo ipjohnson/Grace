@@ -23,8 +23,6 @@ namespace Grace.DependencyInjection.Impl
 
 			public bool IsRequired { get; set; }
 
-			public bool AfterConstruction { get; set; }
-
 			public ExportStrategyFilter Consider { get; set; }
 
 			public IExportValueProvider ValueProvider { get; set; }
@@ -40,8 +38,6 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<Func<Type, bool>> whereClauses;
 		private readonly List<IExportStrategyInspector> inspectors;
 		private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
-		private readonly List<EnrichWithDelegate> enrichWithDelegates;
-		private readonly List<ICustomEnrichmentLinqExpressionProvider> enrichmentProviders;
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
@@ -66,8 +62,6 @@ namespace Grace.DependencyInjection.Impl
 			interfaceMatchList = new List<Func<Type, bool>>();
 			inspectors = new List<IExportStrategyInspector>();
 			importPropertiesList = new List<ImportGlobalPropertyInfo>();
-			enrichWithDelegates = new List<EnrichWithDelegate>();
-			enrichmentProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
 		}
 
 		/// <summary>
@@ -99,7 +93,6 @@ namespace Grace.DependencyInjection.Impl
 			if (exportInterfaces.Count > 0 ||
 				 exportBaseTypes.Count > 0 ||
 				 interfaceMatchList.Count > 0 ||
-				 whereClauses.Count > 0 ||
 				 exportAllByInterface)
 			{
 				returnValues.AddRange(ScanTypesForExports(filteredTypes));
@@ -112,26 +105,6 @@ namespace Grace.DependencyInjection.Impl
 					IExportStrategy strategy = exportStrategy;
 
 					inspectors.Apply(x => x.Inspect(strategy));
-				}
-			}
-
-			foreach (IExportStrategy exportStrategy in returnValues)
-			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
-				{
-					exportStrategy.EnrichWithDelegate(enrichWithDelegate);
-				}
-
-				ICompiledExportStrategy compiledExport = exportStrategy as ICompiledExportStrategy;
-
-				if (compiledExport == null)
-				{
-					continue;
-				}
-
-				foreach (ICustomEnrichmentLinqExpressionProvider customEnrichmentLinqExpressionProvider in enrichmentProviders)
-				{
-					compiledExport.EnrichWithExpression(customEnrichmentLinqExpressionProvider);
 				}
 			}
 
@@ -364,28 +337,14 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
-		/// Enrich all with a particular delegate
-		/// </summary>
-		/// <param name="enrichWithDelegate">enrichment delegate</param>
-		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
-			enrichWithDelegates.Add(enrichWithDelegate);
-
-			return this;
+			throw new NotImplementedException();
 		}
 
-		/// <summary>
-		/// Enrich all with linq expressions
-		/// </summary>
-		/// <param name="provider"></param>
-		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
 		{
-			enrichmentProviders.Add(provider);
-
-			return this;
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -488,19 +447,9 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
-		/// Import the property after the instance has been constructed.
-		/// The Instance property on IInjectionContext will be populated
-		/// </summary>
-		/// <returns></returns>
 		public IExportTypeSetImportPropertyConfiguration AfterConstruction()
 		{
-			if (importPropertiesList.Count > 0)
-			{
-				importPropertiesList[importPropertiesList.Count - 1].AfterConstruction = true;
-			}
-
-			return this;
+			throw new NotImplementedException();
 		}
 
 		private List<Type> FilterTypes()
@@ -581,11 +530,6 @@ namespace Grace.DependencyInjection.Impl
 				if (exportStrategy != null)
 				{
 					yield return exportStrategy;
-				}
-				else
-				{
-					yield return
-						CreateCompiledExportStrategy(exportedType, exportedType.GetTypeInfo().IsGenericTypeDefinition, new Type[0]);
 				}
 			}
 		}
@@ -831,13 +775,12 @@ namespace Grace.DependencyInjection.Impl
 							 importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
 						{
 							exportStrategy.ImportProperty(new ImportPropertyInfo
-																	{
-																		Property = runtimeProperty,
-																		IsRequired = importProperty.IsRequired,
-																		ValueProvider = importProperty.ValueProvider,
-																		ExportStrategyFilter = importProperty.Consider,
-																		AfterConstruction = importProperty.AfterConstruction
-																	});
+							{
+								Property = runtimeProperty,
+								IsRequired = importProperty.IsRequired,
+								ValueProvider = importProperty.ValueProvider,
+								ExportStrategyFilter = importProperty.Consider
+							});
 						}
 					}
 				}
