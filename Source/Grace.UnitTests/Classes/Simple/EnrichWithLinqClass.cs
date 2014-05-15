@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Grace.UnitTests.Classes.Simple
 {
-	public class EnrichWithLinqClass
+	public interface IIntPropClass
+	{
+		int IntProp { get; set; }
+	}
+
+	public class EnrichWithLinqClass : IIntPropClass
 	{
 		public int IntProp { get; set; }
 	}
