@@ -40,16 +40,14 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.Equal(5, instance.IntProp);
 		}
 
-		//[Fact]
+		[Fact]
 		public void EnrichSetWithExpression()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c => c.Export(Types.FromThisAssembly()).
-												Select(type =>
-												       {
-													       return type.Name.EndsWith("LinqClass");
-												       }).
+												ByType().
+												Select(type => type.Name.EndsWith("LinqClass")).
 												EnrichWithExpression(new EnrichmentHelper()));
 
 			EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();

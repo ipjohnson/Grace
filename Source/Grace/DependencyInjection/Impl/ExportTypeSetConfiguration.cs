@@ -45,6 +45,7 @@ namespace Grace.DependencyInjection.Impl
 		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
+		private bool exportByType;
 		private ExportEnvironment exportEnvironment;
 		private bool externallyOwned;
 		private int priority;
@@ -103,6 +104,10 @@ namespace Grace.DependencyInjection.Impl
 			{
 				returnValues.AddRange(ScanTypesForExports(filteredTypes));
 			}
+			else if (exportByType)
+			{
+				returnValues.AddRange(ExportAllByType(filteredTypes));
+			}
 
 			if (inspectors.Count > 0)
 			{
@@ -136,6 +141,7 @@ namespace Grace.DependencyInjection.Impl
 
 			return returnValues;
 		}
+
 
 		/// <summary>
 		/// Export all objects that implements the specified interface
@@ -198,6 +204,17 @@ namespace Grace.DependencyInjection.Impl
 		public IExportTypeSetConfiguration BasedOn<T>()
 		{
 			exportBaseTypes.Add(typeof(T));
+
+			return this;
+		}
+
+		/// <summary>
+		/// Export the selected classes by type
+		/// </summary>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration ByType()
+		{
+			exportByType = true;
 
 			return this;
 		}
@@ -363,14 +380,28 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// Enrich all with a particular delegate
+		/// </summary>
+		/// <param name="enrichWithDelegate">enrichment delegate</param>
+		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
-			throw new NotImplementedException();
+			enrichWithDelegates.Add(enrichWithDelegate);
+
+			return this;
 		}
 
+		/// <summary>
+		/// Enrich all with linq expressions
+		/// </summary>
+		/// <param name="provider"></param>
+		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
 		{
-			throw new NotImplementedException();
+			enrichmentProviders.Add(provider);
+
+			return this;
 		}
 
 		/// <summary>
@@ -562,6 +593,18 @@ namespace Grace.DependencyInjection.Impl
 				{
 					yield return exportStrategy;
 				}
+			}
+		}
+
+		private IEnumerable<IExportStrategy> ExportAllByType(IEnumerable<Type> filteredTypes)
+		{
+			Type[] exportTypes = new Type[0];
+
+			foreach (Type filteredType in filteredTypes)
+			{
+				bool isGeneric = filteredType.GetTypeInfo().IsGenericTypeDefinition;
+
+				yield return CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes);
 			}
 		}
 

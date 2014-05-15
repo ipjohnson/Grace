@@ -31,17 +31,23 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration ByInterfaces(Func<Type, bool> whereClause = null);
 
 		/// <summary>
-		/// Export all types based on speficied type
+		/// Export all types based on speficied type by Type
 		/// </summary>
 		/// <param name="baseType">base type to export</param>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration BasedOn(Type baseType);
 
 		/// <summary>
-		/// Export all types based on speficied type
+		/// Export all types based on speficied type by Type
 		/// </summary>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration BasedOn<T>();
+
+		/// <summary>
+		/// Export the selected classes by type
+		/// </summary>
+		/// <returns></returns>
+		IExportTypeSetConfiguration ByType();
 
 		/// <summary>
 		/// Export with the spcified priority
