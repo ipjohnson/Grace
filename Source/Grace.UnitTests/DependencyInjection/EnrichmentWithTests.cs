@@ -26,7 +26,7 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 		}
 
-		//[Fact]
+		[Fact]
 		public void EnrichWithExpressionTest()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
@@ -40,7 +40,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.Equal(5, instance.IntProp);
 		}
 
-		//[Fact]
+		[Fact]
 		public void EnrichSetWithExpression()
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
