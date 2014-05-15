@@ -23,6 +23,8 @@ namespace Grace.DependencyInjection.Impl
 
 			public bool IsRequired { get; set; }
 
+			public bool AfterConstruction { get; set; }
+
 			public ExportStrategyFilter Consider { get; set; }
 
 			public IExportValueProvider ValueProvider { get; set; }
@@ -449,7 +451,12 @@ namespace Grace.DependencyInjection.Impl
 
 		public IExportTypeSetImportPropertyConfiguration AfterConstruction()
 		{
-			throw new NotImplementedException();
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].AfterConstruction = true;
+
+			}
+			return this;
 		}
 
 		private List<Type> FilterTypes()
@@ -779,7 +786,8 @@ namespace Grace.DependencyInjection.Impl
 								Property = runtimeProperty,
 								IsRequired = importProperty.IsRequired,
 								ValueProvider = importProperty.ValueProvider,
-								ExportStrategyFilter = importProperty.Consider
+								ExportStrategyFilter = importProperty.Consider,
+								AfterConstruction = importProperty.AfterConstruction
 							});
 						}
 					}
