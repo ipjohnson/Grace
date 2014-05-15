@@ -56,5 +56,32 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.Equal(5, instance.IntProp);
 		}
+
+		[Fact]
+		public void EnrichmentDelegateForSetTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly()).
+												ByType().
+												Select(type => type.Name.EndsWith("LinqClass")).
+												EnrichWith((scope, context, export) =>
+												           {
+													           IIntPropClass propClass = export as IIntPropClass;
+
+													           if (propClass != null)
+													           {
+														           propClass.IntProp = 5;
+													           }
+
+													           return export;
+												           }));
+
+			EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();
+
+			Assert.NotNull(instance);
+
+			Assert.Equal(5, instance.IntProp);
+		}
 	}
 }
