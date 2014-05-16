@@ -6,6 +6,7 @@ using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Validation;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -114,15 +115,15 @@ namespace Grace.DependencyInjection.Impl
 							}
 
 							ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
-							                                            {
-								                                            ComparerObject = comparer,
-								                                            ExportStrategyFilter = filter,
-								                                            ImportName = importName,
-								                                            IsRequired = isRequired,
-								                                            ParameterName = parameterInfo.Name,
-								                                            ParameterType = parameterInfo.ParameterType,
-								                                            ValueProvider = valueProvider
-							                                            };
+																					  {
+																						  ComparerObject = comparer,
+																						  ExportStrategyFilter = filter,
+																						  ImportName = importName,
+																						  IsRequired = isRequired,
+																						  ParameterName = parameterInfo.Name,
+																						  ParameterType = parameterInfo.ParameterType,
+																						  ValueProvider = valueProvider
+																					  };
 
 							WithCtorParam(constructorParamInfo);
 						}
@@ -138,6 +139,7 @@ namespace Grace.DependencyInjection.Impl
 				List<IExportCondition> exportConditions = new List<IExportCondition>();
 				List<IExportAttribute> exportAttributes = new List<IExportAttribute>();
 				IImportAttribute importAttribute = null;
+				bool importAfterConstruction = false;
 				object comparer = null;
 				ExportStrategyFilter filter = null;
 
@@ -180,6 +182,13 @@ namespace Grace.DependencyInjection.Impl
 							exportConditions.Add(condition);
 						}
 					}
+
+					IImportAfterConstructionAttribute afterConstruction = customAttribute as IImportAfterConstructionAttribute;
+
+					if (afterConstruction != null)
+					{
+						importAfterConstruction = afterConstruction.ImportAfterConstruction(exportType, runtimeProperty.PropertyType);
+					}
 				}
 
 				foreach (IExportAttribute exportAttribute in exportAttributes)
@@ -195,12 +204,12 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					ExportPropertyInfo exportPropertyInfo = new ExportPropertyInfo
-					                                        {
-						                                        ExportCondition = condition,
-						                                        ExportNames = propertyExportNames,
-						                                        ExportTypes = propertyExportTypes,
-						                                        PropertyInfo = runtimeProperty
-					                                        };
+																		 {
+																			 ExportCondition = condition,
+																			 ExportNames = propertyExportNames,
+																			 ExportTypes = propertyExportTypes,
+																			 PropertyInfo = runtimeProperty
+																		 };
 
 					ExportProperty(exportPropertyInfo);
 				}
@@ -225,19 +234,20 @@ namespace Grace.DependencyInjection.Impl
 						ExportStrategyFilter keyFilter =
 							(context, strategy) => IExportLocatorExtensions.CompareKeyFunction(attributeInfo.ImportKey, context, strategy);
 
-						filter = filter != null ? 
+						filter = filter != null ?
 									new ExportStrategyFilterGroup(keyFilter, filter) : keyFilter;
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-					                                        {
-						                                        ComparerObject = comparer,
-						                                        ExportStrategyFilter = filter,
-						                                        ImportName = attributeInfo.ImportName,
-						                                        IsRequired = attributeInfo.IsRequired,
-						                                        Property = runtimeProperty,
-						                                        ValueProvider = attributeInfo.ValueProvider
-					                                        };
+																		 {
+																			 ComparerObject = comparer,
+																			 ExportStrategyFilter = filter,
+																			 ImportName = attributeInfo.ImportName,
+																			 IsRequired = attributeInfo.IsRequired,
+																			 Property = runtimeProperty,
+																			 ValueProvider = attributeInfo.ValueProvider,
+																			 AfterConstruction = importAfterConstruction
+																		 };
 
 					ImportProperty(importPropertyInfo);
 				}
@@ -257,9 +267,9 @@ namespace Grace.DependencyInjection.Impl
 						if (attribute != null)
 						{
 							ImportMethodInfo methodInfo = new ImportMethodInfo
-							                              {
-								                              MethodToImport = declaredMethod
-							                              };
+																	{
+																		MethodToImport = declaredMethod
+																	};
 
 							ImportMethod(methodInfo);
 

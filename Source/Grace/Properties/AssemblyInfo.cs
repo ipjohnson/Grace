@@ -6,11 +6,11 @@ using System.Resources;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Grace")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Grace is a portable class library that contains a feature rich Dependency Injection Container and other services")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ian Johnson")]
 [assembly: AssemblyProduct("Grace")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]

@@ -49,6 +49,7 @@
     <Compile Include="Data\NotifyObject.cs" />
     <Compile Include="Data\ReflectionService.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\AfterConstructionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\DesignTimeOnlyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByClassNameAttribute.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="DependencyInjection\Attributes\ExportWhenInjectedIntoAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttributedWithAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IActivationCompleteAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\Interfaces\ICustomEnrichmentExpressionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\ICustomInitializationAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IEnrichWithAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportAttribute.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportMetadataAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportStrategyProviderAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\Interfaces\IImportAfterConstructionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportFilterAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportSortCollectionAttribute.cs" />

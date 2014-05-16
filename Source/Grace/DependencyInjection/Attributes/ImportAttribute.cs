@@ -1,5 +1,6 @@
 ﻿using System;
 using Grace.DependencyInjection.Attributes.Interfaces;
+using Grace.Validation;
 
 namespace Grace.DependencyInjection.Attributes
 {
