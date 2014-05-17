@@ -16,12 +16,15 @@
     <language>en-US</language>
     <tags>IoC Dependency Injection Container MVC</tags>
     <dependencies>
-      <dependency id="Grace" version="1.0.0"/>
+      <dependency id="Grace" version="$version$"/>
       <dependency id="NLog" version="2.1.0"/>
     </dependencies>
   </metadata>
   <files>
     <file src="lib\net45\Grace.NLog.dll" target="lib\net45\Grace.NLog.dll" />
+    <file src="lib\net45\Grace.NLog.pdb" target="lib\net45\Grace.NLog.pdb" />
     <file src="lib\net45\Grace.NLog.xml" target="lib\net45\Grace.NLog.xml" />
+    
+    <file src="..\Source\Grace.NLog\**\*.cs" target="src"/>
   </files>
 </package>
