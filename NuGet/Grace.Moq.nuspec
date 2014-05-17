@@ -24,6 +24,6 @@
     <file src="lib\net45\Grace.Moq.dll" target="lib\net45\Grace.Moq.dll" />
     <file src="lib\net45\Grace.Moq.pdb" target="lib\net45\Grace.Moq.pdb" />
     <file src="lib\net45\Grace.Moq.xml" target="lib\net45\Grace.Moq.xml" />
-    <file src="..\Source\Grace\**\*.cs" target="src"/>
+    <file src="..\Source\Grace.Moq\**\*.cs" target="src"/>
   </files>
 </package>
