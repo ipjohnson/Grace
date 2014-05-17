@@ -9,17 +9,38 @@ namespace Grace.DependencyInjection.Impl
 {
 	public class AttributedInjectionStrategy : BaseInjectionStrategy
 	{
-		public AttributedInjectionStrategy(Type injectionType) : base(injectionType)
+		public AttributedInjectionStrategy(Type injectionType)
+			: base(injectionType)
 		{
 		}
 
 		public override void Initialize()
 		{
+			ProcessCustomEnrichmentAttributesOnClass();
+
 			ProcessPropertyAttributes();
 
 			ProcessMethodAttributes();
 
 			base.Initialize();
+		}
+
+		private void ProcessCustomEnrichmentAttributesOnClass()
+		{
+			foreach (Attribute attribute in Attributes)
+			{
+				ICustomEnrichmentExpressionAttribute enrichment = attribute as ICustomEnrichmentExpressionAttribute;
+
+				if (enrichment != null)
+				{
+					ICustomEnrichmentLinqExpressionProvider provider = enrichment.GetProvider(TargeType, null);
+
+					if (provider != null)
+					{
+						EnrichmentExpressionProvider(provider);
+					}
+				}
+			}
 		}
 
 		private void ProcessPropertyAttributes()
@@ -71,6 +92,20 @@ namespace Grace.DependencyInjection.Impl
 							exportConditions.Add(condition);
 						}
 					}
+
+					ICustomEnrichmentExpressionAttribute customEnrichmentAttribute =
+						customAttribute as ICustomEnrichmentExpressionAttribute;
+
+					if (customEnrichmentAttribute != null)
+					{
+						ICustomEnrichmentLinqExpressionProvider provider =
+							customEnrichmentAttribute.GetProvider(TargeType, runtimeProperty);
+
+						if (provider != null)
+						{
+							EnrichmentExpressionProvider(provider);
+						}
+					}
 				}
 
 				if (importAttribute != null && runtimeProperty.CanWrite)
@@ -93,19 +128,19 @@ namespace Grace.DependencyInjection.Impl
 						ExportStrategyFilter keyFilter =
 							(context, strategy) => IExportLocatorExtensions.CompareKeyFunction(attributeInfo.ImportKey, context, strategy);
 
-						filter = filter != null ? 
+						filter = filter != null ?
 									new ExportStrategyFilterGroup(keyFilter, filter) : keyFilter;
 					}
 
 					ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-					                                        {
-						                                        ComparerObject = comparer,
-						                                        ExportStrategyFilter = filter,
-						                                        ImportName = attributeInfo.ImportName,
-						                                        IsRequired = attributeInfo.IsRequired,
-						                                        Property = runtimeProperty,
-						                                        ValueProvider = attributeInfo.ValueProvider
-					                                        };
+																		 {
+																			 ComparerObject = comparer,
+																			 ExportStrategyFilter = filter,
+																			 ImportName = attributeInfo.ImportName,
+																			 IsRequired = attributeInfo.IsRequired,
+																			 Property = runtimeProperty,
+																			 ValueProvider = attributeInfo.ValueProvider
+																		 };
 
 					ImportProperty(importPropertyInfo);
 				}
@@ -125,13 +160,25 @@ namespace Grace.DependencyInjection.Impl
 						if (attribute != null)
 						{
 							ImportMethodInfo methodInfo = new ImportMethodInfo
-							                              {
-								                              MethodToImport = declaredMethod
-							                              };
+																	{
+																		MethodToImport = declaredMethod
+																	};
 
 							ImportMethod(methodInfo);
 
 							break;
+						}
+
+						ICustomEnrichmentExpressionAttribute enrichmentAttribute = customAttribute as ICustomEnrichmentExpressionAttribute;
+
+						if (enrichmentAttribute != null)
+						{
+							ICustomEnrichmentLinqExpressionProvider provider = enrichmentAttribute.GetProvider(TargeType, declaredMethod);
+
+							if (provider != null)
+							{
+								EnrichmentExpressionProvider(provider);
+							}
 						}
 					}
 				}

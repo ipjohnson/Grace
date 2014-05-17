@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Grace.DependencyInjection.Impl.CompiledExport;
 
@@ -29,7 +31,18 @@ namespace Grace.DependencyInjection.Impl
 			activationDelegate = exportDelegate.CompileDelegate();
 		}
 
+		/// <summary>
+		/// Target type
+		/// </summary>
 		public Type TargeType { get; protected set; }
+
+		/// <summary>
+		/// Attributes
+		/// </summary>
+		public IEnumerable<Attribute> Attributes
+		{
+			get { return delegateInfo.Attributes; }
+		}
 
 		public void Inject(IInjectionContext injectionContext, object injectTarget)
 		{
@@ -54,6 +67,15 @@ namespace Grace.DependencyInjection.Impl
 		public void ImportProperty(ImportPropertyInfo propertyInfo)
 		{
 			delegateInfo.ImportProperty(propertyInfo);
+		}
+
+		/// <summary>
+		/// Add enrichment provider
+		/// </summary>
+		/// <param name="provider"></param>
+		public void EnrichmentExpressionProvider(ICustomEnrichmentLinqExpressionProvider provider)
+		{
+			delegateInfo.EnrichmentExpressionProvider(provider);
 		}
 	}
 }
