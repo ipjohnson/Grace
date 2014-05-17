@@ -7,13 +7,23 @@ using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
 {
+	/// <summary>
+	/// Injection strategy that uses attributes to define it's construction
+	/// </summary>
 	public class AttributedInjectionStrategy : BaseInjectionStrategy
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="injectionType"></param>
 		public AttributedInjectionStrategy(Type injectionType)
 			: base(injectionType)
 		{
 		}
 
+		/// <summary>
+		/// Initialize
+		/// </summary>
 		public override void Initialize()
 		{
 			ProcessCustomEnrichmentAttributesOnClass();

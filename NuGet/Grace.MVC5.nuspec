@@ -10,7 +10,7 @@
     <title>Grace.MVC5</title>
     <summary>Grace.MVC5 is a companion library for Grace and MVC 5</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC5 classes to integrate Grace and MVC 5</description>
-    <releaseNotes>This bug fix release, included is a fix for importing properties on classes with static properties. Also included is a fix that allows the nuget package to install into portable class libraries.</releaseNotes>
+    <releaseNotes>This is a feature release adding support for Universal Apps, and importing properties after construction. Also starting with this release symbols will be published to symbolsource.org</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
