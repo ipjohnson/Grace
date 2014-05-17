@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2E64FA60-F2CD-428C-8413-D71B4BF5935A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Grace.XML</DocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
+    <TargetPlatform Include="Windows, Version=8.1" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\JetBrains.Annotations.cs" />
     <Compile Include="Data\ComplexData.cs" />
@@ -285,8 +289,9 @@
 xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
 xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
 
-xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\portable-net45+wp80+win\"
-xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\portable-net45+wp80+win\"</PostBuildEvent>
+xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\portable-net45+win+wp80\"
+xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\portable-net45+win+wp80\"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\Nuget\lib\portable-net45+win+wp80\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -16,11 +16,16 @@
     <language>en-US</language>
     <tags>IoC Dependency Injection Container Portable Library</tags>
   </metadata>
-  <files>    
-    <file src="lib\portable-net45+wp80+win\Grace.dll" target="lib\portable-net45+wp80+win\Grace.dll" />
-    <file src="lib\portable-net45+wp80+win\Grace.xml" target="lib\portable-net45+wp80+win\Grace.xml" />
-    <file src="lib\portable-net45+wp80+win\Grace.dll" target="lib\portable-win81+wpa81\Grace.dll" />
-    <file src="lib\portable-net45+wp80+win\Grace.xml" target="lib\portable-win81+wpa81\Grace.xml" />
+  <files>
+    <file src="lib\portable-net45+win+wp80\Grace.dll" target="lib\portable-net45+win+wp80\Grace.dll" />
+    <file src="lib\portable-net45+win+wp80\Grace.pdb" target="lib\portable-net45+win+wp80\Grace.pdb" />
+    <file src="lib\portable-net45+win+wp80\Grace.xml" target="lib\portable-net45+win+wp80\Grace.xml" />
+    
+    <file src="lib\portable-net45+win+wp80\Grace.dll" target="lib\portable-win81+wpa81\Grace.dll" />
+    <file src="lib\portable-net45+win+wp80\Grace.pdb" target="lib\portable-win81+wpa81\Grace.pdb" />
+    <file src="lib\portable-net45+win+wp80\Grace.xml" target="lib\portable-win81+wpa81\Grace.xml" />
+    
+    <file src="..\Source\Grace\**\*.cs" target="src"/>
   </files>
 </package> 
 
