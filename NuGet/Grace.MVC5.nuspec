@@ -23,6 +23,6 @@
     <file src="lib\net45\Grace.MVC5.dll" target="lib\net45\Grace.MVC5.dll" />
     <file src="lib\net45\Grace.MVC5.xml" target="lib\net45\Grace.MVC5.xml" />
     <file src="lib\net45\Grace.MVC5.pdb" target="lib\net45\Grace.MVC5.pdb" />
-    <file src="..\Source\Grace.MVC4\**\*.cs" target="src"/>
+    <file src="..\Source\Grace.MVC5\**\*.cs" target="src"/>
   </files>
 </package>

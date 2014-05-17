@@ -24,6 +24,6 @@
     <file src="lib\net45\Grace.MVC4.pdb" target="lib\net45\Grace.MVC4.pdb" />
     <file src="lib\net45\Grace.MVC4.xml" target="lib\net45\Grace.MVC4.xml" />
     
-    <file src="..\Source\Grace.MVC4\**\*.cs" target="src"/>
+    <file src="..\Source\Grace.MVC5\**\*.cs" target="src"/>
   </files>
 </package>
