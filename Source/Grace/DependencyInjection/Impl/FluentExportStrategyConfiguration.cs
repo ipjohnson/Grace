@@ -147,6 +147,17 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Export in a new context
+		/// </summary>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration InNewContext()
+		{
+			exportStrategy.InNewContext();
+
+			return this;
+		}
+
+		/// <summary>
 		/// Export this type as a particular name
 		/// </summary>
 		/// <param name="name"></param>
@@ -503,6 +514,17 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentExportStrategyConfiguration<T> InEnvironment(ExportEnvironment environment)
 		{
 			exportStrategy.SetEnvironment(environment);
+
+			return this;
+		}
+
+		/// <summary>
+		/// Create a new injection context for this export and it's children
+		/// </summary>
+		/// <returns></returns>
+		public IFluentExportStrategyConfiguration<T> InNewContext()
+		{
+			exportStrategy.InNewContext();
 
 			return this;
 		}

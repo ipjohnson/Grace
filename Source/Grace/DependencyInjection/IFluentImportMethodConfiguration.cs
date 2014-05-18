@@ -8,6 +8,12 @@ namespace Grace.DependencyInjection
 	public interface IFluentImportMethodConfiguration : IFluentExportStrategyConfiguration
 	{
 		/// <summary>
+		/// Import the methods parameters after consrtuction instead of the default before
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IFluentImportMethodConfiguration AfterConstruction();
+
+		/// <summary>
 		/// specify how to import a particular parameter
 		/// </summary>
 		/// <typeparam name="TParam">parameter type</typeparam>
@@ -22,6 +28,12 @@ namespace Grace.DependencyInjection
 	/// <typeparam name="TParam"></typeparam>
 	public interface IFluentMethodParameterConfiguration<TParam> : IFluentImportMethodConfiguration
 	{
+		/// <summary>
+		/// Import the parameter after construction
+		/// </summary>
+		/// <returns></returns>
+		IFluentMethodParameterConfiguration<TParam> ImportParameterAfterConstruction();
+
 		/// <summary>
 		/// Is the parameter required
 		/// </summary>

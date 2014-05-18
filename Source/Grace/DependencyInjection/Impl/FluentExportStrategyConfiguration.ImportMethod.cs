@@ -70,6 +70,11 @@ namespace Grace.DependencyInjection.Impl
 		{
 		}
 
+		public IFluentImportMethodConfiguration AfterConstruction()
+		{
+			throw new NotImplementedException();
+		}
+
 		public IFluentMethodParameterConfiguration<TParam> WithParam<TParam>(Func<TParam> paramValueFunc = null)
 		{
 			throw new NotImplementedException();
@@ -88,7 +93,17 @@ namespace Grace.DependencyInjection.Impl
 		{
 		}
 
+		public IFluentImportMethodConfiguration AfterConstruction()
+		{
+			throw new NotImplementedException();
+		}
+
 		public IFluentMethodParameterConfiguration<TParam1> WithParam<TParam1>(Func<TParam1> paramValueFunc = null)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IFluentMethodParameterConfiguration<TParam> ImportParameterAfterConstruction()
 		{
 			throw new NotImplementedException();
 		}

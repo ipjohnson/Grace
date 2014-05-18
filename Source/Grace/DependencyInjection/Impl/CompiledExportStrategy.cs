@@ -187,6 +187,14 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Export in new context
+		/// </summary>
+		public void InNewContext()
+		{
+			delegateInfo.InNewContext = true;
+		}
+
+		/// <summary>
 		/// Gets the CompiledExportDelegateInfo definition for this export
 		/// </summary>
 		/// <returns></returns>

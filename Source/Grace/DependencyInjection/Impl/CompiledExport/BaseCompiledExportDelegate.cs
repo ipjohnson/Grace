@@ -28,6 +28,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected static readonly MethodInfo IncrementResolveDepth;
 		protected static readonly MethodInfo DecrementResolveDepth;
 		protected static readonly MethodInfo ConvertNamedExportToPropertyTypeMethod;
+		protected static readonly MethodInfo CreateContextMethod;
 		protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
 		protected static readonly ConstructorInfo MissingDependencyExceptionConstructor;
 		protected static readonly ConstructorInfo LocationInformationEntryConstructor;
@@ -83,6 +84,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(IInjectionContext),
 					typeof(ExportStrategyFilter)
 				});
+
+
+			CreateContextMethod = typeof(IExportLocator).GetRuntimeMethod("CreateContext", new[] { typeof(IDisposalScope) });
 
 			LocateByTypeMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
 				new[]
@@ -238,6 +242,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			SetUpInstanceVariableExpression();
 
+			CreateNewContextExpression();
+
 			CreateInstantiationExpression();
 
 			CreateCustomInitializeExpressions();
@@ -254,7 +260,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			}
 
 			bodyExpressions.Add(Expression.Call(injectionContextParameter, DecrementResolveDepth));
-
+			
 			CreateCustomEnrichmentExpressions();
 
 			if (!CreateEnrichmentExpression())
@@ -322,6 +328,23 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			instanceVariable = Expression.Variable(exportDelegateInfo.ActivationType, "instance");
 
 			localVariables.Add(instanceVariable);
+		}
+
+		/// <summary>
+		/// Exports can be created in a new context if configured to
+		/// </summary>
+		protected virtual void CreateNewContextExpression()
+		{
+			if (!exportDelegateInfo.InNewContext)
+			{
+				return;
+			}
+
+			Expression createExpression = Expression.Call(exportStrategyScopeParameter,
+				CreateContextMethod,
+				Expression.Convert(Expression.Constant(null), typeof(IDisposalScope)));
+
+			objectImportExpression.Add(Expression.Assign(injectionContextParameter, createExpression));
 		}
 
 		/// <summary>
@@ -460,6 +483,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 				foreach (ParameterInfo parameter in importMethod.MethodToImport.GetParameters())
 				{
+					bool importAfterConstruction = importMethod.AfterConstruction;
 					MethodParamInfo methodParamInfo = null;
 					Attribute[] parameterAttributes = parameter.GetCustomAttributes(true).ToArray();
 
@@ -499,6 +523,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 																							methodParamInfo.ImportName,
 																							parameter.ParameterType);
 
+						if (methodParamInfo.AfterConstruction.HasValue)
+						{
+							importAfterConstruction = methodParamInfo.AfterConstruction.Value;
+						}
+
+						List<Expression> importExpressionList = null;
+
+						if (importAfterConstruction)
+						{
+							importExpressionList = bodyExpressions;
+						}
+
 						ParameterExpression importParameter =
 							CreateImportExpression(parameter.ParameterType,
 															injectionTargetInfo,
@@ -509,7 +545,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 															methodParamInfo.ValueProvider,
 															methodParamInfo.Filter,
 															methodParamInfo.Comparer,
-															null);
+															importExpressionList);
 
 						parameters.Add(Expression.Convert(importParameter, parameter.ParameterType));
 					}
@@ -524,6 +560,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 																							null,
 																							parameter.ParameterType);
 
+						List<Expression> importExpressionList = null;
+
+						if (importAfterConstruction)
+						{
+							importExpressionList = bodyExpressions;
+						}
+
 						ParameterExpression importParameter =
 							CreateImportExpression(parameter.ParameterType,
 															injectionTargetInfo,
@@ -534,7 +577,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 															null,
 															null,
 															null,
-															null);
+															importExpressionList);
 
 						parameters.Add(Expression.Convert(importParameter, parameter.ParameterType));
 					}

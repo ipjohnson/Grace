@@ -28,6 +28,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		public bool IsTransient { get; set; }
 
 		/// <summary>
+		/// Create new context before injecting
+		/// </summary>
+		public bool InNewContext { get; set; }
+
+		/// <summary>
 		/// Track the export if disposable
 		/// </summary>
 		public bool TrackDisposable { get; set; }
@@ -206,6 +211,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 	public class ImportMethodInfo
 	{
 		/// <summary>
+		/// After construction
+		/// </summary>
+		public bool AfterConstruction { get; set; }
+
+		/// <summary>
 		/// Import the method
 		/// </summary>
 		public MethodInfo MethodToImport { get; set; }
@@ -235,23 +245,52 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 	/// </summary>
 	public class MethodParamInfo
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public MethodParamInfo()
 		{
 			IsRequired = true;
 		}
 
+		/// <summary>
+		/// After construction
+		/// </summary>
+		public bool? AfterConstruction { get; set; }
+
+		/// <summary>
+		/// parameter name being configured
+		/// </summary>
 		public string ParameterName { get; set; }
 
+		/// <summary>
+		/// paraeter type being configured
+		/// </summary>
 		public Type ParameterType { get; set; }
 
+		/// <summary>
+		/// export filter
+		/// </summary>
 		public ExportStrategyFilter Filter { get; set; }
 
+		/// <summary>
+		/// Comparer object
+		/// </summary>
 		public object Comparer { get; set; }
 
+		/// <summary>
+		/// Is required when exporting
+		/// </summary>
 		public bool IsRequired { get; set; }
 
+		/// <summary>
+		/// Import name 
+		/// </summary>
 		public string ImportName { get; set; }
 
+		/// <summary>
+		/// Value provider for the import
+		/// </summary>
 		public IExportValueProvider ValueProvider { get; set; }
 	}
 

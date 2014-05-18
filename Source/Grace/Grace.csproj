@@ -101,6 +101,7 @@
     <Compile Include="DependencyInjection\Conditions\WhenMemberHas.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenTargetHas.cs" />
     <Compile Include="DependencyInjection\Delegates.cs" />
+    <Compile Include="DependencyInjection\DisposableInjectionContext.cs" />
     <Compile Include="DependencyInjection\Enumerations.cs" />
     <Compile Include="DependencyInjection\Exceptions\CircularDependencyDetectedException.cs" />
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />

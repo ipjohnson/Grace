@@ -114,12 +114,16 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="cleanupDelegate"></param>
 		void AddCleanupDelegate(BeforeDisposalCleanupDelegate cleanupDelegate);
-
-
+		
 		/// <summary>
 		/// Adds custom provider
 		/// </summary>
 		/// <param name="provider"></param>
 		void EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+
+		/// <summary>
+		/// Export class in new injection context
+		/// </summary>
+		void InNewContext();
 	}
 }

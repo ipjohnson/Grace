@@ -165,6 +165,12 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>();
 
+		/// <summary>
+		/// Import all properties that match the type
+		/// </summary>
+		/// <param name="propertyType"></param>
+		/// <returns></returns>
+		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType);
 	}
 
 	/// <summary>

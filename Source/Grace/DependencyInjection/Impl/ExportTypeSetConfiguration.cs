@@ -419,6 +419,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Import all properties that match the type
+		/// </summary>
+		/// <param name="propertyType"></param>
+		/// <returns></returns>
+		public IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType)
+		{
+			importPropertiesList.Add(new ImportGlobalPropertyInfo { PropertyType = propertyType, IsRequired = true });
+
+			return this;
+		}
+
+		/// <summary>
 		/// Property Name to import
 		/// </summary>
 		/// <param name="propertyName">property name</param>
@@ -843,7 +855,7 @@ namespace Grace.DependencyInjection.Impl
 					if (runtimeProperty.CanWrite &&
 						 !runtimeProperty.SetMethod.IsStatic &&
 						 runtimeProperty.SetMethod.IsPublic &&
-						 runtimeProperty.PropertyType.GetTypeInfo().IsAssignableFrom(importProperty.PropertyType.GetTypeInfo()))
+						 CheckPropertyTypesMatch(runtimeProperty.PropertyType, importProperty.PropertyType))
 					{
 						if (importProperty.PropertyName == null ||
 							 importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
@@ -862,6 +874,30 @@ namespace Grace.DependencyInjection.Impl
 			}
 
 			return exportStrategy;
+		}
+
+		private bool CheckPropertyTypesMatch(Type importType, Type propertyType)
+		{
+			if (importType.GetTypeInfo().IsGenericTypeDefinition)
+			{
+				if (propertyType.GetTypeInfo().IsGenericTypeDefinition &&
+					 propertyType.GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
+				{
+					return true;
+				}
+
+				if (propertyType.IsConstructedGenericType &&
+					 propertyType.GetTypeInfo().GetGenericTypeDefinition().GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return propertyType.GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo());
+			}
+
+			return false;
 		}
 	}
 }

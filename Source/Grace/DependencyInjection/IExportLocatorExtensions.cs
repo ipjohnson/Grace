@@ -280,6 +280,31 @@ namespace Grace.DependencyInjection
 			return returnList;
 		}
 
+		/// <summary>
+		/// Creates a new Disposable injection context to resolve from
+		/// </summary>
+		/// <param name="exportLocator">export locator to associate disposable context with</param>
+		/// <returns>new context</returns>
+		public static DisposableInjectionContext CreateDisposableContext(this IExportLocator exportLocator)
+		{
+			IInjectionScope injectionScope = exportLocator as IInjectionScope;
 
+			if (injectionScope == null)
+			{
+				IDependencyInjectionContainer container = exportLocator as IDependencyInjectionContainer;
+
+				if (container != null)
+				{
+					injectionScope = container.RootScope;
+				}
+			}
+
+			if (injectionScope == null)
+			{
+				throw new Exception("This method only works on Containers and Injections Scopes");
+			}
+
+			return new DisposableInjectionContext(injectionScope);
+		}
 	}
 }
