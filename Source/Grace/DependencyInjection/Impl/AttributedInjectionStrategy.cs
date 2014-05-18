@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public override void Initialize()
 		{
-			ProcessCustomEnrichmentAttributesOnClass();
+			ProcessAttributesOnClass();
 
 			ProcessPropertyAttributes();
 
@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection.Impl
 			base.Initialize();
 		}
 
-		private void ProcessCustomEnrichmentAttributesOnClass()
+		private void ProcessAttributesOnClass()
 		{
 			foreach (Attribute attribute in Attributes)
 			{
@@ -49,6 +49,13 @@ namespace Grace.DependencyInjection.Impl
 					{
 						EnrichmentExpressionProvider(provider);
 					}
+				}
+
+				IInNewContextAttribute newContextAttribute = attribute as IInNewContextAttribute;
+
+				if (newContextAttribute != null)
+				{
+					InNewContext();
 				}
 			}
 		}

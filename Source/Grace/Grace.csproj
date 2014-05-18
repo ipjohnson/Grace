@@ -63,6 +63,7 @@
     <Compile Include="DependencyInjection\Attributes\ExportWhenClassHasAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenInjectedIntoAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttributedWithAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\InNewContextAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IActivationCompleteAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\ICustomEnrichmentExpressionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\ICustomInitializationAttribute.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportFilterAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportSortCollectionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IImportValueProviderAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\Interfaces\IInNewContextAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\ILifeCycleProviderAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ImportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\SingletonAttribute.cs" />

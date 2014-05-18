@@ -77,5 +77,13 @@ namespace Grace.DependencyInjection.Impl
 		{
 			delegateInfo.EnrichmentExpressionProvider(provider);
 		}
+
+		/// <summary>
+		/// Mark export to be constructed in a new context
+		/// </summary>
+		public void InNewContext()
+		{
+			delegateInfo.InNewContext = true;
+		}
 	}
 }
