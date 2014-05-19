@@ -16,13 +16,13 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void SimpleExportTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(IBasicService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(IBasicService),
+															 Attributes = new Attribute[0]
+														 };
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -34,29 +34,29 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void ImportPropertyRootTransientTest()
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
-			                                  {
-				                                  ExportTypes = new[] { typeof(IBasicService) }
-			                                  };
+														 {
+															 ExportTypes = new[] { typeof(IBasicService) }
+														 };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
 
 			injectionScope.AddStrategy(basicService);
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportPropertyService),
-				                                  IsTransient = true,
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportPropertyService),
+															 IsTransient = true,
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportProperty(new ImportPropertyInfo
-			                    {
-				                    Property =
-					                    typeof(ImportPropertyService).GetProperty("BasicService")
-			                    });
+									  {
+										  Property =
+											  typeof(ImportPropertyService).GetProperty("BasicService")
+									  });
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -73,28 +73,28 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void ImportPropertyRootNonTransientTest()
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
-			                                  {
-				                                  ExportTypes = new[] { typeof(IBasicService) }
-			                                  };
+														 {
+															 ExportTypes = new[] { typeof(IBasicService) }
+														 };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
 
 			injectionScope.AddStrategy(basicService);
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportPropertyService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportPropertyService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportProperty(new ImportPropertyInfo
-			                    {
-				                    Property =
-					                    typeof(ImportPropertyService).GetProperty("BasicService")
-			                    });
+									  {
+										  Property =
+											  typeof(ImportPropertyService).GetProperty("BasicService")
+									  });
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -111,9 +111,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void ImportPropertyNonRootTransienTest()
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
-			                                  {
-				                                  ExportTypes = new[] { typeof(IBasicService) }
-			                                  };
+														 {
+															 ExportTypes = new[] { typeof(IBasicService) }
+														 };
 
 			InjectionKernelManager manager =
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
@@ -123,20 +123,20 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 			injectionScope.AddStrategy(basicService);
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportPropertyService),
-				                                  IsTransient = true,
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportPropertyService),
+															 IsTransient = true,
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportProperty(new ImportPropertyInfo
-			                    {
-				                    Property =
-					                    typeof(ImportPropertyService).GetProperty("BasicService")
-			                    });
+									  {
+										  Property =
+											  typeof(ImportPropertyService).GetProperty("BasicService")
+									  });
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -155,28 +155,28 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void ImportPropertyNonRootNonTransienTest()
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
-			                                  {
-				                                  ExportTypes = new[] { typeof(IBasicService) }
-			                                  };
+														 {
+															 ExportTypes = new[] { typeof(IBasicService) }
+														 };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
 
 			injectionScope.AddStrategy(basicService);
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportPropertyService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportPropertyService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportProperty(new ImportPropertyInfo
-			                    {
-				                    Property =
-					                    typeof(ImportPropertyService).GetProperty("BasicService")
-			                    });
+									  {
+										  Property =
+											  typeof(ImportPropertyService).GetProperty("BasicService")
+									  });
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -195,19 +195,19 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportPropertyService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportPropertyService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportProperty(new ImportPropertyInfo
-			                    {
-				                    Property = typeof(ImportPropertyService).GetProperty("BasicService"),
-				                    ValueProvider = new FuncValueProvider<IBasicService>(() => new BasicService())
-			                    });
+									  {
+										  Property = typeof(ImportPropertyService).GetProperty("BasicService"),
+										  ValueProvider = new FuncValueProvider<IBasicService>(() => new BasicService())
+									  });
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportPropertyService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -224,28 +224,28 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void ImportMethodTest()
 		{
 			FauxExportStrategy basicService = new FauxExportStrategy(() => new BasicService())
-			                                  {
-				                                  ExportTypes = new[] { typeof(IBasicService) }
-			                                  };
+														 {
+															 ExportTypes = new[] { typeof(IBasicService) }
+														 };
 
 			FauxInjectionScope injectionScope = new FauxInjectionScope();
 
 			injectionScope.AddStrategy(basicService);
 
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ImportMethodService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ImportMethodService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ImportMethod(new ImportMethodInfo
-			                  {
-				                  MethodToImport =
-					                  typeof(ImportMethodService).GetRuntimeMethod("ImportMethod", new[] { typeof(IBasicService) })
-			                  });
+									{
+										MethodToImport =
+											typeof(ImportMethodService).GetRuntimeMethod("ImportMethod", new[] { typeof(IBasicService) })
+									});
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ImportMethodService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new ImportMethodService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -261,17 +261,17 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void SimpleActivationMethodTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ActivateService),
-				                                  IsTransient = true,
-				                                  TrackDisposable = true,
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ActivateService),
+															 IsTransient = true,
+															 TrackDisposable = true,
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ActivateMethod(typeof(ActivateService).GetMethod("SimpleActivate"));
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -289,17 +289,17 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void InjectionContextActivationMethodTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ActivateService),
-				                                  IsTransient = true,
-				                                  TrackDisposable = true,
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ActivateService),
+															 IsTransient = true,
+															 TrackDisposable = true,
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ActivateMethod(typeof(ActivateService).GetMethod("InjectionContextActivate"));
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -317,18 +317,18 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void MultipleActivateTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(ActivateService),
-				                                  IsTransient = true,
-				                                  TrackDisposable = true,
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(ActivateService),
+															 IsTransient = true,
+															 TrackDisposable = true,
+															 Attributes = new Attribute[0]
+														 };
 
 			info.ActivateMethod(typeof(ActivateService).GetMethod("InjectionContextActivate"));
 			info.ActivateMethod(typeof(ActivateService).GetMethod("SimpleActivate"));
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new ActivateService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -346,15 +346,15 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void EnrichWithTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(IBasicService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(IBasicService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.EnrichWithDelegate((scope, context, injectObject) => new EnrichContainer(injectObject));
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -371,16 +371,16 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 		public void MultipleEnrichWithTest()
 		{
 			CompiledExportDelegateInfo info = new CompiledExportDelegateInfo
-			                                  {
-				                                  ActivationType = typeof(IBasicService),
-				                                  Attributes = new Attribute[0]
-			                                  };
+														 {
+															 ActivationType = typeof(IBasicService),
+															 Attributes = new Attribute[0]
+														 };
 
 			info.EnrichWithDelegate((scope, context, injectObject) => new EnrichContainer(injectObject));
 			info.EnrichWithDelegate((scope, context, injectObject) => new EnrichContainer(injectObject));
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), new FauxInjectionScope());
+				new FuncCompiledExportDelegate(info, (x, y) => new BasicService(), null, new FauxInjectionScope());
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
@@ -412,16 +412,16 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 				};
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new DisposableService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new DisposableService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 
 			Assert.NotNull(activationDelegate);
 
 			FauxInjectionContext context = new FauxInjectionContext
-			                               {
-				                               DisposalScope = new DisposalScope()
-			                               };
+													 {
+														 DisposalScope = new DisposalScope()
+													 };
 
 			IDisposableService disposableService = (IDisposableService)activationDelegate(injectionScope, context);
 
@@ -449,7 +449,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 				};
 
 			FuncCompiledExportDelegate compiledExport =
-				new FuncCompiledExportDelegate(info, (x, y) => new DisposableService(), injectionScope);
+				new FuncCompiledExportDelegate(info, (x, y) => new DisposableService(), null, injectionScope);
 
 			ExportActivationDelegate activationDelegate = compiledExport.CompileDelegate();
 

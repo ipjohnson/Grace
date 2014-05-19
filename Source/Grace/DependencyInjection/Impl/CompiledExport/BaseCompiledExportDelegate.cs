@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Windows.UI.Xaml;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Logging;
 using Grace.Validation;
@@ -25,8 +26,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected static readonly MethodInfo AddToDisposalScopeMethod;
 		protected static readonly MethodInfo AddLocationInformationEntryMethod;
 		protected static readonly MethodInfo ExecuteEnrichWithDelegateMethod;
-		protected static readonly MethodInfo IncrementResolveDepth;
-		protected static readonly MethodInfo DecrementResolveDepth;
+		protected static readonly MethodInfo PushCurrentInjectionInfo;
+		protected static readonly MethodInfo PopCurrentInjectionInfo;
 		protected static readonly MethodInfo ConvertNamedExportToPropertyTypeMethod;
 		protected static readonly MethodInfo CreateContextMethod;
 		protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
@@ -40,6 +41,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		protected readonly bool isRootObject;
 		protected readonly ILog log = Logger.GetLogger<BaseCompiledExportDelegate>();
 		protected readonly IInjectionScope owningScope;
+		protected readonly IExportStrategy owningStrategy;
 		protected List<Expression> bodyExpressions;
 		protected List<ExportStrategyDependency> dependencies;
 
@@ -112,9 +114,14 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			InjectionContextLocateByNameMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
 
-			IncrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("IncrementResolveDepth", new Type[0]);
+			PushCurrentInjectionInfo = typeof(IInjectionContext).GetRuntimeMethod("PushCurrentInjectionInfo",
+																											new[]
+																											{
+																												typeof(Type), 
+																												typeof(IExportStrategy)
+																											});
 
-			DecrementResolveDepth = typeof(IInjectionContext).GetRuntimeMethod("DecrementResolveDepth", new Type[0]);
+			PopCurrentInjectionInfo = typeof(IInjectionContext).GetRuntimeMethod("PopCurrentInjectionInfo", new Type[0]);
 
 			ActivateValueProviderMethod = typeof(IExportValueProvider).GetRuntimeMethod("Activate",
 				new[]
@@ -170,8 +177,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Default constructor
 		/// </summary>
 		/// <param name="exportDelegateInfo">information for compiling the delegate</param>
+		/// <param name="owningStrategy"></param>
 		/// <param name="owningScope">the owning scope</param>
 		protected BaseCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo,
+			IExportStrategy owningStrategy = null,
 			IInjectionScope owningScope = null)
 		{
 			if (exportDelegateInfo == null)
@@ -187,6 +196,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			this.exportDelegateInfo = exportDelegateInfo;
 
 			this.owningScope = owningScope;
+			this.owningStrategy = owningStrategy;
 
 			if (owningScope != null)
 			{
@@ -259,8 +269,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				CreateDisposableMethodExpression();
 			}
 
-			bodyExpressions.Add(Expression.Call(injectionContextParameter, DecrementResolveDepth));
-			
+			bodyExpressions.Add(Expression.Call(injectionContextParameter, PopCurrentInjectionInfo));
+
 			CreateCustomEnrichmentExpressions();
 
 			if (!CreateEnrichmentExpression())
@@ -276,7 +286,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				methodExpressions.AddRange(disposalExpressions);
 			}
 
-			methodExpressions.Add(Expression.Call(injectionContextParameter, IncrementResolveDepth));
+			methodExpressions.Add(Expression.Call(injectionContextParameter,
+															  PushCurrentInjectionInfo,
+															  Expression.Constant(exportDelegateInfo.ActivationType),
+															  Expression.Convert(Expression.Constant(owningStrategy), typeof(IExportStrategy))));
 
 			methodExpressions.AddRange(GetImportExpressions());
 			methodExpressions.AddRange(instanceExpressions);

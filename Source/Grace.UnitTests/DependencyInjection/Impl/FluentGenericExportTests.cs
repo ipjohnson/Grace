@@ -578,7 +578,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(
-				c => c.Export<BasicService>().As<IBasicService>().UsingLifestyleContainer(new SingletonLifestyle()));
+				c => c.Export<BasicService>().As<IBasicService>().UsingLifestyle(new SingletonLifestyle()));
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 

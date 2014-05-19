@@ -7,15 +7,17 @@ namespace Grace.UnitTests.Classes.FauxClasses
 	public class FauxInjectionContext : IInjectionContext
 	{
 		private int resolveDepth;
+		private CurrentInjectionInfo[] currentInjectionInfo;
 
 		public FauxInjectionContext()
 		{
 			MaxResolveDepth = 1000;
+			currentInjectionInfo = new CurrentInjectionInfo[4];
 		}
 
 		public IInjectionContext Clone()
 		{
-			return new InjectionContext(DisposalScope, RequestingScope);
+			return new FauxInjectionContext();
 		}
 
 		public IDisposalScope DisposalScope { get; set; }
@@ -59,26 +61,59 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public int MaxResolveDepth { get; set; }
 
-		public void IncrementResolveDepth()
+		/// <summary>
+		/// Push a current export strategy onto the stack
+		/// </summary>
+		/// <param name="activationType">type being activated</param>
+		/// <param name="exportStrategy">export strategy</param>
+		public void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy)
 		{
-			resolveDepth++;
-
-			if (resolveDepth > MaxResolveDepth)
+			if (resolveDepth + 1 > MaxResolveDepth)
 			{
 				if (TargetInfo != null)
 				{
 					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
 				}
-				else
-				{
-					throw new CircularDependencyDetectedException(null, null, this);
-				}
+
+				throw new CircularDependencyDetectedException(null, null, this);
 			}
+
+			if (resolveDepth > currentInjectionInfo.Length)
+			{
+				var temp = new CurrentInjectionInfo[currentInjectionInfo.Length];
+
+				currentInjectionInfo.CopyTo(temp, 0);
+
+				currentInjectionInfo = temp;
+			}
+
+			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(activationType, exportStrategy);
+
+			resolveDepth++;
 		}
 
-		public void DecrementResolveDepth()
+		/// <summary>
+		/// Pop the current export strategy off the stack
+		/// </summary>
+		public void PopCurrentInjectionInfo()
 		{
 			resolveDepth--;
+		}
+
+		/// <summary>
+		/// Injection info all the way up the stack
+		/// </summary>
+		/// <returns></returns>
+		public CurrentInjectionInfo[] GetInjectionStack()
+		{
+			CurrentInjectionInfo[] returnValue = new CurrentInjectionInfo[resolveDepth];
+
+			for (int i = 0; i < resolveDepth; i++)
+			{
+				returnValue[i] = currentInjectionInfo[resolveDepth];
+			}
+
+			return returnValue;
 		}
 	}
 }

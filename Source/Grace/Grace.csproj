@@ -95,6 +95,7 @@
     <Compile Include="DependencyInjection\Conditions\IExportCondition.cs" />
     <Compile Include="DependencyInjection\Conditions\MultipleConditions.cs" />
     <Compile Include="DependencyInjection\Conditions\UnlessCondition.cs" />
+    <Compile Include="DependencyInjection\Conditions\WhenAncestor.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenCondition.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenDebuggerIsAttached.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenDebuggerIsNotAttached.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="DependencyInjection\Conditions\WhenClassHas.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenMemberHas.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenTargetHas.cs" />
+    <Compile Include="DependencyInjection\CurrentInjectionInfo.cs" />
     <Compile Include="DependencyInjection\Delegates.cs" />
     <Compile Include="DependencyInjection\DisposableInjectionContext.cs" />
     <Compile Include="DependencyInjection\Enumerations.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="DependencyInjection\IExportStrategyInspector.cs" />
     <Compile Include="DependencyInjection\IExportTypeSetConfigurationExtensions.cs" />
     <Compile Include="DependencyInjection\IFluentExportPropertyConfiguration.cs" />
+    <Compile Include="DependencyInjection\IFluentExportStrategyConfigurationExtensions.cs" />
     <Compile Include="DependencyInjection\IFluentImportPropertyCollectionConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentImportMethodConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentImportPropertyConfiguration.cs" />
@@ -231,8 +234,11 @@
     <Compile Include="DependencyInjection\Impl\InjectionKernel.cs" />
     <Compile Include="DependencyInjection\Impl\InjectionKernelManager.cs" />
     <Compile Include="DependencyInjection\InjectionContext.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\INotifyWhenDisposed.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\InScopeLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\IPerRequestLifestyleProvider.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonLifestyle.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\SingletonPerAncestorLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerInjectionContextLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerRequestLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerScopeLifestyle.cs" />

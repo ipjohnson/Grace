@@ -15,10 +15,10 @@ namespace Grace.DependencyInjection.Impl
 		public BaseInjectionStrategy(Type targeType)
 		{
 			delegateInfo = new CompiledExportDelegateInfo
-			               {
-				               ActivationType = targeType,
-				               Attributes = targeType.GetTypeInfo().GetCustomAttributes()
-			               };
+								{
+									ActivationType = targeType,
+									Attributes = targeType.GetTypeInfo().GetCustomAttributes()
+								};
 
 			TargeType = targeType;
 		}
@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Impl
 		public virtual void Initialize()
 		{
 			FuncCompiledExportDelegate exportDelegate = new FuncCompiledExportDelegate(delegateInfo,
-				(scope, context) => context.Locate(CONTEXT_KEY), null);
+				(scope, context) => context.Locate(CONTEXT_KEY),null, null);
 
 			activationDelegate = exportDelegate.CompileDelegate();
 		}

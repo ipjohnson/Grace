@@ -21,7 +21,7 @@ namespace Grace.UnitTests.DependencyInjection
 									  {
 										  c.Export<ContextSingleton>()
 											.ByInterfaces()
-											.UsingLifestyleContainer(new SingletonPerInjectionContextLifestyle());
+											.UsingLifestyle(new SingletonPerInjectionContextLifestyle());
 										  c.Export<ContextClassA>().ByInterfaces();
 										  c.Export<ContextClassB>().ByInterfaces().InNewContext();
 										  c.Export<ContextClassC>().ByInterfaces();

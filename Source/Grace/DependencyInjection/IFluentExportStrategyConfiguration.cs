@@ -12,8 +12,6 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public interface IFluentExportStrategyConfiguration
 	{
-
-
 		/// <summary>
 		/// Method to call when activation is done
 		/// </summary>
@@ -45,7 +43,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration AndWeakSingleton();
-
 
 		/// <summary>
 		/// Export as a particular type
@@ -147,19 +144,18 @@ namespace Grace.DependencyInjection
 		IFluentExportStrategyConfiguration InNewContext();
 		
 		/// <summary>
-		/// Specify a custom Lifestyle container for export.
-		/// </summary>
-		/// <param name="lifestyle">Lifestyle container for the export</param>
-		/// <returns>configuration object</returns>
-		IFluentExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle);
-
-		/// <summary>
 		/// Adds a condition to the export
 		/// </summary>
 		/// <param name="conditionDelegate">export condition delegate</param>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration Unless(ExportConditionDelegate conditionDelegate);
 
+		/// <summary>
+		/// Specify a custom Lifestyle container for export.
+		/// </summary>
+		/// <param name="lifestyle">Lifestyle container for the export</param>
+		/// <returns>configuration object</returns>
+		IFluentExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle);
 
 		/// <summary>
 		/// Adds a condition to the export
@@ -375,7 +371,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="container"></param>
 		/// <returns></returns>
-		IFluentExportStrategyConfiguration<T> UsingLifestyleContainer(ILifestyle container);
+		IFluentExportStrategyConfiguration<T> UsingLifestyle(ILifestyle container);
 		
 		/// <summary>
 		/// Adds a condition to the export

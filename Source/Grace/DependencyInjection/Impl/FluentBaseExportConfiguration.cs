@@ -515,9 +515,9 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="container"></param>
 		/// <returns></returns>
-		public IFluentExportStrategyConfiguration<T> UsingLifestyleContainer(ILifestyle container)
+		public IFluentExportStrategyConfiguration<T> UsingLifestyle(ILifestyle container)
 		{
-			return strategy.UsingLifestyleContainer(container);
+			return strategy.UsingLifestyle(container);
 		}
 
 		/// <summary>

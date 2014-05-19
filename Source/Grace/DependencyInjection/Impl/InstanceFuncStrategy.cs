@@ -34,8 +34,6 @@ namespace Grace.DependencyInjection.Impl
 		{
 			try
 			{
-				context.IncrementResolveDepth();
-
 				if (lifestyle != null)
 				{
 					return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
@@ -57,10 +55,6 @@ namespace Grace.DependencyInjection.Impl
 
 				throw locateException;
 			}
-			finally
-			{
-				context.DecrementResolveDepth();
-			}
 		}
 
 		/// <summary>
@@ -71,6 +65,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>export instance</returns>
 		private object InternalActivate(IInjectionScope injectionscope, IInjectionContext context)
 		{
+			context.PushCurrentInjectionInfo(ActivationType, this);
+
 			object returnValue = instanceFunc(injectionscope, context);
 
 			if (enrichWithDelegates != null)
@@ -80,6 +76,8 @@ namespace Grace.DependencyInjection.Impl
 					returnValue = enrichWithDelegate(injectionscope, context, returnValue);
 				}
 			}
+
+			context.PopCurrentInjectionInfo();
 
 			return returnValue;
 		}

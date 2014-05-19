@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace Grace.Utilities
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
-	public class SafeDictionary<TKey, TValue> : IDisposable
+	public class SafeDictionary<TKey, TValue> : IDisposable, IEnumerable<KeyValuePair<TKey,TValue>>
 	{
 		private readonly ReaderWriterLockSlim padlock = new ReaderWriterLockSlim();
 		private readonly Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
@@ -151,5 +152,25 @@ namespace Grace.Utilities
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Get list of KVP
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+		{
+			padlock.EnterReadLock();
+
+			List<KeyValuePair<TKey, TValue>> returnList = new List<KeyValuePair<TKey, TValue>>(dictionary);
+
+			padlock.ExitWriteLock();
+
+			return returnList.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 	}
 }

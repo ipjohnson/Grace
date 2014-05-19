@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Windows.UI.Xaml;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection
@@ -14,6 +15,7 @@ namespace Grace.DependencyInjection
 		private Dictionary<Type, ExportActivationDelegate> exportsByType;
 		private Dictionary<string, object> extraData;
 		private int resolveDepth;
+		private CurrentInjectionInfo[] currentInjectionInfo;
 
 		/// <summary>
 		/// Constructor that uses requesting scope as disposal scope
@@ -22,6 +24,7 @@ namespace Grace.DependencyInjection
 		public InjectionContext(IInjectionScope requestingScope) :
 			this(requestingScope, requestingScope)
 		{
+			currentInjectionInfo = new CurrentInjectionInfo[4];
 		}
 
 		/// <summary>
@@ -31,6 +34,7 @@ namespace Grace.DependencyInjection
 		/// <param name="requestingScope"></param>
 		public InjectionContext(IDisposalScope disposalScope, IInjectionScope requestingScope)
 		{
+			currentInjectionInfo = new CurrentInjectionInfo[4];
 			MaxResolveDepth = 50;
 			DisposalScope = disposalScope;
 			RequestingScope = requestingScope;
@@ -60,6 +64,10 @@ namespace Grace.DependencyInjection
 			return GetEnumerator();
 		}
 
+		/// <summary>
+		/// Clone the context
+		/// </summary>
+		/// <returns></returns>
 		public IInjectionContext Clone()
 		{
 			InjectionContext injectionContext = new InjectionContext(DisposalScope, RequestingScope);
@@ -83,6 +91,10 @@ namespace Grace.DependencyInjection
 			injectionContext.resolveDepth = resolveDepth;
 			injectionContext.RequestingScope = RequestingScope;
 			injectionContext.DisposalScope = DisposalScope;
+
+			injectionContext.currentInjectionInfo = new CurrentInjectionInfo[currentInjectionInfo.Length];
+
+			injectionContext.currentInjectionInfo.CopyTo(currentInjectionInfo, 0);
 
 			return injectionContext;
 		}
@@ -226,31 +238,58 @@ namespace Grace.DependencyInjection
 		public int MaxResolveDepth { get; set; }
 
 		/// <summary>
-		/// Increment the resolve depth by one
+		/// Push a current export strategy onto the stack
 		/// </summary>
-		public void IncrementResolveDepth()
+		/// <param name="activationType">type being activated</param>
+		/// <param name="exportStrategy">export strategy</param>
+		public void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy)
 		{
-			resolveDepth++;
-
 			if (resolveDepth > MaxResolveDepth)
 			{
 				if (TargetInfo != null)
 				{
 					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
 				}
-				else
-				{
-					throw new CircularDependencyDetectedException(null, null, this);
-				}
+
+				throw new CircularDependencyDetectedException(null, null, this);
 			}
+
+			if (resolveDepth >= currentInjectionInfo.Length)
+			{
+				var temp = new CurrentInjectionInfo[currentInjectionInfo.Length * 2];
+
+				currentInjectionInfo.CopyTo(temp, 0);
+
+				currentInjectionInfo = temp;
+			}
+
+			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(activationType, exportStrategy);
+
+			resolveDepth++;
 		}
 
 		/// <summary>
-		/// Decrement the resolve depth by one
+		/// Pop the current export strategy off the stack
 		/// </summary>
-		public void DecrementResolveDepth()
+		public void PopCurrentInjectionInfo()
 		{
 			resolveDepth--;
+		}
+
+		/// <summary>
+		/// Injection info all the way up the stack
+		/// </summary>
+		/// <returns></returns>
+		public CurrentInjectionInfo[] GetInjectionStack()
+		{
+			CurrentInjectionInfo[] returnValue = new CurrentInjectionInfo[resolveDepth];
+
+			for (int i = 0; i < resolveDepth; i++)
+			{
+				returnValue[i] = currentInjectionInfo[resolveDepth];
+			}
+
+			return returnValue;
 		}
 
 		/// <summary>

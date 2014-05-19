@@ -17,10 +17,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Default Constructor
 		/// </summary>
 		/// <param name="exportDelegateInfo"></param>
+		/// <param name="exportStrategy"></param>
 		/// <param name="owningScope"></param>
 		public InstanceCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo,
+			IExportStrategy exportStrategy,
 			IInjectionScope owningScope)
-			: base(exportDelegateInfo, owningScope)
+			: base(exportDelegateInfo,exportStrategy, owningScope)
 		{
 		}
 

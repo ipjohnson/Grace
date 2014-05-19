@@ -29,7 +29,7 @@ namespace Grace.DependencyInjection.Impl
 			CompiledExportDelegateInfo info = GetCompiledInfo();
 
 			InstanceCompiledExportDelegate delegateGenerator =
-				new InstanceCompiledExportDelegate(info, OwningScope);
+				new InstanceCompiledExportDelegate(info,this, OwningScope);
 
 			activationDelegate = delegateGenerator.CompileDelegate();
 

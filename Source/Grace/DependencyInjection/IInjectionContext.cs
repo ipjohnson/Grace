@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Grace.Data;
 using JetBrains.Annotations;
 
@@ -82,13 +83,21 @@ namespace Grace.DependencyInjection
 		void Export([NotNull] string name, [NotNull] ExportActivationDelegate activationDelegate);
 
 		/// <summary>
-		/// Increment the resolve depth by one
+		/// Push a current export strategy onto the stack
 		/// </summary>
-		void IncrementResolveDepth();
+		/// <param name="activationType">type being activated</param>
+		/// <param name="exportStrategy">export strategy</param>
+		void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy);
 
 		/// <summary>
-		/// Decrement the resolve depth by one
+		/// Pop the current export strategy off the stack
 		/// </summary>
-		void DecrementResolveDepth();
+		void PopCurrentInjectionInfo();
+
+		/// <summary>
+		/// Injection info all the way up the stack
+		/// </summary>
+		/// <returns></returns>
+		CurrentInjectionInfo[] GetInjectionStack();
 	}
 }

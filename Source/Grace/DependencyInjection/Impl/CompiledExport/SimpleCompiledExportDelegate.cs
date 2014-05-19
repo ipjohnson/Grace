@@ -5,8 +5,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 {
 	public class SimpleCompiledExportDelegate : InstanceCompiledExportDelegate
 	{
-		public SimpleCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo) :
-			base(exportDelegateInfo, null)
+		public SimpleCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo, IExportStrategy exportStrategy) :
+			base(exportDelegateInfo, exportStrategy,null)
 		{
 		}
 
@@ -24,14 +24,17 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			CreateCustomInitializeExpressions();
 
-			bodyExpressions.Add(Expression.Call(injectionContextParameter, DecrementResolveDepth));
+			bodyExpressions.Add(Expression.Call(injectionContextParameter, PopCurrentInjectionInfo));
 
 			// only add the return expression if there was no enrichment
 			CreateReturnExpression();
 
 			List<Expression> methodExpressions = new List<Expression>
 			                                     {
-				                                     Expression.Call(injectionContextParameter, IncrementResolveDepth)
+				                                     Expression.Call(injectionContextParameter, 
+																						PushCurrentInjectionInfo,
+																						Expression.Constant(exportDelegateInfo.ActivationType),
+																						Expression.Constant(owningStrategy))
 			                                     };
 
 			methodExpressions.AddRange(GetImportExpressions());

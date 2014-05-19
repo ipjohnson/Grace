@@ -11,9 +11,10 @@
 		/// Default Constructor
 		/// </summary>
 		/// <param name="exportDelegateInfo"></param>
+		/// <param name="exportStrategy"></param>
 		/// <param name="owningScope"></param>
-		public InjectionCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo, IInjectionScope owningScope)
-			: base(exportDelegateInfo, LocateInjectionObject, owningScope)
+		public InjectionCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo,IExportStrategy exportStrategy, IInjectionScope owningScope)
+			: base(exportDelegateInfo, LocateInjectionObject,exportStrategy, owningScope)
 		{
 		}
 

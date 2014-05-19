@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (!delegateDictionary.TryGetValue(exportType, out activationInfo))
 			{
-				SimpleCompiledExportDelegate compiledExportDelegate = new SimpleCompiledExportDelegate(delegateInfo);
+				SimpleCompiledExportDelegate compiledExportDelegate = new SimpleCompiledExportDelegate(delegateInfo, this);
 
 				activationDelegate = compiledExportDelegate.CompileDelegate();
 

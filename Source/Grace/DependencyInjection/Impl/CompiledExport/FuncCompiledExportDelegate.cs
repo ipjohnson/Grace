@@ -29,11 +29,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		/// <param name="exportDelegateInfo"></param>
 		/// <param name="activationDelegate"></param>
+		/// <param name="exportStrategy"></param>
 		/// <param name="owningScope"></param>
 		public FuncCompiledExportDelegate(CompiledExportDelegateInfo exportDelegateInfo,
 			ExportActivationDelegate activationDelegate,
+			IExportStrategy exportStrategy,
 			IInjectionScope owningScope)
-			: base(exportDelegateInfo, owningScope)
+			: base(exportDelegateInfo,exportStrategy, owningScope)
 		{
 			exportActivationDelegate = activationDelegate;
 		}
