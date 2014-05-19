@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection
