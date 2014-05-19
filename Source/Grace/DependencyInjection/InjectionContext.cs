@@ -285,7 +285,7 @@ namespace Grace.DependencyInjection
 
 			for (int i = 0; i < resolveDepth; i++)
 			{
-				returnValue[i] = currentInjectionInfo[resolveDepth];
+				returnValue[i] = currentInjectionInfo[i];
 			}
 
 			return returnValue;

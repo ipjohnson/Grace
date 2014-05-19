@@ -1088,7 +1088,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 																						 exportTypeExpression,
 																						 Expression.Constant(targetInfo)));
 
-			BlockExpression catchBody = Expression.Block(new[] { exceptionParameter, generalException },
+			BlockExpression catchBody = Expression.Block(new[] { generalException },
 																		Expression.Assign(generalException, newExpression),
 																		addExpression,
 																		Expression.Throw(generalException));

@@ -37,8 +37,12 @@ namespace Grace.DependencyInjection.Exceptions
 
 				returnMessage.Append("General exception was thrown while trying to activate strategy");
 				returnMessage.AppendLine();
-				returnMessage.Append(InnerException.Message);
-				returnMessage.AppendLine();
+
+				if (InnerException != null)
+				{
+					returnMessage.Append(InnerException.Message);
+					returnMessage.AppendLine();
+				}
 
 				CreateMessageFromLocationInformation(returnMessage);
 
