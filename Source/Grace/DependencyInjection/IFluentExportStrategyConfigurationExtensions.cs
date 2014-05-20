@@ -110,37 +110,5 @@ namespace Grace.DependencyInjection
 		}
 		#endregion
 
-		#region InScope
-		/// <summary>
-		/// Export in a named scope
-		/// </summary>
-		/// <param name="configuration">configuration object</param>
-		/// <param name="scopeName">scope name</param>
-		/// <returns></returns>
-		public static IFluentExportStrategyConfiguration InScope(
-			this IFluentExportStrategyConfiguration configuration,
-			ExportActivationDelegate scopeName)
-		{
-			configuration.UsingLifestyle(new InScopeLifestyle(scopeName));
-
-			return configuration;
-		}
-
-		/// <summary>
-		/// Export in a named scope
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="configuration"></param>
-		/// <param name="scopeName"></param>
-		/// <returns></returns>
-		public static IFluentExportStrategyConfiguration<T> InScope<T>(
-			this IFluentExportStrategyConfiguration<T> configuration,
-			ExportActivationDelegate scopeName)
-		{
-			configuration.UsingLifestyle(new InScopeLifestyle(scopeName));
-
-			return configuration;
-		}
-		#endregion
 	}
 }

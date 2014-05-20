@@ -8,18 +8,28 @@ using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
-	public class InScopeLifestyle : ILifestyle
+	/// <summary>
+	/// Singleton lifestyle per value
+	/// </summary>
+	public class SingletonPerValueLifestyle : ILifestyle
 	{
 		private bool disposed;
 		private readonly SafeDictionary<object, Tuple<object, IDisposalScope>> scopedObjects; 
-		private readonly ExportActivationDelegate scopeDelegate;
+		private readonly ExportActivationDelegate valueDelegate;
 
-		public InScopeLifestyle(ExportActivationDelegate scopeDelegate)
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="valueDelegate">value delegate</param>
+		public SingletonPerValueLifestyle(ExportActivationDelegate valueDelegate)
 		{
 			scopedObjects = new SafeDictionary<object, Tuple<object, IDisposalScope>>();
-			this.scopeDelegate = scopeDelegate;
+			this.valueDelegate = valueDelegate;
 		}
 
+		/// <summary>
+		/// Dispose lifestyle
+		/// </summary>
 		public void Dispose()
 		{
 			if (disposed)
@@ -53,7 +63,7 @@ namespace Grace.DependencyInjection.Lifestyle
 			IInjectionContext injectionContext,
 			IExportStrategy exportStrategy)
 		{
-			object scopeName = scopeDelegate(injectionScope, injectionContext);
+			object scopeName = valueDelegate(injectionScope, injectionContext);
 			Tuple<object, IDisposalScope> trackedObject;
 
 			if (!scopedObjects.TryGetValue(scopeName, out trackedObject))
@@ -105,7 +115,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <returns></returns>
 		public ILifestyle Clone()
 		{
-			return new InScopeLifestyle(scopeDelegate);
+			return new SingletonPerValueLifestyle(valueDelegate);
 		}
 	}
 }
