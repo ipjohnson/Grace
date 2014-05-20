@@ -154,12 +154,10 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter to use while locating</param>
 		/// <param name="withKey"></param>
+		/// <param name="comparer"></param>
 		/// <returns>list of object, this will return an empty list if no exports are found</returns>
 		[NotNull]
-		List<object> LocateAll(Type exportType,
-									  IInjectionContext injectionContext = null,
-									  ExportStrategyFilter consider = null,
-									  object withKey = null);
+		List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null, IComparer<object> comparer = null);
 
 		/// <summary>
 		/// The environment for this scope (always inherited from the root scope)

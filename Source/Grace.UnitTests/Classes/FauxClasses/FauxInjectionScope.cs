@@ -221,7 +221,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			throw new NotImplementedException();
 		}
 
-		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
+		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<object> comparer = null)
 		{
 			throw new NotImplementedException();
 		}

@@ -484,7 +484,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
 					{
-						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider,locateKey);
+						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider, locateKey);
 
 						if (returnValue != null)
 						{
@@ -847,8 +847,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
 		/// <param name="locateKey"></param>
+		/// <param name="comparer1"></param>
 		/// <returns></returns>
-		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
+		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<object> comparer1 = null)
 		{
 			if (exportType == null)
 			{
@@ -1304,7 +1305,7 @@ namespace Grace.DependencyInjection.Impl
 		public object LocateMissingExport(IInjectionContext context,
 			string exportName,
 			Type exportType,
-			ExportStrategyFilter consider, 
+			ExportStrategyFilter consider,
 			object locateKey)
 		{
 			// skip trynig to locate,only do this from root scope
@@ -1578,7 +1579,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateLazyListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
+					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1586,7 +1587,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateOwnedListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
+					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1594,7 +1595,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateMetaListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
+					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1629,7 +1630,7 @@ namespace Grace.DependencyInjection.Impl
 																			name,
 																			locateType,
 																			returnValue.Count == 0,
-																			exportFilter, 
+																			exportFilter,
 																			locateKey);
 
 					foreach (object locatedObject in locatedObjects)
