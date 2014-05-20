@@ -18,7 +18,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				});
 
 			object returnValue =
-				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), "BasicService", null, null);
+				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), "BasicService", null, null, null);
 
 			Assert.NotNull(returnValue);
 			Assert.IsType(typeof(BasicService), returnValue);
@@ -32,7 +32,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			resolver.AddResolveValue(new BasicService());
 
 			object returnValue =
-				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), null, typeof(BasicService), null);
+				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), null, typeof(BasicService), null, null);
 
 			Assert.NotNull(returnValue);
 			Assert.IsType(typeof(BasicService), returnValue);
@@ -46,7 +46,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			resolver.AddResolveValue(() => new BasicService());
 
 			object returnValue =
-				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), null, typeof(BasicService), null);
+				resolver.Locate(new FauxInjectionScope(), new FauxInjectionContext(), null, typeof(BasicService), null, null);
 
 			Assert.NotNull(returnValue);
 			Assert.IsType(typeof(BasicService), returnValue);

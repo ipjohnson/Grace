@@ -5,7 +5,7 @@ namespace Grace.MVC.DependencyInjection
 {
 	public class HttpRequestPathProvider : IExportValueProvider
 	{
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			if (HttpContext.Current != null)
 			{

@@ -142,6 +142,13 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		public IFluentWithCtorConfiguration<TParam> LocateWithKey(object locateKey)
+		{
+			currenConstructorParamInfo.LocateKey = locateKey;
+
+			return this;
+		}
+
 		public IFluentWithCtorConfiguration<TParam> Named(string name)
 		{
 			currenConstructorParamInfo.ParameterName = name;
@@ -186,6 +193,13 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentWithCtorConfiguration<T, TParam> IsRequired(bool isRequired = true)
 		{
 			constructorParamInfo.IsRequired = isRequired;
+
+			return this;
+		}
+
+		public IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey)
+		{
+			constructorParamInfo.LocateKey = locateKey;
 
 			return this;
 		}

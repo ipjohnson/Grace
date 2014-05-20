@@ -9,18 +9,12 @@ namespace Grace.DependencyInjection
 	public interface IFluentWithCtorConfiguration<TParam> : IFluentExportStrategyConfiguration
 	{
 		/// <summary>
-		/// Is the parameter required when resolving the type
+		/// Applies a filter to be used when resolving a parameter constructor
+		/// It will be called each time the parameter is resolved
 		/// </summary>
-		/// <param name="isRequired">is the parameter required</param>
+		/// <param name="filter">filter delegate to be used when resolving parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> IsRequired(bool isRequired = true);
-
-		/// <summary>
-		/// Name of the parameter to resolve
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> Named([NotNull] string name);
+		IFluentWithCtorConfiguration<TParam> Consider([NotNull] ExportStrategyFilter filter);
 
 		/// <summary>
 		/// Name to use when resolving parameter
@@ -30,12 +24,25 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorConfiguration<TParam> ImportName([NotNull] string importName);
 
 		/// <summary>
-		/// Applies a filter to be used when resolving a parameter constructor
-		/// It will be called each time the parameter is resolved
+		/// Is the parameter required when resolving the type
 		/// </summary>
-		/// <param name="filter">filter delegate to be used when resolving parameter</param>
+		/// <param name="isRequired">is the parameter required</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> Consider([NotNull] ExportStrategyFilter filter);
+		IFluentWithCtorConfiguration<TParam> IsRequired(bool isRequired = true);
+
+		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">ocate key</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<TParam> LocateWithKey(object locateKey);
+
+		/// <summary>
+		/// Name of the parameter to resolve
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<TParam> Named([NotNull] string name);
 
 		/// <summary>
 		/// Provides a value for a constructor parameter
@@ -53,18 +60,12 @@ namespace Grace.DependencyInjection
 	public interface IFluentWithCtorConfiguration<T, TParam> : IFluentExportStrategyConfiguration<T>
 	{
 		/// <summary>
-		/// Is the parameter required to resolve T
+		/// Applies a filter to be used when resolving the parameter
+		/// The filter will be used each time this parameter is resolved
 		/// </summary>
-		/// <param name="isRequired">is the parameter required</param>
+		/// <param name="filter">filter delegate to use when resolving parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> IsRequired(bool isRequired = true);
-
-		/// <summary>
-		/// Name of the parameter being configured
-		/// </summary>
-		/// <param name="name">Name of parameter</param>
-		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> Named([NotNull] string name);
+		IFluentWithCtorConfiguration<T, TParam> Consider([NotNull] ExportStrategyFilter filter);
 
 		/// <summary>
 		/// Name to use when resolving parameter
@@ -74,12 +75,25 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorConfiguration<T, TParam> ImportName([NotNull] string importName);
 
 		/// <summary>
-		/// Applies a filter to be used when resolving the parameter
-		/// The filter will be used each time this parameter is resolved
+		/// Is the parameter required to resolve T
 		/// </summary>
-		/// <param name="filter">filter delegate to use when resolving parameter</param>
+		/// <param name="isRequired">is the parameter required</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> Consider([NotNull] ExportStrategyFilter filter);
+		IFluentWithCtorConfiguration<T, TParam> IsRequired(bool isRequired = true);
+
+		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey);
+
+		/// <summary>
+		/// Name of the parameter being configured
+		/// </summary>
+		/// <param name="name">Name of parameter</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorConfiguration<T, TParam> Named([NotNull] string name);
 
 		/// <summary>
 		/// Value provider to use when resolving constructor parameter

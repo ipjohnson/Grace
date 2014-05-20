@@ -220,7 +220,7 @@ namespace Grace.Diagnostics
 
 				foreach (ISecondaryExportLocator secondaryExportLocator in injectionScope.SecondaryExportLocators)
 				{
-					if (secondaryExportLocator.CanLocate(context, null, exportStrategyDependency.ImportType, null))
+					if (secondaryExportLocator.CanLocate(context, null, exportStrategyDependency.ImportType, null, null))
 					{
 						return true;
 					}

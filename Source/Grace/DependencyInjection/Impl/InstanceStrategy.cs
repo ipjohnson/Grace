@@ -22,10 +22,9 @@
 		/// <param name="exportInjectionScope">injection scope</param>
 		/// <param name="context">injection context</param>
 		/// <param name="consider">export filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>export object</returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			return instance;
 		}

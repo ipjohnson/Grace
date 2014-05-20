@@ -78,12 +78,19 @@ namespace Grace.DependencyInjection
 	/// <typeparam name="TParam">parameter type being exported</typeparam>
 	public interface IFluentMethodParameterConfiguration<T, in TParam> : IFluentImportMethodConfiguration<T>
 	{
+
 		/// <summary>
-		/// parameter name
+		/// Name to use when importing parameter
 		/// </summary>
-		/// <param name="parameterName">parameter name</param>
+		/// <param name="importName">import name</param>
 		/// <returns>configuration object</returns>
-		IFluentMethodParameterConfiguration<T, TParam> Named(string parameterName);
+		IFluentMethodParameterConfiguration<T, TParam> ImportName(string importName);
+
+		/// <summary>
+		/// Import parameter after construction
+		/// </summary>
+		/// <returns></returns>
+		IFluentMethodParameterConfiguration<T, TParam> ImportParameterAfterConstruction();
 
 		/// <summary>
 		/// Is the parameter required
@@ -93,11 +100,18 @@ namespace Grace.DependencyInjection
 		IFluentMethodParameterConfiguration<T, TParam> IsRequired(bool isRequired = true);
 
 		/// <summary>
-		/// Name to use when importing parameter
+		/// Locate with a specific key
 		/// </summary>
-		/// <param name="importName">import name</param>
+		/// <param name="locateKey">locate key</param>
 		/// <returns>configuration object</returns>
-		IFluentMethodParameterConfiguration<T, TParam> ImportName(string importName);
+		IFluentMethodParameterConfiguration<T, TParam> LocateWithKey(object locateKey);
+
+		/// <summary>
+		/// parameter name
+		/// </summary>
+		/// <param name="parameterName">parameter name</param>
+		/// <returns>configuration object</returns>
+		IFluentMethodParameterConfiguration<T, TParam> Named(string parameterName);
 
 		/// <summary>
 		/// Value provider for method parameter

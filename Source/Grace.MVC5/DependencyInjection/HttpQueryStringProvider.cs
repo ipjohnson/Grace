@@ -22,8 +22,9 @@ namespace Grace.MVC.DependencyInjection
 		/// <param name="exportInjectionScope">injection scope</param>
 		/// <param name="context">injection context</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>activated value</returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			string parameterName = ParameterName;
 

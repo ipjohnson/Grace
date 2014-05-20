@@ -414,11 +414,12 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
-			return (T)Locate(typeof(T), injectionContext, consider);
+			return (T)Locate(typeof(T), injectionContext, consider, locateKey);
 		}
 
 		/// <summary>
@@ -427,8 +428,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="objectType"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			if (objectType == null)
 			{
@@ -456,7 +458,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (exportsByType.TryGetValue(objectType, out collection))
 				{
-					returnValue = collection.Activate(null, objectType, injectionContext, consider);
+					returnValue = collection.Activate(null, objectType, injectionContext, consider, locateKey);
 
 					if (returnValue != null)
 					{
@@ -472,7 +474,7 @@ namespace Grace.DependencyInjection.Impl
 					// and they have a singleton you have to use the same export strategy
 					if (exportStrategy != null && exportsByType.TryGetValue(objectType, out collection))
 					{
-						returnValue = collection.Activate(null, objectType, injectionContext, consider);
+						returnValue = collection.Activate(null, objectType, injectionContext, consider, locateKey);
 					}
 				}
 
@@ -482,7 +484,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
 					{
-						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider);
+						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, null, objectType, consider,locateKey);
 
 						if (returnValue != null)
 						{
@@ -493,7 +495,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (returnValue == null && ParentScope != null)
 				{
-					returnValue = ParentScope.Locate(objectType, injectionContext, consider);
+					returnValue = ParentScope.Locate(objectType, injectionContext, consider, locateKey);
 				}
 
 				if (returnValue != null || injectionContext.RequestingScope != this)
@@ -503,25 +505,25 @@ namespace Grace.DependencyInjection.Impl
 
 				if (objectType.IsConstructedGenericType)
 				{
-					returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider);
+					returnValue = ProcessSpecialGenericType<object>(injectionContext, objectType, consider, locateKey);
 				}
 				else if (objectType.IsArray)
 				{
-					returnValue = ProcessArrayType<object>(injectionContext, objectType, consider);
+					returnValue = ProcessArrayType<object>(injectionContext, objectType, consider, locateKey);
 				}
 				else if (objectType.GetTypeInfo().BaseType == typeof(MulticastDelegate))
 				{
-					returnValue = ProcessDelegateType(injectionContext, objectType, consider);
+					returnValue = ProcessDelegateType(injectionContext, objectType, consider, locateKey);
 				}
 
 				if (returnValue == null)
 				{
-					returnValue = ProcessICollectionType(injectionContext, objectType, consider);
+					returnValue = ProcessICollectionType(injectionContext, objectType, consider, locateKey);
 				}
 
 				if (returnValue == null)
 				{
-					returnValue = ResolveUnknownExport(objectType, null, injectionContext, consider);
+					returnValue = ResolveUnknownExport(objectType, null, injectionContext, consider, locateKey);
 				}
 			}
 			catch (LocateException exp)
@@ -572,10 +574,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportName"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(string exportName,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
+		public object Locate(string exportName, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			if (exportName == null)
 			{
@@ -605,7 +606,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (exportsByName.TryGetValue(exportName, out collection))
 				{
-					returnValue = collection.Activate(exportName, null, injectionContext, consider);
+					returnValue = collection.Activate(exportName, null, injectionContext, consider, locateKey);
 
 					if (returnValue != null)
 					{
@@ -619,7 +620,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
 					{
-						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, exportName, null, consider);
+						returnValue = secondaryDependencyResolver.Locate(this, injectionContext, exportName, null, consider, locateKey);
 
 						if (returnValue != null)
 						{
@@ -630,12 +631,12 @@ namespace Grace.DependencyInjection.Impl
 
 				if (ParentScope != null)
 				{
-					returnValue = ParentScope.Locate(exportName, injectionContext, consider);
+					returnValue = ParentScope.Locate(exportName, injectionContext, consider, locateKey);
 				}
 
 				if (returnValue == null && injectionContext.RequestingScope == this)
 				{
-					returnValue = ResolveUnknownExport(typeof(object), exportName, injectionContext, consider);
+					returnValue = ResolveUnknownExport(typeof(object), exportName, injectionContext, consider, locateKey);
 				}
 
 				if (returnValue != null)
@@ -684,12 +685,11 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <param name="comparer"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public List<T> LocateAll<T>(IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<T> comparer = null)
+		public List<T> LocateAll<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<T> comparer = null)
 		{
 			if (log.IsDebugEnabled)
 			{
@@ -707,7 +707,7 @@ namespace Grace.DependencyInjection.Impl
 			List<T> returnValue;
 			try
 			{
-				returnValue = InternalLocateAllWithContext<T>(injectionContext, typeof(T).FullName, typeof(T), consider);
+				returnValue = InternalLocateAllWithContext<T>(injectionContext, typeof(T).FullName, typeof(T), consider, locateKey);
 			}
 			catch (LocateException exp)
 			{
@@ -765,12 +765,10 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <param name="comparer"></param>
 		/// <returns></returns>
-		public List<object> LocateAll(string name,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<object> comparer = null)
+		public List<object> LocateAll(string name, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<object> comparer = null)
 		{
 			if (name == null)
 			{
@@ -796,7 +794,7 @@ namespace Grace.DependencyInjection.Impl
 
 			try
 			{
-				returnValue = InternalLocateAllWithContext<object>(injectionContext, name, null, consider);
+				returnValue = InternalLocateAllWithContext<object>(injectionContext, name, null, consider, locateKey);
 			}
 			catch (LocateException exp)
 			{
@@ -848,10 +846,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public List<object> LocateAll(Type exportType,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
+		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			if (exportType == null)
 			{
@@ -873,7 +870,7 @@ namespace Grace.DependencyInjection.Impl
 
 			try
 			{
-				return InternalLocateAllWithContext<object>(injectionContext, exportType.FullName, exportType, consider);
+				return InternalLocateAllWithContext<object>(injectionContext, exportType.FullName, exportType, consider, locateKey);
 			}
 			catch (LocateException exp)
 			{
@@ -1302,11 +1299,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportName"></param>
 		/// <param name="exportType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
 		public object LocateMissingExport(IInjectionContext context,
 			string exportName,
 			Type exportType,
-			ExportStrategyFilter consider)
+			ExportStrategyFilter consider, 
+			object locateKey)
 		{
 			// skip trynig to locate,only do this from root scope
 			if (ParentScope != null)
@@ -1322,7 +1321,7 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (ISecondaryExportLocator secondaryDependencyResolver in tempSecondaryResolvers)
 				{
-					object returnValue = secondaryDependencyResolver.Locate(this, context, exportName, exportType, consider);
+					object returnValue = secondaryDependencyResolver.Locate(this, context, exportName, exportType, consider, locateKey);
 
 					if (returnValue != null)
 					{
@@ -1331,7 +1330,7 @@ namespace Grace.DependencyInjection.Impl
 				}
 			}
 
-			return ResolveUnknownExport(exportType, exportName, context, consider);
+			return ResolveUnknownExport(exportType, exportName, context, consider, locateKey);
 		}
 
 		#endregion
@@ -1396,7 +1395,8 @@ namespace Grace.DependencyInjection.Impl
 		private object ResolveUnknownExport(Type resolveType,
 			string resolveName,
 			IInjectionContext injectionContext,
-			ExportStrategyFilter consider)
+			ExportStrategyFilter consider,
+			object locateKey)
 		{
 			if (log.IsDebugEnabled)
 			{
@@ -1409,7 +1409,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (kernelManager.Container != null)
 			{
-				returnValue = kernelManager.Container.LocateMissingExport(injectionContext, resolveName, resolveType, consider);
+				returnValue = kernelManager.Container.LocateMissingExport(injectionContext, resolveName, resolveType, consider, locateKey);
 
 				if (returnValue == null &&
 					 kernelManager.Container.AutoRegisterUnknown &&
@@ -1433,16 +1433,14 @@ namespace Grace.DependencyInjection.Impl
 
 					addScope.AddStrategy(strategy);
 
-					return strategy.Activate(this, injectionContext, consider);
+					return strategy.Activate(this, injectionContext, consider, locateKey);
 				}
 			}
 
 			return returnValue;
 		}
 
-		private object ProcessSpecialGenericType<T>(IInjectionContext injectionContext,
-			Type type,
-			ExportStrategyFilter consider)
+		private object ProcessSpecialGenericType<T>(IInjectionContext injectionContext, Type type, ExportStrategyFilter consider, object locateKey)
 		{
 			Type openGenericType = type.GetGenericTypeDefinition();
 			Type exportStrategyType;
@@ -1454,7 +1452,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (type == typeof(Func<Type, IInjectionContext, object>))
 			{
-				return new Func<Type, IInjectionContext, object>((inType, context) => Locate(inType, context, consider));
+				return new Func<Type, IInjectionContext, object>((inType, context) => Locate(inType, injectionContext: context, consider: consider));
 			}
 
 			if (openGenericStrategyMapping.TryGetValue(openGenericType, out exportStrategyType))
@@ -1465,13 +1463,13 @@ namespace Grace.DependencyInjection.Impl
 
 				AddStrategy(exportStrategy);
 
-				return exportStrategy.Activate(this, injectionContext, consider);
+				return exportStrategy.Activate(this, injectionContext, consider, locateKey);
 			}
 
 			return null;
 		}
 
-		private object ProcessDelegateType(IInjectionContext injectionContext, Type objectType, ExportStrategyFilter consider)
+		private object ProcessDelegateType(IInjectionContext injectionContext, Type objectType, ExportStrategyFilter consider, object locateKey)
 		{
 			object returnValue = null;
 			MethodInfo invokeInfo = objectType.GetTypeInfo().GetDeclaredMethod("Invoke");
@@ -1521,7 +1519,7 @@ namespace Grace.DependencyInjection.Impl
 					{
 						AddStrategy(exportStrategy);
 
-						returnValue = exportStrategy.Activate(this, injectionContext, consider);
+						returnValue = exportStrategy.Activate(this, injectionContext, consider, locateKey);
 					}
 				}
 			}
@@ -1530,7 +1528,7 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 
-		private object ProcessArrayType<T>(IInjectionContext injectionContext, Type tType, ExportStrategyFilter consider)
+		private object ProcessArrayType<T>(IInjectionContext injectionContext, Type tType, ExportStrategyFilter consider, object locateKey)
 		{
 			Type arrayStrategyType = typeof(ArrayExportStrategy<>).MakeGenericType(tType.GetElementType());
 
@@ -1538,10 +1536,10 @@ namespace Grace.DependencyInjection.Impl
 
 			AddStrategy(exportStrategy);
 
-			return exportStrategy.Activate(this, injectionContext, consider);
+			return exportStrategy.Activate(this, injectionContext, consider, locateKey);
 		}
 
-		private object ProcessICollectionType(IInjectionContext injectionContext, Type tType, ExportStrategyFilter consider)
+		private object ProcessICollectionType(IInjectionContext injectionContext, Type tType, ExportStrategyFilter consider, object locateKey)
 		{
 			Type icollectionType =
 				tType.GetTypeInfo()
@@ -1558,16 +1556,13 @@ namespace Grace.DependencyInjection.Impl
 
 				AddStrategy(exportStrategy);
 
-				return exportStrategy.Activate(this, injectionContext, consider);
+				return exportStrategy.Activate(this, injectionContext, consider, locateKey);
 			}
 
 			return null;
 		}
 
-		private List<T> InternalLocateAllWithContext<T>(IInjectionContext injectionContext,
-			string name,
-			Type locateType,
-			ExportStrategyFilter exportFilter)
+		private List<T> InternalLocateAllWithContext<T>(IInjectionContext injectionContext, string name, Type locateType, ExportStrategyFilter exportFilter, object locateKey)
 		{
 			List<T> returnValue = new List<T>();
 			bool specialType = false;
@@ -1583,7 +1578,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateLazyListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
+					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1591,7 +1586,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateOwnedListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
+					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1599,7 +1594,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					MethodInfo methodInfo = locateMetaListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
-					methodInfo.Invoke(this, new object[] { injectionContext, exportFilter, returnValue });
+					methodInfo.Invoke(this, new [] { injectionContext, exportFilter, locateKey, returnValue });
 
 					specialType = true;
 				}
@@ -1613,12 +1608,12 @@ namespace Grace.DependencyInjection.Impl
 				{
 					if (exportsByType.TryGetValue(locateType, out exportStrategyCollection))
 					{
-						returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
+						returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter, locateKey));
 					}
 				}
 				else if (exportsByName.TryGetValue(name, out exportStrategyCollection))
 				{
-					returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter));
+					returnValue.AddRange(exportStrategyCollection.ActivateAll<T>(injectionContext, exportFilter, locateKey));
 				}
 			}
 
@@ -1630,11 +1625,12 @@ namespace Grace.DependencyInjection.Impl
 				{
 					IEnumerable<object> locatedObjects =
 						secondaryDependencyResolver.LocateAll(this,
-							injectionContext,
-							name,
-							locateType,
-							returnValue.Count == 0,
-							exportFilter);
+																			injectionContext,
+																			name,
+																			locateType,
+																			returnValue.Count == 0,
+																			exportFilter, 
+																			locateKey);
 
 					foreach (object locatedObject in locatedObjects)
 					{
@@ -1647,14 +1643,14 @@ namespace Grace.DependencyInjection.Impl
 			{
 				if (locateType != null)
 				{
-					foreach (T t in ParentScope.LocateAll(locateType, injectionContext, exportFilter))
+					foreach (T t in ParentScope.LocateAll(locateType, injectionContext: injectionContext, consider: exportFilter))
 					{
 						returnValue.Add(t);
 					}
 				}
 				else
 				{
-					foreach (T t in ParentScope.LocateAll(name, injectionContext, exportFilter))
+					foreach (T t in ParentScope.LocateAll(name, injectionContext: injectionContext, consider: exportFilter))
 					{
 						returnValue.Add(t);
 					}
@@ -1719,16 +1715,18 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="T">type to resolve</typeparam>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="exportFilter">export filter to apply</param>
+		/// <param name="locateKey"></param>
 		/// <param name="returnList">return list</param>
 		protected void LocateListOfLazyExports<TLazy, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
+			object locateKey,
 			List<TLazy> returnList) where TLazy : Lazy<T>
 		{
 			ExportStrategyCollection collection;
 
 			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
-				returnList.AddRange(collection.ActivateAllLazy<TLazy, T>(injectionContext, exportFilter));
+				returnList.AddRange(collection.ActivateAllLazy<TLazy, T>(injectionContext, exportFilter, locateKey));
 			}
 		}
 
@@ -1739,9 +1737,11 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="T">type to located</typeparam>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="exportFilter">export filter to apply</param>
+		/// <param name="locateKey"></param>
 		/// <param name="returnList">list to return</param>
 		protected void LocateListOfOwnedExports<TOwned, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
+			object locateKey,
 			List<TOwned> returnList)
 			where TOwned : Owned<T>
 			where T : class
@@ -1750,7 +1750,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
-				returnList.AddRange(collection.ActivateAllOwned<TOwned, T>(injectionContext, exportFilter));
+				returnList.AddRange(collection.ActivateAllOwned<TOwned, T>(injectionContext, exportFilter, locateKey));
 			}
 		}
 
@@ -1761,16 +1761,18 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="exportFilter">export filter</param>
+		/// <param name="locateKey"></param>
 		/// <param name="returnList">list to populate</param>
 		protected void LocateListOfMetaExports<TMeta, T>(IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter,
+			object locateKey,
 			List<TMeta> returnList) where TMeta : Meta<T>
 		{
 			ExportStrategyCollection collection;
 
 			if (exportsByType.TryGetValue(typeof(T), out collection))
 			{
-				returnList.AddRange(collection.ActivateAllMeta<TMeta, T>(injectionContext, exportFilter));
+				returnList.AddRange(collection.ActivateAllMeta<TMeta, T>(injectionContext, exportFilter, locateKey));
 			}
 		}
 

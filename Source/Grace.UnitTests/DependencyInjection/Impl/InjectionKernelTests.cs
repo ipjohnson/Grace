@@ -398,7 +398,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			IInjectionScope childScope = injectionKernel.CreateChildScope();
 
-			BasicService basicService = (BasicService)childScope.Locate("BasicService", childScope.CreateContext());
+			BasicService basicService = (BasicService)childScope.Locate("BasicService", injectionContext: childScope.CreateContext());
 
 			Assert.NotNull(basicService);
 		}

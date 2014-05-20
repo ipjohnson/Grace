@@ -18,8 +18,9 @@ namespace Grace.FakeItEasy
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider)
+		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface)
 			{
@@ -37,12 +38,9 @@ namespace Grace.FakeItEasy
 		/// <param name="resolveName">resolve name</param>
 		/// <param name="resolveType">resolve type</param>
 		/// <param name="consider">export strategy filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			ExportStrategyFilter consider)
+		public object Locate(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface)
 			{
@@ -58,7 +56,7 @@ namespace Grace.FakeItEasy
 
 					owningScope.AddStrategy(strategy);
 
-					return strategy.Activate(owningScope, context, consider);
+					return strategy.Activate(owningScope, context, consider, locateKey);
 				}
 			}
 
@@ -74,13 +72,9 @@ namespace Grace.FakeItEasy
 		/// <param name="resolveType"></param>
 		/// <param name="collectionEmpty"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public IEnumerable<object> LocateAll(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			bool collectionEmpty,
-			ExportStrategyFilter consider)
+		public IEnumerable<object> LocateAll(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, bool collectionEmpty, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface && collectionEmpty)
 			{
@@ -96,7 +90,7 @@ namespace Grace.FakeItEasy
 
 					owningScope.AddStrategy(strategy);
 
-					yield return strategy.Activate(owningScope, context, consider);
+					yield return strategy.Activate(owningScope, context, consider,locateKey );
 				}
 			}
 		}

@@ -39,10 +39,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			if (Log.IsDebugEnabled)
 			{

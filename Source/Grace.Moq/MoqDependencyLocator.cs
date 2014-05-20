@@ -19,8 +19,9 @@ namespace Grace.Moq
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider)
+		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null)
 			{
@@ -46,12 +47,9 @@ namespace Grace.Moq
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			ExportStrategyFilter consider)
+		public object Locate(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null)
 			{
@@ -81,7 +79,7 @@ namespace Grace.Moq
 
 					owningScope.AddStrategy(newStrategy);
 
-					Mock mock = newStrategy.Activate(owningScope, context, consider) as Mock;
+					Mock mock = newStrategy.Activate(owningScope, context, consider, locateKey) as Mock;
 
 					if (mock == null)
 					{
@@ -104,13 +102,9 @@ namespace Grace.Moq
 		/// <param name="resolveType"></param>
 		/// <param name="collectionEmpty"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public IEnumerable<object> LocateAll(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			bool collectionEmpty,
-			ExportStrategyFilter consider)
+		public IEnumerable<object> LocateAll(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, bool collectionEmpty, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && collectionEmpty)
 			{
@@ -128,7 +122,7 @@ namespace Grace.Moq
 
 					owningScope.AddStrategy(newStrategy);
 
-					yield return newStrategy.Activate(owningScope, context, consider);
+					yield return newStrategy.Activate(owningScope, context, consider, locateKey);
 				}
 			}
 		}

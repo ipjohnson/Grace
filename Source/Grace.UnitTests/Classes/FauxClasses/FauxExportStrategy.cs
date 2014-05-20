@@ -20,7 +20,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public bool MeetsConditionValue { get; set; }
 
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			return activationDelegate();
 		}

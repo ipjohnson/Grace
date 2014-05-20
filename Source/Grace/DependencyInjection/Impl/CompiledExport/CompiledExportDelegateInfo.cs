@@ -292,6 +292,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Value provider for the import
 		/// </summary>
 		public IExportValueProvider ValueProvider { get; set; }
+
+		/// <summary>
+		/// Locate key
+		/// </summary>
+		public object LocateKey { get; set; }
 	}
 
 	/// <summary>
@@ -332,6 +337,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Export filter associated with this import
 		/// </summary>
 		public ExportStrategyFilter ExportStrategyFilter { get; set; }
+
+		/// <summary>
+		/// Locate key
+		/// </summary>
+		public object LocateKey { get; set; }
 
 		/// <summary>
 		/// IComparer(T) to be used to sort collections
@@ -386,6 +396,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Export filter associated with this import
 		/// </summary>
 		public ExportStrategyFilter ExportStrategyFilter { get; set; }
+
+		/// <summary>
+		/// Locate key
+		/// </summary>
+		public object LocateKey { get; set; }
 
 		/// <summary>
 		/// IComparer(T) to use to compare export values

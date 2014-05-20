@@ -17,14 +17,15 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope">injection scope</param>
 		/// <param name="context">context</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>activated object</returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IExportStrategy strategy = FindExportStrategy(exportInjectionScope, context, consider);
 
 			if (strategy != null)
 			{
-				T activatedObject = (T)strategy.Activate(exportInjectionScope, context, consider);
+				T activatedObject = (T)strategy.Activate(exportInjectionScope, context, consider, locateKey);
 
 				return new Meta<T>(activatedObject, strategy.Metadata);
 			}

@@ -46,8 +46,8 @@ namespace Grace.DependencyInjection
 		/// <returns>new child scope</returns>
 		[NotNull]
 		IInjectionScope CreateChildScope(ExportRegistrationDelegate registrationDelegate = null,
-			string scopeName = null,
-			IDisposalScopeProvider disposalScopeProvider = null);
+													string scopeName = null,
+													IDisposalScopeProvider disposalScopeProvider = null);
 
 		/// <summary>
 		/// Creates a child scope from this scope using a configuration module
@@ -58,8 +58,8 @@ namespace Grace.DependencyInjection
 		/// <returns>new child scope</returns>
 		[NotNull]
 		IInjectionScope CreateChildScope([NotNull] IConfigurationModule configurationModule,
-			string scopeName = null,
-			IDisposalScopeProvider disposalScopeProvider = null);
+													string scopeName = null,
+													IDisposalScopeProvider disposalScopeProvider = null);
 
 		/// <summary>
 		/// This method can be used to configure the root scope of the container
@@ -85,9 +85,10 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="injectionContext">injection context for the locate</param>
 		/// <param name="consider">filter to be used when locating</param>
+		/// <param name="withKey"></param>
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>export T if found, other wise default(T)</returns>
-		T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null);
+		T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null);
 
 		/// <summary>
 		/// Locate an object by type
@@ -95,10 +96,12 @@ namespace Grace.DependencyInjection
 		/// <param name="objectType">type to locate</param>
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating export</param>
+		/// <param name="withKey"></param>
 		/// <returns>export object if found, other wise null</returns>
 		object Locate([NotNull] Type objectType,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null);
+						  IInjectionContext injectionContext = null,
+						  ExportStrategyFilter consider = null,
+						  object withKey = null);
 
 		/// <summary>
 		/// Locate an export by name
@@ -106,23 +109,27 @@ namespace Grace.DependencyInjection
 		/// <param name="exportName">name of export to locate</param>
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating</param>
+		/// <param name="withKey"></param>
 		/// <returns>export object if found, other wise null</returns>
 		object Locate([NotNull] string exportName,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null);
+						  IInjectionContext injectionContext = null,
+						  ExportStrategyFilter consider = null,
+						  object withKey = null);
 
 		/// <summary>
 		/// Locate all export of type T
 		/// </summary>
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating</param>
+		/// <param name="withKey"></param>
 		/// <param name="comparer">used for sorting the imports when returning the list</param>
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>List of T, this will return an empty list if not exports are found</returns>
 		[NotNull]
 		List<T> LocateAll<T>(IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<T> comparer = null);
+									ExportStrategyFilter consider = null,
+									object withKey = null,
+									IComparer<T> comparer = null);
 
 		/// <summary>
 		/// Locate All exports by the name provided
@@ -130,13 +137,15 @@ namespace Grace.DependencyInjection
 		/// <param name="name">export name to locate</param>
 		/// <param name="injectionContext">injection context to use while locating</param>
 		/// <param name="consider">filter to use while locating</param>
+		/// <param name="withKey"></param>
 		/// <param name="comparer"></param>
 		/// <returns>List of objects, this will return an empty list if no exports are found</returns>
 		[NotNull]
 		List<object> LocateAll([NotNull] string name,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<object> comparer = null);
+									  IInjectionContext injectionContext = null,
+									  ExportStrategyFilter consider = null,
+									  object withKey = null,
+									  IComparer<object> comparer = null);
 
 		/// <summary>
 		/// Locate all exports by type
@@ -144,11 +153,13 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType">type to locate</param>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter to use while locating</param>
+		/// <param name="withKey"></param>
 		/// <returns>list of object, this will return an empty list if no exports are found</returns>
 		[NotNull]
 		List<object> LocateAll(Type exportType,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null);
+									  IInjectionContext injectionContext = null,
+									  ExportStrategyFilter consider = null,
+									  object withKey = null);
 
 		/// <summary>
 		/// The environment for this scope (always inherited from the root scope)

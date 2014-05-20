@@ -174,12 +174,12 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			extraData[dataName] = newValue;
 		}
 
-		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
-			return (T)Locate(typeof(T), injectionContext, consider);
+			return (T)Locate(typeof(T), injectionContext, consider, locateKey);
 		}
 
-		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null)
+		public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			object returnValue = null;
 
@@ -194,43 +194,34 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 				if (exports.TryGetValue(objectType, out collection))
 				{
-					returnValue = collection.Activate(null, objectType, injectionContext, consider);
+					returnValue = collection.Activate(null, objectType, injectionContext, consider, locateKey);
 				}
 			}
 
 			if (returnValue == null && ParentScope != null)
 			{
-				returnValue = ParentScope.Locate(objectType, injectionContext, consider);
+				returnValue = ParentScope.Locate(objectType, injectionContext, consider,locateKey);
 			}
 
 			return returnValue;
 		}
 
-		public object Locate(string exportName,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
+		public object Locate(string exportName, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<T> LocateAll<T>(IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<T> comparer = null)
+		public List<T> LocateAll<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<T> comparer = null)
 		{
 			return new List<T>();
 		}
 
-		public List<object> LocateAll(string name,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null,
-			IComparer<object> comparer = null)
+		public List<object> LocateAll(string name, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null, IComparer<object> comparer = null)
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<object> LocateAll(Type exportType,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
+		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
 		{
 			throw new NotImplementedException();
 		}

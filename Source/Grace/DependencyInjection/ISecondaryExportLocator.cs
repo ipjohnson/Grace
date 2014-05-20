@@ -17,11 +17,13 @@ namespace Grace.DependencyInjection
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
 		bool CanLocate([NotNull] IInjectionContext context,
-			[CanBeNull] string resolveName,
-			[CanBeNull] Type resolveType,
-			[CanBeNull] ExportStrategyFilter consider);
+							[CanBeNull] string resolveName,
+							[CanBeNull] Type resolveType,
+							[CanBeNull] ExportStrategyFilter consider,
+							[CanBeNull] object locateKey);
 
 		/// <summary>
 		/// Locate will be called when the injection scope can't locate a particular resource
@@ -31,12 +33,14 @@ namespace Grace.DependencyInjection
 		/// <param name="resolveName">name being resolved</param>
 		/// <param name="resolveType">type being resolved</param>
 		/// <param name="consider">filter to use while resolving</param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		object Locate([NotNull] IInjectionScope owningScope,
-			[NotNull] IInjectionContext context,
-			[CanBeNull] string resolveName,
-			[CanBeNull] Type resolveType,
-			[CanBeNull] ExportStrategyFilter consider);
+		object Locate([NotNull] IInjectionScope owningScope, 
+						  [NotNull] IInjectionContext context, 
+						  [CanBeNull] string resolveName, 
+						  [CanBeNull] Type resolveType, 
+						  [CanBeNull] ExportStrategyFilter consider, 
+						  [CanBeNull] object locateKey);
 
 		/// <summary>
 		/// LocateAll will be called every time a collection is resolved
@@ -47,13 +51,15 @@ namespace Grace.DependencyInjection
 		/// <param name="resolveType">type that is being resolved</param>
 		/// <param name="collectionEmpty">value saying if there are already values in the collection</param>
 		/// <param name="consider">filter to use while locating</param>
+		/// <param name="locateKey"></param>
 		/// <returns>list of exports</returns>
 		[NotNull]
 		IEnumerable<object> LocateAll([NotNull] IInjectionScope owningScope,
-			[NotNull] IInjectionContext context,
-			[CanBeNull] string resolveName,
-			[CanBeNull] Type resolveType,
-			bool collectionEmpty,
-			[CanBeNull] ExportStrategyFilter consider);
+												[NotNull] IInjectionContext context,
+												[CanBeNull] string resolveName,
+												[CanBeNull] Type resolveType,
+												bool collectionEmpty,
+												[CanBeNull] ExportStrategyFilter consider,
+												[CanBeNull] object locateKey);
 	}
 }

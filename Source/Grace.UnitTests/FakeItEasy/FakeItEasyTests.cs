@@ -25,14 +25,14 @@ namespace Grace.UnitTests.FakeItEasy
 		{
 			FakeContainer container = new FakeContainer();
 
-			A.CallTo(() => container.Locate<IBasicService>(null, null).TestMethod()).Returns(5);
+			A.CallTo(() => container.Locate<IBasicService>(null, null, null).TestMethod()).Returns(5);
 
 			ImportConstructorService importConstructorService =
 				container.Locate<ImportConstructorService>();
 
 			Assert.Equal(5, importConstructorService.TestMethod());
 
-			A.CallTo(() => container.Locate<IBasicService>(null, null).TestMethod()).MustHaveHappened(Repeated.Exactly.Once);
+			A.CallTo(() => container.Locate<IBasicService>(null, null, null).TestMethod()).MustHaveHappened(Repeated.Exactly.Once);
 		}
 
 		[Fact]
@@ -49,7 +49,7 @@ namespace Grace.UnitTests.FakeItEasy
 
 			Assert.Equal(5, importConstructorService.TestMethod());
 
-			A.CallTo(() => container.Locate<IBasicService>(null, null).TestMethod()).MustHaveHappened(Repeated.Exactly.Once);
+			A.CallTo(() => container.Locate<IBasicService>(null, null, null).TestMethod()).MustHaveHappened(Repeated.Exactly.Once);
 		}
 
 		[Fact]

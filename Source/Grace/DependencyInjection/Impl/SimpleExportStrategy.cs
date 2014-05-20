@@ -77,10 +77,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope">injection scope</param>
 		/// <param name="context">injection context</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>activated object</returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			if (lifestyle != null)
 			{

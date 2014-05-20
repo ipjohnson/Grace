@@ -14,10 +14,8 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportName">export name</param>
 		/// <param name="exportType">export type</param>
 		/// <param name="consider">export filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>export object</returns>
-		object LocateMissingExport(IInjectionContext context,
-			string exportName,
-			Type exportType,
-			ExportStrategyFilter consider);
+		object LocateMissingExport(IInjectionContext context, string exportName, Type exportType, ExportStrategyFilter consider, object locateKey);
 	}
 }

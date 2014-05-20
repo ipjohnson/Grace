@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Grace.Logging;
@@ -17,6 +18,7 @@ namespace Grace.DependencyInjection.Impl
 		private readonly ILog log = Logger.GetLogger<ExportStrategyCollection>();
 		private bool disposed;
 		private ReadOnlyCollection<IExportStrategy> exportStrategies;
+		private Dictionary<object, IExportStrategy> keyedStrategies;
 		private volatile IExportStrategy primaryStrategy;
 
 		/// <summary>
@@ -41,43 +43,82 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<IExportStrategy> ExportStrategies
 		{
-			get { return exportStrategies; }
+			get
+			{
+				if (keyedStrategies == null)
+				{
+					return exportStrategies;
+				}
+
+				var returnValue = new List<IExportStrategy>(exportStrategies);
+
+				returnValue.AddRange(keyedStrategies.Values);
+
+				return returnValue;
+
+			}
 		}
 
-		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TLazy : Lazy<T>
 		{
 			List<TLazy> returnValue = new List<TLazy>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
 			int count = localStrategies.Count;
 
-			for (int i = 0; i < count; i++)
+			if (locateKey == null)
 			{
-				IExportStrategy testStrategy = localStrategies[i];
-
-				if (testStrategy.MeetsCondition(injectionContext) &&
-				    (filter == null ||
-				     !testStrategy.AllowingFiltering ||
-				     filter(injectionContext, testStrategy)))
+				for (int i = 0; i < count; i++)
 				{
-					try
+					IExportStrategy testStrategy = localStrategies[i];
+
+					if (testStrategy.MeetsCondition(injectionContext) &&
+						 (filter == null ||
+						  !testStrategy.AllowingFiltering ||
+						  filter(injectionContext, testStrategy)))
 					{
 						IInjectionContext clonedContext = injectionContext.Clone();
 
-						Lazy<T> lazyT = new Lazy<T>(() => (T)testStrategy.Activate(injectionKernel, clonedContext, filter));
+						Lazy<T> lazyT = new Lazy<T>(() => (T)testStrategy.Activate(injectionKernel, clonedContext, filter, locateKey));
 
 						returnValue.Add((TLazy)lazyT);
-					}
-					catch (Exception exp)
-					{
-						if (injectionKernel.Container == null ||
-						    injectionKernel.Container.ThrowExceptions)
-						{
-							throw;
-						}
 
-						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
-							exp);
+					}
+				}
+			}
+			else if (keyedStrategies != null)
+			{
+				IEnumerable enumerable = locateKey as IEnumerable;
+
+				if (enumerable != null && !(locateKey is string))
+				{
+					foreach (object key in enumerable)
+					{
+						IExportStrategy testStrategy;
+
+						if (keyedStrategies.TryGetValue(key, out testStrategy))
+						{
+							IInjectionContext clonedContext = injectionContext.Clone();
+
+							Lazy<T> lazyT = new Lazy<T>(() => (T)testStrategy.Activate(injectionKernel, clonedContext, filter, locateKey));
+
+							returnValue.Add((TLazy)lazyT);
+
+						}
+					}
+				}
+				else
+				{
+					IExportStrategy testStrategy;
+
+					if (keyedStrategies.TryGetValue(locateKey, out testStrategy))
+					{
+						IInjectionContext clonedContext = injectionContext.Clone();
+
+						Lazy<T> lazyT = new Lazy<T>(() => (T)testStrategy.Activate(injectionKernel, clonedContext, filter, locateKey));
+
+						returnValue.Add((TLazy)lazyT);
+
 					}
 				}
 			}
@@ -85,23 +126,24 @@ namespace Grace.DependencyInjection.Impl
 			return returnValue;
 		}
 
-		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
-			where TOwned : Owned<T> where T : class
+		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
+			where TOwned : Owned<T>
+			where T : class
 		{
 			List<TOwned> returnValue = new List<TOwned>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
 			int count = localStrategies.Count;
 
-			for (int i = 0; i < count; i++)
+			if (locateKey == null)
 			{
-				IExportStrategy testStrategy = localStrategies[i];
-
-				if (testStrategy.MeetsCondition(injectionContext) &&
-				    (filter == null ||
-				     !testStrategy.AllowingFiltering ||
-				     filter(injectionContext, testStrategy)))
+				for (int i = 0; i < count; i++)
 				{
-					try
+					IExportStrategy testStrategy = localStrategies[i];
+
+					if (testStrategy.MeetsCondition(injectionContext) &&
+						 (filter == null ||
+						  !testStrategy.AllowingFiltering ||
+						  filter(injectionContext, testStrategy)))
 					{
 						Owned<T> owned = new Owned<T>();
 
@@ -109,7 +151,59 @@ namespace Grace.DependencyInjection.Impl
 
 						injectionContext.DisposalScope = owned;
 
-						T activated = (T)testStrategy.Activate(injectionKernel, injectionContext, filter);
+						T activated = (T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
+
+						owned.SetValue(activated);
+
+						returnValue.Add((TOwned)owned);
+
+						injectionContext.DisposalScope = currentDisposalScope;
+
+					}
+				}
+			}
+			else if (keyedStrategies != null)
+			{
+				IEnumerable enumerable = locateKey as IEnumerable;
+
+				if (enumerable != null && !(locateKey is string))
+				{
+					foreach (object key in enumerable)
+					{
+						IExportStrategy testStrategy;
+
+						if (keyedStrategies.TryGetValue(key, out testStrategy))
+						{
+							Owned<T> owned = new Owned<T>();
+
+							IDisposalScope currentDisposalScope = injectionContext.DisposalScope;
+
+							injectionContext.DisposalScope = owned;
+
+							T activated = (T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
+
+							owned.SetValue(activated);
+
+							returnValue.Add((TOwned)owned);
+
+							injectionContext.DisposalScope = currentDisposalScope;
+
+						}
+					}
+				}
+				else
+				{
+					IExportStrategy testStrategy;
+
+					if (keyedStrategies.TryGetValue(locateKey, out testStrategy))
+					{
+						Owned<T> owned = new Owned<T>();
+
+						IDisposalScope currentDisposalScope = injectionContext.DisposalScope;
+
+						injectionContext.DisposalScope = owned;
+
+						T activated = (T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
 
 						owned.SetValue(activated);
 
@@ -117,56 +211,72 @@ namespace Grace.DependencyInjection.Impl
 
 						injectionContext.DisposalScope = currentDisposalScope;
 					}
-					catch (Exception exp)
-					{
-						if (injectionKernel.Container == null ||
-						    injectionKernel.Container.ThrowExceptions)
-						{
-							throw;
-						}
-
-						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
-							exp);
-					}
 				}
 			}
 
 			return returnValue;
 		}
 
-		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TMeta : Meta<T>
 		{
 			List<TMeta> returnValue = new List<TMeta>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
 			int count = localStrategies.Count;
 
-			for (int i = 0; i < count; i++)
+			if (locateKey == null)
 			{
-				IExportStrategy testStrategy = localStrategies[i];
-
-				if (testStrategy.MeetsCondition(injectionContext) &&
-				    (filter == null ||
-				     !testStrategy.AllowingFiltering ||
-				     filter(injectionContext, testStrategy)))
+				for (int i = 0; i < count; i++)
 				{
-					try
+					IExportStrategy testStrategy = localStrategies[i];
+
+					if (testStrategy.MeetsCondition(injectionContext) &&
+						 (filter == null ||
+						  !testStrategy.AllowingFiltering ||
+						  filter(injectionContext, testStrategy)))
 					{
 						Meta<T> meta =
-							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter), testStrategy.Metadata);
+							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey),
+								testStrategy.Metadata);
 
 						returnValue.Add((TMeta)meta);
 					}
-					catch (Exception exp)
-					{
-						if (injectionKernel.Container == null ||
-						    injectionKernel.Container.ThrowExceptions)
-						{
-							throw;
-						}
 
-						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
-							exp);
+				}
+			}
+			else if (keyedStrategies != null)
+			{
+				IEnumerable enumerable = locateKey as IEnumerable;
+
+				if (enumerable != null && !(locateKey is string))
+				{
+					foreach (object key in enumerable)
+					{
+						IExportStrategy testStrategy;
+
+						if (keyedStrategies.TryGetValue(key, out testStrategy))
+						{
+							Meta<T> meta =
+									new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey),
+										testStrategy.Metadata);
+
+							returnValue.Add((TMeta)meta);
+
+						}
+					}
+				}
+				else
+				{
+					IExportStrategy testStrategy;
+
+					if (keyedStrategies.TryGetValue(locateKey, out testStrategy))
+					{
+
+						Meta<T> meta =
+							new Meta<T>((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey),
+								testStrategy.Metadata);
+
+						returnValue.Add((TMeta)meta);
 					}
 				}
 			}
@@ -181,32 +291,59 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="filter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(string exportName,
-			Type exportType,
-			IInjectionContext injectionContext,
-			ExportStrategyFilter filter)
+		public object Activate(string exportName, Type exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			IExportStrategy currentPrimary = primaryStrategy;
 
-			if (currentPrimary != null && filter == null)
+			if (currentPrimary != null && filter == null && locateKey == null)
 			{
-				return currentPrimary.Activate(injectionKernel, injectionContext, null);
+				return currentPrimary.Activate(injectionKernel, injectionContext, null, null);
 			}
 
-			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
-			int count = localStrategies.Count;
-
-			for (int i = 0; i < count; i++)
+			if (locateKey == null)
 			{
-				IExportStrategy testStrategy = localStrategies[i];
+				ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
+				int count = localStrategies.Count;
 
-				if (testStrategy.MeetsCondition(injectionContext) &&
-				    (filter == null ||
-				     !testStrategy.AllowingFiltering ||
-				     filter(injectionContext, testStrategy)))
+				for (int i = 0; i < count; i++)
 				{
-					return testStrategy.Activate(injectionKernel, injectionContext, filter);
+					IExportStrategy testStrategy = localStrategies[i];
+
+					if (testStrategy.MeetsCondition(injectionContext) &&
+						 (filter == null ||
+						  !testStrategy.AllowingFiltering ||
+						  filter(injectionContext, testStrategy)))
+					{
+						return testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
+					}
+				}
+			}
+			else if (keyedStrategies != null)
+			{
+				IEnumerable enumerable = locateKey as IEnumerable;
+
+				if (enumerable != null && !(locateKey is string))
+				{
+					foreach (object key in enumerable)
+					{
+						IExportStrategy testStrategy;
+
+						if (keyedStrategies.TryGetValue(key, out testStrategy))
+						{
+							return testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
+						}
+					}
+				}
+				else
+				{
+					IExportStrategy testStrategy;
+
+					if (keyedStrategies.TryGetValue(locateKey, out testStrategy))
+					{
+						return testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
+					}
 				}
 			}
 
@@ -214,7 +351,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (handler != null)
 			{
-				return handler.LocateMissingExport(injectionContext, exportName, exportType, filter);
+				return handler.LocateMissingExport(injectionContext, exportName, exportType, filter, locateKey);
 			}
 
 			return null;
@@ -226,36 +363,52 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="T"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="filter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			List<T> returnValue = new List<T>();
 			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
 			int count = localStrategies.Count;
 
-			for (int i = 0; i < count; i++)
+			if (locateKey == null)
 			{
-				IExportStrategy testStrategy = localStrategies[i];
-
-				if (testStrategy.MeetsCondition(injectionContext) &&
-				    (filter == null ||
-				     !testStrategy.AllowingFiltering ||
-				     filter(injectionContext, testStrategy)))
+				for (int i = 0; i < count; i++)
 				{
-					try
-					{
-						returnValue.Add((T)testStrategy.Activate(injectionKernel, injectionContext, filter));
-					}
-					catch (Exception exp)
-					{
-						if (injectionKernel.Container == null ||
-						    injectionKernel.Container.ThrowExceptions)
-						{
-							throw;
-						}
+					IExportStrategy testStrategy = localStrategies[i];
 
-						log.Error("Exception thrown while trying to activate strategy for type " + testStrategy.ActivationType.FullName,
-							exp);
+					if (testStrategy.MeetsCondition(injectionContext) &&
+						 (filter == null ||
+						  !testStrategy.AllowingFiltering ||
+						  filter(injectionContext, testStrategy)))
+					{
+						returnValue.Add((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey));
+					}
+				}
+			}
+			else if (keyedStrategies != null)
+			{
+				IEnumerable enumerable = locateKey as IEnumerable;
+
+				if (enumerable != null && !(locateKey is string))
+				{
+					foreach (object key in enumerable)
+					{
+						IExportStrategy testStrategy;
+
+						if (keyedStrategies.TryGetValue(key, out testStrategy))
+						{
+							returnValue.Add((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey));
+						}
+					}
+				}
+				else
+				{
+					IExportStrategy testStrategy;
+
+					if (keyedStrategies.TryGetValue(locateKey, out testStrategy))
+					{
+						returnValue.Add((T)testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey));
 					}
 				}
 			}
@@ -271,21 +424,41 @@ namespace Grace.DependencyInjection.Impl
 		{
 			lock (exportStrategiesLock)
 			{
-				if (exportStrategies.Contains(exportStrategy))
+				if (exportStrategy.Key == null)
 				{
-					return;
+					if (exportStrategies.Contains(exportStrategy))
+					{
+						return;
+					}
+
+					List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+
+					newList.Sort((x, y) => comparer(x, y, environment));
+
+					// I reverse the list because the sort goes from lowest to highest and it needs to be reversed
+					newList.Reverse();
+
+					exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList.ToArray());
+
+					primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
 				}
+				else
+				{
+					Dictionary<object, IExportStrategy> newDictionary;
 
-				List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+					if (keyedStrategies == null)
+					{
+						newDictionary = new Dictionary<object, IExportStrategy>();
+					}
+					else
+					{
+						newDictionary = new Dictionary<object, IExportStrategy>(keyedStrategies);
+					}
 
-				newList.Sort((x, y) => comparer(x, y, environment));
+					newDictionary[exportStrategy.Key] = exportStrategy;
 
-				// I reverse the list because the sort goes from lowest to highest and it needs to be reversed
-				newList.Reverse();
-
-				exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList.ToArray());
-
-				primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
+					keyedStrategies = newDictionary;
+				}
 			}
 		}
 
@@ -297,21 +470,35 @@ namespace Grace.DependencyInjection.Impl
 		{
 			lock (exportStrategiesLock)
 			{
-				if (exportStrategies.Contains(exportStrategy))
+				if (exportStrategy.Key == null)
 				{
-					List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies);
-
-					newList.Remove(exportStrategy);
-
-					exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList);
-
-					if (exportStrategies.Count > 0)
+					if (exportStrategies.Contains(exportStrategy))
 					{
-						primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
+						List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies);
+
+						newList.Remove(exportStrategy);
+
+						exportStrategies = new ReadOnlyCollection<IExportStrategy>(newList);
+
+						if (exportStrategies.Count > 0)
+						{
+							primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
+						}
+						else
+						{
+							primaryStrategy = null;
+						}
 					}
-					else
+				}
+				else
+				{
+					if (keyedStrategies != null)
 					{
-						primaryStrategy = null;
+						Dictionary<object, IExportStrategy> newDictionary = new Dictionary<object, IExportStrategy>(keyedStrategies);
+
+						newDictionary.Remove(exportStrategy.Key);
+
+						keyedStrategies = newDictionary;
 					}
 				}
 			}
@@ -347,6 +534,14 @@ namespace Grace.DependencyInjection.Impl
 						exportStrategy.Dispose();
 					}
 				}
+
+				if (keyedStrategies != null)
+				{
+					foreach (KeyValuePair<object, IExportStrategy> exportStrategy in keyedStrategies)
+					{
+						exportStrategy.Value.Dispose();
+					}
+				}
 			}
 		}
 
@@ -360,7 +555,8 @@ namespace Grace.DependencyInjection.Impl
 			return
 				new ExportStrategyCollection(injectionKernel, environment, comparer)
 				{
-					exportStrategies = exportStrategies
+					exportStrategies = exportStrategies,
+					keyedStrategies = keyedStrategies
 				};
 		}
 	}

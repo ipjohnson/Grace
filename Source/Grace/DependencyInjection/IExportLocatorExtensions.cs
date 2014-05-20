@@ -144,19 +144,13 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context to use</param>
 		/// <param name="consider">filter method to use</param>
 		/// <returns>export T</returns>
+		[Obsolete]
 		public static T LocateByKey<T, TKey>(this IExportLocator locator,
 			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{
-			ExportStrategyFilter keyFilter = (context, strategy) => CompareKeyFunction(key, context, strategy);
-
-			if (consider != null)
-			{
-				return locator.Locate<T>(injectionContext, keyFilter + consider);
-			}
-
-			return locator.Locate<T>(injectionContext, keyFilter);
+			return locator.Locate<T>(injectionContext, consider, key);
 		}
 
 		/// <summary>
@@ -169,20 +163,14 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter method</param>
 		/// <returns>export object, null if no object found</returns>
+		[Obsolete]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] string exportName,
 			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{
-			ExportStrategyFilter keyFilter = (context, strategy) => CompareKeyFunction(key, context, strategy);
-
-			if (consider != null)
-			{
-				return locator.Locate(exportName, injectionContext, new ExportStrategyFilterGroup(keyFilter, consider));
-			}
-
-			return locator.Locate(exportName, injectionContext, keyFilter);
+			return locator.Locate(exportName, injectionContext, consider, key);
 		}
 
 		/// <summary>
@@ -195,20 +183,14 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>export object, null if no export found</returns>
+		[Obsolete]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] Type exportType,
 			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter consider = null)
 		{
-			ExportStrategyFilter keyFilter = (context, strategy) => CompareKeyFunction(key, context, strategy);
-
-			if (consider != null)
-			{
-				return locator.Locate(exportType, injectionContext, new ExportStrategyFilterGroup(keyFilter, consider));
-			}
-
-			return locator.Locate(exportType, injectionContext, keyFilter);
+			return locator.Locate<TKey>(injectionContext, consider, key);
 		}
 
 		/// <summary>
@@ -260,16 +242,16 @@ namespace Grace.DependencyInjection
 			{
 				foreach (IExportStrategy exportStrategy in currentScope.GetAllStrategies(
 						(c, e) =>
-							{
-								object value;
+						{
+							object value;
 
-								return e.Metadata.TryGetValue(metadataName, out value) &&
-								       (metadataValue == null || metadataValue.Equals(value));
-							}))
+							return e.Metadata.TryGetValue(metadataName, out value) &&
+									 (metadataValue == null || metadataValue.Equals(value));
+						}))
 				{
 					IInjectionContext context = exportLocator.CreateContext();
 
-					T newT = (T)exportStrategy.Activate(currentScope, context, null);
+					T newT = (T)exportStrategy.Activate(currentScope, context, null, null);
 
 					returnList.Add(newT);
 				}

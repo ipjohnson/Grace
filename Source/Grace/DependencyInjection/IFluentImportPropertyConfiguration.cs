@@ -8,11 +8,10 @@ namespace Grace.DependencyInjection
 	public interface IFluentImportPropertyConfiguration : IFluentExportStrategyConfiguration
 	{
 		/// <summary>
-		/// Is the property required
+		/// Import the property value after construction. Usually this is done before construction
 		/// </summary>
-		/// <param name="isRequired">is required</param>
 		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration IsRequired(bool isRequired = true);
+		IFluentImportPropertyConfiguration AfterConstruction();
 
 		/// <summary>
 		/// filter to use when importing
@@ -20,6 +19,20 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter delegate</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration Consider(ExportStrategyFilter consider);
+
+		/// <summary>
+		/// Is the property required
+		/// </summary>
+		/// <param name="isRequired">is required</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration IsRequired(bool isRequired = true);
+
+		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration LocateWithKey(object locateKey);
 
 		/// <summary>
 		/// Specify a value to use when importing the property
@@ -35,11 +48,6 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
 
-		/// <summary>
-		/// Import the property value after construction. Usually this is done before construction
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration AfterConstruction();
 	}
 
 	/// <summary>
@@ -50,11 +58,10 @@ namespace Grace.DependencyInjection
 	public interface IFluentImportPropertyConfiguration<T, in TProp> : IFluentExportStrategyConfiguration<T>
 	{
 		/// <summary>
-		/// Is the property required
+		/// Import the property value after construction. Usually this is done before construction
 		/// </summary>
-		/// <param name="isRequired">is required</param>
 		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration<T, TProp> IsRequired(bool isRequired = true);
+		IFluentImportPropertyConfiguration<T, TProp> AfterConstruction();
 
 		/// <summary>
 		/// use a filter delegate when importing property
@@ -62,6 +69,20 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter delegate</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration<T, TProp> Consider(ExportStrategyFilter consider);
+
+		/// <summary>
+		/// Is the property required
+		/// </summary>
+		/// <param name="isRequired">is required</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration<T, TProp> IsRequired(bool isRequired = true);
+
+		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey);
 
 		/// <summary>
 		/// Provide value for import property
@@ -84,10 +105,5 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration<T, TProp> UsingValueProvider(IExportValueProvider provider);
 
-		/// <summary>
-		/// Import the property value after construction. Usually this is done before construction
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration<T, TProp> AfterConstruction();
 	}
 }

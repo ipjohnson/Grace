@@ -55,6 +55,13 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		public IFluentImportPropertyCollectionConfiguration<T, TItem> LocateWithKey(object locateKey)
+		{
+			newImportPropertyInfo.LocateKey = locateKey;
+
+			return this;
+		}
+
 		public IFluentImportPropertyCollectionConfiguration<T, TItem> SortByProperty(Func<TItem, IComparable> propertyFunc)
 		{
 			newImportPropertyInfo.ComparerObject = new FuncComparer<TItem>(propertyFunc);

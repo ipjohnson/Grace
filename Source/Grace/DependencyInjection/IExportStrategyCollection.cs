@@ -19,8 +19,9 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="filter">export filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>list of exports</returns>
-		List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter);
+		List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey);
 
 		/// <summary>
 		/// Activate all instances of type as Meta(T)
@@ -29,8 +30,9 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TLazy"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="filter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TLazy : Lazy<T>;
 
 		/// <summary>
@@ -40,8 +42,9 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TOwned"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="filter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TOwned : Owned<T> where T : class;
 
 		/// <summary>
@@ -51,8 +54,9 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="filter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TMeta : Meta<T>;
 
 		/// <summary>
@@ -62,11 +66,13 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType">export type</param>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="filter">export filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>export object</returns>
 		object Activate(string exportName,
-			Type exportType,
-			IInjectionContext injectionContext,
-			ExportStrategyFilter filter);
+							 Type exportType,
+							 IInjectionContext injectionContext,
+							 ExportStrategyFilter filter, 
+							 object locateKey);
 
 		/// <summary>
 		/// Add an export strategy to the collection

@@ -256,7 +256,7 @@ namespace Grace.UnitTests.DependencyInjection
 				                           { "intParam", (x, y) => 7 }
 			                           };
 
-			WithCtorParamClass paramClass = container.Locate<WithCtorParamClass>(context);
+			WithCtorParamClass paramClass = container.Locate<WithCtorParamClass>(injectionContext: context);
 
 			Assert.NotNull(paramClass);
 			Assert.Equal("Hello", paramClass.StringParam);
@@ -275,7 +275,7 @@ namespace Grace.UnitTests.DependencyInjection
 				                           { "DateTime", (x, y) => DateTime.Now }
 			                           };
 
-			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>(context);
+			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>(injectionContext: context);
 
 			Assert.NotNull(importName);
 			Assert.Equal(DateTime.Today, importName.DateTime.Date);
@@ -372,7 +372,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			context.Export("testValue", (s, c) => "5");
 
-			var intClass = container.Locate<IIntConstructorClass>(context);
+			var intClass = container.Locate<IIntConstructorClass>(injectionContext: context);
 
 			Assert.NotNull(intClass);
 

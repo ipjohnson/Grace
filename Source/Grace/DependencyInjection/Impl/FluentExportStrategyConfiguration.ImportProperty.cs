@@ -58,6 +58,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Locate with a key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		public IFluentImportPropertyConfiguration LocateWithKey(object locateKey)
+		{
+			importPropertyInfo.LocateKey = locateKey;
+
+			return this;
+		}
+
+		/// <summary>
 		/// filter to use when importing
 		/// </summary>
 		/// <param name="consider">filter delegate</param>
@@ -172,6 +184,18 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentImportPropertyConfiguration<T, TProp> IsRequired(bool isRequired = true)
 		{
 			importPropertyInfo.IsRequired = isRequired;
+
+			return this;
+		}
+
+		/// <summary>
+		/// Locate with key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		public IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey)
+		{
+			importPropertyInfo.LocateKey = locateKey;
 
 			return this;
 		}

@@ -152,8 +152,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -169,7 +170,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 
 				                           newInjectionContext.Export((s, c) => @in);
 
-				                           return scope.Locate<TOut>(newInjectionContext);
+				                           return scope.Locate<TOut>(injectionContext: newInjectionContext);
 			                           });
 		}
 
@@ -220,8 +221,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -238,7 +240,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				                                  newInjectionContext.Export((s, c) => in1);
 				                                  newInjectionContext.Export((s, c) => in2);
 
-				                                  return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+				                                  return newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
 			                                  });
 		}
 
@@ -290,8 +292,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -309,7 +312,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				                                        newInjectionContext.Export((s, c) => in2);
 				                                        newInjectionContext.Export((s, c) => in3);
 
-				                                        return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+				                                        return newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
 			                                        });
 		}
 
@@ -362,8 +365,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -383,7 +387,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				                                              newInjectionContext.Export((s, c) => in4);
 
 				                                              return
-					                                              newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+					                                              newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
 			                                              });
 		}
 
@@ -438,8 +442,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -461,7 +466,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 					newInjectionContext.Export((s, c) => in5);
 
 					return
-						newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext);
+						newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
 				});
 		}
 

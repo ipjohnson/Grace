@@ -37,8 +37,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider)
+		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			string localName = resolveName;
 
@@ -71,12 +72,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			ExportStrategyFilter consider)
+		public object Locate(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			string localName = resolveName;
 
@@ -110,13 +108,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="resolveType"></param>
 		/// <param name="collectionEmpty"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public IEnumerable<object> LocateAll(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			bool collectionEmpty,
-			ExportStrategyFilter consider)
+		public IEnumerable<object> LocateAll(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, bool collectionEmpty, ExportStrategyFilter consider, object locateKey)
 		{
 			List<object> returnValue = new List<object>();
 

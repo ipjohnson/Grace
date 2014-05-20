@@ -30,10 +30,9 @@ namespace Grace.Moq
 		/// <param name="exportInjectionScope">export scope for this activation</param>
 		/// <param name="context">context for the activation</param>
 		/// <param name="consider">filter to consider when activating</param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			if (lifestyle != null)
 			{

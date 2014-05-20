@@ -20,7 +20,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			get { return strategies; }
 		}
 
-		public List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<T> ActivateAll<T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			List<T> returnValue = new List<T>();
 
@@ -28,41 +28,38 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			{
 				if (exportStrategy.MeetsCondition(injectionContext) && (filter == null || filter(injectionContext, exportStrategy)))
 				{
-					returnValue.Add((T)exportStrategy.Activate(owningScope, injectionContext, filter));
+					returnValue.Add((T)exportStrategy.Activate(owningScope, injectionContext, filter, locateKey));
 				}
 			}
 
 			return returnValue;
 		}
 
-		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<TLazy> ActivateAllLazy<TLazy, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TLazy : Lazy<T>
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<TOwned> ActivateAllOwned<TOwned, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TOwned : Owned<T> where T : class
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter)
+		public List<TMeta> ActivateAllMeta<TMeta, T>(IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 			where TMeta : Meta<T>
 		{
 			throw new NotImplementedException();
 		}
 
-		public object Activate(string exportName,
-			Type exportType,
-			IInjectionContext injectionContext,
-			ExportStrategyFilter filter)
+		public object Activate(string exportName, Type exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			foreach (IExportStrategy exportStrategy in strategies)
 			{
 				if (exportStrategy.MeetsCondition(injectionContext))
 				{
-					return exportStrategy.Activate(owningScope, injectionContext, filter);
+					return exportStrategy.Activate(owningScope, injectionContext, filter, locateKey);
 				}
 			}
 

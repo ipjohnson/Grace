@@ -38,14 +38,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			ICollection<TItem> collection = activateT();
 
-			foreach (TItem item in exportInjectionScope.LocateAll<TItem>(context, consider))
+			foreach (TItem item in exportInjectionScope.LocateAll<TItem>(injectionContext: context, consider: consider))
 			{
 				collection.Add(item);
 			}

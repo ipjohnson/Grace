@@ -11,12 +11,14 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Activate the export
 		/// </summary>
-		/// <param name="exportInjectionScope"></param>
-		/// <param name="context"></param>
-		/// <param name="consider"></param>
-		/// <returns></returns>
+		/// <param name="exportInjectionScope">injection scope</param>
+		/// <param name="context">injection context</param>
+		/// <param name="consider">export filter</param>
+		/// <param name="locateKey"></param>
+		/// <returns>activated object</returns>
 		object Activate([NotNull] IInjectionScope exportInjectionScope,
-			[NotNull] IInjectionContext context,
-			[CanBeNull] ExportStrategyFilter consider);
+							 [NotNull] IInjectionContext context,
+							 [CanBeNull] ExportStrategyFilter consider,
+							 [CanBeNull] object locateKey);
 	}
 }

@@ -15,10 +15,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope">injetion scope</param>
 		/// <param name="context">context for the activation</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>activated object</returns>
-		public abstract object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider);
+		public abstract object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey);
 
 		/// <summary>
 		/// Dispose of strategy

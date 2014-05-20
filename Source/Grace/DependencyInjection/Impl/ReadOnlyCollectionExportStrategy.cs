@@ -17,10 +17,11 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope">export injection scope</param>
 		/// <param name="context">injection context</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey"></param>
 		/// <returns>activated object</returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			return new ReadOnlyCollection<T>(exportInjectionScope.LocateAll<T>(context, consider));
+			return new ReadOnlyCollection<T>(exportInjectionScope.LocateAll<T>(injectionContext: context, consider: consider));
 		}
 
 		/// <summary>

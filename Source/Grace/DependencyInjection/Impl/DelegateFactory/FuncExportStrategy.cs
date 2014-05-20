@@ -16,8 +16,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider)
+		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposalScope = context.DisposalScope;
@@ -32,7 +33,7 @@ namespace Grace.DependencyInjection.Impl
 					newInjectionContext.DisposalScope = disposalScope;
 					newInjectionContext.TargetInfo = targetInfo;
 
-					return newInjectionContext.RequestingScope.Locate<T>(newInjectionContext);
+					return newInjectionContext.RequestingScope.Locate<T>(injectionContext: newInjectionContext);
 				});
 		}
 

@@ -72,7 +72,7 @@ namespace Grace.DependencyInjection.Lifestyle
 			try
 			{
 				IPerRequestLifestyleProvider provider =
-					injectionScope.Locate<IPerRequestLifestyleProvider>(injectionContext);
+					injectionScope.Locate<IPerRequestLifestyleProvider>(injectionContext: injectionContext);
 
 				if (provider != null)
 				{

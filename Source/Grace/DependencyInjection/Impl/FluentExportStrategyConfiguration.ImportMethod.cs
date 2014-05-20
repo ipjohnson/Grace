@@ -249,6 +249,11 @@ namespace Grace.DependencyInjection.Impl
 			return importMethodConfiguration.WithMethodParam(paramValueFunc);
 		}
 
+		public IFluentMethodParameterConfiguration<T, TProp> LocateWithKey(object locateKey)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// specify parameter name
 		/// </summary>
@@ -259,6 +264,11 @@ namespace Grace.DependencyInjection.Impl
 			methodInfo.ParameterName = parameterName;
 
 			return this;
+		}
+
+		public IFluentMethodParameterConfiguration<T, TProp> ImportParameterAfterConstruction()
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

@@ -16,7 +16,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			FuncValueProvider<IBasicService> provider =
 				new FuncValueProvider<IBasicService>(() => new BasicService());
 
-			object activated = provider.Activate(scope, context, null);
+			object activated = provider.Activate(scope, context, null, null);
 
 			Assert.NotNull(activated);
 			Assert.IsType(typeof(BasicService), activated);

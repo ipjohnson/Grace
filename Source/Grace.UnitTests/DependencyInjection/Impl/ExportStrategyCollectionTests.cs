@@ -19,7 +19,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			collection.AddExport(new FauxExportStrategy(() => 5));
 
-			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 		}
 
 		[Fact]
@@ -51,12 +51,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			collection.AddExport(tenExport);
 			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
 
-			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
 			collection.RemoveExport(tenExport);
 
-			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null));
-			Assert.Equal(2, collection.ActivateAll<int>(new FauxInjectionContext(), null).Count());
+			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null, null));
+			Assert.Equal(2, collection.ActivateAll<int>(new FauxInjectionContext(), null, null).Count());
 		}
 
 		[Fact]
@@ -71,7 +71,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 });
 			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
 
-			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 		}
 
 		[Fact]
@@ -97,9 +97,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					                     ExportEnvironment.UnitTest
 			                     });
 
-			Assert.Equal(ExportEnvironment.RunTime, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(ExportEnvironment.RunTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null).Count());
+			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
 		}
 
 		[Fact]
@@ -125,9 +125,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					                     ExportEnvironment.UnitTest
 			                     });
 
-			Assert.Equal(ExportEnvironment.DesignTime, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(ExportEnvironment.DesignTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null).Count());
+			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
 		}
 
 		[Fact]
@@ -153,9 +153,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					                     ExportEnvironment.UnitTest
 			                     });
 
-			Assert.Equal(ExportEnvironment.UnitTest, collection.Activate(null, null, new FauxInjectionContext(), null));
+			Assert.Equal(ExportEnvironment.UnitTest, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null).Count());
+			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
 		}
 
 		[Fact]
@@ -170,7 +170,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 });
 			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
 
-			List<int> exports = new List<int>(collection.ActivateAll<int>(new FauxInjectionContext(), null));
+			List<int> exports = new List<int>(collection.ActivateAll<int>(new FauxInjectionContext(), null, null));
 
 			Assert.Equal(3, exports.Count);
 			Assert.Equal(10, exports[0]);
@@ -192,7 +192,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			List<int> exports =
 				new List<int>(collection.ActivateAll<int>(new FauxInjectionContext(),
-					(context, strategy) => strategy.Priority % 2 == 1));
+					(context, strategy) => strategy.Priority % 2 == 1, null));
 
 			Assert.Equal(2, exports.Count);
 			Assert.Equal(5, exports[0]);
@@ -207,7 +207,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			object activated = collection.Activate(null, null, new FauxInjectionContext(), null);
+			object activated = collection.Activate(null, null, new FauxInjectionContext(), null, null);
 
 			Assert.Null(activated);
 		}

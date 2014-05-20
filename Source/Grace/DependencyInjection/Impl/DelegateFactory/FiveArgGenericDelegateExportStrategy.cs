@@ -41,10 +41,9 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <param name="exportInjectionScope"></param>
 		/// <param name="context"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public override object Activate(IInjectionScope exportInjectionScope,
-			IInjectionContext context,
-			ExportStrategyFilter consider)
+		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
 			Helper newHelper = new Helper(context, consider, argNames[0], argNames[1], argNames[2], argNames[3], argNames[4]);
 
@@ -194,7 +193,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 					newInjectionContext.Export((s, c) => arg5);
 				}
 
-				return newInjectionContext.RequestingScope.Locate<TReturn>(newInjectionContext, consider);
+				return newInjectionContext.RequestingScope.Locate<TReturn>(injectionContext: newInjectionContext, consider: consider);
 			}
 		}
 

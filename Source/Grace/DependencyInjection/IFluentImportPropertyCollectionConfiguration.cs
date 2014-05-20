@@ -18,11 +18,11 @@ namespace Grace.DependencyInjection
 		IFluentImportPropertyCollectionConfiguration<T, TItem> Consider(ExportStrategyFilter consider);
 
 		/// <summary>
-		/// Sort the collection by property
+		/// Locate with a specific key
 		/// </summary>
-		/// <param name="propertyFunc">function to retrieve property</param>
-		/// <returns>configuration object</returns>
-		IFluentImportPropertyCollectionConfiguration<T, TItem> SortByProperty(Func<TItem, IComparable> propertyFunc);
+		/// <param name="locateKey"></param>
+		/// <returns></returns>
+		IFluentImportPropertyCollectionConfiguration<T, TItem> LocateWithKey(object locateKey);
 
 		/// <summary>
 		/// Sort the collection using an IComparer
@@ -30,5 +30,12 @@ namespace Grace.DependencyInjection
 		/// <param name="comparer">comparer</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyCollectionConfiguration<T, TItem> SortBy(IComparer<TItem> comparer);
+
+		/// <summary>
+		/// Sort the collection by property
+		/// </summary>
+		/// <param name="propertyFunc">function to retrieve property</param>
+		/// <returns>configuration object</returns>
+		IFluentImportPropertyCollectionConfiguration<T, TItem> SortByProperty(Func<TItem, IComparable> propertyFunc);
 	}
 }

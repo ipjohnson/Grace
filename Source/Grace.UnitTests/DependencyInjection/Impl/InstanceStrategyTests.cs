@@ -17,7 +17,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			InstanceStrategy<IBasicService> instanceStrategy = new InstanceStrategy<IBasicService>(basicService);
 
-			object activatedObject = instanceStrategy.Activate(scope, context, null);
+			object activatedObject = instanceStrategy.Activate(scope, context, null, null);
 
 			Assert.True(ReferenceEquals(activatedObject, basicService));
 		}

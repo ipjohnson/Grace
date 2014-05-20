@@ -46,7 +46,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 				FauxInjectionScope fauxScope = new FauxInjectionScope();
 
-				exportStrategy.Activate(fauxScope, new FauxInjectionContext { RequestingScope = fauxScope }, null);
+				exportStrategy.Activate(fauxScope, new FauxInjectionContext { RequestingScope = fauxScope }, null, null);
 
 				exportStrategy.Dispose();
 			}

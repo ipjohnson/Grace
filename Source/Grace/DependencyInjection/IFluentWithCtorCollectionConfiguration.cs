@@ -18,11 +18,18 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorCollectionConfiguration<TItem> Consider([NotNull] ExportStrategyFilter consider);
 
 		/// <summary>
-		/// Sort the import collection by a particular property on TItem
+		/// Specify a name of the parameter being configured
 		/// </summary>
-		/// <param name="propertyFunc">func to use to access property on TItem</param>
+		/// <param name="name">name of parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorCollectionConfiguration<TItem> SortByProperty([NotNull] Func<TItem, IComparable> propertyFunc);
+		IFluentWithCtorCollectionConfiguration<TItem> Named([NotNull] string name);
+
+		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorCollectionConfiguration<TItem> LocateWithKey(object locateKey);
 
 		/// <summary>
 		/// Sort an import collection before it's being injected
@@ -32,11 +39,12 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorCollectionConfiguration<TItem> SortBy([NotNull] IComparer<TItem> comparer);
 
 		/// <summary>
-		/// Specify a name of the parameter being configured
+		/// Sort the import collection by a particular property on TItem
 		/// </summary>
-		/// <param name="name">name of parameter</param>
+		/// <param name="propertyFunc">func to use to access property on TItem</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorCollectionConfiguration<TItem> Named([NotNull] string name);
+		IFluentWithCtorCollectionConfiguration<TItem> SortByProperty([NotNull] Func<TItem, IComparable> propertyFunc);
+
 	}
 
 	/// <summary>
@@ -54,11 +62,18 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorCollectionConfiguration<T, TItem> Consider([NotNull] ExportStrategyFilter consider);
 
 		/// <summary>
-		/// Sort the import collection by a particular property on TItem
+		/// Specify a name of the parameter being configured
 		/// </summary>
-		/// <param name="propertyFunc">func to use to access property on TItem</param>
+		/// <param name="name">name of parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorCollectionConfiguration<T, TItem> SortByProperty([NotNull] Func<TItem, IComparable> propertyFunc);
+		IFluentWithCtorCollectionConfiguration<T, TItem> Named([NotNull] string name);
+
+		/// <summary>
+		/// Locate with a specific key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		IFluentWithCtorCollectionConfiguration<T, TItem> LocateWithKey(object locateKey);
 
 		/// <summary>
 		/// Sort an import collection before it's being injected
@@ -68,10 +83,11 @@ namespace Grace.DependencyInjection
 		IFluentWithCtorCollectionConfiguration<T, TItem> SortBy([NotNull] IComparer<TItem> comparer);
 
 		/// <summary>
-		/// Specify a name of the parameter being configured
+		/// Sort the import collection by a particular property on TItem
 		/// </summary>
-		/// <param name="name">name of parameter</param>
+		/// <param name="propertyFunc">func to use to access property on TItem</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorCollectionConfiguration<T, TItem> Named([NotNull] string name);
+		IFluentWithCtorCollectionConfiguration<T, TItem> SortByProperty([NotNull] Func<TItem, IComparable> propertyFunc);
+
 	}
 }

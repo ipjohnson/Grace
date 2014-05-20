@@ -79,6 +79,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Locate with a particular key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		public IFluentWithCtorCollectionConfiguration<TItem> LocateWithKey(object locateKey)
+		{
+			paramInfo.LocateKey = locateKey;
+
+			return this;
+		}
+
+		/// <summary>
 		/// Sort an import collection before it's being injected
 		/// </summary>
 		/// <param name="comparer">comparer object to use while sorting</param>
@@ -144,6 +156,18 @@ namespace Grace.DependencyInjection.Impl
 		public IFluentWithCtorCollectionConfiguration<T, TItem> SortByProperty(Func<TItem, IComparable> propertyFunc)
 		{
 			return SortBy(new FuncComparer<TItem>(propertyFunc));
+		}
+
+		/// <summary>
+		/// Locate with a specific key
+		/// </summary>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>configuration object</returns>
+		public IFluentWithCtorCollectionConfiguration<T, TItem> LocateWithKey(object locateKey)
+		{
+			paramInfo.LocateKey = locateKey;
+
+			return this;
 		}
 
 		/// <summary>

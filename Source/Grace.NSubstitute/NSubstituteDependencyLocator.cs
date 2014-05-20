@@ -18,8 +18,9 @@ namespace Grace.NSubstitute
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider)
+		public bool CanLocate(IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface)
 			{
@@ -36,12 +37,9 @@ namespace Grace.NSubstitute
 		/// <param name="resolveName"></param>
 		/// <param name="resolveType"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Locate(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			ExportStrategyFilter consider)
+		public object Locate(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface)
 			{
@@ -57,7 +55,7 @@ namespace Grace.NSubstitute
 
 					owningScope.AddStrategy(newStrategy);
 
-					return newStrategy.Activate(owningScope, context, null);
+					return newStrategy.Activate(owningScope, context, null, locateKey);
 				}
 			}
 
@@ -73,13 +71,9 @@ namespace Grace.NSubstitute
 		/// <param name="resolveType"></param>
 		/// <param name="collectionEmpty"></param>
 		/// <param name="consider"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public IEnumerable<object> LocateAll(IInjectionScope owningScope,
-			IInjectionContext context,
-			string resolveName,
-			Type resolveType,
-			bool collectionEmpty,
-			ExportStrategyFilter consider)
+		public IEnumerable<object> LocateAll(IInjectionScope owningScope, IInjectionContext context, string resolveName, Type resolveType, bool collectionEmpty, ExportStrategyFilter consider, object locateKey)
 		{
 			if (resolveType != null && resolveType.IsInterface && collectionEmpty)
 			{
@@ -95,7 +89,7 @@ namespace Grace.NSubstitute
 
 					owningScope.AddStrategy(newStrategy);
 
-					yield return newStrategy.Activate(owningScope, context, null);
+					yield return newStrategy.Activate(owningScope, context, null, locateKey);
 				}
 			}
 		}
