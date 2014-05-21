@@ -234,6 +234,7 @@
     <Compile Include="DependencyInjection\Impl\InjectionKernelManager.cs" />
     <Compile Include="DependencyInjection\InjectionContext.cs" />
     <Compile Include="DependencyInjection\Lifestyle\INotifyWhenDisposed.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\LifetimeScope.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerValueLifestyle.cs" />
     <Compile Include="DependencyInjection\Lifestyle\IPerRequestLifestyleProvider.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonLifestyle.cs" />

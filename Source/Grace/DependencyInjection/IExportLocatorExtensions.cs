@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Grace.DependencyInjection.Lifestyle;
 using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection
@@ -287,6 +288,27 @@ namespace Grace.DependencyInjection
 			}
 
 			return new DisposableInjectionContext(injectionScope);
+		}
+
+		/// <summary>
+		/// Creates a new life time scope
+		/// </summary>
+		/// <param name="exportLocator">export locate</param>
+		/// <returns></returns>
+		public static IInjectionScope BeginLifetimeScope(this IExportLocator exportLocator)
+		{
+			IInjectionScope injectionScope = exportLocator as IInjectionScope;
+
+			if (injectionScope == null && exportLocator is IDependencyInjectionContainer)
+			{
+				injectionScope = ((IDependencyInjectionContainer)exportLocator).RootScope;
+			}
+			else
+			{
+				throw new Exception("BeginLifetimeScope can only be used on an injection scope and dependency injection container");
+			}
+
+			return new LifetimeScope(injectionScope);
 		}
 	}
 }
