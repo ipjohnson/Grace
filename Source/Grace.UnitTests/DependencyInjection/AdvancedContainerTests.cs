@@ -287,6 +287,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 				Assert.NotNull(secondService);
 				Assert.NotSame(service, secondService);
+				Assert.Same(secondService, scope.Locate<IDisposableService>());
 
 				secondService.Disposing += (sender, args) => called = true;
 			}

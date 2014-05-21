@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl;
+using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -23,8 +24,13 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		/// <param name="parentLocator"></param>
 		/// <param name="scopeName"></param>
-		public LifetimeScope(IInjectionScope parentLocator, string scopeName = null)
+		public LifetimeScope([NotNull] IInjectionScope parentLocator, string scopeName = null)
 		{
+			if (parentLocator == null)
+			{
+				throw new ArgumentNullException("parentLocator");
+			}
+
 			disposalScope = new DisposalScope();
 			ScopeName = scopeName;
 			ScopeId = Guid.NewGuid();
