@@ -265,5 +265,34 @@ namespace Grace.UnitTests.DependencyInjection
 		}
 
 		#endregion
+
+		#region BeginLifetimeScope
+
+		[Fact]
+		public void BeginLifetimeScope()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().AndSingletonPerScope());
+
+			IDisposableService service = container.Locate<IDisposableService>();
+
+			Assert.NotNull(service);
+
+			bool called = false;
+
+			using (var scope = container.BeginLifetimeScope())
+			{
+				var secondService = scope.Locate<IDisposableService>();
+
+				Assert.NotNull(secondService);
+				Assert.NotSame(service, secondService);
+
+				secondService.Disposing += (sender, args) => called = true;
+			}
+
+			Assert.True(called);
+		}
+		#endregion
 	}
 }
