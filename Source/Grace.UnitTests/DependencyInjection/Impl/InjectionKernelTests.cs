@@ -88,7 +88,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				injectionKernel.Clone(new FauxInjectionScope { ScopeName = "FauxParent" }, null, null);
 
 			IExportStrategy exportStrategy =
-				clone.GetStrategy(typeof(IBasicService), injectionKernel.CreateContext());
+				clone.GetStrategy(typeof(IBasicService), injectionContext: injectionKernel.CreateContext());
 
 			Assert.True(ReferenceEquals(exportStrategy, strategy));
 		}
@@ -117,7 +117,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			injectionKernel.AddStrategy(strategy);
 
 			IExportStrategy exportStrategy =
-				injectionKernel.GetStrategy(typeof(IBasicService), injectionKernel.CreateContext());
+				injectionKernel.GetStrategy(typeof(IBasicService), injectionContext: injectionKernel.CreateContext());
 
 			Assert.True(ReferenceEquals(exportStrategy, strategy));
 		}
@@ -142,14 +142,14 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			injectionKernel.AddStrategy(strategy);
 
 			IExportStrategy exportStrategy =
-				injectionKernel.GetStrategy(typeof(IBasicService), injectionKernel.CreateContext());
+				injectionKernel.GetStrategy(typeof(IBasicService), injectionContext: injectionKernel.CreateContext());
 
 			Assert.True(ReferenceEquals(exportStrategy, strategy));
 
 			injectionKernel.RemoveStrategy(strategy);
 
 			exportStrategy =
-				injectionKernel.GetStrategy(typeof(IBasicService), injectionKernel.CreateContext());
+				injectionKernel.GetStrategy(typeof(IBasicService), injectionContext: injectionKernel.CreateContext());
 
 			Assert.Null(exportStrategy);
 		}

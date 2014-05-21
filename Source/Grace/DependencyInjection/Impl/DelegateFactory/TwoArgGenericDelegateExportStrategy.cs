@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <returns></returns>
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			Helper newHelper = new Helper(context, consider, argNames[0], argNames[1]);
+			Helper newHelper = new Helper(context, consider,locateKey, argNames[0], argNames[1]);
 
 			return activateMethodInfo.CreateDelegate(typeof(TDelegate), newHelper);
 		}
@@ -91,17 +91,20 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			private readonly string argName1;
 			private readonly string argName2;
 			private readonly ExportStrategyFilter consider;
+			private readonly object locateKey;
 
 			/// <summary>
 			/// Default Constructor
 			/// </summary>
 			/// <param name="injectionContext"></param>
 			/// <param name="consider"></param>
+			/// <param name="locateKey"></param>
 			/// <param name="argName1"></param>
 			/// <param name="argName2"></param>
-			public Helper(IInjectionContext injectionContext, ExportStrategyFilter consider, string argName1, string argName2)
+			public Helper(IInjectionContext injectionContext, ExportStrategyFilter consider,object locateKey, string argName1, string argName2)
 			{
 				this.injectionContext = injectionContext;
+				this.locateKey = locateKey;
 				disposalScope = injectionContext.DisposalScope;
 				scope = injectionContext.RequestingScope;
 				targetInfo = injectionContext.TargetInfo;
@@ -142,7 +145,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 					newInjectionContext.Export((s, c) => arg2);
 				}
 
-				return newInjectionContext.RequestingScope.Locate<TReturn>(injectionContext: newInjectionContext, consider: consider);
+				return newInjectionContext.RequestingScope.Locate<TReturn>(newInjectionContext, consider, locateKey);
 			}
 		}
 

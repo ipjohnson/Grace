@@ -177,8 +177,9 @@ namespace Grace.DependencyInjection
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportFilter"></param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
-		IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null);
+		IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null);
 
 		/// <summary>
 		/// Finds the best matching strategy exported by the name provided
@@ -186,9 +187,10 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType">type to locate</param>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="exportFilter">export filter</param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
 		[CanBeNull]
-		IExportStrategy GetStrategy([NotNull] Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null);
+		IExportStrategy GetStrategy([NotNull] Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null);
 
 		/// <summary>
 		/// Get the list of exported strategies sorted by best option.

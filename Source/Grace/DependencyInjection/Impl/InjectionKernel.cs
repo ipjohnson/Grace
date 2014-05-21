@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -468,7 +469,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (objectType.IsConstructedGenericType)
 				{
-					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext);
+					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext: injectionContext);
 
 					// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
 					// and they have a singleton you have to use the same export strategy
@@ -1012,8 +1013,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportFilter"></param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
+		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null)
 		{
 			ExportStrategyCollection collection;
 			IInjectionContext context = injectionContext ?? CreateContext();
@@ -1041,8 +1043,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportFilter"></param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext, ExportStrategyFilter exportFilter = null)
+		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null)
 		{
 			IExportStrategy exportStrategy = null;
 			ExportStrategyCollection collection;
@@ -1052,8 +1055,25 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy currentExportStrategy in collection.ExportStrategies)
 				{
-					if (currentExportStrategy.MeetsCondition(context) &&
-						 (exportFilter == null || exportFilter(injectionContext, currentExportStrategy)))
+					if (withKey != null)
+					{
+						if (withKey is IEnumerable && !(withKey is string))
+						{
+							foreach (object key in withKey as IEnumerable)
+							{
+								if (key.Equals(currentExportStrategy.Key))
+								{
+									return currentExportStrategy;
+								}
+							}
+						}
+						else if (withKey.Equals(currentExportStrategy.Key))
+						{
+							return currentExportStrategy;
+						}
+					}
+					else if (currentExportStrategy.MeetsCondition(context) &&
+							  (exportFilter == null || exportFilter(injectionContext, currentExportStrategy)))
 					{
 						return currentExportStrategy;
 					}
@@ -1078,7 +1098,7 @@ namespace Grace.DependencyInjection.Impl
 						{
 							if (genericExportStrategy.OwningScope != this)
 							{
-								exportStrategy = genericExportStrategy.OwningScope.GetStrategy(exportType, context);
+								exportStrategy = genericExportStrategy.OwningScope.GetStrategy(exportType, context, exportFilter, withKey);
 							}
 							else
 							{
@@ -1448,12 +1468,12 @@ namespace Grace.DependencyInjection.Impl
 
 			if (type == typeof(Func<Type, object>))
 			{
-				return new Func<Type, object>(inType => Locate(inType, consider: consider));
+				return new Func<Type, object>(inType => Locate(inType, null, consider, locateKey));
 			}
 
 			if (type == typeof(Func<Type, IInjectionContext, object>))
 			{
-				return new Func<Type, IInjectionContext, object>((inType, context) => Locate(inType, injectionContext: context, consider: consider));
+				return new Func<Type, IInjectionContext, object>((inType, context) => Locate(inType, context, consider, locateKey));
 			}
 
 			if (openGenericStrategyMapping.TryGetValue(openGenericType, out exportStrategyType))

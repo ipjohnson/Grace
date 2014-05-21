@@ -87,12 +87,12 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			return null;
 		}
 
-		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter filter = null)
+		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter filter = null, object withKey = null)
 		{
 			return null;
 		}
 
-		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter filter = null)
+		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter filter = null, object withKey = null)
 		{
 			return null;
 		}

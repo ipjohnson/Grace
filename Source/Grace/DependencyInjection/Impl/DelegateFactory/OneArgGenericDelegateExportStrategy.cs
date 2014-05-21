@@ -40,7 +40,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// </returns>
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			Helper newHelper = new Helper(context, consider, argName1);
+			Helper newHelper = new Helper(context, consider,locateKey, argName1);
 
 			return activateMethodInfo.CreateDelegate(typeof(TDelegate), newHelper);
 		}
@@ -84,14 +84,16 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			private readonly IInjectionTargetInfo targetInfo;
 			private readonly string argName1;
 			private readonly ExportStrategyFilter consider;
+			private readonly object locateKey;
 			private readonly IInjectionScope requestInjectionScope;
 			private readonly IDisposalScope disposalScope;
 
-			public Helper(IInjectionContext injectionContext, ExportStrategyFilter consider, string argName1)
+			public Helper(IInjectionContext injectionContext, ExportStrategyFilter consider, object locateKey, string argName1)
 			{
 				this.injectionContext = injectionContext;
 				this.argName1 = argName1;
 				this.consider = consider;
+				this.locateKey = locateKey;
 
 				requestInjectionScope = injectionContext.RequestingScope;
 				disposalScope = injectionContext.DisposalScope;
@@ -115,7 +117,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 					newInjectionContext.Export((s, c) => arg1);
 				}
 
-				return requestInjectionScope.Locate<TReturn>(injectionContext: newInjectionContext, consider: consider);
+				return requestInjectionScope.Locate<TReturn>(newInjectionContext, consider, locateKey);
 			}
 		}
 

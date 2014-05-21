@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>activated object</returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			IExportStrategy strategy = FindExportStrategy(exportInjectionScope, context, consider);
+			IExportStrategy strategy = FindExportStrategy(exportInjectionScope, context, consider, locateKey);
 
 			if (strategy != null)
 			{
@@ -39,16 +39,17 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportInjectionScope">injection scope to check</param>
 		/// <param name="context">context</param>
 		/// <param name="consider">consider filter</param>
+		/// <param name="locateKey">locatekey</param>
 		/// <returns>strategy</returns>
 		private IExportStrategy FindExportStrategy(IInjectionScope exportInjectionScope,
 			IInjectionContext context,
-			ExportStrategyFilter consider)
+			ExportStrategyFilter consider, object locateKey)
 		{
-			IExportStrategy strategy =  exportInjectionScope.GetStrategy(typeof(T), context, consider);
+			IExportStrategy strategy =  exportInjectionScope.GetStrategy(typeof(T), context, consider, locateKey);
 
 			if (strategy == null && exportInjectionScope.ParentScope != null)
 			{
-				return FindExportStrategy(exportInjectionScope.ParentScope, context, consider);
+				return FindExportStrategy(exportInjectionScope.ParentScope, context, consider, locateKey);
 			}
 
 			return strategy;

@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection.Impl
 					cloneContext.DisposalScope = disposalScope;
 					cloneContext.TargetInfo = targetInfo;
 
-					return scope.Locate<T>(injectionContext: cloneContext, consider: consider);
+					return scope.Locate<T>(cloneContext, consider, locateKey);
 				});
 		}
 

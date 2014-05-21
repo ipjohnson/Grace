@@ -307,7 +307,7 @@ namespace Grace.DependencyInjection
 		/// <returns>list of object, this will return an empty list if no exports are found</returns>
 		public List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null, IComparer<object> comparer = null)
 		{
-			return RootScope.LocateAll(exportType,  injectionContext,  consider,  withKey, comparer);
+			return RootScope.LocateAll(exportType, injectionContext, consider, withKey, comparer);
 		}
 
 		/// <summary>
@@ -334,10 +334,11 @@ namespace Grace.DependencyInjection
 		/// <param name="name"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportFilter"></param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
+		public IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null)
 		{
-			return RootScope.GetStrategy(name, injectionContext);
+			return RootScope.GetStrategy(name, injectionContext, exportFilter, withKey);
 		}
 
 		/// <summary>
@@ -346,10 +347,11 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType"></param>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportFilter"></param>
+		/// <param name="withKey"></param>
 		/// <returns></returns>
-		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null)
+		public IExportStrategy GetStrategy(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null)
 		{
-			return RootScope.GetStrategy(exportType, injectionContext);
+			return RootScope.GetStrategy(exportType, injectionContext, exportFilter, withKey);
 		}
 
 		/// <summary>

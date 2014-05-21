@@ -206,7 +206,6 @@
     <Compile Include="DependencyInjection\Impl\DisposalScope.cs" />
     <Compile Include="DependencyInjection\Exceptions\DisposalScopeMissingException.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetConfiguration.cs" />
-    <Compile Include="DependencyInjection\Impl\ExportFunctionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ExportInstanceConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportRegistrationBlock.cs" />
     <Compile Include="DependencyInjection\Impl\ExportStrategyListProvider.cs" />

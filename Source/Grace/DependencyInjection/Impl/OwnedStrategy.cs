@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Impl
 
 			context.DisposalScope = owned;
 
-			T outValue = exportInjectionScope.Locate<T>(injectionContext: context, consider: consider);
+			T outValue = exportInjectionScope.Locate<T>(context, consider, locateKey);
 
 			owned.SetValue(outValue);
 

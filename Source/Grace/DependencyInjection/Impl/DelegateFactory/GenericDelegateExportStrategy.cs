@@ -30,16 +30,19 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			private readonly ExportStrategyFilter consider;
 			private readonly IInjectionScope requestingInjectionScope;
 			private readonly IDisposalScope disposalScope;
+			private readonly object locateKey;
 
 			/// <summary>
 			/// DEfault constructor
 			/// </summary>
 			/// <param name="context">injection context</param>
 			/// <param name="consider">consider delegate</param>
-			public Helper(IInjectionContext context, ExportStrategyFilter consider)
+			/// <param name="locateKey">locate key</param>
+			public Helper(IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 			{
 				this.context = context;
 				this.consider = consider;
+				this.locateKey = locateKey;
 
 				requestingInjectionScope = context.RequestingScope;
 				disposalScope = context.DisposalScope;
@@ -74,7 +77,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// <returns></returns>
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			Helper helper = new Helper(context, consider);
+			Helper helper = new Helper(context, consider, locateKey);
 
 			return helperMethodInfo.CreateDelegate(typeof(TDelegate), helper);
 		}

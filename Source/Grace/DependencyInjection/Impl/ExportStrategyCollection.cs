@@ -302,25 +302,24 @@ namespace Grace.DependencyInjection.Impl
 				return currentPrimary.Activate(injectionKernel, injectionContext, null, null);
 			}
 
-			if (locateKey == null)
+
+			ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
+			int count = localStrategies.Count;
+
+			for (int i = 0; i < count; i++)
 			{
-				ReadOnlyCollection<IExportStrategy> localStrategies = exportStrategies;
-				int count = localStrategies.Count;
+				IExportStrategy testStrategy = localStrategies[i];
 
-				for (int i = 0; i < count; i++)
+				if (testStrategy.MeetsCondition(injectionContext) &&
+					 (!testStrategy.AllowingFiltering ||
+					 (locateKey == null && 
+					 (filter == null ||filter(injectionContext, testStrategy)))))
 				{
-					IExportStrategy testStrategy = localStrategies[i];
-
-					if (testStrategy.MeetsCondition(injectionContext) &&
-						 (filter == null ||
-						  !testStrategy.AllowingFiltering ||
-						  filter(injectionContext, testStrategy)))
-					{
-						return testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
-					}
+					return testStrategy.Activate(injectionKernel, injectionContext, filter, locateKey);
 				}
 			}
-			else if (keyedStrategies != null)
+
+			if (locateKey != null && keyedStrategies != null)
 			{
 				IEnumerable enumerable = locateKey as IEnumerable;
 
