@@ -19,21 +19,30 @@ namespace Grace.Utilities
 		/// <param name="func"></param>
 		public WeakFunc(Func<TResult> func)
 		{
+			MethodInfo = func.GetMethodInfo();
+
 			if (func.Target != null)
 			{
 				reference = new WeakReference(func.Target);
 
-				MethodInfo methInfo = func.GetMethodInfo();
+				object cachedDelegate;
 
-				ParameterExpression param = Expression.Parameter(typeof(object), "target");
+				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				{
+					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
-				UnaryExpression cast =
-					Expression.ConvertChecked(param, func.Target.GetType());
+					UnaryExpression cast =
+						Expression.ConvertChecked(param, func.Target.GetType());
 
-				Expression call = Expression.Call(cast, methInfo);
+					Expression call = Expression.Call(cast, MethodInfo);
 
-				executeAction =
-					Expression.Lambda<Func<object, TResult>>(call, param).Compile();
+					executeAction =
+						Expression.Lambda<Func<object, TResult>>(call, param).Compile();
+				}
+				else
+				{
+					executeAction = (Func<object, TResult>)cachedDelegate;
+				}
 			}
 			else
 			{
@@ -48,6 +57,24 @@ namespace Grace.Utilities
 		{
 			get { return reference == null || reference.IsAlive; }
 		}
+
+		/// <summary>
+		/// Method info for action
+		/// </summary>
+		public MethodInfo MethodInfo { get; private set; }
+
+		/// <summary>
+		/// Target object
+		/// </summary>
+		public object Target
+		{
+			get
+			{
+				return reference != null ?
+						 reference.Target : null;
+			}
+		}
+
 
 		/// <summary>
 		/// Invoke the Func
@@ -90,23 +117,32 @@ namespace Grace.Utilities
 		/// <param name="func"></param>
 		public WeakFunc(Func<TArg, TResult> func)
 		{
+			MethodInfo = func.GetMethodInfo();
+
 			if (func.Target != null)
 			{
 				reference = new WeakReference(func.Target);
 
-				MethodInfo methInfo = func.GetMethodInfo();
+				object cachedDelegate;
 
-				ParameterExpression param = Expression.Parameter(typeof(object), "target");
+				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				{
+					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
-				ParameterExpression tParam = Expression.Parameter(typeof(object), "tArg");
+					ParameterExpression tParam = Expression.Parameter(typeof(object), "tArg");
 
-				UnaryExpression cast =
-					Expression.ConvertChecked(param, func.Target.GetType());
+					UnaryExpression cast =
+						Expression.ConvertChecked(param, func.Target.GetType());
 
-				Expression call = Expression.Call(cast, methInfo, tParam);
+					Expression call = Expression.Call(cast, MethodInfo, tParam);
 
-				executeAction =
-					Expression.Lambda<Func<object, TArg, TResult>>(call, param, tParam).Compile();
+					executeAction =
+						Expression.Lambda<Func<object, TArg, TResult>>(call, param, tParam).Compile();
+				}
+				else
+				{
+					executeAction = (Func<object, TArg, TResult>)cachedDelegate;
+				}
 			}
 			else
 			{
@@ -121,6 +157,24 @@ namespace Grace.Utilities
 		{
 			get { return reference == null || reference.IsAlive; }
 		}
+
+		/// <summary>
+		/// Method info for action
+		/// </summary>
+		public MethodInfo MethodInfo { get; private set; }
+
+		/// <summary>
+		/// Target object
+		/// </summary>
+		public object Target
+		{
+			get
+			{
+				return reference != null ?
+						 reference.Target : null;
+			}
+		}
+
 
 		/// <summary>
 		/// Invoke the Func

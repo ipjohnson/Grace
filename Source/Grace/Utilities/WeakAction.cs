@@ -18,21 +18,30 @@ namespace Grace.Utilities
 		/// <param name="action"></param>
 		public WeakAction(Action action)
 		{
+			MethodInfo = action.GetMethodInfo();
+
 			if (action.Target != null)
 			{
 				reference = new WeakReference(action.Target);
 
-				MethodInfo methInfo = action.GetMethodInfo();
+				object cachedDelegate;
 
-				ParameterExpression param = Expression.Parameter(typeof(object), "target");
+				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				{
+					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
-				UnaryExpression cast =
-					Expression.ConvertChecked(param, action.Target.GetType());
+					UnaryExpression cast =
+						Expression.ConvertChecked(param, action.Target.GetType());
 
-				Expression call = Expression.Call(cast, methInfo);
+					Expression call = Expression.Call(cast, MethodInfo);
 
-				executeAction =
-					Expression.Lambda<Action<object>>(call, param).Compile();
+					executeAction =
+						Expression.Lambda<Action<object>>(call, param).Compile();
+				}
+				else
+				{
+					executeAction = (Action<object>)cachedDelegate;
+				}
 			}
 			else
 			{
@@ -46,6 +55,23 @@ namespace Grace.Utilities
 		public bool IsAlive
 		{
 			get { return reference.IsAlive; }
+		}
+
+		/// <summary>
+		/// Method info for action
+		/// </summary>
+		public MethodInfo MethodInfo { get; private set; }
+
+		/// <summary>
+		/// Target object
+		/// </summary>
+		public object Target
+		{
+			get
+			{
+				return reference != null ? 
+						 reference.Target : null;
+			}
 		}
 
 		/// <summary>
@@ -85,23 +111,31 @@ namespace Grace.Utilities
 		/// <param name="action"></param>
 		public WeakAction(Action<T> action)
 		{
+			MethodInfo = action.GetMethodInfo();
+
 			if (action.Target != null)
 			{
 				reference = new WeakReference(action.Target);
+				object cachedDelegate;
 
-				MethodInfo methInfo = action.GetMethodInfo();
+				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				{
+					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
-				ParameterExpression param = Expression.Parameter(typeof(object), "target");
+					ParameterExpression tParam = Expression.Parameter(typeof(T), "tParam");
 
-				ParameterExpression tParam = Expression.Parameter(typeof(T), "tParam");
+					UnaryExpression cast =
+						Expression.ConvertChecked(param, action.Target.GetType());
 
-				UnaryExpression cast =
-					Expression.ConvertChecked(param, action.Target.GetType());
+					Expression call = Expression.Call(cast, MethodInfo, tParam);
 
-				Expression call = Expression.Call(cast, methInfo, tParam);
-
-				executeAction =
-					Expression.Lambda<Action<object, T>>(call, param, tParam).Compile();
+					executeAction =
+						Expression.Lambda<Action<object, T>>(call, param, tParam).Compile();
+				}
+				else
+				{
+					executeAction = (Action<object, T>)cachedDelegate;
+				}
 			}
 			else
 			{
@@ -115,6 +149,23 @@ namespace Grace.Utilities
 		public bool IsAlive
 		{
 			get { return reference.IsAlive; }
+		}
+
+		/// <summary>
+		/// Method info for action
+		/// </summary>
+		public MethodInfo MethodInfo { get; private set; }
+
+		/// <summary>
+		/// Target object
+		/// </summary>
+		public object Target
+		{
+			get
+			{
+				return reference != null ?
+						 reference.Target : null;
+			}
 		}
 
 		/// <summary>
