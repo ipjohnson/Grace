@@ -26,7 +26,7 @@ namespace Grace.Utilities
 
 				object cachedDelegate;
 
-				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				if (!InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
 				{
 					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
@@ -37,6 +37,8 @@ namespace Grace.Utilities
 
 					executeAction =
 						Expression.Lambda<Action<object>>(call, param).Compile();
+
+					InternalMethodCacheHelper.WeakDelegates[MethodInfo] = executeAction;
 				}
 				else
 				{
@@ -118,7 +120,7 @@ namespace Grace.Utilities
 				reference = new WeakReference(action.Target);
 				object cachedDelegate;
 
-				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				if (!InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
 				{
 					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
@@ -131,6 +133,8 @@ namespace Grace.Utilities
 
 					executeAction =
 						Expression.Lambda<Action<object, T>>(call, param, tParam).Compile();
+
+					InternalMethodCacheHelper.WeakDelegates[MethodInfo] = executeAction;
 				}
 				else
 				{

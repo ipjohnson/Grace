@@ -27,7 +27,7 @@ namespace Grace.Utilities
 
 				object cachedDelegate;
 
-				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				if (!InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
 				{
 					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
@@ -38,6 +38,8 @@ namespace Grace.Utilities
 
 					executeAction =
 						Expression.Lambda<Func<object, TResult>>(call, param).Compile();
+
+					InternalMethodCacheHelper.WeakDelegates[MethodInfo] = executeAction;
 				}
 				else
 				{
@@ -125,7 +127,7 @@ namespace Grace.Utilities
 
 				object cachedDelegate;
 
-				if (InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
+				if (!InternalMethodCacheHelper.WeakDelegates.TryGetValue(MethodInfo, out cachedDelegate))
 				{
 					ParameterExpression param = Expression.Parameter(typeof(object), "target");
 
@@ -138,6 +140,8 @@ namespace Grace.Utilities
 
 					executeAction =
 						Expression.Lambda<Func<object, TArg, TResult>>(call, param, tParam).Compile();
+
+					InternalMethodCacheHelper.WeakDelegates[MethodInfo] = executeAction;
 				}
 				else
 				{
