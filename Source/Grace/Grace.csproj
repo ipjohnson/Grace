@@ -59,6 +59,7 @@
     <Compile Include="DependencyInjection\Attributes\ExportByClassNameAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByInterfacesAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportEnvironmentAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\ExportKeyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenClassHasAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenInjectedIntoAttribute.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportConditionAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportEnvironmentAttribute.cs" />
+    <Compile Include="DependencyInjection\Attributes\Interfaces\IExportKeyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportMetadataAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportStrategyProviderAttribute.cs" />

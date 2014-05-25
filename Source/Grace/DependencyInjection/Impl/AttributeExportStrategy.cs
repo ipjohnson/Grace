@@ -344,6 +344,13 @@ namespace Grace.DependencyInjection.Impl
 
 					SetPriority(priorityAttribute.ProvidePriority(exportType));
 				}
+
+				IExportKeyAttribute exportKeyAttribute = classAttribute as IExportKeyAttribute;
+
+				if (exportKeyAttribute != null)
+				{
+					SetKey(exportKeyAttribute.ProvideKey(exportType));
+				}
 			}
 		}
 
