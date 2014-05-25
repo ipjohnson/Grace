@@ -10,7 +10,7 @@
     <title>Grace.Net</title>
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
     <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
-    <releaseNotes>This is a feature release adding support for Universal Apps, and importing properties after construction. Also starting with this release symbols will be published to symbolsource.org</releaseNotes>
+    <releaseNotes>This is a feature release adding full sipport for registering by key and locating by key. Also added is a new light weight lifetime scope and ancestor scoping similar to Ninject</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

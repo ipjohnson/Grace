@@ -10,7 +10,7 @@
     <title>Grace.Common.Logging</title>
     <summary>Grace.Common.Logging provides a logging service using Grace</summary>
     <description>Grace.Common.Logging provides integration class between Common.Logging and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This is a feature release adding support for Universal Apps, and importing properties after construction. Also starting with this release symbols will be published to symbolsource.org</releaseNotes>
+    <releaseNotes>This is a feature release adding full sipport for registering by key and locating by key. Also added is a new light weight lifetime scope and ancestor scoping similar to Ninject</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
