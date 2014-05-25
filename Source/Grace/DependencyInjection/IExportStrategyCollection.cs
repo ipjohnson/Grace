@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection
 {
@@ -63,16 +64,16 @@ namespace Grace.DependencyInjection
 		/// Activate the first export strategy that meets conditions
 		/// </summary>
 		/// <param name="exportName">export name</param>
-		/// <param name="exportType">export type</param>
+		/// <param name="typeWrapper"></param>
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="filter">export filter</param>
 		/// <param name="locateKey"></param>
 		/// <returns>export object</returns>
 		object Activate(string exportName,
-							 Type exportType,
-							 IInjectionContext injectionContext,
-							 ExportStrategyFilter filter, 
-							 object locateKey);
+							TypeWrapper typeWrapper,
+							IInjectionContext injectionContext,
+							ExportStrategyFilter filter, 
+							object locateKey);
 
 		/// <summary>
 		/// Add an export strategy to the collection

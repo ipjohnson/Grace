@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Exceptions
 {
@@ -15,6 +16,17 @@ namespace Grace.DependencyInjection.Exceptions
 		/// <param name="injectionContext"></param>
 		public DisposalScopeMissingException(Type activationType, IInjectionContext injectionContext) :
 			base(null,null,injectionContext)
+		{
+			ActivationType = activationType;
+		}
+
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		/// <param name="activationType"></param>
+		/// <param name="injectionContext"></param>
+		public DisposalScopeMissingException(TypeWrapper activationType, IInjectionContext injectionContext) :
+			base(null, null, injectionContext)
 		{
 			ActivationType = activationType;
 		}

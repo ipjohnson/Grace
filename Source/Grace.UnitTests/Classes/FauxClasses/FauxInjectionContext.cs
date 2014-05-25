@@ -37,6 +37,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		{
 		}
 
+		public object Locate<T>()
+		{
+			throw new NotImplementedException();
+		}
+
 		public object Locate(Type type)
 		{
 			return null;
@@ -64,9 +69,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		/// <summary>
 		/// Push a current export strategy onto the stack
 		/// </summary>
-		/// <param name="activationType">type being activated</param>
 		/// <param name="exportStrategy">export strategy</param>
-		public void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy)
+		public void PushCurrentInjectionInfo<T>( IExportStrategy exportStrategy)
 		{
 			if (resolveDepth + 1 > MaxResolveDepth)
 			{
@@ -75,7 +79,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
 				}
 
-				throw new CircularDependencyDetectedException(null, null, this);
+				throw new CircularDependencyDetectedException(null, (Type)null, this);
 			}
 
 			if (resolveDepth > currentInjectionInfo.Length)
@@ -87,7 +91,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 				currentInjectionInfo = temp;
 			}
 
-			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(activationType, exportStrategy);
+			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
 
 			resolveDepth++;
 		}

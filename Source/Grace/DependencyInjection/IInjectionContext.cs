@@ -52,6 +52,12 @@ namespace Grace.DependencyInjection
 		/// Locate an export by type
 		/// </summary>
 		/// <returns></returns>
+		object Locate<T>();
+
+		/// <summary>
+		/// Locate an export by type
+		/// </summary>
+		/// <returns></returns>
 		object Locate([NotNull] Type type);
 
 		/// <summary>
@@ -85,9 +91,8 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Push a current export strategy onto the stack
 		/// </summary>
-		/// <param name="activationType">type being activated</param>
 		/// <param name="exportStrategy">export strategy</param>
-		void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy);
+		void PushCurrentInjectionInfo<T>(IExportStrategy exportStrategy);
 
 		/// <summary>
 		/// Pop the current export strategy off the stack

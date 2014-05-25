@@ -662,7 +662,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException generalLocateException = new GeneralLocateException(exportName, null, injectionContext, exp);
+				GeneralLocateException generalLocateException = new GeneralLocateException(exportName,(Type) null, injectionContext, exp);
 
 				generalLocateException.AddLocationInformationEntry(
 					new InjectionScopeLocateEntry(exportName, null, ScopeName, consider != null, false));
@@ -816,7 +816,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException generalLocateException = new GeneralLocateException(name, null, injectionContext, exp);
+				GeneralLocateException generalLocateException = new GeneralLocateException(name,(Type) null, injectionContext, exp);
 
 				generalLocateException.AddLocationInformationEntry(new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
 

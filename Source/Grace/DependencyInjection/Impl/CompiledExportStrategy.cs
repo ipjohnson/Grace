@@ -75,7 +75,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException locateException = new GeneralLocateException(null,null,context,exp);
+				GeneralLocateException locateException = new GeneralLocateException(null, (Type)null, context, exp);
 
 				locateException.AddLocationInformationEntry(new StrategyBeingActivated(this));
 

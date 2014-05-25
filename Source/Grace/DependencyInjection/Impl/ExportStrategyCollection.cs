@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Grace.Logging;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -293,7 +294,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="filter"></param>
 		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public object Activate(string exportName, Type exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
+		public object Activate(string exportName,TypeWrapper exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			IExportStrategy currentPrimary = primaryStrategy;
 

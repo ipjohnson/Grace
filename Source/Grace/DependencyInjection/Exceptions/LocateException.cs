@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Utilities;
 using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Exceptions
@@ -151,6 +152,19 @@ namespace Grace.DependencyInjection.Exceptions
 		/// <param name="locateType">type used to locate</param>
 		/// <param name="targetInfo"></param>
 		public LocationInformationEntry(string locateName, Type locateType, IInjectionTargetInfo targetInfo)
+		{
+			TargetInfo = targetInfo;
+			LocateName = locateName;
+			LocateType = locateType;
+		}
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="locateName">name used to locate</param>
+		/// <param name="locateType">type used to locate</param>
+		/// <param name="targetInfo"></param>
+		public LocationInformationEntry(string locateName, TypeWrapper locateType, IInjectionTargetInfo targetInfo)
 		{
 			TargetInfo = targetInfo;
 			LocateName = locateName;

@@ -200,7 +200,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 			if (returnValue == null && ParentScope != null)
 			{
-				returnValue = ParentScope.Locate(objectType, injectionContext, consider,locateKey);
+				returnValue = ParentScope.Locate(objectType, injectionContext, consider, locateKey);
 			}
 
 			return returnValue;

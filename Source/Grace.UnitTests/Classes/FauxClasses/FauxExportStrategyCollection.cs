@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Grace.DependencyInjection;
+using Grace.Utilities;
 
 namespace Grace.UnitTests.Classes.FauxClasses
 {
@@ -53,7 +54,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			throw new NotImplementedException();
 		}
 
-		public object Activate(string exportName, Type exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
+		public object Activate(string exportName, TypeWrapper exportType, IInjectionContext injectionContext, ExportStrategyFilter filter, object locateKey)
 		{
 			foreach (IExportStrategy exportStrategy in strategies)
 			{

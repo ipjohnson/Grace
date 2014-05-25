@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl.CompiledExport
 {
@@ -29,11 +30,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			// only add the return expression if there was no enrichment
 			CreateReturnExpression();
 
+			MethodInfo closedInfo = PushCurrentInjectionInfo.MakeGenericMethod(exportDelegateInfo.ActivationType);
+
 			List<Expression> methodExpressions = new List<Expression>
 			                                     {
 				                                     Expression.Call(injectionContextParameter, 
-																						PushCurrentInjectionInfo,
-																						Expression.Constant(exportDelegateInfo.ActivationType),
+																						closedInfo,
 																						Expression.Constant(owningStrategy))
 			                                     };
 

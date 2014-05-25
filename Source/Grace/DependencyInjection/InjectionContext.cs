@@ -156,6 +156,25 @@ namespace Grace.DependencyInjection
 		/// Locate an export by type
 		/// </summary>
 		/// <returns></returns>
+		public object Locate<T>()
+		{
+			if (exportsByType != null)
+			{
+				ExportActivationDelegate activationDelegate;
+
+				if (exportsByType.TryGetValue(typeof(T), out activationDelegate))
+				{
+					return activationDelegate(RequestingScope, this);
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Locate an export by type
+		/// </summary>
+		/// <returns></returns>
 		public object Locate(Type type)
 		{
 			if (exportsByType != null)
@@ -241,9 +260,8 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Push a current export strategy onto the stack
 		/// </summary>
-		/// <param name="activationType">type being activated</param>
 		/// <param name="exportStrategy">export strategy</param>
-		public void PushCurrentInjectionInfo(Type activationType, IExportStrategy exportStrategy)
+		public void PushCurrentInjectionInfo<T>(IExportStrategy exportStrategy)
 		{
 			if (resolveDepth > MaxResolveDepth)
 			{
@@ -252,7 +270,7 @@ namespace Grace.DependencyInjection
 					throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
 				}
 
-				throw new CircularDependencyDetectedException(null, null, this);
+				throw new CircularDependencyDetectedException(null, (Type)null, this);
 			}
 
 			if (resolveDepth >= currentInjectionInfo.Length)
@@ -264,7 +282,7 @@ namespace Grace.DependencyInjection
 				currentInjectionInfo = temp;
 			}
 
-			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(activationType, exportStrategy);
+			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
 
 			resolveDepth++;
 		}

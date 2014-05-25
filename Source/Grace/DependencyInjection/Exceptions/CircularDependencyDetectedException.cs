@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Exceptions
 {
@@ -20,6 +21,19 @@ namespace Grace.DependencyInjection.Exceptions
 
 		}
 
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		/// <param name="locateName">locate name</param>
+		/// <param name="locatingType">locate type</param>
+		/// <param name="currentContext">injection context</param>
+		public CircularDependencyDetectedException(string locateName, TypeWrapper locatingType, IInjectionContext currentContext)
+			: base(locateName, locatingType, currentContext)
+		{
+
+		}
+		
 		/// <summary>
 		/// Message for the exception
 		/// </summary>

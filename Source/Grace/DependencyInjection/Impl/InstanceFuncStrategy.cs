@@ -48,7 +48,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException locateException = new GeneralLocateException(null,null,context,exp);
+				GeneralLocateException locateException = new GeneralLocateException(null,(Type)null,context,exp);
 
 				locateException.AddLocationInformationEntry(new StrategyBeingActivated(this));
 
@@ -64,7 +64,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>export instance</returns>
 		private object InternalActivate(IInjectionScope injectionscope, IInjectionContext context)
 		{
-			context.PushCurrentInjectionInfo(ActivationType, this);
+			context.PushCurrentInjectionInfo<T>(this);
 
 			object returnValue = instanceFunc(injectionscope, context);
 

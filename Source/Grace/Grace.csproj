@@ -271,6 +271,7 @@
     <Compile Include="Utilities\InternalMethodCacheHelper.cs" />
     <Compile Include="Utilities\SafeDictionary.cs" />
     <Compile Include="Utilities\TaskHelper.cs" />
+    <Compile Include="Utilities\TypeWrapper.cs" />
     <Compile Include="Utilities\WeakAction.cs" />
     <Compile Include="Utilities\WeakFunc.cs" />
     <Compile Include="Validation\IAsyncValidationRule.cs" />

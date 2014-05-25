@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Exceptions
 {
@@ -23,6 +24,19 @@ namespace Grace.DependencyInjection.Exceptions
 		{
 			AddLocationInformationEntry(new LocationInformationEntry(locateName,locatingType,currentContext.TargetInfo));
 		}
+
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		/// <param name="locateName"></param>
+		/// <param name="locatingType"></param>
+		/// <param name="currentContext"></param>
+		public MissingDependencyException(string locateName, TypeWrapper locatingType, IInjectionContext currentContext) :
+			base(locateName, locatingType, currentContext)
+		{
+			AddLocationInformationEntry(new LocationInformationEntry(locateName, locatingType, currentContext.TargetInfo));
+		}
+
 
 		/// <summary>
 		/// Exception message

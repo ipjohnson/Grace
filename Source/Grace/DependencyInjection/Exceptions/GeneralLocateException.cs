@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Utilities;
 using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Exceptions
@@ -23,6 +24,19 @@ namespace Grace.DependencyInjection.Exceptions
 			base(locateName, locatingType, currentContext, innerException)
 		{
 			
+		}
+
+		/// <summary>
+		/// Default constructor takes information about what was happening at the moment the exception was caught
+		/// </summary>
+		/// <param name="locateName">name to use when locating</param>
+		/// <param name="locatingType">type used when locating</param>
+		/// <param name="currentContext">current context</param>
+		/// <param name="innerException">inner exception</param>
+		public GeneralLocateException(string locateName, TypeWrapper locatingType, IInjectionContext currentContext, Exception innerException) :
+			base(locateName, locatingType, currentContext, innerException)
+		{
+
 		}
 
 		/// <summary>
