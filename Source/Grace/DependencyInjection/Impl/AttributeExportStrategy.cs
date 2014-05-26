@@ -287,6 +287,18 @@ namespace Grace.DependencyInjection.Impl
 						{
 							break;
 						}
+
+						ICustomEnrichmentExpressionAttribute enrichmentAttribute = customAttribute as ICustomEnrichmentExpressionAttribute;
+
+						if (enrichmentAttribute != null)
+						{
+							ICustomEnrichmentLinqExpressionProvider provider = enrichmentAttribute.GetProvider(ActivationType, declaredMethod);
+
+							if (provider != null)
+							{
+								EnrichWithExpression(provider);
+							}
+						}
 					}
 				}
 			}
