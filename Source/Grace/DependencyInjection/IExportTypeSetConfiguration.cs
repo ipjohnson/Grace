@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="conditionFunc">condition for the export</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration AndCondition(Func<Type,IExportCondition> conditionFunc);
+		IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc);
 
 		/// <summary>
 		/// Export services as Singletons
@@ -76,14 +76,14 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="typeDelegate">type delegate to pick what type to export as</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration ByType(Func<Type,Type> typeDelegate = null);
+		IExportTypeSetConfiguration ByType(Func<Type, Type> typeDelegate = null);
 
 		/// <summary>
 		/// Export by a particular name 
 		/// </summary>
 		/// <param name="nameDelegate">delegate used to create export name, default is type => type.Name</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration ByName(Func<Type,string> nameDelegate = null);
+		IExportTypeSetConfiguration ByName(Func<Type, string> nameDelegate = null);
 
 		/// <summary>
 		/// Enrich all with a particular delegate
@@ -95,9 +95,9 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Enrich all with a particular delegate
 		/// </summary>
-		/// <param name="enrichWithDelegates">enrichment delegates</param>
+		/// <param name="enrichWithDelegates">enrichment delegates, IEnumerable must not be null</param>
 		/// <returns></returns>
-		IExportTypeSetConfiguration EnrichWith(Func<Type,IEnumerable<EnrichWithDelegate>> enrichWithDelegates);
+		IExportTypeSetConfiguration EnrichWith(Func<Type, IEnumerable<EnrichWithDelegate>> enrichWithDelegates);
 
 		/// <summary>
 		/// Enrich all with linq expressions
@@ -105,13 +105,13 @@ namespace Grace.DependencyInjection
 		/// <param name="provider"></param>
 		/// <returns></returns>
 		IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
-		
+
 		/// <summary>
 		/// Enrich all with linq expressions
 		/// </summary>
-		/// <param name="providers"></param>
+		/// <param name="providers">expression provider, IEnumerable must not be null</param>
 		/// <returns></returns>
-		IExportTypeSetConfiguration EnrichWithExpression(Func<Type,IEnumerable<ICustomEnrichmentLinqExpressionProvider>> providers);
+		IExportTypeSetConfiguration EnrichWithExpression(Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>> providers);
 
 		/// <summary>
 		/// Exclude a type from being used
@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection
 		/// <param name="exclude">exclude delegate</param>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude);
-		
+
 		/// <summary>
 		/// Export all attributed types
 		/// </summary>
@@ -186,7 +186,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="lifestyleFunc">pick a lifestyle</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration WithLifestyle(Func<Type,ILifestyle> lifestyleFunc);
+		IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc);
 
 		/// <summary>
 		/// Export with the spcified priority
@@ -208,7 +208,7 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T"></typeparam>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute;
-		
+
 		/// <summary>
 		/// Inspectors will be called for every export strategy that is found
 		/// </summary>
