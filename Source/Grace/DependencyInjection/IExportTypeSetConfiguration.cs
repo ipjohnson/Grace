@@ -93,11 +93,25 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate);
 
 		/// <summary>
+		/// Enrich all with a particular delegate
+		/// </summary>
+		/// <param name="enrichWithDelegates">enrichment delegates</param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration EnrichWith(Func<Type,IEnumerable<EnrichWithDelegate>> enrichWithDelegates);
+
+		/// <summary>
 		/// Enrich all with linq expressions
 		/// </summary>
 		/// <param name="provider"></param>
 		/// <returns></returns>
 		IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+		
+		/// <summary>
+		/// Enrich all with linq expressions
+		/// </summary>
+		/// <param name="providers"></param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration EnrichWithExpression(Func<Type,IEnumerable<ICustomEnrichmentLinqExpressionProvider>> providers);
 
 		/// <summary>
 		/// Exclude a type from being used

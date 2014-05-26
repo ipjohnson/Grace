@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
@@ -42,18 +43,18 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<Func<Type, bool>> whereClauses;
 		private readonly List<IExportStrategyInspector> inspectors;
 		private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
-		private readonly List<EnrichWithDelegate> enrichWithDelegates;
-		private readonly List<ICustomEnrichmentLinqExpressionProvider> enrichmentProviders;
+		private readonly List<Func<Type, IEnumerable<EnrichWithDelegate>>> enrichWithDelegates;
+		private readonly List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>> enrichmentProviders;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
 		private bool exportByType;
-		private Func<Type, Type> exportByTypeFunc; 
+		private Func<Type, Type> exportByTypeFunc;
 		private bool exportByName;
 		private Func<Type, string> exportByNameFunc;
 		private ExportEnvironment exportEnvironment;
 		private bool externallyOwned;
-		private Func<Type,int> priorityFunc;
-		private Func<Type, ILifestyle> lifestyleFunc; 
+		private Func<Type, int> priorityFunc;
+		private Func<Type, ILifestyle> lifestyleFunc;
 
 		/// <summary>
 		/// Default Constructor
@@ -73,8 +74,8 @@ namespace Grace.DependencyInjection.Impl
 			interfaceMatchList = new List<Func<Type, bool>>();
 			inspectors = new List<IExportStrategyInspector>();
 			importPropertiesList = new List<ImportGlobalPropertyInfo>();
-			enrichWithDelegates = new List<EnrichWithDelegate>();
-			enrichmentProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
+			enrichWithDelegates = new List<Func<Type, IEnumerable<EnrichWithDelegate>>>();
+			enrichmentProviders = new List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>>();
 
 			lifestyleFunc = type => null;
 			priorityFunc = type => 0;
@@ -134,9 +135,11 @@ namespace Grace.DependencyInjection.Impl
 
 			foreach (IExportStrategy exportStrategy in returnValues)
 			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				foreach (Func<Type, IEnumerable<EnrichWithDelegate>> enrichWithDelegate in enrichWithDelegates)
 				{
-					exportStrategy.EnrichWithDelegate(enrichWithDelegate);
+					IExportStrategy localStrategy = exportStrategy;
+
+					enrichWithDelegate(exportStrategy.ActivationType).Apply(localStrategy.EnrichWithDelegate);
 				}
 
 				ICompiledExportStrategy compiledExport = exportStrategy as ICompiledExportStrategy;
@@ -146,17 +149,15 @@ namespace Grace.DependencyInjection.Impl
 					continue;
 				}
 
-				foreach (ICustomEnrichmentLinqExpressionProvider customEnrichmentLinqExpressionProvider in enrichmentProviders)
+				foreach (Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>> enrichmentProvider in enrichmentProviders)
 				{
-					compiledExport.EnrichWithExpression(customEnrichmentLinqExpressionProvider);
+					enrichmentProvider(exportStrategy.ActivationType).Apply(compiledExport.EnrichWithExpression);
 				}
 			}
 
 			return returnValues;
 		}
-
-
-
+		
 		/// <summary>
 		/// Export all objects that implements the specified interface
 		/// </summary>
@@ -241,11 +242,11 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		/// <param name="nameDelegate">delegate used to create export name, default is type => type.Name</param>
 		/// <returns>configuration object</returns>
-		public IExportTypeSetConfiguration ByName(Func<Type,string> nameDelegate = null)
+		public IExportTypeSetConfiguration ByName(Func<Type, string> nameDelegate = null)
 		{
 			exportByName = true;
 
-			exportByNameFunc = nameDelegate ?? (type =>  type.Name );
+			exportByNameFunc = nameDelegate ?? (type => type.Name);
 
 			return this;
 		}
@@ -290,7 +291,7 @@ namespace Grace.DependencyInjection.Impl
 		/// Priority will be set using a priority attribute
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute
 		{
 			inspectors.Add(new PriorityAttributeInspector<T>());
@@ -302,7 +303,7 @@ namespace Grace.DependencyInjection.Impl
 		/// Export in the specified Environment
 		/// </summary>
 		/// <param name="environment">environment to export in</param>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment)
 		{
 			exportEnvironment = environment;
@@ -313,7 +314,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Mark all exports as externally owned
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration ExternallyOwned()
 		{
 			externallyOwned = true;
@@ -325,7 +326,7 @@ namespace Grace.DependencyInjection.Impl
 		/// Exports are to be marked as shared, similar to a singleton only using a weak reference.
 		/// It can not be of type IDisposable
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration AndWeakSingleton()
 		{
 			lifestyleFunc = type => new WeakSingletonLifestyle();
@@ -333,15 +334,22 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+		/// <summary>
+		/// And condition func
+		/// </summary>
+		/// <param name="conditionFunc">condition picker</param>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc)
 		{
+			conditions.Add(conditionFunc);
+
 			return this;
 		}
 
 		/// <summary>
 		/// Export services as Singletons
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		public IExportTypeSetConfiguration AndSingleton()
 		{
 			lifestyleFunc = type => new SingletonLifestyle();
@@ -405,6 +413,18 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
+		/// Enrich with linq expressions
+		/// </summary>
+		/// <param name="providers">providers</param>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration EnrichWithExpression(Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>> providers)
+		{
+			this.enrichmentProviders.Add(providers);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Exclude a type from being used
 		/// </summary>
 		/// <param name="exclude"></param>
@@ -447,7 +467,19 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate)
 		{
-			enrichWithDelegates.Add(enrichWithDelegate);
+			enrichWithDelegates.Add(t => new[] { enrichWithDelegate });
+
+			return this;
+		}
+
+		/// <summary>
+		/// Enrich with linq statements
+		/// </summary>
+		/// <param name="enrichWithDelegates">linq statement picker</param>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration EnrichWith(Func<Type, IEnumerable<EnrichWithDelegate>> enrichWithDelegates)
+		{
+			this.enrichWithDelegates.Add(enrichWithDelegates);
 
 			return this;
 		}
@@ -459,7 +491,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider)
 		{
-			enrichmentProviders.Add(provider);
+			enrichmentProviders.Add(type => new[] { provider });
 
 			return this;
 		}
@@ -976,7 +1008,7 @@ namespace Grace.DependencyInjection.Impl
 
 		private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
 		{
-			if (importProperty.TypeFilter != null && 
+			if (importProperty.TypeFilter != null &&
 				!importProperty.TypeFilter(exportedType))
 			{
 				return false;
