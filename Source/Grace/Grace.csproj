@@ -269,6 +269,8 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\InternalMethodCacheHelper.cs" />
+    <Compile Include="Utilities\MethodInfoWrapper.cs" />
+    <Compile Include="Utilities\PropertyInfoWrapper.cs" />
     <Compile Include="Utilities\SafeDictionary.cs" />
     <Compile Include="Utilities\TaskHelper.cs" />
     <Compile Include="Utilities\TypeWrapper.cs" />
