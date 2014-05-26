@@ -825,7 +825,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 											targetInfo,
 											exportName,
 											valueProvider,
-											exportStrategyFilter,
+											exportStrategyFilter, 
+											locateKey,
 											comparerObject,
 											expressionList))
 			{
@@ -1341,6 +1342,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 			string exportName,
 			IExportValueProvider valueProvider,
 			ExportStrategyFilter exportStrategyFilter,
+			object locateKey,
 			object comparerObject,
 			List<Expression> expressionList)
 		{
@@ -1353,8 +1355,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						ActivateValueProviderMethod,
 						exportStrategyScopeParameter,
 						injectionContextParameter,
-						Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)),
-						Expression.Convert(Expression.Constant(null), typeof(object)));
+						Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
+						Expression.Convert(Expression.Constant(locateKey), typeof(object)));
 
 				Expression assignExpression =
 					Expression.Assign(importVariable, callValueProvider);
@@ -1405,7 +1407,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						new[]
 						{
 							typeof(IInjectionContext),
-							typeof(ExportStrategyFilter)
+							typeof(ExportStrategyFilter),
+							typeof(object)
 						});
 
 					MethodInfo closedMethod = createFuncMethod.MakeGenericMethod(importType.GenericTypeArguments);
@@ -1413,8 +1416,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					Expression assign = Expression.Assign(importVariable,
 						Expression.Call(closedMethod,
 							injectionContextParameter,
-							Expression.Convert(Expression.Constant(exportStrategyFilter),
-								typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter),typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey),typeof(object))));
 
 					expressionList.Add(assign);
 
@@ -1427,7 +1430,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						new[]
 						{
 							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter)
+							typeof(ExportStrategyFilter),
+							typeof(object)
 						});
 
 					MethodInfo closedMethod = createFuncMethod.MakeGenericMethod(importType.GenericTypeArguments);
@@ -1436,8 +1440,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						Expression.Call(closedMethod,
 							Expression.Property(injectionContextParameter,
 								"RequestingScope"),
-							Expression.Convert(Expression.Constant(exportStrategyFilter),
-								typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey),typeof(object))));
 
 					expressionList.Add(assign);
 
@@ -1449,15 +1453,16 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						new[]
 						{
 							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter)
+							typeof(ExportStrategyFilter),
+							typeof(object)
 						});
 
 					Expression assign = Expression.Assign(importVariable,
 						Expression.Call(funcMethodInfo,
 							Expression.Property(injectionContextParameter,
 								"RequestingScope"),
-							Expression.Convert(Expression.Constant(exportStrategyFilter),
-								typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter),typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey),typeof(object))));
 
 					expressionList.Add(assign);
 
@@ -1469,15 +1474,16 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						new[]
 						{
 							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter)
+							typeof(ExportStrategyFilter),
+							typeof(object)
 						});
 
 					Expression assign = Expression.Assign(importVariable,
 						Expression.Call(funcMethodInfo,
 							Expression.Property(injectionContextParameter,
 								"RequestingScope"),
-							Expression.Convert(Expression.Constant(exportStrategyFilter),
-								typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey),typeof(object))));
 
 					expressionList.Add(assign);
 
@@ -1496,7 +1502,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							closeMethod,
 							injectionContextParameter,
 							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
-							Expression.Convert(Expression.Constant(null), typeof(object)),
+							Expression.Convert(Expression.Constant(locateKey), typeof(object)),
 							Expression.Convert(Expression.Constant(comparerObject), comparerType));
 
 					expressionList.Add(AddInjectionTargetInfo(targetInfo));
@@ -1517,7 +1523,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							closeMethod,
 							injectionContextParameter,
 							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
-							Expression.Convert(Expression.Constant(null), typeof(object)),
+							Expression.Convert(Expression.Constant(locateKey), typeof(object)),
 							Expression.Convert(Expression.Constant(comparerObject), comparerType));
 
 					Expression newReadOnlyCollection =
@@ -1535,7 +1541,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							new[]
 							{
 								typeof(IInjectionContext),
-								typeof(ExportStrategyFilter)
+								typeof(ExportStrategyFilter),
+								typeof(object)
 							});
 
 					MethodInfo closedMethod = methodInfo.MakeGenericMethod(importType.GenericTypeArguments);
@@ -1543,8 +1550,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					Expression assign = Expression.Assign(importVariable,
 						Expression.Call(closedMethod,
 							injectionContextParameter,
-							Expression.Convert(Expression.Constant(exportStrategyFilter),
-								typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey), typeof(object))));
 
 					expressionList.Add(AddInjectionTargetInfo(targetInfo));
 					expressionList.Add(assign);
@@ -1558,7 +1565,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 							new[]
 							{
 								typeof(IInjectionContext),
-								typeof(ExportStrategyFilter)
+								typeof(ExportStrategyFilter),
+								typeof(object)
 							});
 
 					MethodInfo closedMethod = methodInfo.MakeGenericMethod(importType.GenericTypeArguments);
@@ -1567,7 +1575,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						importVariable,
 						Expression.Call(closedMethod,
 							injectionContextParameter,
-							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter))));
+							Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
+							Expression.Convert(Expression.Constant(locateKey),typeof(object))));
 
 					expressionList.Add(AddInjectionTargetInfo(targetInfo));
 					expressionList.Add(assign);
@@ -1586,7 +1595,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 						closeMethod,
 						injectionContextParameter,
 						Expression.Convert(Expression.Constant(exportStrategyFilter), typeof(ExportStrategyFilter)),
-						Expression.Convert(Expression.Constant(null), typeof(object)),
+						Expression.Convert(Expression.Constant(locateKey), typeof(object)),
 						Expression.Convert(Expression.Constant(comparerObject), comparerType));
 
 				Expression toArray =
@@ -1607,8 +1616,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <typeparam name="T"></typeparam>
 		/// <param name="context"></param>
 		/// <param name="exportStrategyFilter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public static Func<T> CreateFunc<T>(IInjectionContext context, ExportStrategyFilter exportStrategyFilter)
+		public static Func<T> CreateFunc<T>(IInjectionContext context, ExportStrategyFilter exportStrategyFilter, object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -1622,7 +1632,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				injectionContext.DisposalScope = disposal;
 				injectionContext.TargetInfo = targetInfo;
 
-				return scope.Locate<T>(injectionContext: injectionContext, consider: exportStrategyFilter);
+				return scope.Locate<T>(injectionContext, exportStrategyFilter, locateKey);
 			};
 		}
 
@@ -1632,11 +1642,13 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <typeparam name="T"></typeparam>
 		/// <param name="injectionScope"></param>
 		/// <param name="exportStrategyFilter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
 		public static Func<IInjectionContext, T> CreateFuncWithContext<T>(IInjectionScope injectionScope,
-			ExportStrategyFilter exportStrategyFilter)
+			ExportStrategyFilter exportStrategyFilter, 
+			object locateKey)
 		{
-			return context => injectionScope.Locate<T>(injectionContext: context, consider: exportStrategyFilter);
+			return context => injectionScope.Locate<T>(context, exportStrategyFilter, locateKey);
 		}
 
 		/// <summary>
@@ -1644,9 +1656,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		/// <param name="context">injection context to use</param>
 		/// <param name="exportStrategyFilter">export filter to use when locating</param>
+		/// <param name="locateKey">locate key</param>
 		/// <returns>new Func(Type,object)</returns>
 		public static Func<Type, object> CreateFuncType(IInjectionContext context,
-			ExportStrategyFilter exportStrategyFilter)
+			ExportStrategyFilter exportStrategyFilter,
+			object locateKey)
 		{
 			IInjectionScope scope = context.RequestingScope;
 			IDisposalScope disposal = context.DisposalScope;
@@ -1660,7 +1674,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				newContext.RequestingScope = scope;
 				newContext.TargetInfo = targetInfo;
 
-				return scope.Locate(type, injectionContext: newContext, consider: exportStrategyFilter);
+				return scope.Locate(type, newContext, exportStrategyFilter, locateKey);
 			};
 		}
 
@@ -1669,11 +1683,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		/// <param name="injectionScope"></param>
 		/// <param name="exportStrategyFilter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
 		public static Func<Type, IInjectionContext, object> CreateFuncTypeWithContext(IInjectionScope injectionScope,
-			ExportStrategyFilter exportStrategyFilter)
+			ExportStrategyFilter exportStrategyFilter, object locateKey)
 		{
-			return (type, context) => injectionScope.Locate(type, injectionContext: context, consider: exportStrategyFilter);
+			return (type, context) => injectionScope.Locate(type, context, exportStrategyFilter, locateKey);
 		}
 
 		/// <summary>
@@ -1682,8 +1697,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <typeparam name="T"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportStrategyFilter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public static Owned<T> CreateOwned<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter)
+		public static Owned<T> CreateOwned<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter, object locateKey)
 			where T : class
 		{
 			Owned<T> newT = new Owned<T>();
@@ -1692,7 +1708,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
 			injectionContext.DisposalScope = newT;
 
-			T returnT = injectionContext.RequestingScope.Locate<T>(injectionContext: injectionContext, consider: exportStrategyFilter);
+			T returnT = injectionContext.RequestingScope.Locate<T>(injectionContext, exportStrategyFilter, locateKey);
 
 			newT.SetValue(returnT);
 
@@ -1707,8 +1723,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <typeparam name="T"></typeparam>
 		/// <param name="injectionContext"></param>
 		/// <param name="exportStrategyFilter"></param>
+		/// <param name="locateKey"></param>
 		/// <returns></returns>
-		public static Lazy<T> CreateLazy<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter)
+		public static Lazy<T> CreateLazy<T>(IInjectionContext injectionContext, ExportStrategyFilter exportStrategyFilter, object locateKey)
 		{
 			IInjectionScope scope = injectionContext.RequestingScope;
 			IDisposalScope disposal = injectionContext.DisposalScope;
@@ -1722,7 +1739,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				clonedContext.DisposalScope = disposal;
 				clonedContext.TargetInfo = targetInfo;
 
-				return scope.Locate<T>(injectionContext: clonedContext, consider: exportStrategyFilter);
+				return scope.Locate<T>(clonedContext, exportStrategyFilter, locateKey);
 			});
 		}
 

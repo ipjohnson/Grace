@@ -1664,14 +1664,14 @@ namespace Grace.DependencyInjection.Impl
 			{
 				if (locateType != null)
 				{
-					foreach (T t in ParentScope.LocateAll(locateType, injectionContext: injectionContext, consider: exportFilter))
+					foreach (T t in ParentScope.LocateAll(locateType, injectionContext, exportFilter, locateKey))
 					{
 						returnValue.Add(t);
 					}
 				}
 				else
 				{
-					foreach (T t in ParentScope.LocateAll(name, injectionContext: injectionContext, consider: exportFilter))
+					foreach (T t in ParentScope.LocateAll(name, injectionContext, exportFilter, locateKey))
 					{
 						returnValue.Add(t);
 					}

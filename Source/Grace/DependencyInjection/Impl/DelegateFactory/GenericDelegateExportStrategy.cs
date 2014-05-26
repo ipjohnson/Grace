@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 				clonedContext.RequestingScope = requestingInjectionScope;
 				clonedContext.DisposalScope = disposalScope;
 
-				return requestingInjectionScope.Locate<TReturn>(injectionContext: clonedContext, consider: consider);
+				return requestingInjectionScope.Locate<TReturn>(clonedContext, consider, locateKey);
 			}
 		}
 

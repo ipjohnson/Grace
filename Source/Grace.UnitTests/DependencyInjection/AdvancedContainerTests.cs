@@ -229,6 +229,49 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 		}
 
+		[Fact]
+		public void ImportKeyedLazy()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+				                    c.Export<BasicService>().As<IBasicService>();
+				                    c.Export<OtherBasicService>().As<IBasicService>().WithKey(5);
+				                    c.Export<LazyImportService>().
+					                   ByInterfaces().
+					                   WithCtorParam<Lazy<IBasicService>>().LocateWithKey(5);
+			                    });
+
+			LazyImportService importService = container.Locate<LazyImportService>();
+
+			Assert.NotNull(importService);
+			Assert.NotNull(importService.BasicService);
+			Assert.IsType<OtherBasicService>(importService.BasicService);
+		}
+
+		[Fact]
+		public void ImportIEnumerableKeyed()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			                    {
+										  c.Export<SimpleObjectA>().As<ISimpleObject>().WithKey("A");
+										  c.Export<SimpleObjectB>().As<ISimpleObject>().WithKey("B");
+										  c.Export<SimpleObjectC>().As<ISimpleObject>().WithKey("C");
+										  c.Export<SimpleObjectD>().As<ISimpleObject>().WithKey("D");
+										  c.Export<SimpleObjectE>().As<ISimpleObject>().WithKey("E");
+				                    c.Export<ImportObservableCollectionService>().
+					                   WithCtorParam<IEnumerable<ISimpleObject>>().LocateWithKey(new[] { "A", "B", "C" });
+			                    });
+
+			ImportObservableCollectionService service = container.Locate<ImportObservableCollectionService>();
+
+			Assert.NotNull(service);
+			Assert.Equal(3, service.Count);
+		}
+
 		#endregion
 
 		#region new context

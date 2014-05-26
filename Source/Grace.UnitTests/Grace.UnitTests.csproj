@@ -122,6 +122,7 @@
     <Compile Include="Classes\Simple\NewContextClasses.cs" />
     <Compile Include="Classes\Simple\OpenGenericNonInterfaceExportClasses.cs" />
     <Compile Include="Classes\Simple\OpenGenericPartiallyClosedInterface.cs" />
+    <Compile Include="Classes\Simple\OtherBasicService.cs" />
     <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
     <Compile Include="Classes\Simple\PropertedPropertyImportClass.cs" />
     <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
