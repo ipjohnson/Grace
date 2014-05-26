@@ -25,12 +25,14 @@ namespace Grace.DependencyInjection.Impl
 
 			public bool AfterConstruction { get; set; }
 
+			public Func<Type, bool> TypeFilter { get; set; }
+
 			public ExportStrategyFilter Consider { get; set; }
 
 			public IExportValueProvider ValueProvider { get; set; }
 		}
 
-		private readonly List<IExportCondition> conditions;
+		private readonly List<Func<Type, IExportCondition>> conditions;
 		private readonly List<Func<Type, bool>> excludeClauses;
 		private readonly List<Type> exportBaseTypes;
 		private readonly List<Type> exportInterfaces;
@@ -42,13 +44,16 @@ namespace Grace.DependencyInjection.Impl
 		private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
 		private readonly List<EnrichWithDelegate> enrichWithDelegates;
 		private readonly List<ICustomEnrichmentLinqExpressionProvider> enrichmentProviders;
-		private ILifestyle container;
 		private bool exportAllByInterface;
 		private bool exportAttributedTypes;
 		private bool exportByType;
+		private Func<Type, Type> exportByTypeFunc; 
+		private bool exportByName;
+		private Func<Type, string> exportByNameFunc;
 		private ExportEnvironment exportEnvironment;
 		private bool externallyOwned;
-		private int priority;
+		private Func<Type,int> priorityFunc;
+		private Func<Type, ILifestyle> lifestyleFunc; 
 
 		/// <summary>
 		/// Default Constructor
@@ -59,9 +64,10 @@ namespace Grace.DependencyInjection.Impl
 		{
 			this.injectionScope = injectionScope;
 			this.scanTypes = scanTypes;
+
 			exportInterfaces = new List<Type>();
 			exportBaseTypes = new List<Type>();
-			conditions = new List<IExportCondition>();
+			conditions = new List<Func<Type, IExportCondition>>();
 			excludeClauses = new List<Func<Type, bool>>();
 			whereClauses = new List<Func<Type, bool>>();
 			interfaceMatchList = new List<Func<Type, bool>>();
@@ -69,6 +75,9 @@ namespace Grace.DependencyInjection.Impl
 			importPropertiesList = new List<ImportGlobalPropertyInfo>();
 			enrichWithDelegates = new List<EnrichWithDelegate>();
 			enrichmentProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
+
+			lifestyleFunc = type => null;
+			priorityFunc = type => 0;
 		}
 
 		/// <summary>
@@ -108,6 +117,10 @@ namespace Grace.DependencyInjection.Impl
 			{
 				returnValues.AddRange(ExportAllByType(filteredTypes));
 			}
+			else if (exportByName)
+			{
+				returnValues.AddRange(ExportAllByName(filteredTypes));
+			}
 
 			if (inspectors.Count > 0)
 			{
@@ -141,6 +154,7 @@ namespace Grace.DependencyInjection.Impl
 
 			return returnValues;
 		}
+
 
 
 		/// <summary>
@@ -211,10 +225,39 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Export the selected classes by type
 		/// </summary>
+		/// <param name="typeDelegate"></param>
 		/// <returns></returns>
-		public IExportTypeSetConfiguration ByType()
+		public IExportTypeSetConfiguration ByType(Func<Type, Type> typeDelegate = null)
 		{
 			exportByType = true;
+
+			exportByTypeFunc = typeDelegate ?? (type => type);
+
+			return this;
+		}
+
+		/// <summary>
+		/// Export by a particular name 
+		/// </summary>
+		/// <param name="nameDelegate">delegate used to create export name, default is type => type.Name</param>
+		/// <returns>configuration object</returns>
+		public IExportTypeSetConfiguration ByName(Func<Type,string> nameDelegate = null)
+		{
+			exportByName = true;
+
+			exportByNameFunc = nameDelegate ?? (type =>  type.Name );
+
+			return this;
+		}
+
+		/// <summary>
+		/// Set a particular life style using a func
+		/// </summary>
+		/// <param name="lifestyleFunc">pick a lifestyle</param>
+		/// <returns>configuration object</returns>
+		public IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc)
+		{
+			this.lifestyleFunc = lifestyleFunc;
 
 			return this;
 		}
@@ -226,7 +269,19 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration WithPriority(int priority)
 		{
-			this.priority = priority;
+			priorityFunc = type => priority;
+
+			return this;
+		}
+
+		/// <summary>
+		/// Set priority based on a func
+		/// </summary>
+		/// <param name="priorityFunc"></param>
+		/// <returns></returns>
+		public IExportTypeSetConfiguration WithPriority(Func<Type, int> priorityFunc)
+		{
+			this.priorityFunc = priorityFunc;
 
 			return this;
 		}
@@ -273,8 +328,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration AndWeakSingleton()
 		{
-			container = new WeakSingletonLifestyle();
+			lifestyleFunc = type => new WeakSingletonLifestyle();
 
+			return this;
+		}
+
+		public IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc)
+		{
 			return this;
 		}
 
@@ -284,7 +344,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration AndSingleton()
 		{
-			container = new SingletonLifestyle();
+			lifestyleFunc = type => new SingletonLifestyle();
 
 			return this;
 		}
@@ -295,7 +355,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportTypeSetConfiguration WithLifestyle(ILifestyle container)
 		{
-			this.container = container;
+			lifestyleFunc = type => container.Clone();
 
 			return this;
 		}
@@ -317,7 +377,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="conditionDelegate"></param>
 		public IExportTypeSetConfiguration When(ExportConditionDelegate conditionDelegate)
 		{
-			conditions.Add(new WhenCondition(conditionDelegate));
+			conditions.Add((x => new WhenCondition(conditionDelegate)));
 
 			return this;
 		}
@@ -328,7 +388,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="conditionDelegate"></param>
 		public IExportTypeSetConfiguration Unless(ExportConditionDelegate conditionDelegate)
 		{
-			conditions.Add(new UnlessCondition(conditionDelegate));
+			conditions.Add((x => new UnlessCondition(conditionDelegate)));
 
 			return this;
 		}
@@ -339,7 +399,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="condition"></param>
 		public IExportTypeSetConfiguration AndCondition(IExportCondition condition)
 		{
-			conditions.Add(condition);
+			conditions.Add(x => condition);
 
 			return this;
 		}
@@ -521,8 +581,18 @@ namespace Grace.DependencyInjection.Impl
 			if (importPropertiesList.Count > 0)
 			{
 				importPropertiesList[importPropertiesList.Count - 1].AfterConstruction = true;
-
 			}
+
+			return this;
+		}
+
+		public IExportTypeSetImportPropertyConfiguration OnlyOn(Func<Type, bool> filter)
+		{
+			if (importPropertiesList.Count > 0)
+			{
+				importPropertiesList[importPropertiesList.Count - 1].TypeFilter = filter;
+			}
+
 			return this;
 		}
 
@@ -610,13 +680,31 @@ namespace Grace.DependencyInjection.Impl
 
 		private IEnumerable<IExportStrategy> ExportAllByType(IEnumerable<Type> filteredTypes)
 		{
+			foreach (Type filteredType in filteredTypes)
+			{
+				bool isGeneric = filteredType.GetTypeInfo().IsGenericTypeDefinition;
+
+				Type[] exportTypes = { exportByTypeFunc(filteredType) };
+
+				yield return CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes);
+			}
+		}
+
+		private IEnumerable<IExportStrategy> ExportAllByName(IEnumerable<Type> filteredTypes)
+		{
 			Type[] exportTypes = new Type[0];
 
 			foreach (Type filteredType in filteredTypes)
 			{
 				bool isGeneric = filteredType.GetTypeInfo().IsGenericTypeDefinition;
 
-				yield return CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes);
+				ICompiledExportStrategy strategy = CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes);
+
+				string exportName = exportByNameFunc(filteredType);
+
+				strategy.AddExportName(exportName);
+
+				yield return strategy;
 			}
 		}
 
@@ -830,9 +918,9 @@ namespace Grace.DependencyInjection.Impl
 				exportStrategy = new AttributeExportStrategy(exportedType, exportedType.GetTypeInfo().GetCustomAttributes(true));
 			}
 
-			if (container != null)
+			if (exportStrategy.Lifestyle == null)
 			{
-				exportStrategy.SetLifestyleContainer(container.Clone());
+				exportStrategy.SetLifestyleContainer(lifestyleFunc(exportedType));
 			}
 
 			if (externallyOwned)
@@ -840,12 +928,22 @@ namespace Grace.DependencyInjection.Impl
 				exportStrategy.SetExternallyOwned();
 			}
 
-			exportStrategy.SetPriority(priority);
+			exportStrategy.SetPriority(priorityFunc(exportedType));
 			exportStrategy.SetEnvironment(exportEnvironment);
 
 			foreach (Type exportType in exportTypes)
 			{
 				exportStrategy.AddExportType(exportType);
+			}
+
+			foreach (Func<Type, IExportCondition> conditionFunc in conditions)
+			{
+				IExportCondition condition = conditionFunc(exportedType);
+
+				if (condition != null)
+				{
+					exportStrategy.AddCondition(condition);
+				}
 			}
 
 			foreach (ImportGlobalPropertyInfo importProperty in importPropertiesList)
@@ -855,7 +953,7 @@ namespace Grace.DependencyInjection.Impl
 					if (runtimeProperty.CanWrite &&
 						 !runtimeProperty.SetMethod.IsStatic &&
 						 runtimeProperty.SetMethod.IsPublic &&
-						 CheckPropertyTypesMatch(runtimeProperty.PropertyType, importProperty.PropertyType))
+						 CheckPropertyTypesMatch(exportedType, runtimeProperty.PropertyType, importProperty))
 					{
 						if (importProperty.PropertyName == null ||
 							 importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
@@ -876,25 +974,31 @@ namespace Grace.DependencyInjection.Impl
 			return exportStrategy;
 		}
 
-		private bool CheckPropertyTypesMatch(Type importType, Type propertyType)
+		private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
 		{
+			if (importProperty.TypeFilter != null && 
+				!importProperty.TypeFilter(exportedType))
+			{
+				return false;
+			}
+
 			if (importType.GetTypeInfo().IsGenericTypeDefinition)
 			{
-				if (propertyType.GetTypeInfo().IsGenericTypeDefinition &&
-					 propertyType.GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
+				if (importProperty.PropertyType.GetTypeInfo().IsGenericTypeDefinition &&
+					 importProperty.PropertyType.GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
 				{
 					return true;
 				}
 
-				if (propertyType.IsConstructedGenericType &&
-					 propertyType.GetTypeInfo().GetGenericTypeDefinition().GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
+				if (importProperty.PropertyType.IsConstructedGenericType &&
+					 importProperty.PropertyType.GetTypeInfo().GetGenericTypeDefinition().GetTypeInfo().GUID == importType.GetTypeInfo().GUID)
 				{
 					return true;
 				}
 			}
 			else
 			{
-				return propertyType.GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo());
+				return importProperty.PropertyType.GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo());
 			}
 
 			return false;

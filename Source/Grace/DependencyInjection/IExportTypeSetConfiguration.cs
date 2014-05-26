@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
@@ -10,6 +11,46 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public interface IExportTypeSetConfiguration
 	{
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="condition">condition for the export</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration AndCondition(IExportCondition condition);
+
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="conditionFunc">condition for the export</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration AndCondition(Func<Type,IExportCondition> conditionFunc);
+
+		/// <summary>
+		/// Export services as Singletons
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration AndSingleton();
+
+		/// <summary>
+		/// Exports are to be marked as shared, similar to a singleton only using a weak reference.
+		/// It can not be of type IDisposable
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration AndWeakSingleton();
+
+		/// <summary>
+		/// Export all types based on speficied type by Type
+		/// </summary>
+		/// <param name="baseType">base type to export</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration BasedOn(Type baseType);
+
+		/// <summary>
+		/// Export all types based on speficied type by Type
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration BasedOn<T>();
+
 		/// <summary>
 		/// Export all objects that implements the specified interface
 		/// </summary>
@@ -31,118 +72,18 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration ByInterfaces(Func<Type, bool> whereClause = null);
 
 		/// <summary>
-		/// Export all types based on speficied type by Type
-		/// </summary>
-		/// <param name="baseType">base type to export</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration BasedOn(Type baseType);
-
-		/// <summary>
-		/// Export all types based on speficied type by Type
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration BasedOn<T>();
-
-		/// <summary>
 		/// Export the selected classes by type
 		/// </summary>
-		/// <returns></returns>
-		IExportTypeSetConfiguration ByType();
-
-		/// <summary>
-		/// Export with the spcified priority
-		/// </summary>
-		/// <param name="priority">priority to export at</param>
+		/// <param name="typeDelegate">type delegate to pick what type to export as</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration WithPriority(int priority);
+		IExportTypeSetConfiguration ByType(Func<Type,Type> typeDelegate = null);
 
 		/// <summary>
-		/// Allows you to specify an attribute that will be used to apply 
+		/// Export by a particular name 
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
+		/// <param name="nameDelegate">delegate used to create export name, default is type => type.Name</param>
 		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute;
-
-		/// <summary>
-		/// Export in the specified Environment
-		/// </summary>
-		/// <param name="environment">environment to export in</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
-
-		/// <summary>
-		/// Mark the exports to be externally owned, stopping the container from calling the Dispose
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration ExternallyOwned();
-
-		/// <summary>
-		/// Exports are to be marked as shared, similar to a singleton only using a weak reference.
-		/// It can not be of type IDisposable
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration AndWeakSingleton();
-
-		/// <summary>
-		/// Export services as Singletons
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration AndSingleton();
-
-		/// <summary>
-		/// Set a particular life style
-		/// </summary>
-		/// <param name="container">lifestyle</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration WithLifestyle(ILifestyle container);
-
-		/// <summary>
-		/// Export all attributed types
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration ExportAttributedTypes();
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="conditionDelegate">when condition</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration When(ExportConditionDelegate conditionDelegate);
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="conditionDelegate">condition delegate</param>
-		/// /// <returns>configuration object</returns>
-		IExportTypeSetConfiguration Unless(ExportConditionDelegate conditionDelegate);
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="condition">condition for the export</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration AndCondition(IExportCondition condition);
-
-		/// <summary>
-		/// Exclude a type from being used
-		/// </summary>
-		/// <param name="exclude">exclude delegate</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude);
-
-		/// <summary>
-		/// Allows you to filter out types based on the provided where clause
-		/// </summary>
-		/// <param name="whereClause">where clause</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration Select(Func<Type, bool> whereClause);
-
-		/// <summary>
-		/// Inspectors will be called for every export strategy that is found
-		/// </summary>
-		/// <param name="inspector">inspector object</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector);
+		IExportTypeSetConfiguration ByName(Func<Type,string> nameDelegate = null);
 
 		/// <summary>
 		/// Enrich all with a particular delegate
@@ -159,6 +100,25 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
 
 		/// <summary>
+		/// Exclude a type from being used
+		/// </summary>
+		/// <param name="exclude">exclude delegate</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude);
+		
+		/// <summary>
+		/// Export all attributed types
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration ExportAttributedTypes();
+
+		/// <summary>
+		/// Mark the exports to be externally owned, stopping the container from calling the Dispose
+		/// </summary>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration ExternallyOwned();
+
+		/// <summary>
 		/// Import properties of type TProperty and by name
 		/// </summary>
 		/// <typeparam name="TProperty">property type</typeparam>
@@ -171,6 +131,76 @@ namespace Grace.DependencyInjection
 		/// <param name="propertyType"></param>
 		/// <returns></returns>
 		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType);
+
+		/// <summary>
+		/// Export in the specified Environment
+		/// </summary>
+		/// <param name="environment">environment to export in</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
+
+		/// <summary>
+		/// Allows you to filter out types based on the provided where clause
+		/// </summary>
+		/// <param name="whereClause">where clause</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration Select(Func<Type, bool> whereClause);
+
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="conditionDelegate">condition delegate</param>
+		/// /// <returns>configuration object</returns>
+		IExportTypeSetConfiguration Unless(ExportConditionDelegate conditionDelegate);
+
+		/// <summary>
+		/// Adds a condition to the export
+		/// </summary>
+		/// <param name="conditionDelegate">when condition</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration When(ExportConditionDelegate conditionDelegate);
+
+		/// <summary>
+		/// Set a particular life style
+		/// </summary>
+		/// <param name="container">lifestyle</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration WithLifestyle(ILifestyle container);
+
+		/// <summary>
+		/// Set a particular life style using a func
+		/// </summary>
+		/// <param name="lifestyleFunc">pick a lifestyle</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration WithLifestyle(Func<Type,ILifestyle> lifestyleFunc);
+
+		/// <summary>
+		/// Export with the spcified priority
+		/// </summary>
+		/// <param name="priority">priority to export at</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration WithPriority(int priority);
+
+		/// <summary>
+		/// Set priority based on a func
+		/// </summary>
+		/// <param name="priorityFunc"></param>
+		/// <returns></returns>
+		IExportTypeSetConfiguration WithPriority(Func<Type, int> priorityFunc);
+
+		/// <summary>
+		/// Allows you to specify an attribute that will be used to apply 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute;
+		
+		/// <summary>
+		/// Inspectors will be called for every export strategy that is found
+		/// </summary>
+		/// <param name="inspector">inspector object</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetConfiguration WithInspector(IExportStrategyInspector inspector);
 	}
 
 	/// <summary>
@@ -217,7 +247,14 @@ namespace Grace.DependencyInjection
 		/// Import the property after the instance has been constructed.
 		/// The Instance property on IInjectionContext will be populated
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>configuration object</returns>
 		IExportTypeSetImportPropertyConfiguration AfterConstruction();
+
+		/// <summary>
+		/// Only import on certain types
+		/// </summary>
+		/// <param name="filter">type filter</param>
+		/// <returns>configuration object</returns>
+		IExportTypeSetImportPropertyConfiguration OnlyOn(Func<Type, bool> filter);
 	}
 }
