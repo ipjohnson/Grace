@@ -296,6 +296,30 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.IsType<SimpleObjectC>(simpleObject);
 		}
 
+
+		[Fact]
+		public void ImportKeyedLocateDelegateTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c =>
+			{
+				c.Export<SimpleObjectA>().As<ISimpleObject>().WithKey(1);
+				c.Export<SimpleObjectB>().As<ISimpleObject>().WithKey(2);
+				c.Export<SimpleObjectC>().As<ISimpleObject>().WithKey(3);
+				c.Export<SimpleObjectD>().As<ISimpleObject>().WithKey(4);
+				c.Export<SimpleObjectE>().As<ISimpleObject>().WithKey(5);
+			});
+
+			ImportKeyedLocateDelegate locateDelegate = container.Locate<ImportKeyedLocateDelegate>();
+
+			Assert.NotNull(locateDelegate);
+
+			ISimpleObject simpleObject = locateDelegate.Locate(3);
+
+			Assert.NotNull(simpleObject);
+			Assert.IsType<SimpleObjectC>(simpleObject);
+		}
 		#endregion
 
 		#region new context
