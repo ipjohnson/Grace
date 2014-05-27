@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="configuration"></param>
 		/// <returns></returns>
-		public static IExportTypeSetConfiguration ProcessCustomEnrichmentExpressionAttribute(
+		public static IExportTypeSetConfiguration ProcessCustomEnrichmentExpressionAttributes(
 			this IExportTypeSetConfiguration configuration)
 		{
 			configuration.EnrichWithExpression(ProcessCustomAttributes);
