@@ -161,17 +161,17 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn, TOut>(@in =>
-			                           {
+												{
 													IInjectionContext newInjectionContext = context.Clone();
 
-				                           newInjectionContext.TargetInfo = targetInfo;
-				                           newInjectionContext.RequestingScope = scope;
-				                           newInjectionContext.DisposalScope = disposal;
+													newInjectionContext.TargetInfo = targetInfo;
+													newInjectionContext.RequestingScope = scope;
+													newInjectionContext.DisposalScope = disposal;
 
-				                           newInjectionContext.Export((s, c) => @in);
+													newInjectionContext.Export((s, c) => @in);
 
-				                           return scope.Locate<TOut>(injectionContext: newInjectionContext);
-			                           });
+													return scope.Locate<TOut>(newInjectionContext, consider, locateKey);
+												});
 		}
 
 		/// <summary>
@@ -230,18 +230,18 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TOut>((in1, in2) =>
-			                                  {
-				                                  IInjectionContext newInjectionContext = context.Clone();
+														 {
+															 IInjectionContext newInjectionContext = context.Clone();
 
-				                                  newInjectionContext.TargetInfo = targetInfo;
-				                                  newInjectionContext.RequestingScope = scope;
-				                                  newInjectionContext.DisposalScope = disposal;
+															 newInjectionContext.TargetInfo = targetInfo;
+															 newInjectionContext.RequestingScope = scope;
+															 newInjectionContext.DisposalScope = disposal;
 
-				                                  newInjectionContext.Export((s, c) => in1);
-				                                  newInjectionContext.Export((s, c) => in2);
+															 newInjectionContext.Export((s, c) => in1);
+															 newInjectionContext.Export((s, c) => in2);
 
-				                                  return newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
-			                                  });
+															 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext, consider, locateKey);
+														 });
 		}
 
 		/// <summary>
@@ -301,19 +301,19 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TIn3, TOut>((in1, in2, in3) =>
-			                                        {
-				                                        IInjectionContext newInjectionContext = context.Clone();
+																 {
+																	 IInjectionContext newInjectionContext = context.Clone();
 
-				                                        newInjectionContext.TargetInfo = targetInfo;
-				                                        newInjectionContext.RequestingScope = scope;
-				                                        newInjectionContext.DisposalScope = disposal;
+																	 newInjectionContext.TargetInfo = targetInfo;
+																	 newInjectionContext.RequestingScope = scope;
+																	 newInjectionContext.DisposalScope = disposal;
 
-				                                        newInjectionContext.Export((s, c) => in1);
-				                                        newInjectionContext.Export((s, c) => in2);
-				                                        newInjectionContext.Export((s, c) => in3);
+																	 newInjectionContext.Export((s, c) => in1);
+																	 newInjectionContext.Export((s, c) => in2);
+																	 newInjectionContext.Export((s, c) => in3);
 
-				                                        return newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
-			                                        });
+																	 return newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext, consider, locateKey);
+																 });
 		}
 
 		/// <summary>
@@ -374,21 +374,21 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
 			return new Func<TIn1, TIn2, TIn3, TIn4, TOut>((in1, in2, in3, in4) =>
-			                                              {
-				                                              IInjectionContext newInjectionContext = context.Clone();
+																		 {
+																			 IInjectionContext newInjectionContext = context.Clone();
 
-				                                              newInjectionContext.TargetInfo = targetInfo;
-				                                              newInjectionContext.RequestingScope = scope;
-				                                              newInjectionContext.DisposalScope = disposal;
+																			 newInjectionContext.TargetInfo = targetInfo;
+																			 newInjectionContext.RequestingScope = scope;
+																			 newInjectionContext.DisposalScope = disposal;
 
-				                                              newInjectionContext.Export((s, c) => in1);
-				                                              newInjectionContext.Export((s, c) => in2);
-				                                              newInjectionContext.Export((s, c) => in3);
-				                                              newInjectionContext.Export((s, c) => in4);
+																			 newInjectionContext.Export((s, c) => in1);
+																			 newInjectionContext.Export((s, c) => in2);
+																			 newInjectionContext.Export((s, c) => in3);
+																			 newInjectionContext.Export((s, c) => in4);
 
-				                                              return
-					                                              newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
-			                                              });
+																			 return
+																				 newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext, consider, locateKey);
+																		 });
 		}
 
 		/// <summary>
@@ -466,7 +466,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 					newInjectionContext.Export((s, c) => in5);
 
 					return
-						newInjectionContext.RequestingScope.Locate<TOut>(injectionContext: newInjectionContext);
+						newInjectionContext.RequestingScope.Locate<TOut>(newInjectionContext, consider, locateKey);
 				});
 		}
 

@@ -62,6 +62,8 @@ namespace Grace.DependencyInjection.Impl
 
 			openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncExportStrategy<>);
 
+			openGenericStrategyMapping[typeof(KeyedLocateDelegate<,>)] = typeof(KeyedLocateDelegateStrategy<,>);
+
 			openGenericStrategyMapping[typeof(Func<,>)] = typeof(GenericFuncExportStrategy<,>);
 			openGenericStrategyMapping[typeof(Func<,,>)] = typeof(GenericFuncExportStrategy<,,>);
 			openGenericStrategyMapping[typeof(Func<,,,>)] = typeof(GenericFuncExportStrategy<,,,>);
@@ -469,7 +471,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (objectType.IsConstructedGenericType)
 				{
-					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext: injectionContext);
+					IExportStrategy exportStrategy = GetStrategy(objectType, injectionContext, consider, locateKey);
 
 					// I'm doing a second look up incase two threads are trying to create a generic at the same exact time
 					// and they have a singleton you have to use the same export strategy
@@ -662,7 +664,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException generalLocateException = new GeneralLocateException(exportName,(Type) null, injectionContext, exp);
+				GeneralLocateException generalLocateException = new GeneralLocateException(exportName, (Type)null, injectionContext, exp);
 
 				generalLocateException.AddLocationInformationEntry(
 					new InjectionScopeLocateEntry(exportName, null, ScopeName, consider != null, false));
@@ -816,7 +818,7 @@ namespace Grace.DependencyInjection.Impl
 			}
 			catch (Exception exp)
 			{
-				GeneralLocateException generalLocateException = new GeneralLocateException(name,(Type) null, injectionContext, exp);
+				GeneralLocateException generalLocateException = new GeneralLocateException(name, (Type)null, injectionContext, exp);
 
 				generalLocateException.AddLocationInformationEntry(new InjectionScopeLocateEntry(name, null, ScopeName, consider != null, true));
 

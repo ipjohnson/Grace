@@ -2,43 +2,38 @@
 using System.Collections.Generic;
 using Grace.DependencyInjection.Lifestyle;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.DependencyInjection.Impl.DelegateFactory
 {
 	/// <summary>
-	/// This export strategy creates a new Func(T) that calls the current scope 
+	/// Keyed locate delegate creates new locate delegate
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class FuncExportStrategy<T> : IExportStrategy
+	/// <typeparam name="TKey"></typeparam>
+	/// <typeparam name="TValue"></typeparam>
+	public class KeyedLocateDelegateStrategy<TKey, TValue> : IExportStrategy
 	{
-		/// <summary>
-		/// Activate the export
-		/// </summary>
-		/// <param name="exportInjectionScope"></param>
-		/// <param name="context"></param>
-		/// <param name="consider"></param>
-		/// <param name="locateKey"></param>
-		/// <returns></returns>
-		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
+		public object Activate(IInjectionScope exportInjectionScope,
+			IInjectionContext context,
+			ExportStrategyFilter consider,
+			object locateKey)
 		{
-			IInjectionScope scope = context.RequestingScope;
+			IInjectionScope injectionScope = context.RequestingScope;
 			IDisposalScope disposalScope = context.DisposalScope;
 			IInjectionTargetInfo targetInfo = context.TargetInfo;
 
-			return new Func<T>(
-				() =>
-				{
-					IInjectionContext newInjectionContext = context.Clone();
+			return new KeyedLocateDelegate<TKey, TValue>(key =>
+																		{
+																			IInjectionContext newContext = context.Clone();
 
-					newInjectionContext.RequestingScope = scope;
-					newInjectionContext.DisposalScope = disposalScope;
-					newInjectionContext.TargetInfo = targetInfo;
+																			newContext.RequestingScope = injectionScope;
+																			newContext.DisposalScope = disposalScope;
+																			newContext.TargetInfo = targetInfo;
 
-					return newInjectionContext.RequestingScope.Locate<T>(newInjectionContext, consider, locateKey);
-				});
+																			return injectionScope.Locate<TValue>(newContext, consider, key);
+																		});
 		}
 
 		/// <summary>
-		/// Dispose the func export, nothing to do
+		/// Dispose of strategy
 		/// </summary>
 		public void Dispose()
 		{
@@ -52,23 +47,24 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// This is type that will be activated, can be used for filtering
+		/// Activation Type
 		/// </summary>
 		public Type ActivationType
 		{
-			get { return typeof(Func<T>); }
+			get { return typeof(KeyedLocateDelegate<TKey, TValue>); }
 		}
 
 		/// <summary>
-		/// Usually the type.FullName, used for blacklisting purposes
+		/// Activation Name
 		/// </summary>
 		public string ActivationName
 		{
-			get { return typeof(Func<T>).FullName; }
+			get { return typeof(KeyedLocateDelegate<TKey, TValue>).FullName; }
 		}
 
 		/// <summary>
-		/// Allows filter of strategy
+		/// When considering an export should it be filtered out.
+		/// True by default, usually it's only false for special export types like Array ad List
 		/// </summary>
 		public bool AllowingFiltering
 		{
@@ -98,7 +94,7 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// Names this strategy should be known as.
+		/// Export names
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
@@ -106,11 +102,11 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// Types this strategy should be known as
+		/// Export types
 		/// </summary>
 		public IEnumerable<Type> ExportTypes
 		{
-			get { yield return typeof(Func<T>); }
+			get { yield return typeof(KeyedLocateDelegate<TKey, TValue>); }
 		}
 
 		/// <summary>
@@ -173,7 +169,7 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// Adds an enrich with delegate to the pipeline
+		/// 
 		/// </summary>
 		/// <param name="enrichWithDelegate"></param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
@@ -182,11 +178,11 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// Doesn't depend on anything to construct
+		/// 
 		/// </summary>
 		public IEnumerable<ExportStrategyDependency> DependsOn
 		{
-			get { yield break; }
+			get { return new ExportStrategyDependency[0]; }
 		}
 
 		/// <summary>

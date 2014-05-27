@@ -161,6 +161,7 @@
     <Compile Include="DependencyInjection\Impl\ICollectionExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceFuncStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\KeyedLocateDelegateStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\MetaStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\OpenGenericUtilities.cs" />
     <Compile Include="DependencyInjection\Impl\PartiallyClosedGenericPriorityAugmenter.cs" />

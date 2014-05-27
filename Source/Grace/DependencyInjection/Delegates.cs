@@ -73,4 +73,14 @@
 		IInjectionScope scope,
 		IInjectionContext injectionContext,
 		IExportStrategy exportStrategy);
+
+
+	/// <summary>
+	/// This delegate will locate an export using a Key
+	/// </summary>
+	/// <typeparam name="TKey">key type to locate with</typeparam>
+	/// <typeparam name="TValue">value type to locate</typeparam>
+	/// <param name="key">key to locate with</param>
+	/// <returns>located value</returns>
+	public delegate TValue KeyedLocateDelegate<in TKey, out TValue>(TKey key);
 }
