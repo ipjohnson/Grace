@@ -107,14 +107,7 @@ namespace Grace.DependencyInjection.Impl
 				returnValues.AddRange(provider.ProvideStrategies());
 			}
 
-			if (exportInterfaces.Count > 0 ||
-				 exportBaseTypes.Count > 0 ||
-				 interfaceMatchList.Count > 0 ||
-				 exportAllByInterface)
-			{
-				returnValues.AddRange(ScanTypesForExports(filteredTypes));
-			}
-			else if (exportByType)
+			if (exportByType)
 			{
 				returnValues.AddRange(ExportAllByType(filteredTypes));
 			}
@@ -122,6 +115,13 @@ namespace Grace.DependencyInjection.Impl
 			{
 				returnValues.AddRange(ExportAllByName(filteredTypes));
 			}
+			else if (exportInterfaces.Count > 0 ||
+						exportBaseTypes.Count > 0 ||
+						interfaceMatchList.Count > 0 ||
+						exportAllByInterface)
+			{
+				returnValues.AddRange(ScanTypesForExports(filteredTypes));
+			} 
 
 			if (inspectors.Count > 0)
 			{
@@ -671,6 +671,16 @@ namespace Grace.DependencyInjection.Impl
 					}
 
 					if (continueFlag)
+					{
+						continue;
+					}
+				}
+
+				if (exportBaseTypes.Count > 0)
+				{
+					Type matchedType;
+
+					if (!MatchesExportBaseType(exportedType, out matchedType))
 					{
 						continue;
 					}
