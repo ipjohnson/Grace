@@ -34,7 +34,7 @@ Features in Grace
 =====
 
 * Fluent interface or Attributes for configuration allowing for maximum flexibility
-* Supports child containers
+* Supports child containers and light weight lifetime scopes
 * Contextual binding support (similar to NInject)
 * IDisposable objects created by the container will be tracked and disposed by the container unless configured otherwise.
 * Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. 
