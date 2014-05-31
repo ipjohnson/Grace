@@ -54,7 +54,7 @@ Builds of Grace
 
 Grace has public builds at [CodeBetter](http://teamcity.codebetter.com/project.html?projectId=project416)
 
-Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1138"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1138/statusIcon"/></a>
+Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=Grace_GraceNightly"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:Grace_GraceNightly/statusIcon"/></a>
 
 CI Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1137"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1137/statusIcon"/></a>
 
