@@ -10,8 +10,8 @@
     <title>Grace.WCF</title>
     <summary>Grace.WCF is a companion library for Grace and WCF</summary>
     <description>Grace.WCF provides integration classes between WCF and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This is a feature release adding full sipport for registering by key and locating by key. Also added is a new light weight lifetime scope and ancestor scoping similar to Ninject</releaseNotes>
-    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <releaseNotes>$ReleaseNotes$</releaseNotes>
+      <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container WCF</tags>

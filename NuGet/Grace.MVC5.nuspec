@@ -10,7 +10,7 @@
     <title>Grace.MVC5</title>
     <summary>Grace.MVC5 is a companion library for Grace and MVC 5</summary>
     <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC5 classes to integrate Grace and MVC 5</description>
-    <releaseNotes>This is a feature release adding full sipport for registering by key and locating by key. Also added is a new light weight lifetime scope and ancestor scoping similar to Ninject</releaseNotes>
+    <releaseNotes>$ReleaseNotes$</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>

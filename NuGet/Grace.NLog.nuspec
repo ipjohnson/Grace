@@ -10,7 +10,7 @@
     <title>Grace.NLog</title>
     <summary>Grace.NLog provides a logging service using NLog and Grace</summary>
     <description>Grace.NLog provides integration class between NLog and Grace (Dependency Injection Container)</description>
-    <releaseNotes>This is a feature release adding full sipport for registering by key and locating by key. Also added is a new light weight lifetime scope and ancestor scoping similar to Ninject</releaseNotes>
+    <releaseNotes>$ReleaseNotes$</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
