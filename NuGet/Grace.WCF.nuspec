@@ -11,7 +11,7 @@
     <summary>Grace.WCF is a companion library for Grace and WCF</summary>
     <description>Grace.WCF provides integration classes between WCF and Grace (Dependency Injection Container)</description>
     <releaseNotes>$ReleaseNotes$</releaseNotes>
-      <copyright>Copyright 2014 Ian Johnson</copyright>
+    <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container WCF</tags>
@@ -23,7 +23,7 @@
     <file src="lib\net45\Grace.WCF.dll" target="lib\net45\Grace.WCF.dll" />
     <file src="lib\net45\Grace.WCF.pdb" target="lib\net45\Grace.WCF.pdb" />
     <file src="lib\net45\Grace.WCF.xml" target="lib\net45\Grace.WCF.xml" />
-    
+
     <file src="..\Source\Grace.WCF\**\*.cs" target="src"/>
   </files>
 </package>
