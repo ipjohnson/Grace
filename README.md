@@ -34,7 +34,7 @@ Features in Grace
 =====
 
 * Fluent interface or Attributes for configuration allowing for maximum flexibility
-* Supports child containers
+* Supports child containers and light weight lifetime scopes
 * Contextual binding support (similar to NInject)
 * IDisposable objects created by the container will be tracked and disposed by the container unless configured otherwise.
 * Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. 
@@ -54,7 +54,7 @@ Builds of Grace
 
 Grace has public builds at [CodeBetter](http://teamcity.codebetter.com/project.html?projectId=project416)
 
-Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1138"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1138/statusIcon"/></a>
+Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=Grace_GraceNightly"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:Grace_GraceNightly/statusIcon"/></a>
 
 CI Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1137"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1137/statusIcon"/></a>
 
