@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	public sealed class LifetimeScope : IInjectionScope
 	{
 		private bool disposed;
-		private IDisposalScope disposalScope;
+		private readonly IDisposalScope disposalScope;
 		private readonly object extraDataLock = new object();
 		private volatile Dictionary<string, object> extraData;
 

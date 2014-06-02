@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection
 	/// <summary>
 	/// Extension methods for registration block
 	/// </summary>
-   // ReSharper disable once InconsistentNaming
+	// ReSharper disable once InconsistentNaming
 	public static class IExportRegistrationBlockExtensions
 	{
 		/// <summary>
@@ -20,6 +20,31 @@ namespace Grace.DependencyInjection
 		public static void PrioritizePartiallyClosedGenerics(this IExportRegistrationBlock registrationBlock)
 		{
 			registrationBlock.AddInspector(new PartiallyClosedGenericPriorityAugmenter());
+		}
+
+		/// <summary>
+		/// Register a configuration module
+		/// </summary>
+		/// <typeparam name="T">module type</typeparam>
+		public static void RegisterModule<T>(this IExportRegistrationBlock registrationBlock) where T : IConfigurationModule, new()
+		{
+			registrationBlock.RegisterModule(new T());
+		}
+
+		/// <summary>
+		/// Register a configuration module
+		/// </summary>
+		/// <typeparam name="T">module type</typeparam>
+		/// <param name="registrationBlock">registration block</param>
+		/// <param name="module">configuration module</param>
+		public static void RegisterModule<T>(this IExportRegistrationBlock registrationBlock, T module) where T : IConfigurationModule
+		{
+			if (ReferenceEquals(null, module))
+			{
+				throw new ArgumentNullException("module");
+			}
+
+			module.Configure(registrationBlock);
 		}
 	}
 }

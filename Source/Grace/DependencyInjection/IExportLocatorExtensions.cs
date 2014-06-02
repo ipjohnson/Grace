@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Grace.DependencyInjection.Lifestyle;
 using JetBrains.Annotations;
@@ -145,7 +146,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context to use</param>
 		/// <param name="consider">filter method to use</param>
 		/// <returns>export T</returns>
-		[Obsolete]
+		[Obsolete("Use the withKey optional parameter on locate")]
 		public static T LocateByKey<T, TKey>(this IExportLocator locator,
 			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
@@ -164,7 +165,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter method</param>
 		/// <returns>export object, null if no object found</returns>
-		[Obsolete]
+		[Obsolete("Use the withKey optional parameter on locate")]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] string exportName,
 			[NotNull] TKey key,
@@ -184,7 +185,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>export object, null if no export found</returns>
-		[Obsolete]
+		[Obsolete("Use the withKey optional parameter on locate")]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] Type exportType,
 			[NotNull] TKey key,
@@ -261,6 +262,80 @@ namespace Grace.DependencyInjection
 			}
 
 			return returnList;
+		}
+
+		/// <summary>
+		/// Locate with a set of value set into the context
+		/// </summary>
+		/// <typeparam name="T">Type to locate</typeparam>
+		/// <param name="exportLocator">locator</param>
+		/// <param name="parameters">parameters</param>
+		/// <returns>located T</returns>
+		public static T LocateWithParameters<T>(this IExportLocator exportLocator,
+															 params object[] parameters)
+		{
+			IInjectionContext context = exportLocator.CreateContext();
+
+			foreach (object parameter in parameters)
+			{
+				object p = parameter;
+
+				context.Export(parameter.GetType(), (s, c) => p);
+			}
+
+			return exportLocator.Locate<T>(context);
+		}
+
+		/// <summary>
+		/// Locate a T with named parameters
+		/// </summary>
+		/// <typeparam name="T">Type to locate</typeparam>
+		/// <param name="exportLocator">export locator</param>
+		/// <param name="namedParameter">named parameter</param>
+		/// <returns></returns>
+		public static T LocateWithNamedParameters<T>(this IExportLocator exportLocator,
+																	object namedParameter)
+		{
+			if (namedParameter == null)
+			{
+				throw new ArgumentNullException("namedParameter");
+			}
+
+			IInjectionContext injectionContext = exportLocator.CreateContext();
+
+			IEnumerable<KeyValuePair<string, object>> parameters = namedParameter as IEnumerable<KeyValuePair<string, object>>;
+
+			if (parameters == null)
+			{
+				foreach (PropertyInfo runtimeProperty in namedParameter.GetType().GetRuntimeProperties())
+				{
+					if (!runtimeProperty.CanRead ||
+						 runtimeProperty.GetMethod.IsStatic ||
+						 runtimeProperty.GetMethod.GetParameters().Any())
+					{
+						continue;
+					}
+
+					object p = runtimeProperty.GetValue(namedParameter);
+
+					if (p != null)
+					{
+						injectionContext.Export(runtimeProperty.Name, (s, c) => p);
+					}
+				}
+			}
+			else
+			{
+				foreach (KeyValuePair<string, object> keyValuePair in parameters)
+				{
+					object p = keyValuePair.Value;
+					string key = keyValuePair.Key;
+
+					injectionContext.Export(key, (s, c) => p);
+				}
+			}
+
+			return exportLocator.Locate<T>(injectionContext);
 		}
 
 		/// <summary>
