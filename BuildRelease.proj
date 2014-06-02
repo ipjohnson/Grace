@@ -25,41 +25,5 @@
     <MSBuild Projects="Source\Grace.Common.Logging\Grace.Common.Logging.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.UnitTests\Grace.UnitTests.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
   </Target>
-  <PropertyGroup>
-    <MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
-  </PropertyGroup>
-  <Import Project="Source/.build/MSBuild.Community.Tasks.Targets"/>
-
-  <Target Name="Metrics">
-    <Exec Command="&quot;SourceMonitor.exe&quot; /C &quot;Grace.Metrics.xml&quot;" WorkingDirectory="Metrics"/>
-    <Exec Command="&quot;SourceMonitor.exe&quot; /C &quot;Grace.UnitTests.Metrics.xml&quot;" WorkingDirectory="Metrics"/>
-
-    <XmlRead XPath="//*/metric[@id='M1']" XmlFileName="Metrics/Grace-summary.xml">
-      <Output TaskParameter="Value" PropertyName="NumberOfStatements" />
-    </XmlRead>
-    <TeamCityReportStatsValue Key="NumberOfStatements" Value="$(NumberOfStatements)" />
-
-    <XmlRead XPath="//*/metric[@id='M1']" XmlFileName="Metrics/Grace-unittests-summary.xml">
-      <Output TaskParameter="Value" PropertyName="NumberOfUnitTestStatements" />
-    </XmlRead>
-    <TeamCityReportStatsValue Key="NumberOfUnitTestStatements" Value="$(NumberOfUnitTestStatements)" />
-
-    <XmlRead XPath="//*/metric[@id='M3']" XmlFileName="Metrics/Grace-summary.xml">
-      <Output TaskParameter="Value" PropertyName="DocumentationPercentage" />
-    </XmlRead>
-    <TeamCityReportStatsValue Key="DocumentationPercentage" Value="$(DocumentationPercentage)" />
-
-    <XmlRead XPath="//*/metric[@id='M10']" XmlFileName="Metrics/Grace-summary.xml">
-      <Output TaskParameter="Value" PropertyName="MaxComplexity" />
-    </XmlRead>
-    <TeamCityReportStatsValue Key="MaxComplexity" Value="$(MaxComplexity)" />
-
-    <XmlRead XPath="//*/metric[@id='M14']" XmlFileName="Metrics/Grace-summary.xml">
-      <Output TaskParameter="Value" PropertyName="AvgComplexity" />
-    </XmlRead>
-    <TeamCityReportStatsValue Key="AvgComplexity" Value="$(AvgComplexity)" />
-
-  </Target>
-
 </Project>
 
