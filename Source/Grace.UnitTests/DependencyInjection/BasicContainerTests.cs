@@ -509,5 +509,6 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(value);
 			Assert.NotNull(value.BasicService);
 		}
+
 	}
 }

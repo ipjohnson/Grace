@@ -235,13 +235,13 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
-				                    c.Export<BasicService>().As<IBasicService>();
-				                    c.Export<OtherBasicService>().As<IBasicService>().WithKey(5);
-				                    c.Export<LazyImportService>().
-					                   ByInterfaces().
-					                   WithCtorParam<Lazy<IBasicService>>().LocateWithKey(5);
-			                    });
+									  {
+										  c.Export<BasicService>().As<IBasicService>();
+										  c.Export<OtherBasicService>().As<IBasicService>().WithKey(5);
+										  c.Export<LazyImportService>().
+											 ByInterfaces().
+											 WithCtorParam<Lazy<IBasicService>>().LocateWithKey(5);
+									  });
 
 			LazyImportService importService = container.Locate<LazyImportService>();
 
@@ -256,15 +256,15 @@ namespace Grace.UnitTests.DependencyInjection
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
 			container.Configure(c =>
-			                    {
+									  {
 										  c.Export<SimpleObjectA>().As<ISimpleObject>().WithKey("A");
 										  c.Export<SimpleObjectB>().As<ISimpleObject>().WithKey("B");
 										  c.Export<SimpleObjectC>().As<ISimpleObject>().WithKey("C");
 										  c.Export<SimpleObjectD>().As<ISimpleObject>().WithKey("D");
 										  c.Export<SimpleObjectE>().As<ISimpleObject>().WithKey("E");
-				                    c.Export<ImportObservableCollectionService>().
-					                   WithCtorParam<IEnumerable<ISimpleObject>>().LocateWithKey(new[] { "A", "B", "C" });
-			                    });
+										  c.Export<ImportObservableCollectionService>().
+											 WithCtorParam<IEnumerable<ISimpleObject>>().LocateWithKey(new[] { "A", "B", "C" });
+									  });
 
 			ImportObservableCollectionService service = container.Locate<ImportObservableCollectionService>();
 
@@ -384,6 +384,65 @@ namespace Grace.UnitTests.DependencyInjection
 			}
 
 			Assert.True(called);
+		}
+		#endregion
+
+		#region WithNamedCtorValue
+		[Fact]
+		public void WithNamedCtorValue()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+			DateTime currentTime = DateTime.Now;
+
+			container.Configure(c => c.Export(typeof(DateTimeImport)).WithNamedCtorValue(() => currentTime));
+
+			DateTimeImport import = container.Locate<DateTimeImport>();
+
+			Assert.NotNull(import);
+			Assert.Equal(currentTime, import.CurrentTime);
+		}
+
+		[Fact]
+		public void WithNamedCtorValueGeneric()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+			DateTime currentTime = DateTime.Now;
+
+			container.Configure(c => c.Export<DateTimeImport>().WithNamedCtorValue(() => currentTime));
+
+			DateTimeImport import = container.Locate<DateTimeImport>();
+
+			Assert.NotNull(import);
+			Assert.Equal(currentTime, import.CurrentTime);
+		}
+
+
+		[Fact]
+		public void WithNamedCtorValueGenericNow()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export<NowDateTimeImport>().WithNamedCtorValue(() => DateTime.Now));
+
+			NowDateTimeImport import = container.Locate<NowDateTimeImport>();
+
+			Assert.NotNull(import);
+			Assert.Equal(import.CurrentTime.Date, DateTime.Now.Date);
+		}
+
+		[Fact]
+		public void ExportNamedValue()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+			DateTime currentTime = DateTime.Now;
+
+			container.Configure(c => c.Export<DateTimeImport>());
+			container.Configure(c => c.ExportNamedValue(() => currentTime));
+
+			DateTimeImport import = container.Locate<DateTimeImport>();
+
+			Assert.NotNull(import);
+			Assert.Equal(currentTime, import.CurrentTime);
 		}
 		#endregion
 	}

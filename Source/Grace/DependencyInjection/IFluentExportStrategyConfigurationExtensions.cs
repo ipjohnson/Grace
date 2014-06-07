@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Grace.DependencyInjection.Conditions;
@@ -138,6 +139,69 @@ namespace Grace.DependencyInjection
 			configuration.AndCondition(new WhenAncestor(typeof(TAncestor)));
 
 			return configuration;
+		}
+
+		#endregion
+
+		#region WithNamedCstorValue
+		
+		/// <summary>
+		/// This is intended to be a short cut for setting named property values
+		/// The expression will be inspected and the value will used by the property name
+		/// WithNameCtorValue(() => someLocalVariable) will export the value under the name someLocalVariable
+		/// </summary>
+		/// <typeparam name="TValue"></typeparam>
+		/// <param name="strategy"></param>
+		/// <param name="valueExpression"></param>
+		/// <returns></returns>
+		public static IFluentWithCtorConfiguration<TValue> WithNamedCtorValue<TValue>(this IFluentExportStrategyConfiguration strategy, Expression<Func<TValue>> valueExpression)
+		{
+			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
+			string exportName = null;
+
+			if (memberExpression != null)
+			{
+				exportName = memberExpression.Member.Name;
+			}
+			
+			if (exportName != null)
+			{
+				Func<TValue> func = valueExpression.Compile();
+
+				return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
+			}
+
+			throw new Exception("Blah");
+		}
+
+		/// <summary>
+		/// This is intended to be a short cut for setting named property values
+		/// The expression will be inspected and the value will used by the property name
+		/// WithNameCtorValue(() => someLocalVariable) will export the value under the name someLocalVariable
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="TValue"></typeparam>
+		/// <param name="strategy"></param>
+		/// <param name="valueExpression"></param>
+		/// <returns></returns>
+		public static IFluentWithCtorConfiguration<T,TValue> WithNamedCtorValue<T,TValue>(this IFluentExportStrategyConfiguration<T> strategy, Expression<Func<TValue>> valueExpression)
+		{
+			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
+			string exportName = null;
+
+			if (memberExpression != null)
+			{
+				exportName = memberExpression.Member.Name;
+			}
+
+			if (exportName != null)
+			{
+				Func<TValue> func = valueExpression.Compile();
+
+				return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
+			}
+
+			throw new Exception("Blah");
 		}
 
 		#endregion

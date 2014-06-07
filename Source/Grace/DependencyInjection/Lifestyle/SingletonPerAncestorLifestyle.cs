@@ -169,8 +169,5 @@ namespace Grace.DependencyInjection.Lifestyle
 		{
 			return new SingletonPerAncestorLifestyle(ancestorType, metadata);
 		}
-
-
-
 	}
 }
