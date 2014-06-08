@@ -171,7 +171,7 @@ namespace Grace.DependencyInjection
 				return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
 			}
 
-			throw new Exception("Blah");
+			throw new Exception("WithNamedCtorValue must be passed a Func that references a member");
 		}
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace Grace.DependencyInjection
 				return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
 			}
 
-			throw new Exception("Blah");
+			throw new Exception("WithNamedCtorValue must be passed a Func that references a member");
 		}
 
 		#endregion
