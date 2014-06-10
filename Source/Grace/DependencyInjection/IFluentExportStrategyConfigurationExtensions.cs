@@ -149,6 +149,7 @@ namespace Grace.DependencyInjection
 		/// This is intended to be a short cut for setting named property values
 		/// The expression will be inspected and the value will used by the property name
 		/// WithNameCtorValue(() => someLocalVariable) will export the value under the name someLocalVariable
+		/// WithCtorParam(() => someLocalVariable).Named("someLocalVariable") is the long hand form
 		/// </summary>
 		/// <typeparam name="TValue"></typeparam>
 		/// <param name="strategy"></param>

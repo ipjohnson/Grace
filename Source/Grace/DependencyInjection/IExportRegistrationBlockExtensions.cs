@@ -51,6 +51,7 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// This is a short cut to registering a value as a name using the member name for exporting
 		/// ExportNamedValue(() => someValue) export the value of someValue under the name someValue
+		/// ExportInstance(someValue).AsName("someValue") is the long hand form
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="registrationBlock"></param>
