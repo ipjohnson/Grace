@@ -151,10 +151,10 @@ namespace Grace.DependencyInjection
 		/// WithNameCtorValue(() => someLocalVariable) will export the value under the name someLocalVariable
 		/// WithCtorParam(() => someLocalVariable).Named("someLocalVariable") is the long hand form
 		/// </summary>
-		/// <typeparam name="TValue"></typeparam>
-		/// <param name="strategy"></param>
-		/// <param name="valueExpression"></param>
-		/// <returns></returns>
+		/// <typeparam name="TValue">value type being used</typeparam>
+		/// <param name="strategy">export strategy</param>
+		/// <param name="valueExpression">value expression, the name of the parameter will be used as the parameter name</param>
+		/// <returns>configuration object</returns>
 		public static IFluentWithCtorConfiguration<TValue> WithNamedCtorValue<TValue>(this IFluentExportStrategyConfiguration strategy, Expression<Func<TValue>> valueExpression)
 		{
 			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
@@ -180,11 +180,11 @@ namespace Grace.DependencyInjection
 		/// The expression will be inspected and the value will used by the property name
 		/// WithNameCtorValue(() => someLocalVariable) will export the value under the name someLocalVariable
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TValue"></typeparam>
-		/// <param name="strategy"></param>
-		/// <param name="valueExpression"></param>
-		/// <returns></returns>
+		/// <typeparam name="T">Type being exported</typeparam>
+		/// <typeparam name="TValue">value type being used</typeparam>
+		/// <param name="strategy">export strategy</param>
+		/// <param name="valueExpression">value expression, the name of the parameter will be used as the parameter name</param>
+		/// <returns>configuration object</returns>
 		public static IFluentWithCtorConfiguration<T,TValue> WithNamedCtorValue<T,TValue>(this IFluentExportStrategyConfiguration<T> strategy, Expression<Func<TValue>> valueExpression)
 		{
 			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
