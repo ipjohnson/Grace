@@ -445,5 +445,38 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.Equal(currentTime, import.CurrentTime);
 		}
 		#endregion
+
+		#region BasedOn Interface Test
+
+		[Fact]
+		public void BasedOnInterfaceTest()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly())
+											  .BasedOn<ISimpleObject>()
+											  .ByInterfaces());
+
+			IEnumerable<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+			Assert.NotNull(simpleObjects);
+			Assert.Equal(5, simpleObjects.Count());
+		}
+
+		[Fact]
+		public void BasedOnInterfaceByType()
+		{
+			DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+			container.Configure(c => c.Export(Types.FromThisAssembly())
+											  .BasedOn<ISimpleObject>()
+											  .ByType());
+
+			SimpleObjectA simpleObjectA = container.Locate<SimpleObjectA>();
+
+			Assert.NotNull(simpleObjectA);
+		}
+
+		#endregion
 	}
 }

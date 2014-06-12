@@ -907,37 +907,67 @@ namespace Grace.DependencyInjection.Impl
 
 			foreach (Type exportBaseType in exportBaseTypes)
 			{
-				if (exportBaseType.GetTypeInfo().IsGenericTypeDefinition)
+				if (exportBaseType.GetTypeInfo().IsInterface)
 				{
-					Type baseType = exportedType;
-
-					while (baseType != null)
+					if (exportBaseType.GetTypeInfo().IsGenericTypeDefinition)
 					{
-						if (baseType.IsConstructedGenericType &&
-							 baseType.GetGenericTypeDefinition() == exportBaseType)
+						foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
 						{
-							matchingType = baseType;
-							matchesBaseType = true;
-							break;
+							if (implementedInterface.IsConstructedGenericType &&
+							    implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == exportBaseType)
+							{
+								matchingType = exportBaseType;
+								matchesBaseType = true;
+								break;
+							}
 						}
 
-						baseType = baseType.GetTypeInfo().BaseType;
+						if (matchesBaseType)
+						{
+							break;
+						}
+					}
+					else if(exportedType.GetTypeInfo().ImplementedInterfaces.Contains(exportBaseType))
+					{
+						matchingType = exportBaseType;
+						matchesBaseType = true;
+						break;
 					}
 				}
 				else
 				{
-					Type baseType = exportedType;
-
-					while (baseType != null)
+					if (exportBaseType.GetTypeInfo().IsGenericTypeDefinition)
 					{
-						if (baseType == exportBaseType)
-						{
-							matchingType = baseType;
-							matchesBaseType = true;
-							break;
-						}
+						Type baseType = exportedType;
 
-						baseType = baseType.GetTypeInfo().BaseType;
+						while (baseType != null)
+						{
+							if (baseType.IsConstructedGenericType &&
+							    baseType.GetGenericTypeDefinition() == exportBaseType)
+							{
+								matchingType = baseType;
+								matchesBaseType = true;
+								break;
+							}
+
+							baseType = baseType.GetTypeInfo().BaseType;
+						}
+					}
+					else
+					{
+						Type baseType = exportedType;
+
+						while (baseType != null)
+						{
+							if (baseType == exportBaseType)
+							{
+								matchingType = baseType;
+								matchesBaseType = true;
+								break;
+							}
+
+							baseType = baseType.GetTypeInfo().BaseType;
+						}
 					}
 				}
 			}
