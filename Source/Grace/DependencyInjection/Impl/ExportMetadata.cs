@@ -33,12 +33,14 @@ namespace Grace.DependencyInjection.Impl
 	    {
 	        object testValue;
 
-	        if (TryGetValue(metadataName, out testValue))
+            if(metadataValue != null)
 	        {
-	            return metadataValue.Equals(testValue);
-	        }
+                return TryGetValue(metadataName, out testValue) && 
+                       metadataValue.Equals(testValue);
+            }
 
-	        return false;
+	        return TryGetValue(metadataName, out testValue) &&
+	               testValue == null;
 	    }
 	}
 }
