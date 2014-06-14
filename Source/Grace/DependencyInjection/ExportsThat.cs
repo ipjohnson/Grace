@@ -115,9 +115,14 @@ namespace Grace.DependencyInjection
 			return new ExportsThatConfiguration().AreExportedAs(exportType);
 		}
 
-	    public static ExportsThatConfiguration AreExportAs(Func<Type, bool> typeFilter)
+        /// <summary>
+        /// Provide a filter that will loop through the list of export types for an export strategy
+        /// </summary>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+	    public static ExportsThatConfiguration AreExportAs(Func<Type, bool> consider)
 	    {
-            return new ExportsThatConfiguration().AreExportedAs(typeFilter);
+            return new ExportsThatConfiguration().AreExportedAs(consider);
 	    }
 
         /// <summary>
