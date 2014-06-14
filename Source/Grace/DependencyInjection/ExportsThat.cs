@@ -120,9 +120,29 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="consider"></param>
         /// <returns></returns>
-	    public static ExportsThatConfiguration AreExportAs(Func<Type, bool> consider)
+	    public static ExportsThatConfiguration AreExportedAs(Func<Type, bool> consider)
 	    {
             return new ExportsThatConfiguration().AreExportedAs(consider);
+	    }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exportName"></param>
+        /// <returns></returns>
+	    public static ExportsThatConfiguration AreExportedAsName(string exportName)
+	    {
+	        return new ExportsThatConfiguration().AreExportedAsName(exportName);
+	    }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exportNameFilter"></param>
+        /// <returns></returns>
+	    public static ExportsThatConfiguration AreExportedAsName(Func<string, bool> exportNameFilter)
+	    {
+	        return new ExportsThatConfiguration().AreExportedAsName(exportNameFilter);
 	    }
 
         /// <summary>

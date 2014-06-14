@@ -197,6 +197,30 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Is the strategy exported as a particular name
+        /// </summary>
+        /// <param name="exportName">export name</param>
+        /// <returns>configuration object</returns>
+        public ExportsThatConfiguration AreExportedAsName(string exportName)
+        {
+            exportStrategyFilters.Add((context,strategy) => strategy.ExportNames.Contains(exportName));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Is the strategy exported as a particular name
+        /// </summary>
+        /// <param name="exportFilter">export filter</param>
+        /// <returns>configuration object</returns>
+        public ExportsThatConfiguration AreExportedAsName(Func<string, bool> exportFilter)
+        {
+            exportStrategyFilters.Add((context,strategy) => strategy.ExportNames.Any(exportFilter));
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a export strategy filter
         /// </summary>
         /// <param name="exportFilter">export strategy filter</param>
