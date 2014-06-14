@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
 	    public static TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)
 	    {
-	        return new TypesThatConfiguration();
+	        return new TypesThatConfiguration().HaveAttribute(consider);
 	    }
 
 		/// <summary>

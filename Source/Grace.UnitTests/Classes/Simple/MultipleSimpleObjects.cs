@@ -7,12 +7,13 @@ namespace Grace.UnitTests.Classes.Simple
         
     }
 
+    [SimpleFilter]
 	public interface ISimpleObject
 	{
 		string TestString { get; }
 	}
 
-    [SimpleFilterAttribute]
+    [SimpleFilter]
 	public class SimpleObjectA : ISimpleObject
 	{
 		public string TestString
@@ -29,7 +30,7 @@ namespace Grace.UnitTests.Classes.Simple
 		}
 	}
 
-    [SimpleFilterAttribute]
+    [SimpleFilter]
 	public class SimpleObjectC : ISimpleObject
 	{
 		public string TestString
@@ -46,7 +47,7 @@ namespace Grace.UnitTests.Classes.Simple
 		}
 	}
 
-    [SimpleFilterAttribute]
+    [SimpleFilter]
 	public class SimpleObjectE : ISimpleObject
 	{
 		public string TestString

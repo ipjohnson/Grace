@@ -533,7 +533,7 @@ namespace Grace.UnitTests.DependencyInjection
 
             container.Configure(c => c.Export(Types.FromThisAssembly())
                                       .ByInterfaces()
-                                      .Select(TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Filter")))));
+                                      .Select(TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Simple")))));
 
             List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
 
@@ -546,7 +546,7 @@ namespace Grace.UnitTests.DependencyInjection
 	    {
             DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-            container.Configure(c => c.Export(Types.FromThisAssembly(consider: TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Filter")))))
+            container.Configure(c => c.Export(Types.FromThisAssembly(consider: TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Simple")))))
                                       .ByInterfaces());
 
             List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
@@ -554,6 +554,21 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 	    }
+
+        [Fact]
+	    public void TypesThatHaveAttributeFilter()
+	    {
+	        DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.HaveAttribute(TypesThat.StartWith("Simple"))));
+            
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(3, simpleObjects.Count);
+        }
         #endregion
     }
 }
