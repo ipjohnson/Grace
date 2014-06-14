@@ -22,5 +22,23 @@ namespace Grace.DependencyInjection.Impl
 		/// Key the export was registered with
 		/// </summary>
 		public object Key { get; private set; }
+
+	    /// <summary>
+	    /// Tests to see if metadata values match
+	    /// </summary>
+	    /// <param name="metadataName"></param>
+	    /// <param name="metadataValue"></param>
+	    /// <returns></returns>
+	    public bool MetadataMatches(string metadataName, object metadataValue)
+	    {
+	        object testValue;
+
+	        if (TryGetValue(metadataName, out testValue))
+	        {
+	            return metadataValue.Equals(testValue);
+	        }
+
+	        return false;
+	    }
 	}
 }

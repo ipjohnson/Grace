@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -20,13 +21,16 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>export configuration object</returns>
 		public ExportsThatConfiguration HaveAttribute(Type attributeType, Func<Attribute, bool> attributeFilter = null)
 		{
-			if (attributeFilter != null)
+			if (attributeFilter != null)    
 			{
-				exportStrategyFilters.Add((context, strategy) => strategy.Attributes.Any(attributeFilter));
+				exportStrategyFilters.Add((context, strategy) => 
+                    strategy.Attributes.Where(a => a.GetType().GetTypeInfo().IsAssignableFrom(attributeType.GetTypeInfo())).
+                                        Any(attributeFilter));
 			}
 			else
 			{
-				exportStrategyFilters.Add((context, strategy) => strategy.Attributes.Any());
+                exportStrategyFilters.Add((context, strategy) => 
+                    strategy.Attributes.Any(a => a.GetType().GetTypeInfo().IsAssignableFrom(attributeType.GetTypeInfo())));
 			}
 
 			return this;
@@ -43,28 +47,50 @@ namespace Grace.DependencyInjection.Impl
 		{
 			if (attributeFilter != null)
 			{
-				exportStrategyFilters.Add((context, strategy) => strategy.Attributes.Any(
-					x =>
-					{
-						bool returnValue = false;
-						TAttribute attribute =
-							x as TAttribute;
+				exportStrategyFilters.Add((context, strategy) => 
+                    strategy.Attributes.Where(a => a.GetType().GetTypeInfo().IsAssignableFrom(typeof(TAttribute).GetTypeInfo())).Any(
+					    x =>
+					    {
+						    bool returnValue = false;
+						    TAttribute attribute =
+							    x as TAttribute;
 
-						if (attribute != null)
-						{
-							returnValue = attributeFilter(attribute);
-						}
+						    if (attribute != null)
+						    {
+							    returnValue = attributeFilter(attribute);
+						    }
 
-						return returnValue;
-					}));
+						    return returnValue;
+					    }));
 			}
 			else
 			{
-				exportStrategyFilters.Add((context, strategy) => strategy.Attributes.Any());
+				exportStrategyFilters.Add((context, strategy) =>
+                    strategy.Attributes.Any(a => a.GetType().GetTypeInfo().IsAssignableFrom(typeof(TAttribute).GetTypeInfo())));
 			}
 
 			return this;
 		}
+
+        /// <summary>
+        /// Creates a new filter that returns true when metadata matches
+        /// </summary>
+        /// <param name="metadataName"></param>
+        /// <param name="metadataValue"></param>
+        /// <returns></returns>
+        public ExportsThatConfiguration HaveMetadata(string metadataName, object metadataValue = null)
+        {
+            if (metadataValue == null)
+            {
+                exportStrategyFilters.Add((context, strategy) => strategy.Metadata.ContainsKey(metadataName));
+            }
+            else
+            {
+                exportStrategyFilters.Add((context,strategy) => strategy.Metadata.MetadataMatches(metadataName,metadataValue));
+            }
+
+            return this;
+        }
 
 		/// <summary>
 		/// Creates a new type filter method that returns true if the Name of the type starts with name
@@ -134,6 +160,16 @@ namespace Grace.DependencyInjection.Impl
 			return AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}
 
+        /// <summary>
+        /// Creates a new filter that selects only exports that exoprt as a particular interface
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public ExportsThatConfiguration AreExportedAs<T>()
+        {
+            return AreExportedAs(typeof(T));
+        }
+
 		/// <summary>
 		/// Creates a new filter that selects only exports that exoprt as a particular interface
 		/// </summary>
@@ -145,6 +181,30 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
+
+        /// <summary>
+        /// Creates a new filter that checks to see if it's exported type meets the criteria
+        /// </summary>
+        /// <param name="typeFilter"></param>
+        /// <returns></returns>
+        public ExportsThatConfiguration AreExportedAs(Func<Type, bool> typeFilter)
+        {
+            exportStrategyFilters.Add((context, strategy) => strategy.ExportTypes.Any(typeFilter));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a export strategy filter
+        /// </summary>
+        /// <param name="filter">export strategy filter</param>
+        /// <returns>export strategy filter</returns>
+        public ExportsThatConfiguration Match(ExportStrategyFilter filter)
+	    {
+	        exportStrategyFilters.Add(filter);
+
+	        return this;
+	    }
 
 		/// <summary>
 		/// Use or logic instead of and
@@ -159,6 +219,23 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+        /// <summary>
+        /// Use and logic, this is the default
+        /// </summary>
+	    public ExportsThatConfiguration And
+	    {
+	        get
+	        {
+	            if (useOr)
+	            {
+	                throw new Exception("And cannot be used in conjuction with Or");
+	            }
+	            useOr = false;
+
+	            return this;
+	        }
+	    }
+
 		/// <summary>
 		/// Converts the configuration to a filter automatically
 		/// </summary>
@@ -168,5 +245,6 @@ namespace Grace.DependencyInjection.Impl
 		{
 			return new ExportStrategyFilterGroup(configuration.exportStrategyFilters.ToArray()) { UseOr = configuration.useOr };
 		}
+
 	}
 }

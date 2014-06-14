@@ -157,6 +157,7 @@
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.WithCtorCollection.cs" />
     <Compile Include="DependencyInjection\Impl\FluentSimpleExportStrategyConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FuncComparer.cs" />
+    <Compile Include="DependencyInjection\Impl\FuncExportStrategyInspector.cs" />
     <Compile Include="DependencyInjection\Impl\GenericAttributeExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ICollectionExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IGenericExportStrategy.cs" />

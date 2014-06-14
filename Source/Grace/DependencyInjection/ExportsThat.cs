@@ -19,6 +19,17 @@ namespace Grace.DependencyInjection
 			return new ExportsThatConfiguration().HaveAttribute(attributeType, attributeFilter);
 		}
 
+        /// <summary>
+        /// Filters exports down to ones that have particular metadata
+        /// </summary>
+        /// <param name="metadataName">metadata name</param>
+        /// <param name="metadataValue">metadata value optional</param>
+        /// <returns>export configuration object</returns>
+	    public static ExportsThatConfiguration HaveMetadata(string metadataName, object metadataValue = null)
+	    {
+	        return new ExportsThatConfiguration().HaveMetadata(metadataName,metadataValue);
+	    }
+
 		/// <summary>
 		/// Tests to see if a type has an attribute
 		/// </summary>
@@ -103,5 +114,20 @@ namespace Grace.DependencyInjection
 		{
 			return new ExportsThatConfiguration().AreExportedAs(exportType);
 		}
+
+	    public static ExportsThatConfiguration AreExportAs(Func<Type, bool> typeFilter)
+	    {
+            return new ExportsThatConfiguration().AreExportedAs(typeFilter);
+	    }
+
+        /// <summary>
+        /// Creates a new filter that returns true when the provided filter matches
+        /// </summary>
+        /// <param name="exportFilter">export filter</param>
+        /// <returns>export configuration object</returns>
+	    public static ExportsThatConfiguration Match(ExportStrategyFilter exportFilter)
+	    {
+	        return new ExportsThatConfiguration().Match(exportFilter);
+	    }
 	}
 }

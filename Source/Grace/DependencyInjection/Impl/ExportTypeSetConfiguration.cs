@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Grace.Data;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
@@ -901,81 +902,22 @@ namespace Grace.DependencyInjection.Impl
 
 		private bool MatchesExportBaseType(Type exportedType, out Type matchingType)
 		{
-			bool matchesBaseType = false;
-
-			matchingType = null;
-
-			foreach (Type exportBaseType in exportBaseTypes)
+            foreach (Type exportBaseType in exportBaseTypes)
 			{
-				if (exportBaseType.GetTypeInfo().IsInterface)
-				{
-					if (exportBaseType.GetTypeInfo().IsGenericTypeDefinition)
-					{
-						foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
-						{
-							if (implementedInterface.IsConstructedGenericType &&
-							    implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == exportBaseType)
-							{
-								matchingType = exportBaseType;
-								matchesBaseType = true;
-								break;
-							}
-						}
+			    if (ReflectionService.CheckTypeIsBasedOnAnotherType(exportedType, exportBaseType))
+			    {
+			        matchingType = exportBaseType;
 
-						if (matchesBaseType)
-						{
-							break;
-						}
-					}
-					else if(exportedType.GetTypeInfo().ImplementedInterfaces.Contains(exportBaseType))
-					{
-						matchingType = exportBaseType;
-						matchesBaseType = true;
-						break;
-					}
-				}
-				else
-				{
-					if (exportBaseType.GetTypeInfo().IsGenericTypeDefinition)
-					{
-						Type baseType = exportedType;
-
-						while (baseType != null)
-						{
-							if (baseType.IsConstructedGenericType &&
-							    baseType.GetGenericTypeDefinition() == exportBaseType)
-							{
-								matchingType = baseType;
-								matchesBaseType = true;
-								break;
-							}
-
-							baseType = baseType.GetTypeInfo().BaseType;
-						}
-					}
-					else
-					{
-						Type baseType = exportedType;
-
-						while (baseType != null)
-						{
-							if (baseType == exportBaseType)
-							{
-								matchingType = baseType;
-								matchesBaseType = true;
-								break;
-							}
-
-							baseType = baseType.GetTypeInfo().BaseType;
-						}
-					}
-				}
+			        return true;
+			    }
 			}
 
-			return matchesBaseType;
+            matchingType = null;
+
+			return false;
 		}
 
-		private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType,
+	    private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType,
 			bool generic,
 			IEnumerable<Type> exportTypes)
 		{

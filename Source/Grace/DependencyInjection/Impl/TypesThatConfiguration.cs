@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Grace.Data;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -13,6 +14,7 @@ namespace Grace.DependencyInjection.Impl
 	{
 		private readonly List<Func<Type, bool>> filters = new List<Func<Type, bool>>(1);
 		private bool useOr = false;
+
 
 		/// <summary>
 		/// Tests to see if a type has an attribute
@@ -148,6 +150,81 @@ namespace Grace.DependencyInjection.Impl
 			return AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}
 
+        /// <summary>
+        /// Filters types based on a particular
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+	    public TypesThatConfiguration AreBasedOn<T>()
+	    {
+	        return AreBasedOn(typeof(T));
+	    }
+
+        /// <summary>
+        /// Filters types that are based on
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <returns></returns>
+	    public TypesThatConfiguration AreBasedOn(Type baseType)
+	    {
+	        Func<Type, bool> basedOnFilter =
+	            type => ReflectionService.CheckTypeIsBasedOnAnotherType(type, baseType);
+
+            filters.Add(basedOnFilter);
+
+	        return this;
+	    }
+
+        /// <summary>
+        /// Allows you to provide a method that will test a classes base classes (base class and interfaces)
+        /// </summary>
+        /// <param name="typeFilter">based on type filter</param>
+        /// <returns>type filter</returns>
+	    public TypesThatConfiguration AreBasedOn(Func<Type, bool> typeFilter)
+	    {
+	        Func<Type, bool> basedOnFilter = 
+                type =>
+                {
+                    var baseType = type;
+
+                    while (baseType != null && baseType != typeof(object))
+                    {
+                        if (typeFilter(baseType))
+                        {
+                            return true;
+                        }
+
+                        baseType = baseType.GetTypeInfo().BaseType;
+                    }
+
+                    foreach (Type implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
+                    {
+                        if (typeFilter(implementedInterface))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                };
+
+            filters.Add(basedOnFilter);
+
+	        return this;
+	    }
+
+        /// <summary>
+        /// Adds a type filter directly
+        /// </summary>
+        /// <param name="typeFilter">type filter</param>
+        /// <returns>type filter</returns>
+	    public TypesThatConfiguration Match(Func<Type, bool> typeFilter)
+	    {
+            filters.Add(typeFilter);
+
+	        return this;
+	    }
+
 		/// <summary>
 		/// Or together the filters rather than using And
 		/// </summary>
@@ -160,6 +237,24 @@ namespace Grace.DependencyInjection.Impl
 				return this;
 			}
 		}
+
+        /// <summary>
+        /// And together filters rather than using Or
+        /// </summary>
+	    public TypesThatConfiguration And
+	    {
+	        get
+	        {
+	            if (useOr)
+	            {
+	                throw new Exception("Cannot use And with Or");
+	            }
+
+	            useOr = false;
+
+	            return this;
+	        }
+	    }
 
 		/// <summary>
 		/// Automatically convert from TypefilterGroup to Func(Type,bool)

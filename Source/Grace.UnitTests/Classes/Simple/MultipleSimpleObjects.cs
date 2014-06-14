@@ -1,10 +1,18 @@
-﻿namespace Grace.UnitTests.Classes.Simple
+﻿using System;
+
+namespace Grace.UnitTests.Classes.Simple
 {
+    public class SimpleFilterAttribute : Attribute
+    {
+        
+    }
+
 	public interface ISimpleObject
 	{
 		string TestString { get; }
 	}
 
+    [SimpleFilterAttribute]
 	public class SimpleObjectA : ISimpleObject
 	{
 		public string TestString
@@ -21,6 +29,7 @@
 		}
 	}
 
+    [SimpleFilterAttribute]
 	public class SimpleObjectC : ISimpleObject
 	{
 		public string TestString
@@ -37,6 +46,7 @@
 		}
 	}
 
+    [SimpleFilterAttribute]
 	public class SimpleObjectE : ISimpleObject
 	{
 		public string TestString

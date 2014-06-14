@@ -15,11 +15,26 @@ namespace Grace.DependencyInjection
 	// ReSharper disable once InconsistentNaming
 	public static class IExportTypeSetConfigurationExtensions
 	{
+        /// <summary>
+        /// Adds an inspector action that can be used to configure all exports
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="inspector">inspector action</param>
+        /// <returns>configuration object</returns>
+	    public static IExportTypeSetConfiguration WithInspector(this IExportTypeSetConfiguration configuration,
+	        Action<IExportStrategy> inspector)
+	    {
+	        configuration.WithInspector(new FuncExportStrategyInspector(inspector));
+
+	        return configuration;
+	    }
+
+
 		/// <summary>
 		/// Ups the priority of partially closed generics based on the number of closed parameters
 		/// </summary>
-		/// <param name="configuration"></param>
-		/// <returns></returns>
+		/// <param name="configuration">configuration object</param>
+		/// <returns>configuration object</returns>
 		public static IExportTypeSetConfiguration PrioritizePartiallyClosedGenerics(
 			this IExportTypeSetConfiguration configuration)
 		{

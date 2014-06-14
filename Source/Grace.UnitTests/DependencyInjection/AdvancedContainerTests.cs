@@ -478,5 +478,53 @@ namespace Grace.UnitTests.DependencyInjection
 		}
 
 		#endregion
-	}
+
+        #region TypesThat tests
+
+        [Fact]
+	    public void TypesThatAreBasedOn()
+	    {
+	        DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn<ISimpleObject>()));
+
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(5, simpleObjects.Count);
+	    }
+
+        [Fact]
+	    public void TypesThatAreBasedOnChainedFilter()
+	    {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn<ISimpleObject>().And.HaveAttribute<SimpleFilterAttribute>()));
+
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(3, simpleObjects.Count);
+	    }
+
+        [Fact]
+        public void TypesThatAreBasedOnComplexChainedFilter()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn(TypesThat.StartWith("ISimple"))));
+
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(5, simpleObjects.Count);
+        }
+        #endregion
+    }
 }

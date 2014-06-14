@@ -78,7 +78,7 @@ namespace Grace.Data
 				throw new ArgumentNullException("valueObject");
 			}
 
-			if (string.IsNullOrEmpty(propertyName))
+			if (String.IsNullOrEmpty(propertyName))
 			{
 				throw new ArgumentNullException("propertyName");
 			}
@@ -130,7 +130,7 @@ namespace Grace.Data
 				throw new ArgumentNullException("valueObject");
 			}
 
-			if (string.IsNullOrEmpty(propertyName))
+			if (String.IsNullOrEmpty(propertyName))
 			{
 				throw new ArgumentNullException("propertyName");
 			}
@@ -171,7 +171,7 @@ namespace Grace.Data
 				throw new ArgumentNullException("target");
 			}
 
-			if (string.IsNullOrEmpty(methodName))
+			if (String.IsNullOrEmpty(methodName))
 			{
 				throw new ArgumentNullException("methodName");
 			}
@@ -226,7 +226,7 @@ namespace Grace.Data
 													  if (callMethodInfo == null)
 													  {
 														  throw new Exception(
-															  string.Format("Could not find method {0} on {1}",
+															  String.Format("Could not find method {0} on {1}",
 																				 name,
 																				 type.FullName));
 													  }
@@ -347,7 +347,7 @@ namespace Grace.Data
 														  else
 														  {
 															  throw new Exception(
-																  string.Format("Could not find property {0} on type {1}",
+																  String.Format("Could not find property {0} on type {1}",
 																					 type.FullName,
 																					 name));
 														  }
@@ -393,7 +393,7 @@ namespace Grace.Data
 				throw new ArgumentNullException("instanceType");
 			}
 
-			if (string.IsNullOrEmpty(propertyName))
+			if (String.IsNullOrEmpty(propertyName))
 			{
 				throw new ArgumentNullException("propertyName");
 			}
@@ -443,7 +443,7 @@ namespace Grace.Data
 														  else
 														  {
 															  throw new Exception(
-																  string.Format("Could not find property {0} on type {1}",
+																  String.Format("Could not find property {0} on type {1}",
 																					 type.FullName,
 																					 name));
 														  }
@@ -486,7 +486,7 @@ namespace Grace.Data
 				throw new ArgumentNullException("baseType");
 			}
 
-			if (string.IsNullOrEmpty(propertyString))
+			if (String.IsNullOrEmpty(propertyString))
 			{
 				throw new ArgumentNullException("propertyString");
 			}
@@ -611,7 +611,7 @@ namespace Grace.Data
 													Expression.New(
 														exceptionConstructor,
 														Expression.Constant(
-															string.Format("Could not find property {1} on type {0}",
+															String.Format("Could not find property {1} on type {0}",
 																			  objectType.FullName,
 																			  currentPropertyName))))));
 
@@ -656,7 +656,7 @@ namespace Grace.Data
 				else
 				{
 					throw new Exception(
-						string.Format("Could not find property {0} on type {1}",
+						String.Format("Could not find property {0} on type {1}",
 										  objectType.FullName,
 										  propertyName));
 				}
@@ -668,5 +668,69 @@ namespace Grace.Data
 
 			return propertyOrFieldType;
 		}
+
+        /// <summary>
+        /// Checks to see if checkType is based on baseType
+        /// Both inheritance and interface implementation is considered
+        /// </summary>
+        /// <param name="checkType">check type</param>
+        /// <param name="baseType">base type</param>
+        /// <returns>true if check type is base type</returns>
+	    public static bool CheckTypeIsBasedOnAnotherType(Type checkType, Type baseType)
+	    {
+	        if (baseType.GetTypeInfo().IsInterface)
+	        {
+	            if (baseType.GetTypeInfo().IsGenericTypeDefinition)
+	            {
+	                foreach (Type implementedInterface in checkType.GetTypeInfo().ImplementedInterfaces)
+	                {
+	                    if (implementedInterface.IsConstructedGenericType &&
+	                        implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
+	                    {
+	                        return true;
+	                        
+	                    }
+	                }
+	            }
+	            else if (checkType.GetTypeInfo().ImplementedInterfaces.Contains(baseType))
+	            {
+	                return true;
+	            }
+	        }
+	        else
+	        {
+	            if (baseType.GetTypeInfo().IsGenericTypeDefinition)
+	            {
+	                Type currentBaseType = checkType;
+
+                    while (currentBaseType != null)
+	                {
+                        if (currentBaseType.IsConstructedGenericType &&
+                            currentBaseType.GetGenericTypeDefinition() == baseType)
+	                    {
+	                        return true;
+	                    }
+
+                        currentBaseType = currentBaseType.GetTypeInfo().BaseType;
+	                }
+	            }
+	            else
+	            {
+                    Type currentBaseType = checkType;
+
+                    while (currentBaseType != null)
+	                {
+                        if (currentBaseType == baseType)
+	                    {
+	                        return true;
+	                    }
+
+                        currentBaseType = currentBaseType.GetTypeInfo().BaseType;
+	                }
+	            }
+	        }
+
+	        return false;
+	    }
 	}
 }

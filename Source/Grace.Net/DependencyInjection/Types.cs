@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Grace.Logging;
 
@@ -15,57 +16,89 @@ namespace Grace.DependencyInjection
 		/// Returns the list of types contained in the calling assembly
 		/// </summary>
 		/// <returns></returns>
-		public static IEnumerable<Type> FromThisAssembly()
+        public static IEnumerable<Type> FromThisAssembly(Func<Type, bool> consider = null)
 		{
-			return Assembly.GetCallingAssembly().ExportedTypes;
+            if (consider == null)
+		    {
+		        return Assembly.GetCallingAssembly().ExportedTypes;
+		    }
+
+            return Assembly.GetCallingAssembly().ExportedTypes.Where(consider);
 		}
 
 		/// <summary>
 		/// Returns the list of exported types from the Executing Assembly
 		/// </summary>
 		/// <returns></returns>
-		public static IEnumerable<Type> FromExecutingAssembly()
+        public static IEnumerable<Type> FromExecutingAssembly(Func<Type, bool> consider = null)
 		{
-			return Assembly.GetExecutingAssembly().ExportedTypes;
+            if (consider == null)
+		    {
+		        return Assembly.GetExecutingAssembly().ExportedTypes;
+		    }
+
+            return Assembly.GetExecutingAssembly().ExportedTypes.Where(consider);
 		}
 
 		/// <summary>
 		/// Returns the list of exported types from the Entry Assembly
 		/// </summary>
 		/// <returns></returns>
-		public static IEnumerable<Type> FromEntryAssembly()
+        public static IEnumerable<Type> FromEntryAssembly(Func<Type, bool> consider = null)
 		{
-			return Assembly.GetEntryAssembly().ExportedTypes;
+		    if (consider == null)
+		    {
+		        return Assembly.GetEntryAssembly().ExportedTypes;
+		    }
+
+            return Assembly.GetEntryAssembly().ExportedTypes.Where(consider);
 		}
 
-		/// <summary>
-		/// Gets a listed of exported types from an assembly
-		/// </summary>
-		/// <param name="assembly"></param>
-		/// <returns></returns>
-		public static IEnumerable<Type> FromAssembly(Assembly assembly)
+	    /// <summary>
+	    /// Gets a listed of exported types from an assembly
+	    /// </summary>
+	    /// <param name="assembly">assembly</param>
+        /// <param name="consider">type filter</param>
+	    /// <returns></returns>
+        public static IEnumerable<Type> FromAssembly(Assembly assembly, Func<Type, bool> consider = null)
 		{
-			return assembly.ExportedTypes;
+            if (consider == null)
+	        {
+	            return assembly.ExportedTypes;
+	        }
+
+            return assembly.ExportedTypes.Where(consider);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="assemblyPath"></param>
-		/// <param name="throwsException"></param>
-		/// <returns></returns>
-		public static IEnumerable<Type> FromAssembly(string assemblyPath, bool throwsException = false)
+	    /// <summary>
+	    /// Returns a list of types from a specified assembly
+	    /// </summary>
+	    /// <param name="assemblyPath">assembly path</param>
+	    /// <param name="throwsException">throws exception if there is a load problem</param>
+        /// <param name="consider">type filter</param>
+	    /// <returns>list of types</returns>
+        public static IEnumerable<Type> FromAssembly(string assemblyPath, bool throwsException = false, Func<Type, bool> consider = null)
 		{
 			Assembly loadedAssembly = LoadAssemblyFromPath(assemblyPath, throwsException);
 
-			return loadedAssembly != null ? loadedAssembly.ExportedTypes : new Type[0];
+	        if (loadedAssembly != null)
+	        {
+                if (consider == null)
+	            {
+	                return loadedAssembly.ExportedTypes;
+	            }
+
+                return loadedAssembly.ExportedTypes.Where(consider);
+	        }
+
+			return new Type[0];
 		}
 
 		/// <summary>
 		/// Allows the developer to pass a params list to the Register method
 		/// </summary>
-		/// <param name="types"></param>
-		/// <returns></returns>
+		/// <param name="types">list of types</param>
+		/// <returns>list of types</returns>
 		public static IEnumerable<Type> From(params Type[] types)
 		{
 			if (types.Length == 0)
@@ -76,16 +109,18 @@ namespace Grace.DependencyInjection
 			return types;
 		}
 
-		/// <summary>
-		/// Returns a list of exported types from assemblies located in the directories provided
-		/// </summary>
-		/// <param name="directory"></param>
-		/// <param name="throwsException"></param>
-		/// <param name="filter"></param>
-		/// <returns></returns>
-		public static IEnumerable<Type> FromDirectory(string directory,
+	    /// <summary>
+	    /// Returns a list of exported types from assemblies located in the directories provided
+	    /// </summary>
+	    /// <param name="directory">directory to scan</param>
+	    /// <param name="throwsException">throws exception</param>
+	    /// <param name="filter">dll filter</param>
+	    /// <param name="consider">type filter</param>
+	    /// <returns>list of types</returns>
+	    public static IEnumerable<Type> FromDirectory(string directory,
 			bool throwsException = false,
-			Func<string, bool> filter = null)
+			Func<string, bool> filter = null,
+            Func<Type, bool> consider = null)
 		{
 			List<Type> returnValue = new List<Type>();
 
@@ -102,7 +137,14 @@ namespace Grace.DependencyInjection
 
 					if (assembly != null)
 					{
-						returnValue.AddRange(assembly.ExportedTypes);
+					    if (consider == null)
+					    {
+					        returnValue.AddRange(assembly.ExportedTypes);
+					    }
+					    else
+					    {
+					        returnValue.AddRange(assembly.ExportedTypes.Where(consider));
+					    }
 					}
 				}
 			}
