@@ -525,6 +525,35 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
         }
+
+        [Fact]
+	    public void TypesThatHaveAttributeChainedFilter()
+	    {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Filter")))));
+
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(5, simpleObjects.Count);
+	    }
+
+        [Fact]
+	    public void FromThisAssemblyFilter()
+	    {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly(consider: TypesThat.AreBasedOn(TypesThat.HaveAttribute(TypesThat.StartWith("Filter")))))
+                                      .ByInterfaces());
+
+            List<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(5, simpleObjects.Count);
+	    }
         #endregion
     }
 }

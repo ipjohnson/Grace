@@ -31,6 +31,16 @@ namespace Grace.DependencyInjection
 			return new TypesThatConfiguration().HaveAttribute(attributeFilter);
 		}
 
+        /// <summary>
+        /// Provides a type filter for attributes, if true then the type will be used
+        /// </summary>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+	    public static TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)
+	    {
+	        return new TypesThatConfiguration();
+	    }
+
 		/// <summary>
 		/// Creates a new type filter method that returns true if the Name of the type starts with name
 		/// </summary>
