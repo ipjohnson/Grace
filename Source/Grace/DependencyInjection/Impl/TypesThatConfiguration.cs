@@ -16,6 +16,52 @@ namespace Grace.DependencyInjection.Impl
         private bool useOr = false;
 
         /// <summary>
+        /// Creates a type filter that returns true if a type has a particular property name
+        /// </summary>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration HaveProperty(string propertyName)
+        {
+            return HaveProperty(null, propertyName);
+        }
+
+        /// <summary>
+        /// Creates a type filter that returns true if a type has a particular property name
+        /// </summary>
+        /// <typeparam name="T">property type</typeparam>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration HaveProperty<T>(string propertyName = null)
+        {
+            return HaveProperty(typeof(T), propertyName);
+        }
+
+        /// <summary>
+        /// Creates a type filter that returns true if a type has a particular property name
+        /// </summary>
+        /// <param name="propertyType">property type</param>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration HaveProperty(Type propertyType, string propertyName = null)
+        {
+            if (propertyType == null)
+            {
+                filters.Add(t => t.GetTypeInfo().DeclaredProperties.Any(x => x.Name == propertyName));
+            }
+            else
+            {
+                Type tempType = propertyType;
+
+                filters.Add(
+                    t => t.GetTypeInfo().DeclaredProperties.Any(
+                        x => ReflectionService.CheckTypeIsBasedOnAnotherType(x.PropertyType, tempType) && 
+                             x.Name == propertyName));
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Tests to see if a type has an attribute
         /// </summary>
         /// <param name="attributeType"></param>
@@ -120,11 +166,23 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Creates a new type filter that returns true if the Name ends with the provided string
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">test string</param>
+        /// <returns>configuration object</returns>
         public TypesThatConfiguration EndWith(string name)
         {
             filters.Add(t => t.Name.EndsWith(name));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Creates a new type filter that returns true if the name contains the provided string
+        /// </summary>
+        /// <param name="name">string to test for</param>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration Contains(string name)
+        {
+            filters.Add(t => t.Name.Contains(name));
 
             return this;
         }
@@ -281,6 +339,50 @@ namespace Grace.DependencyInjection.Impl
 
                 return this;
             }
+        }
+
+        /// <summary>
+        /// Adds a type filter that returns true if the type is public
+        /// </summary>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration ArePublic()
+        {
+            filters.Add(t => t.GetTypeInfo().IsPublic);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a type filter that returns true if the type is private
+        /// </summary>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration AreNotPublic()
+        {
+            filters.Add(t => t.GetTypeInfo().IsNotPublic);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a type filter that returns true if the type is constructed generic
+        /// </summary>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration AreConstructedGeneric()
+        {
+            filters.Add(t => t.IsConstructedGenericType);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a type filter that returns true if the type is an open generic
+        /// </summary>
+        /// <returns>configuration object</returns>
+        public TypesThatConfiguration AreOpenGeneric()
+        {
+            filters.Add(t => t.GetTypeInfo().IsGenericTypeDefinition);
+
+            return this;
         }
 
         /// <summary>
