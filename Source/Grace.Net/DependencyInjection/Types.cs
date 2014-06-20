@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
+using Grace.DependencyInjection.Impl;
 using Grace.Logging;
 
 namespace Grace.DependencyInjection
@@ -12,47 +14,73 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public static class Types
 	{
+	    static Types()
+	    {
+	        DefaultTypeFilter = TypesThat.ArePublic();
+	    } 
+
+        /// <summary>
+        /// Default type filter that will be used if consider is null
+        /// TypesThat.ArePublic is the default behavior
+        /// </summary>
+        public static Func<Type, bool> DefaultTypeFilter { get; set; } 
+
 		/// <summary>
-		/// Returns the list of types contained in the calling assembly
+		/// Returns the list of contained in the calling assembly
 		/// </summary>
 		/// <returns></returns>
         public static IEnumerable<Type> FromThisAssembly(Func<Type, bool> consider = null)
 		{
-            if (consider == null)
+		    if (consider == null)
 		    {
-		        return Assembly.GetCallingAssembly().ExportedTypes;
+		        consider = DefaultTypeFilter;
 		    }
 
-            return Assembly.GetCallingAssembly().ExportedTypes.Where(consider);
+            return Assembly.GetCallingAssembly().DefinedTypes.Where(consider);
 		}
 
 		/// <summary>
-		/// Returns the list of exported types from the Executing Assembly
+		/// Returns the list of types from the Executing Assembly
 		/// </summary>
 		/// <returns></returns>
         public static IEnumerable<Type> FromExecutingAssembly(Func<Type, bool> consider = null)
 		{
             if (consider == null)
-		    {
-		        return Assembly.GetExecutingAssembly().ExportedTypes;
-		    }
+            {
+                consider = DefaultTypeFilter;
+            }
 
-            return Assembly.GetExecutingAssembly().ExportedTypes.Where(consider);
+            return Assembly.GetExecutingAssembly().DefinedTypes.Where(consider);
 		}
 
 		/// <summary>
-		/// Returns the list of exported types from the Entry Assembly
+		/// Returns the list of types from the Entry Assembly
 		/// </summary>
 		/// <returns></returns>
         public static IEnumerable<Type> FromEntryAssembly(Func<Type, bool> consider = null)
 		{
-		    if (consider == null)
-		    {
-		        return Assembly.GetEntryAssembly().ExportedTypes;
-		    }
+            if (consider == null)
+            {
+                consider = DefaultTypeFilter;
+            }
 
-            return Assembly.GetEntryAssembly().ExportedTypes.Where(consider);
+            return Assembly.GetEntryAssembly().DefinedTypes.Where(consider);
 		}
+
+        /// <summary>
+        /// Returns a list of types from the currently loaded assemblies
+        /// </summary>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+	    public static IEnumerable<Type> FromLoadedAssemblies(Func<Type, bool> consider = null)
+	    {
+	        if (consider == null)
+	        {
+	            consider = DefaultTypeFilter;
+	        }
+
+	        return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.DefinedTypes).Where(consider);
+	    }
 
 	    /// <summary>
 	    /// Gets a listed of exported types from an assembly
@@ -63,11 +91,11 @@ namespace Grace.DependencyInjection
         public static IEnumerable<Type> FromAssembly(Assembly assembly, Func<Type, bool> consider = null)
 		{
             if (consider == null)
-	        {
-	            return assembly.ExportedTypes;
-	        }
+            {
+                consider = DefaultTypeFilter;
+            }
 
-            return assembly.ExportedTypes.Where(consider);
+            return assembly.DefinedTypes.Where(consider);
 		}
 
 	    /// <summary>
@@ -84,11 +112,11 @@ namespace Grace.DependencyInjection
 	        if (loadedAssembly != null)
 	        {
                 if (consider == null)
-	            {
-	                return loadedAssembly.ExportedTypes;
-	            }
+                {
+                    consider = DefaultTypeFilter;
+                }
 
-                return loadedAssembly.ExportedTypes.Where(consider);
+                return loadedAssembly.DefinedTypes.Where(consider);
 	        }
 
 			return new Type[0];
@@ -139,12 +167,10 @@ namespace Grace.DependencyInjection
 					{
 					    if (consider == null)
 					    {
-					        returnValue.AddRange(assembly.ExportedTypes);
+					        consider = DefaultTypeFilter;
 					    }
-					    else
-					    {
-					        returnValue.AddRange(assembly.ExportedTypes.Where(consider));
-					    }
+					   
+                        returnValue.AddRange(assembly.ExportedTypes.Where(consider));
 					}
 				}
 			}

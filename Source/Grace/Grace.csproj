@@ -115,6 +115,7 @@
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
+    <Compile Include="DependencyInjection\TypeExtensions.cs" />
     <Compile Include="Diagnostics\IDependencyInjectionContainerExtensions.cs" />
     <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />
     <Compile Include="DependencyInjection\IExportLocator.cs" />

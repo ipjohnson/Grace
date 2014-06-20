@@ -78,6 +78,13 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration ByType(Func<Type, Type> typeDelegate = null);
 
+        /// <summary>
+        /// Exports by a set of types
+        /// </summary>
+        /// <param name="typeDelegate"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate);
+
 		/// <summary>
 		/// Export by a particular name 
 		/// </summary>

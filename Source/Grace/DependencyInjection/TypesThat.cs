@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
@@ -135,7 +136,7 @@ namespace Grace.DependencyInjection
         {
             return new TypesThatConfiguration().AreInTheSameNamespaceAs<T>(includeSubnamespaces);
         }
-
+    
         /// <summary>
         /// Adds a type filter that returns true when a class is based on the specified type
         /// </summary>
