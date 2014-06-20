@@ -57,6 +57,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name">string to compare Type name to</param>
 		/// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith")]
 		public static ExportsThatConfiguration StartWith(string name)
 		{
 			return new ExportsThatConfiguration().StartWith(name);
@@ -67,20 +68,11 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name">string to compare Type name to</param>
 		/// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith")]
 		public static ExportsThatConfiguration EndWith(string name)
 		{
 			return new ExportsThatConfiguration().EndWith(name);
 		}
-
-        /// <summary>
-        /// Creates a new type filter that returns true if the Name contains the provided string
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-	    public static ExportsThatConfiguration Contain(string name)
-	    {
-	        return new ExportsThatConfiguration().Contains(name);
-	    }
 
         /// <summary>
         /// Matches exports that activate a particular type
