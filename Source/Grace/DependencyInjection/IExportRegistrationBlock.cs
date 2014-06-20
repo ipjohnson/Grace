@@ -89,6 +89,7 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFunction">Function to create instance of T</param>
 		/// <returns>configuration object</returns>
 		[NotNull]
+        [Obsolete("Please use ExportInstance as this method will be deleted by end of 2014")]
 		IFluentExportStrategyConfiguration<T> ExportFunc<T>([NotNull] ExportFunction<T> exportFunction);
 
 		/// <summary>
