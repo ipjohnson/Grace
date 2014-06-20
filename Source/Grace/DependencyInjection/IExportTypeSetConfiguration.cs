@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Export all classes by interface or that match a set of interfaces
 		/// </summary>
-		/// <param name="whereClause"></param>
+		/// <param name="whereClause">where clause to test if the interface should be used for exporting</param>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration ByInterfaces(Func<Type, bool> whereClause = null);
 

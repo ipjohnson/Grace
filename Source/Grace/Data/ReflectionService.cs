@@ -716,17 +716,7 @@ namespace Grace.Data
 	            }
 	            else
 	            {
-                    Type currentBaseType = checkType;
-
-                    while (currentBaseType != null)
-	                {
-                        if (currentBaseType == baseType)
-	                    {
-	                        return true;
-	                    }
-
-                        currentBaseType = currentBaseType.GetTypeInfo().BaseType;
-	                }
+	                return checkType.GetTypeInfo().IsAssignableFrom(baseType.GetTypeInfo());
 	            }
 	        }
 

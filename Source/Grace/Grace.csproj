@@ -115,6 +115,7 @@
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
+    <Compile Include="Diagnostics\IDependencyInjectionContainerExtensions.cs" />
     <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />
     <Compile Include="DependencyInjection\IExportLocator.cs" />
     <Compile Include="DependencyInjection\IExportLocatorExtensions.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="DependencyInjection\IFluentSimpleExportStrategyConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentWithCtorCollectionConfiguration.cs" />
     <Compile Include="DependencyInjection\IFluentWithCtorConfiguration.cs" />
+    <Compile Include="Diagnostics\IInjectionScopeExtensions.cs" />
     <Compile Include="DependencyInjection\IInjectionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\AttributedInjectionStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\BaseInjectionStrategy.cs" />

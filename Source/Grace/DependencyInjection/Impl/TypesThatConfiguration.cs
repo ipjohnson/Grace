@@ -75,11 +75,14 @@ namespace Grace.DependencyInjection.Impl
             {
                 Func<Attribute, bool> localFunc = attributeFilter;
 
-                newFilter = t => t.GetTypeInfo().GetCustomAttributes(attributeType, true).Any(localFunc);
+                newFilter = t => t.GetTypeInfo().GetCustomAttributes(true).
+                                                 Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), attributeType)).
+                                                 Any(localFunc);
             }
             else
             {
-                newFilter = t => t.GetTypeInfo().GetCustomAttributes(attributeType, true).Any();
+                newFilter = t => t.GetTypeInfo().GetCustomAttributes(attributeType, true).
+                                                 Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), attributeType));
             }
 
             filters.Add(newFilter);
@@ -100,7 +103,9 @@ namespace Grace.DependencyInjection.Impl
 
             if (attributeFilter != null)
             {
-                newFilter = t => t.GetTypeInfo().GetCustomAttributes(typeof(TAttribute), true).Any(
+                newFilter = t => t.GetTypeInfo().GetCustomAttributes(true).
+                    Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(),typeof(TAttribute))).
+                    Any(
                     x =>
                     {
                         bool returnValue = false;
@@ -117,7 +122,8 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                newFilter = t => t.GetTypeInfo().GetCustomAttributes(typeof(TAttribute), true).Any();
+                newFilter = t => t.GetTypeInfo().GetCustomAttributes(typeof(TAttribute), true).
+                                                 Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), typeof(TAttribute)));
             }
 
             filters.Add(newFilter);

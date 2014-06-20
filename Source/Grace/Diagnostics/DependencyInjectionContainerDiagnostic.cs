@@ -6,37 +6,63 @@ using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
 {
+    /// <summary>
+    /// Runs diagnostics on a dependency injection container
+    /// </summary>
 	public class DependencyInjectionContainerDiagnostic
 	{
 		private bool initialized;
 		private readonly IDependencyInjectionContainer container;
 		private IEnumerable<PossibleMissingDependency> possibleMissingDependencies;
 
+        /// <summary>
+        /// Default constructor takes a DI container
+        /// </summary>
+        /// <param name="container">container to diagnose</param>
 		public DependencyInjectionContainerDiagnostic(IDependencyInjectionContainer container)
 		{
 			this.container = container;
 		}
 
+        /// <summary>
+        /// Environment for the container
+        /// </summary>
 		public ExportEnvironment Environment
 		{
 			get { return container.Environment; }
 		}
 
+        /// <summary>
+        /// Auto register unknown concrete types
+        /// </summary>
 		public bool AutoRegisterUnknown
 		{
 			get { return container.AutoRegisterUnknown; }
 		}
 
+        /// <summary>
+        /// RootScope for the container
+        /// </summary>
 		public IInjectionScope RootScope
 		{
 			get { return container.RootScope; }
 		}
 
+        /// <summary>
+        /// Exports for the container
+        /// </summary>
 		public IEnumerable<IExportStrategy> Exports
 		{
 			get { return container.GetAllStrategies(); }
 		}
 
+        /// <summary>
+        /// List of possible missing dependencies.
+        /// Note: This is just a possible missing dependency
+        /// Using static analysis this is a best attempt at resolving.
+        /// Because of conditions and other factors it's possible to have no missing dependencies listed
+        /// and still fail to resolve and vice versa
+        /// </summary>
 		[DebuggerDisplay("{DebuggerPossibleMissingDependenciesString,nq}", Name = "Possible Missing Dependencies")]
 		public IEnumerable<PossibleMissingDependency> PossibleMissingDependencies
 		{
@@ -48,6 +74,9 @@ namespace Grace.Diagnostics
 			}
 		}
 
+        /// <summary>
+        /// All exports by name
+        /// </summary>
 		public IEnumerable<ExportListDebuggerView> ExportsByName
 		{
 			get
@@ -80,6 +109,9 @@ namespace Grace.Diagnostics
 			}
 		}
 
+        /// <summary>
+        /// All export by type
+        /// </summary>
 		public IEnumerable<ExportListDebuggerView> ExportsByType
 		{
 			get

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Impl;
 
@@ -22,13 +23,78 @@ namespace Grace.DependencyInjection
         /// <param name="inspector">inspector action</param>
         /// <returns>configuration object</returns>
 	    public static IExportTypeSetConfiguration WithInspector(this IExportTypeSetConfiguration configuration,
-	        Action<IExportStrategy> inspector)
+            Action<ICompiledExportStrategy> inspector)
 	    {
-	        configuration.WithInspector(new FuncExportStrategyInspector(inspector));
+	        configuration.WithInspector(
+                new FuncExportStrategyInspector(
+                    strategy =>
+                    {
+                        ICompiledExportStrategy compiledExportStrategy =
+                                                     strategy as ICompiledExportStrategy;
+
+                        if (compiledExportStrategy != null)
+                        {
+                            inspector(compiledExportStrategy);
+                        }
+                    }));
 
 	        return configuration;
 	    }
 
+        /// <summary>
+        /// Adds an inspector action for strategies that export the specified type, can be class or interface
+        /// </summary>
+        /// <typeparam name="T">type to inspect</typeparam>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="inspector">inspector</param>
+        /// <returns>configuration object</returns>
+	    public static IExportTypeSetConfiguration WithInspectorFor<T>(this IExportTypeSetConfiguration configuration,
+            Action<ICompiledExportStrategy> inspector)
+	    {
+	        Action<IExportStrategy> filter = 
+                strategy =>
+	            {
+	                ICompiledExportStrategy compiledExportStrategy = strategy as ICompiledExportStrategy;
+
+                    if (compiledExportStrategy != null &&
+                        ReflectionService.CheckTypeIsBasedOnAnotherType(strategy.ActivationType, typeof(T)))
+	                {
+                        inspector(compiledExportStrategy);
+	                }
+	            };
+
+	        configuration.WithInspector(new FuncExportStrategyInspector(filter));
+
+	        return configuration;
+	    }
+
+        /// <summary>
+        /// Adds an inspector action for strategies that export the specified type, can be class or interface
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="inspectType">type to inspect</param>
+        /// <param name="inspector">inspector</param>
+        /// <returns>configuration object</returns>
+        public static IExportTypeSetConfiguration WithInspectorFor(this IExportTypeSetConfiguration configuration, 
+            Type inspectType,
+            Action<ICompiledExportStrategy> inspector)
+        {
+            Action<IExportStrategy> filter =
+                strategy =>
+                {
+                    ICompiledExportStrategy compiledExportStrategy = strategy as ICompiledExportStrategy;
+
+                    if (compiledExportStrategy != null &&
+                        ReflectionService.CheckTypeIsBasedOnAnotherType(strategy.ActivationType, inspectType))
+                    {
+                        inspector(compiledExportStrategy);
+                    }
+                };
+
+            configuration.WithInspector(new FuncExportStrategyInspector(filter));
+
+            return configuration;
+        }
 
 		/// <summary>
 		/// Ups the priority of partially closed generics based on the number of closed parameters

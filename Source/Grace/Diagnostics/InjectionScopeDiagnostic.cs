@@ -141,7 +141,7 @@ namespace Grace.Diagnostics
 		/// Note: This is just a possible missing dependency
 		/// Using static analysis this is a best attempt at resolving.
 		/// Because of conditions and other factors it's possible to have no missing dependencies listed
-		/// and still fail to resolve.
+		/// and still fail to resolve and vice versa
 		/// </summary>
 		public IEnumerable<PossibleMissingDependency> PossibleMissingDependencies
 		{

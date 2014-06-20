@@ -447,6 +447,33 @@ namespace Grace.UnitTests.DependencyInjection
         }
         #endregion
 
+        #region WithInspectorFor
+
+        [Fact]
+        public void WithInspectorFor()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .WithInspectorFor<ISimpleObject>(e => e.AddMetadata("SimpleObject", e.ActivationType)));
+
+            var list = 
+                container.LocateAll<ISimpleObject>(consider: ExportsThat.HaveMetadata("SimpleObject"));
+
+            Assert.Equal(5, list.Count);
+
+            list =
+                container.LocateAll<ISimpleObject>(consider:
+                    ExportsThat.HaveMetadata("SimpleObject", typeof(SimpleObjectA)));
+
+            Assert.Equal(1, list.Count);
+        }
+
+
+
+        #endregion
+
         #region BasedOn Interface Test
 
         [Fact]
@@ -496,10 +523,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(6, diagnostic.Exports.Count());
+            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -516,10 +540,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(3, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(4, diagnostic.Exports.Count());
+            Assert.Equal(3, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -536,10 +557,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(6, diagnostic.Exports.Count());
+            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -556,10 +574,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(6, diagnostic.Exports.Count());
+            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -575,10 +590,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(6, diagnostic.Exports.Count());
+            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -595,10 +607,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(3, simpleObjects.Count);
 
-            var diagnostic = container.Locate<DependencyInjectionContainerDiagnostic>();
-
-            Assert.NotNull(diagnostic);
-            Assert.Equal(4, diagnostic.Exports.Count());
+            Assert.Equal(3, container.Diagnose().Exports.Count());
         }
         #endregion
     }

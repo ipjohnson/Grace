@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Grace.Data;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -24,13 +25,13 @@ namespace Grace.DependencyInjection.Impl
             if (attributeFilter != null)
             {
                 exportStrategyFilters.Add((context, strategy) =>
-                    strategy.Attributes.Where(a => a.GetType().GetTypeInfo().IsAssignableFrom(attributeType.GetTypeInfo())).
+                    strategy.Attributes.Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(),attributeType)).
                                         Any(attributeFilter));
             }
             else
             {
                 exportStrategyFilters.Add((context, strategy) =>
-                    strategy.Attributes.Any(a => a.GetType().GetTypeInfo().IsAssignableFrom(attributeType.GetTypeInfo())));
+                    strategy.Attributes.Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(),attributeType)));
             }
 
             return this;
@@ -48,26 +49,40 @@ namespace Grace.DependencyInjection.Impl
             if (attributeFilter != null)
             {
                 exportStrategyFilters.Add((context, strategy) =>
-                    strategy.Attributes.Where(a => a.GetType().GetTypeInfo().IsAssignableFrom(typeof(TAttribute).GetTypeInfo())).Any(
-                        x =>
-                        {
-                            bool returnValue = false;
-                            TAttribute attribute =
-                                x as TAttribute;
+                    strategy.Attributes.
+                             Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(),typeof(TAttribute))).
+                             Any(x =>
+                                    {
+                                        bool returnValue = false;
+                                        TAttribute attribute =
+                                            x as TAttribute;
 
-                            if (attribute != null)
-                            {
-                                returnValue = attributeFilter(attribute);
-                            }
+                                        if (attribute != null)
+                                        {
+                                            returnValue = attributeFilter(attribute);
+                                        }
 
-                            return returnValue;
-                        }));
+                                        return returnValue;
+                                    }));
             }
             else
             {
                 exportStrategyFilters.Add((context, strategy) =>
-                    strategy.Attributes.Any(a => a.GetType().GetTypeInfo().IsAssignableFrom(typeof(TAttribute).GetTypeInfo())));
+                    strategy.Attributes.Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), typeof(TAttribute))));
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Provide export filter that returns true when a type has an attribute that matches the provided type filter
+        /// </summary>
+        /// <param name="consider">type filter (TypesThat will work here)</param>
+        /// <returns>configuration object</returns>
+        public ExportsThatConfiguration HaveAttribute(Func<Type, bool> consider)
+        {
+            exportStrategyFilters.Add((context, strategy) =>
+                strategy.Attributes.Any(a => consider(a.GetType())));
 
             return this;
         }
@@ -99,6 +114,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="name">string to compare Type name to</param>
         /// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith")]
         public ExportsThatConfiguration StartWith(string name)
         {
             exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Name.StartsWith(name));
@@ -111,9 +127,23 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="name">string to compare Type name to</param>
         /// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith")]
         public ExportsThatConfiguration EndWith(string name)
         {
             exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Name.EndsWith(name));
+
+            return this;
+        }
+
+
+        /// <summary>
+        /// Creates a new export filter based on the type being activated
+        /// </summary>
+        /// <param name="activateFilter"></param>
+        /// <returns></returns>
+        public ExportsThatConfiguration Activate(Func<Type, bool> activateFilter)
+        {
+            exportStrategyFilters.Add((context, strategy) => activateFilter(strategy.ActivationType));
 
             return this;
         }
@@ -124,6 +154,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="namespace">namespace the type should be in</param>
         /// <param name="includeSubnamespaces">include sub namespaces</param>
         /// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
         public ExportsThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
         {
             if (includeSubnamespaces)
@@ -146,6 +177,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">class to check for</param>
         /// <param name="includeSubnamespaces">include sub namespaces</param>
         /// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
         public ExportsThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
         {
             return AreInTheSameNamespace(type.Namespace, includeSubnamespaces);
@@ -157,6 +189,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">class to check for</typeparam>
         /// <param name="includeSubnamespaces">include sub namespace</param>
         /// <returns>export configuration object</returns>
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
         public ExportsThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
         {
             return AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
@@ -256,6 +289,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     throw new Exception("And cannot be used in conjuction with Or");
                 }
+
                 useOr = false;
 
                 return this;
