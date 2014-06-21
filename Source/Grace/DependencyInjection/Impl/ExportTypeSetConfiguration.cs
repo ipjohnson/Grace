@@ -730,10 +730,8 @@ namespace Grace.DependencyInjection.Impl
 
             returnValue.AddRange(ExportTypeIfMatchesInterface(filteredType));
 
-            return exportInterfaces;
+            return returnValue;
         }
-
-
 
         private IEnumerable<IExportStrategy> ExportAll(IEnumerable<Type> filteredTypes)
         {
