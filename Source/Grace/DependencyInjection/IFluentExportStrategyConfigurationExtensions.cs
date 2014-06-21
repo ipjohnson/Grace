@@ -155,7 +155,7 @@ namespace Grace.DependencyInjection
 		/// <param name="strategy">export strategy</param>
 		/// <param name="valueExpression">value expression, the name of the parameter will be used as the parameter name</param>
 		/// <returns>configuration object</returns>
-		public static IFluentWithCtorConfiguration<TValue> WithNamedCtorValue<TValue>(this IFluentExportStrategyConfiguration strategy, Expression<Func<TValue>> valueExpression)
+		public static IFluentWithCtorConfiguration WithNamedCtorValue<TValue>(this IFluentExportStrategyConfiguration strategy, Expression<Func<TValue>> valueExpression)
 		{
 			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
 			string exportName = null;
@@ -185,7 +185,7 @@ namespace Grace.DependencyInjection
 		/// <param name="strategy">export strategy</param>
 		/// <param name="valueExpression">value expression, the name of the parameter will be used as the parameter name</param>
 		/// <returns>configuration object</returns>
-		public static IFluentWithCtorConfiguration<T,TValue> WithNamedCtorValue<T,TValue>(this IFluentExportStrategyConfiguration<T> strategy, Expression<Func<TValue>> valueExpression)
+		public static IFluentWithCtorConfiguration<T> WithNamedCtorValue<T,TValue>(this IFluentExportStrategyConfiguration<T> strategy, Expression<Func<TValue>> valueExpression)
 		{
 			MemberExpression memberExpression = valueExpression.Body as MemberExpression;
 			string exportName = null;

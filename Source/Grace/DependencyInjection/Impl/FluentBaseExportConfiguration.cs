@@ -285,24 +285,46 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
+		public IFluentWithCtorConfiguration WithCtorParam<TParam>(Func<TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Add a specific value for a particuar parameter in the constructor
+	    /// </summary>
+	    /// <param name="parameterType">type of parameter</param>
+	    /// <param name="paramValue">Func(T) value for the parameter</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentWithCtorConfiguration WithCtorParam(Type parameterType, Func<object> paramValue = null)
+	    {
+	        return strategy.WithCtorParam(parameterType, paramValue);
+	    }
+
+	    /// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
 		/// </summary>
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(
+		public IFluentWithCtorConfiguration WithCtorParam<TParam>(
 			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Add a specific value for a particuar parameter in the constructor
+	    /// </summary>
+	    /// <param name="parameterType"></param>
+	    /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentWithCtorConfiguration WithCtorParam(Type parameterType, Func<IInjectionScope, IInjectionContext, object> paramValue)
+	    {
+	        return strategy.WithCtorParam(parameterType, paramValue);
+	    }
+
+	    /// <summary>
 		/// Adds a constructor param of type TParam to the constructor
 		/// </summary>
 		/// <typeparam name="TParam"></typeparam>
@@ -438,7 +460,18 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.AndWeakSingleton();
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Add a vlue to be used for constructor parameter
+	    /// </summary>
+	    /// <param name="parameterType">parameter type</param>
+	    /// <param name="paramValue">parameter value</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentWithCtorConfiguration<T> WithCtorParam(Type parameterType, Func<IInjectionScope, IInjectionContext, object> paramValue)
+	    {
+	        return strategy.WithCtorParam(parameterType, paramValue);
+	    }
+
+	    /// <summary>
 		/// Attach a key to the export
 		/// </summary>
 		/// <param name="key"></param>
@@ -614,18 +647,29 @@ namespace Grace.DependencyInjection.Impl
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(TParam) for the parameter</param>
 		/// <returns></returns>
-		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
+		public IFluentWithCtorConfiguration<T> WithCtorParam<TParam>(Func<TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Add a vlue to be used for constructor parameter
+	    /// </summary>
+	    /// <param name="parameterType">parameter type</param>
+	    /// <param name="paramValue">parameter value</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentWithCtorConfiguration<T> WithCtorParam(Type parameterType, Func<object> paramValue = null)
+	    {
+	        return strategy.WithCtorParam(parameterType, paramValue);
+	    }
+
+	    /// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
 		/// </summary>
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(
+		public IFluentWithCtorConfiguration<T> WithCtorParam<TParam>(
 			Func<IInjectionScope, IInjectionContext, TParam> paramValue = null)
 		{
 			return strategy.WithCtorParam(paramValue);

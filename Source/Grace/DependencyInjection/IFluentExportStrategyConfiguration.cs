@@ -170,7 +170,15 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
+		IFluentWithCtorConfiguration WithCtorParam<TParam>(Func<TParam> paramValue = null);
+
+	    /// <summary>
+	    /// Add a specific value for a particuar parameter in the constructor
+	    /// </summary>
+	    /// <param name="parameterType">type of parameter</param>
+	    /// <param name="paramValue">Func(T) value for the parameter</param>
+	    /// <returns>configuration object</returns>
+	    IFluentWithCtorConfiguration WithCtorParam(Type parameterType, Func<object> paramValue = null);
 
 		/// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
@@ -178,7 +186,15 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue);
+		IFluentWithCtorConfiguration WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramValue);
+
+	    /// <summary>
+	    /// Add a specific value for a particuar parameter in the constructor
+	    /// </summary>
+	    /// <param name="parameterType"></param>
+	    /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+	    /// <returns>configuration object</returns>
+	    IFluentWithCtorConfiguration WithCtorParam(Type parameterType, Func<IInjectionScope, IInjectionContext, object> paramValue);
 
 		/// <summary>
 		/// Adds a constructor param of type TParam to the constructor
@@ -422,7 +438,15 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(TParam) for the parameter</param>
 		/// <returns></returns>
-		IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
+		IFluentWithCtorConfiguration<T> WithCtorParam<TParam>(Func<TParam> paramValue = null);
+
+        /// <summary>
+        /// Add a vlue to be used for constructor parameter
+        /// </summary>
+        /// <param name="parameterType">parameter type</param>
+        /// <param name="paramValue">parameter value</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T> WithCtorParam(Type parameterType, Func<object> paramValue = null);
 
 		/// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
@@ -430,8 +454,16 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="TParam">type of parameter</typeparam>
 		/// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
 		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(
+		IFluentWithCtorConfiguration<T> WithCtorParam<TParam>(
 			Func<IInjectionScope, IInjectionContext, TParam> paramValue);
+
+        /// <summary>
+        /// Add a vlue to be used for constructor parameter
+        /// </summary>
+        /// <param name="parameterType">parameter type</param>
+        /// <param name="paramValue">parameter value</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T> WithCtorParam(Type parameterType, Func<IInjectionScope, IInjectionContext, object> paramValue);
 
 		/// <summary>
 		/// Attach a key to the export

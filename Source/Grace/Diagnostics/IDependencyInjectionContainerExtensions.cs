@@ -10,7 +10,7 @@ namespace Grace.Diagnostics
 {
     
     /// <summary>
-    /// 
+    /// Dependency Injection Container extensions
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class IDependencyInjectionContainerExtensions
