@@ -115,6 +115,11 @@
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
+    <Compile Include="DependencyInjection\IExportTypeSetCtorParamConfiguration.cs" />
+    <Compile Include="DependencyInjection\ILocateKeyValueProvider.cs" />
+    <Compile Include="DependencyInjection\Impl\ExportTypeSetCtorParamConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\ExportTypeSetImportPropertyConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />
     <Compile Include="DependencyInjection\TypeExtensions.cs" />
     <Compile Include="Diagnostics\IDependencyInjectionContainerExtensions.cs" />
     <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />

@@ -7,6 +7,16 @@ namespace Grace.UnitTests.Classes.Simple
         
     }
 
+    public class ImportSingleSimpleObject
+    {
+        public ImportSingleSimpleObject(ISimpleObject simpleObject)
+        {
+            SimpleObject = simpleObject;
+        }
+
+        public ISimpleObject SimpleObject { get; private set; }
+    }
+
     [SimpleFilter]
 	public interface ISimpleObject
 	{

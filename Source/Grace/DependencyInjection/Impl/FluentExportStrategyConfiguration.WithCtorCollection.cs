@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>configuration object</returns>
 		public IFluentWithCtorCollectionConfiguration<TItem> LocateWithKey(object locateKey)
 		{
-			paramInfo.LocateKey = locateKey;
+			paramInfo.LocateKeyProvider = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}
@@ -165,7 +165,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>configuration object</returns>
 		public IFluentWithCtorCollectionConfiguration<T, TItem> LocateWithKey(object locateKey)
 		{
-			paramInfo.LocateKey = locateKey;
+			paramInfo.LocateKeyProvider = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}

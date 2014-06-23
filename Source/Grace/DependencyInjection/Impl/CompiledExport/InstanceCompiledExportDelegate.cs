@@ -57,20 +57,21 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 				ExportStrategyFilter exportStrategyFilter = null;
 				string importName = null;
 				object comparerObject = null;
-				object locateKey = null;
+				ILocateKeyValueProvider locateKey = null;
 
 				if (exportDelegateInfo.ConstructorParams != null)
 				{
 					foreach (ConstructorParamInfo constructorParamInfo in exportDelegateInfo.ConstructorParams)
 					{
-						if (string.Compare(parameterInfo.Name, constructorParamInfo.ParameterName, StringComparison.OrdinalIgnoreCase) ==
-						    0)
+						if (string.Compare(parameterInfo.Name, 
+                                           constructorParamInfo.ParameterName, 
+                                           StringComparison.OrdinalIgnoreCase) == 0)
 						{
 							importName = constructorParamInfo.ImportName;
 							exportStrategyFilter = constructorParamInfo.ExportStrategyFilter;
 							valueProvider = constructorParamInfo.ValueProvider;
 							comparerObject = constructorParamInfo.ComparerObject;
-							locateKey = constructorParamInfo.LocateKey;
+							locateKey = constructorParamInfo.LocateKeyProvider;
 							break;
 						}
 					}
@@ -87,7 +88,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 								exportStrategyFilter = constructorParamInfo.ExportStrategyFilter;
 								valueProvider = constructorParamInfo.ValueProvider;
 								comparerObject = constructorParamInfo.ComparerObject;
-								locateKey = constructorParamInfo.LocateKey;
+								locateKey = constructorParamInfo.LocateKeyProvider;
 								break;
 							}
 						}

@@ -296,7 +296,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <summary>
 		/// Locate key
 		/// </summary>
-		public object LocateKey { get; set; }
+		public ILocateKeyValueProvider LocateKey { get; set; }
 	}
 
 	/// <summary>
@@ -341,7 +341,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <summary>
 		/// Locate key
 		/// </summary>
-		public object LocateKey { get; set; }
+		public ILocateKeyValueProvider LocateKey { get; set; }
 
 		/// <summary>
 		/// IComparer(T) to be used to sort collections
@@ -400,7 +400,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <summary>
 		/// Locate key
 		/// </summary>
-		public object LocateKey { get; set; }
+		public ILocateKeyValueProvider LocateKeyProvider { get; set; }
 
 		/// <summary>
 		/// IComparer(T) to use to compare export values

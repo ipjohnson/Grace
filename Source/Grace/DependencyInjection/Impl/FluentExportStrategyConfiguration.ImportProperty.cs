@@ -64,7 +64,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>configuration object</returns>
 		public IFluentImportPropertyConfiguration LocateWithKey(object locateKey)
 		{
-			importPropertyInfo.LocateKey = locateKey;
+			importPropertyInfo.LocateKey = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}
@@ -195,7 +195,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>configuration object</returns>
 		public IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey)
 		{
-			importPropertyInfo.LocateKey = locateKey;
+			importPropertyInfo.LocateKey = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}

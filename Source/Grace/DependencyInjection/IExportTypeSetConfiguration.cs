@@ -181,6 +181,36 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration When(ExportConditionDelegate conditionDelegate);
 
+        /// <summary>
+        /// Adds a constructor param to exported types
+        /// </summary>
+        /// <typeparam name="TParam">constructor param type</typeparam>
+        /// <param name="paramFunc">func to create constructor param</param>
+        /// <returns>configuration object</returns>
+	    IExportTypeSetCtorParamConfiguration WithCtorParam<TParam>(Func<TParam> paramFunc = null);
+
+        /// <summary>
+        /// Adds a constructor param to exported types
+        /// </summary>
+        /// <typeparam name="TParam">constructor param type</typeparam>
+        /// <param name="paramFunc">func to create constructor param</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetCtorParamConfiguration WithCtorParam<TParam>(Func<IInjectionScope, IInjectionContext, TParam> paramFunc);
+
+        /// <summary>
+        /// Adds a constructor param to exported types
+        /// </summary>
+        /// <param name="paramType">constructor parameter type</param>
+        /// <param name="paramFunc">func to create constructor param</param>
+        /// <returns>configuration object</returns>
+	    IExportTypeSetCtorParamConfiguration WithCtorParam(Type paramType, Func<IInjectionScope, IInjectionContext, object> paramFunc);
+        /// <summary>
+        /// Provide a func that will be used to create a key that will be used to register
+        /// </summary>
+        /// <param name="withKeyFunc">key func</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration WithKey(Func<Type, object> withKeyFunc);
+
 		/// <summary>
 		/// Set a particular life style
 		/// </summary>
@@ -194,6 +224,7 @@ namespace Grace.DependencyInjection
 		/// <param name="lifestyleFunc">pick a lifestyle</param>
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc);
+
 
 		/// <summary>
 		/// Export with the spcified priority

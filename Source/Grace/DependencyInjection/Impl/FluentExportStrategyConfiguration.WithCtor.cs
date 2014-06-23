@@ -242,12 +242,26 @@ namespace Grace.DependencyInjection.Impl
 
 		public IFluentWithCtorConfiguration LocateWithKey(object locateKey)
 		{
-			currenConstructorParamInfo.LocateKey = locateKey;
+			currenConstructorParamInfo.LocateKeyProvider = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}
 
-		public IFluentWithCtorConfiguration Named(string name)
+	    public IFluentWithCtorConfiguration LocateWithKeyProvider(Func<IInjectionScope, IInjectionContext, Type, object> locateKeyFunc)
+	    {
+            currenConstructorParamInfo.LocateKeyProvider = new FuncLocateKeyProvider(locateKeyFunc);
+
+	        return this;
+	    }
+
+	    public IFluentWithCtorConfiguration LocateWithKeyProvider(ILocateKeyValueProvider keyProvider)
+	    {
+	        currenConstructorParamInfo.LocateKeyProvider = keyProvider;
+
+	        return this;
+	    }
+
+	    public IFluentWithCtorConfiguration Named(string name)
 		{
 			currenConstructorParamInfo.ParameterName = name;
 
@@ -297,12 +311,26 @@ namespace Grace.DependencyInjection.Impl
 
 		public IFluentWithCtorConfiguration<T> LocateWithKey(object locateKey)
 		{
-			constructorParamInfo.LocateKey = locateKey;
+			constructorParamInfo.LocateKeyProvider = new FuncLocateKeyProvider(t => locateKey);
 
 			return this;
 		}
 
-		public IFluentWithCtorConfiguration<T> Named(string name)
+	    public IFluentWithCtorConfiguration<T> LocateWithKeyProvider(Func<IInjectionScope, IInjectionContext, Type, object> locateKeyFunc)
+	    {
+            constructorParamInfo.LocateKeyProvider = new FuncLocateKeyProvider(locateKeyFunc);
+
+	        return this;
+	    }
+
+	    public IFluentWithCtorConfiguration<T> LocateWithKeyProvider(ILocateKeyValueProvider keyProvider)
+	    {
+	        constructorParamInfo.LocateKeyProvider = keyProvider;
+
+	        return this;
+	    }
+
+	    public IFluentWithCtorConfiguration<T> Named(string name)
 		{
 			constructorParamInfo.ParameterName = name;
 

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection
 {
@@ -35,6 +36,21 @@ namespace Grace.DependencyInjection
 		/// <param name="locateKey">ocate key</param>
 		/// <returns>configuration object</returns>
 		IFluentWithCtorConfiguration LocateWithKey(object locateKey);
+
+        /// <summary>
+        /// Locate with a particular key using a provided func
+        /// </summary>
+        /// <param name="locateKeyFunc">locate key func</param>
+        /// <returns>configuration object</returns>
+	    IFluentWithCtorConfiguration LocateWithKeyProvider(
+	        Func<IInjectionScope, IInjectionContext, Type, object> locateKeyFunc);
+
+        /// <summary>
+        /// Locate with a particular key provider
+        /// </summary>
+        /// <param name="keyProvider">key provder</param>
+        /// <returns>configuration object</returns>
+	    IFluentWithCtorConfiguration LocateWithKeyProvider(ILocateKeyValueProvider keyProvider);
 
 		/// <summary>
 		/// Name of the parameter to resolve
@@ -85,6 +101,21 @@ namespace Grace.DependencyInjection
 		/// <param name="locateKey">locate key</param>
 		/// <returns>configuration object</returns>
 		IFluentWithCtorConfiguration<T> LocateWithKey(object locateKey);
+
+        /// <summary>
+        /// Locate with a particular key using a provided func
+        /// </summary>
+        /// <param name="locateKeyFunc">locate key func</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T> LocateWithKeyProvider(
+            Func<IInjectionScope, IInjectionContext, Type, object> locateKeyFunc);
+
+	    /// <summary>
+	    /// Locate with a particular key provider
+	    /// </summary>
+	    /// <param name="keyProvider">key provder</param>
+	    /// <returns>configuration object</returns>
+	    IFluentWithCtorConfiguration<T> LocateWithKeyProvider(ILocateKeyValueProvider keyProvider);
 
 		/// <summary>
 		/// Name of the parameter being configured

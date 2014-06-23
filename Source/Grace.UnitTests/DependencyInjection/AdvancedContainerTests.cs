@@ -321,6 +321,80 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObject);
             Assert.IsType<SimpleObjectC>(simpleObject);
         }
+
+        [Fact]
+        public void BulkWithKeyTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterface<ISimpleObject>()
+                                      .WithKey(t => t.Name.Last()));
+
+            ISimpleObject simpleA = container.Locate<ISimpleObject>(withKey: 'A');
+
+            Assert.NotNull(simpleA);
+            Assert.IsType<SimpleObjectA>(simpleA);
+
+            var simpleObjects =
+                container.LocateAll<ISimpleObject>(withKey: new[] { 'A', 'C', 'E' });
+
+            Assert.Equal(3, simpleObjects.Count);
+
+            Assert.Equal(5, container.Diagnose().Exports.Count());
+        }
+
+        [Fact]
+        public void BulkLocateWithKey()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterface<ISimpleObject>()
+                                      .WithKey(t => t.Name.Last()));
+
+            container.Configure(c =>
+                                {
+                                    foreach (char ch in "ABCDE")
+                                    {
+                                        c.Export<ImportSingleSimpleObject>()
+                                         .WithKey(ch)
+                                         .WithCtorParam<ISimpleObject>()
+                                         .LocateWithKey(ch);
+                                    }
+                                });
+
+            ImportSingleSimpleObject single = container.Locate<ImportSingleSimpleObject>(withKey: 'A');
+
+            Assert.NotNull(single);
+            Assert.IsType<SimpleObjectA>(single.SimpleObject);
+
+            Assert.Equal(3, container.LocateAll<ImportSingleSimpleObject>(withKey: new[] { 'A', 'C', 'E' }).Count);
+        }
+
+        [Fact]
+        public void ImportKeyedBulkTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterface<ISimpleObject>()
+                                      .WithKey(t => t.Name.Last()));
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn<IImportKeyed>())
+                                      .WithKey(t => t.Name.Last())
+                                      .WithCtorParam<ISimpleObject>().LocateWithKey(t => t.Name.Last()));
+
+            IImportKeyed importKeyedA = container.Locate<IImportKeyed>(withKey: 'A');
+
+            Assert.NotNull(importKeyedA);
+            Assert.IsType<SimpleObjectA>(importKeyedA.SimpleObject);
+
+            Assert.Equal(3, container.LocateAll<IImportKeyed>(withKey: new[] { 'A', 'C', 'E' }).Count);
+        }
+
         #endregion
 
         #region new context
@@ -458,7 +532,7 @@ namespace Grace.UnitTests.DependencyInjection
                                       .ByInterfaces()
                                       .WithInspectorFor<ISimpleObject>(e => e.AddMetadata("SimpleObject", e.ActivationType)));
 
-            var list = 
+            var list =
                 container.LocateAll<ISimpleObject>(consider: ExportsThat.HaveMetadata("SimpleObject"));
 
             Assert.Equal(5, list.Count);

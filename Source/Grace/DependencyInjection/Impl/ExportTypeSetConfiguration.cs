@@ -15,25 +15,8 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Exports a set of types based on a provided configuration
     /// </summary>
-    public class ExportTypeSetConfiguration : IExportTypeSetConfiguration, IExportTypeSetImportPropertyConfiguration, IExportStrategyProvider
+    public partial class ExportTypeSetConfiguration : IExportTypeSetConfiguration, IExportTypeSetImportPropertyConfiguration, IExportStrategyProvider
     {
-        private class ImportGlobalPropertyInfo
-        {
-            public Type PropertyType { get; set; }
-
-            public string PropertyName { get; set; }
-
-            public bool IsRequired { get; set; }
-
-            public bool AfterConstruction { get; set; }
-
-            public Func<Type, bool> TypeFilter { get; set; }
-
-            public ExportStrategyFilter Consider { get; set; }
-
-            public IExportValueProvider ValueProvider { get; set; }
-        }
-
         private readonly List<Func<Type, IExportCondition>> conditions;
         private readonly List<Func<Type, bool>> excludeClauses;
         private readonly List<Type> exportBaseTypes;
@@ -44,6 +27,7 @@ namespace Grace.DependencyInjection.Impl
         private readonly List<Func<Type, bool>> whereClauses;
         private readonly List<IExportStrategyInspector> inspectors;
         private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
+        private readonly List<WithCtorParamInfo> withCtorParams;
         private readonly List<Func<Type, IEnumerable<EnrichWithDelegate>>> enrichWithDelegates;
         private readonly List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>> enrichmentProviders;
         private bool exportAllByInterface;
@@ -56,6 +40,7 @@ namespace Grace.DependencyInjection.Impl
         private bool externallyOwned;
         private Func<Type, int> priorityFunc;
         private Func<Type, ILifestyle> lifestyleFunc;
+        private Func<Type, object> withKeyFunc; 
 
         /// <summary>
         /// Default Constructor
@@ -75,6 +60,7 @@ namespace Grace.DependencyInjection.Impl
             interfaceMatchList = new List<Func<Type, bool>>();
             inspectors = new List<IExportStrategyInspector>();
             importPropertiesList = new List<ImportGlobalPropertyInfo>();
+            withCtorParams = new List<WithCtorParamInfo>();
             enrichWithDelegates = new List<Func<Type, IEnumerable<EnrichWithDelegate>>>();
             enrichmentProviders = new List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>>();
 
@@ -110,6 +96,24 @@ namespace Grace.DependencyInjection.Impl
             }
 
             returnValues.AddRange(ExportAll(filteredTypes));
+
+            if (withKeyFunc != null)
+            {
+                foreach (IExportStrategy exportStrategy in returnValues)
+                {
+                    IConfigurableExportStrategy configurableExport = exportStrategy as IConfigurableExportStrategy;
+
+                    if (configurableExport != null)
+                    {
+                        object objectKey = withKeyFunc(configurableExport.ActivationType);
+
+                        if (objectKey != null)
+                        {
+                            configurableExport.SetKey(objectKey);
+                        }
+                    }
+                }
+            }
 
             if (inspectors.Count > 0)
             {
@@ -376,6 +380,13 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IExportTypeSetConfiguration WithKey(Func<Type, object> withKeyFunc)
+        {
+            this.withKeyFunc = withKeyFunc;
+
+            return this;
+        }
+
         /// <summary>
         /// Set a particular life cycle 
         /// </summary>
@@ -515,138 +526,8 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Import properties of type TProperty and by name
-        /// </summary>
-        /// <typeparam name="TProperty">property type</typeparam>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        public IExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>()
-        {
-            importPropertiesList.Add(new ImportGlobalPropertyInfo { PropertyType = typeof(TProperty), IsRequired = true });
 
-            return this;
-        }
-
-        /// <summary>
-        /// Import all properties that match the type
-        /// </summary>
-        /// <param name="propertyType"></param>
-        /// <returns></returns>
-        public IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType)
-        {
-            importPropertiesList.Add(new ImportGlobalPropertyInfo { PropertyType = propertyType, IsRequired = true });
-
-            return this;
-        }
-
-        /// <summary>
-        /// Property Name to import
-        /// </summary>
-        /// <param name="propertyName">property name</param>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        public IExportTypeSetImportPropertyConfiguration Named(string propertyName)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].PropertyName = propertyName;
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Is it required
-        /// </summary>
-        /// <param name="value">is required</param>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public IExportTypeSetImportPropertyConfiguration IsRequired(bool value)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].IsRequired = value;
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Apply delegate to choose export
-        /// </summary>
-        /// <param name="consider">consider filter</param>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        public IExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].Consider = consider;
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Using Value provider
-        /// </summary>
-        /// <param name="activationDelegate"></param>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        public IExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].ValueProvider = new ExportActivationValueProvider(activationDelegate);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Use value provider
-        /// </summary>
-        /// <param name="valueProvider">value provider</param>
-        /// <returns>
-        /// configuration object
-        /// </returns>
-        public IExportTypeSetImportPropertyConfiguration UsingValueProvider(IExportValueProvider valueProvider)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].ValueProvider = valueProvider;
-            }
-
-            return this;
-        }
-
-        public IExportTypeSetImportPropertyConfiguration AfterConstruction()
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].AfterConstruction = true;
-            }
-
-            return this;
-        }
-
-        public IExportTypeSetImportPropertyConfiguration OnlyOn(Func<Type, bool> filter)
-        {
-            if (importPropertiesList.Count > 0)
-            {
-                importPropertiesList[importPropertiesList.Count - 1].TypeFilter = filter;
-            }
-
-            return this;
-        }
-
+        
         private List<Type> FilterTypes()
         {
             List<Type> filteredTypes = new List<Type>();
@@ -971,32 +852,93 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
+            if (withCtorParams.Count > 0)
+            {
+                ProcessWithCtorParams(exportedType, exportStrategy);
+            }
+
+            if (importPropertiesList.Count > 0)
+            {
+                ProcessImportProperties(exportedType, exportStrategy);
+            }
+
+            return exportStrategy;
+        }
+
+        private void ProcessImportProperties(Type exportedType, ICompiledExportStrategy exportStrategy)
+        {
             foreach (ImportGlobalPropertyInfo importProperty in importPropertiesList)
             {
                 foreach (PropertyInfo runtimeProperty in exportedType.GetRuntimeProperties())
                 {
                     if (runtimeProperty.CanWrite &&
-                         !runtimeProperty.SetMethod.IsStatic &&
-                         runtimeProperty.SetMethod.IsPublic &&
-                         CheckPropertyTypesMatch(exportedType, runtimeProperty.PropertyType, importProperty))
+                        !runtimeProperty.SetMethod.IsStatic &&
+                        runtimeProperty.SetMethod.IsPublic &&
+                        CheckPropertyTypesMatch(exportedType, runtimeProperty.PropertyType, importProperty))
                     {
                         if (importProperty.PropertyName == null ||
-                             importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
+                            importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
                         {
                             exportStrategy.ImportProperty(new ImportPropertyInfo
-                            {
-                                Property = runtimeProperty,
-                                IsRequired = importProperty.IsRequired,
-                                ValueProvider = importProperty.ValueProvider,
-                                ExportStrategyFilter = importProperty.Consider,
-                                AfterConstruction = importProperty.AfterConstruction
-                            });
+                                                          {
+                                                              Property = runtimeProperty,
+                                                              IsRequired = importProperty.IsRequired,
+                                                              ValueProvider = importProperty.ValueProvider,
+                                                              ExportStrategyFilter = importProperty.Consider,
+                                                              AfterConstruction = importProperty.AfterConstruction
+                                                          });
                         }
                     }
                 }
             }
+        }
 
-            return exportStrategy;
+        private void ProcessWithCtorParams(Type exportedType, ICompiledExportStrategy exportStrategy)
+        {
+            foreach (WithCtorParamInfo withCtorParamInfo in withCtorParams)
+            {
+                ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
+                                                            {
+                                                                ParameterType = withCtorParamInfo.ParameterType,
+                                                                ValueProvider = withCtorParamInfo.ValueProvider
+                                                            };
+
+                if (withCtorParamInfo.NamedFunc != null)
+                {
+                    constructorParamInfo.ParameterName = withCtorParamInfo.NamedFunc(exportedType);
+                }
+
+                if (withCtorParamInfo.IsRequiredFunc != null)
+                {
+                    constructorParamInfo.IsRequired = withCtorParamInfo.IsRequiredFunc(exportedType);
+                }
+
+                if (withCtorParamInfo.ConsiderFunc != null)
+                {
+                    constructorParamInfo.ExportStrategyFilter = withCtorParamInfo.ConsiderFunc(exportedType);
+                }
+
+                constructorParamInfo.LocateKeyProvider = withCtorParamInfo.LocateKeyValueProvider;
+
+                if (withCtorParamInfo.LocateWithKeyFunc != null)
+                {
+                    object keyValue = withCtorParamInfo.LocateWithKeyFunc(exportedType);
+
+                    constructorParamInfo.LocateKeyProvider = new FuncLocateKeyProvider(t => keyValue);
+                }
+
+                if (withCtorParamInfo.ImportNameFunc != null)
+                {
+                    constructorParamInfo.ImportName = withCtorParamInfo.ImportNameFunc(exportedType);
+                }
+
+                if (withCtorParamInfo.ValueProviderFunc != null)
+                {
+                    constructorParamInfo.ValueProvider = withCtorParamInfo.ValueProviderFunc(exportedType);
+                }
+
+                exportStrategy.WithCtorParam(constructorParamInfo);
+            }
         }
 
         private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
