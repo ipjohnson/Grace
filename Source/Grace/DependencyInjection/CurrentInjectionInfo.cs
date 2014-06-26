@@ -45,6 +45,7 @@ namespace Grace.DependencyInjection
 				{
 					uniqueId = Guid.NewGuid();
 				}
+
 				return uniqueId.Value;
 			}
 		}
