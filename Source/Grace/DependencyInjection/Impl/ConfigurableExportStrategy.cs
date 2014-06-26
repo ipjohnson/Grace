@@ -245,20 +245,22 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public virtual bool MeetsCondition(IInjectionContext injectionContext)
 		{
-			if (conditions != null)
-			{
-				List<IExportCondition> currentConditions = conditions;
+		    if (conditions == null)
+		    {
+		        return true;
+		    }
 
-				for (int i = 0; i < currentConditions.Count; i++)
-				{
-					if (!currentConditions[i].ConditionMeet(OwningScope, injectionContext, this))
-					{
-						return false;
-					}
-				}
-			}
+		    List<IExportCondition> currentConditions = conditions;
 
-			return true;
+		    for (int i = 0; i < currentConditions.Count; i++)
+		    {
+		        if (!currentConditions[i].ConditionMeet(OwningScope, injectionContext, this))
+		        {
+		            return false;
+		        }
+		    }
+
+		    return true;
 		}
 
 		/// <summary>
@@ -288,8 +290,6 @@ namespace Grace.DependencyInjection.Impl
 
 			enrichWithDelegates.Add(enrichWithDelegate);
 		}
-
-
 
 		/// <summary>
 		/// List of dependencies for this strategy
