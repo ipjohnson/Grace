@@ -37,8 +37,6 @@ namespace Grace.DependencyInjection.Impl
 			this.exportType = exportType;
 
 			Environment = ExportEnvironment.Any;
-
-			//log = Logger.GetLogger(GetType());
 		}
 
 		/// <summary>
@@ -182,6 +180,9 @@ namespace Grace.DependencyInjection.Impl
 			Priority = priority;
 		}
 
+        /// <summary>
+        /// Set this export to be externally owned (IDisposable will not be tracked)
+        /// </summary>
 		public void SetExternallyOwned()
 		{
 			ExternallyOwned = true;
@@ -204,10 +205,6 @@ namespace Grace.DependencyInjection.Impl
 			if (lifestyle == null)
 			{
 				lifestyle = container;
-			}
-			else
-			{
-				throw new Exception("Lifestyle container already configured for this export");
 			}
 		}
 
@@ -331,18 +328,18 @@ namespace Grace.DependencyInjection.Impl
 		/// <summary>
 		/// Activate the export
 		/// </summary>
-		/// <param name="exportInjectionScope"></param>
-		/// <param name="context"></param>
-		/// <param name="consider"></param>
-		/// <param name="locateKey"></param>
-		/// <returns></returns>
+		/// <param name="exportInjectionScope">injection scope that is activating this strategy (not always owning)</param>
+		/// <param name="context">injection context</param>
+		/// <param name="consider">export filter</param>
+		/// <param name="locateKey">locate key</param>
+		/// <returns>activated object</returns>
 		public abstract object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey);
 
 		/// <summary>
 		/// Add metadata to the export
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
+		/// <param name="name">metadata name</param>
+		/// <param name="value">metadata value</param>
 		public void AddMetadata(string name, object value)
 		{
 			if (metadata == null)
@@ -393,6 +390,10 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
+        /// <summary>
+        /// Adds a secondary export strategy to this strategy
+        /// </summary>
+        /// <param name="strategy">export strategy</param>
 		protected void AddSecondaryExport(IExportStrategy strategy)
 		{
 			if (secondaryExports == null)
@@ -404,7 +405,7 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-      // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local
 		private string DebuggerDisplayString
 		{
 			get
