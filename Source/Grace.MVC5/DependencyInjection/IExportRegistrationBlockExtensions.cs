@@ -20,8 +20,8 @@ namespace Grace.MVC.DependencyInjection
 		public static IExportTypeSetConfiguration ExportController(this IExportRegistrationBlock registrationBlock, IEnumerable<Type> types)
 		{
 			return registrationBlock.Export(types).
-											 BasedOn(typeof(Controller)).
-											 ExternallyOwned();
+									 BasedOn(typeof(Controller)).
+									 ExternallyOwned();
 		}
 
         /// <summary>
@@ -34,8 +34,7 @@ namespace Grace.MVC.DependencyInjection
 	        IEnumerable<Type> types)
         {
             return registrationBlock.Export(types).
-                                     BasedOn(typeof(WebPage)).
-                                     ExternallyOwned();
-	    }
+                                     BasedOn(typeof(WebPage));
+        }
 	}
 }
