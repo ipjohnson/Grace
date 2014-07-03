@@ -79,6 +79,7 @@
     <Compile Include="DependencyInjection\IExportRegistrationBlockExtensions.cs" />
     <Compile Include="DependencyInjection\ImportFromHttpQueryStringAttribute.cs" />
     <Compile Include="DependencyInjection\ImportFromRequestPathAttribute.cs" />
+    <Compile Include="DependencyInjection\ViewPageActivator.cs" />
     <Compile Include="DependencyInjection\WebSharedPerRequestLifestyle.cs" />
     <Compile Include="DependencyInjection\WebSharedPerRequestLifestyleProvider.cs" />
     <Compile Include="Extensions\DisposalScopeControllerActivator.cs" />
