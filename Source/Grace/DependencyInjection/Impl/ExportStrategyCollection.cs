@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using Grace.Logging;
 using Grace.Utilities;
 
@@ -19,9 +20,9 @@ namespace Grace.DependencyInjection.Impl
         private readonly IInjectionScope injectionKernel;
         private readonly ILog log = Logger.GetLogger<ExportStrategyCollection>();
         private bool disposed;
-        private volatile IExportStrategy[] exportStrategies;
+        private IExportStrategy[] exportStrategies;
         private Dictionary<object, IExportStrategy> keyedStrategies;
-        private volatile IExportStrategy primaryStrategy;
+        private IExportStrategy primaryStrategy;
 
         /// <summary>
         /// Default Constructor
@@ -437,9 +438,16 @@ namespace Grace.DependencyInjection.Impl
                     // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
                     newList.Reverse();
 
-                    exportStrategies = newList.ToArray();
+                    Interlocked.Exchange(ref exportStrategies, newList.ToArray());
 
-                    primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
+                    if (!exportStrategies[0].HasConditions)
+                    {
+                        Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
+                    }
+                    else
+                    {
+                        Interlocked.Exchange(ref primaryStrategy, null);
+                    }
                 }
                 else
                 {
@@ -451,7 +459,7 @@ namespace Grace.DependencyInjection.Impl
 
                     newDictionary[exportStrategy.Key] = exportStrategy;
 
-                    keyedStrategies = newDictionary;
+                    Interlocked.Exchange(ref keyedStrategies, newDictionary);
                 }
             }
         }
@@ -472,15 +480,16 @@ namespace Grace.DependencyInjection.Impl
 
                         newList.Remove(exportStrategy);
 
-                        exportStrategies = newList.ToArray();
+                        Interlocked.Exchange(ref exportStrategies, newList.ToArray());
 
-                        if (exportStrategies.Length > 0)
+                        if (exportStrategies.Length > 0 && !exportStrategies[0].HasConditions)
                         {
-                            primaryStrategy = exportStrategies[0].HasConditions ? null : exportStrategies[0];
+                            Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
+
                         }
                         else
                         {
-                            primaryStrategy = null;
+                            Interlocked.Exchange(ref primaryStrategy, null);
                         }
                     }
                 }
@@ -492,7 +501,7 @@ namespace Grace.DependencyInjection.Impl
 
                         newDictionary.Remove(exportStrategy.Key);
 
-                        keyedStrategies = newDictionary;
+                        Interlocked.Exchange(ref keyedStrategies, newDictionary);
                     }
                 }
             }

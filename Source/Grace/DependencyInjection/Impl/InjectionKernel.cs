@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
@@ -22,14 +23,14 @@ namespace Grace.DependencyInjection.Impl
 	{
 		#region Private Static
 
-		private static readonly ReadOnlyDictionary<string, ExportStrategyCollection> emptyStringExportStrategies =
-			new ReadOnlyDictionary<string, ExportStrategyCollection>(new Dictionary<string, ExportStrategyCollection>());
+		private static readonly Dictionary<string, ExportStrategyCollection> emptyStringExportStrategies =
+			new Dictionary<string, ExportStrategyCollection>(new Dictionary<string, ExportStrategyCollection>());
 
-		private static readonly ReadOnlyDictionary<Type, ExportStrategyCollection> emptyTypeExportStrategies =
-			new ReadOnlyDictionary<Type, ExportStrategyCollection>(new Dictionary<Type, ExportStrategyCollection>());
+        private static readonly Dictionary<Type, ExportStrategyCollection> emptyTypeExportStrategies =
+            new Dictionary<Type, ExportStrategyCollection>(new Dictionary<Type, ExportStrategyCollection>());
 
-		private static readonly ReadOnlyDictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
-			new ReadOnlyDictionary<Type, IInjectionStrategy>(new Dictionary<Type, IInjectionStrategy>());
+        private static readonly Dictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
+            new Dictionary<Type, IInjectionStrategy>(new Dictionary<Type, IInjectionStrategy>());
 
 		private static readonly MethodInfo locateLazyListMethodInfo;
 		private static readonly MethodInfo locateOwnedListMethodInfo;
@@ -83,9 +84,9 @@ namespace Grace.DependencyInjection.Impl
 		private readonly ILog log = Logger.GetLogger<InjectionKernel>();
 		private readonly object secondaryResolversLock = new object();
 		private volatile Dictionary<string, object> extraData;
-		private volatile ReadOnlyDictionary<string, ExportStrategyCollection> exportsByName;
-		private volatile ReadOnlyDictionary<Type, ExportStrategyCollection> exportsByType;
-		private volatile ReadOnlyDictionary<Type, IInjectionStrategy> injections;
+		private Dictionary<string, ExportStrategyCollection> exportsByName;
+		private Dictionary<Type, ExportStrategyCollection> exportsByType;
+		private Dictionary<Type, IInjectionStrategy> injections;
 		private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
 
 		#endregion
@@ -374,8 +375,8 @@ namespace Grace.DependencyInjection.Impl
 					}
 				}
 
-				exportsByType = new ReadOnlyDictionary<Type, ExportStrategyCollection>(newExportsByType);
-				exportsByName = new ReadOnlyDictionary<string, ExportStrategyCollection>(newExportsByName);
+			    Interlocked.Exchange(ref exportsByType, newExportsByType);
+			    Interlocked.Exchange(ref exportsByName, newExportsByName);
 			}
 		}
 
@@ -1197,7 +1198,7 @@ namespace Grace.DependencyInjection.Impl
 
 					newExports[exportType] = returnValue;
 
-					exportsByType = new ReadOnlyDictionary<Type, ExportStrategyCollection>(newExports);
+				    Interlocked.Exchange(ref exportsByType, newExports);
 				}
 			}
 
@@ -1304,7 +1305,7 @@ namespace Grace.DependencyInjection.Impl
 
 					newInjectionStrategies[injectedObject.GetType()] = attributedInjectionStrategy;
 
-					injections = new ReadOnlyDictionary<Type, IInjectionStrategy>(newInjectionStrategies);
+				    Interlocked.Exchange(ref injections, newInjectionStrategies);
 				}
 
 				attributedInjectionStrategy.Inject(injectionContext, injectedObject);
