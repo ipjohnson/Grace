@@ -204,6 +204,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramFunc">func to create constructor param</param>
         /// <returns>configuration object</returns>
 	    IExportTypeSetCtorParamConfiguration WithCtorParam(Type paramType, Func<IInjectionScope, IInjectionContext, object> paramFunc);
+
         /// <summary>
         /// Provide a func that will be used to create a key that will be used to register
         /// </summary>

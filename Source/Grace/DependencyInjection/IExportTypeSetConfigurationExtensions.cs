@@ -17,6 +17,20 @@ namespace Grace.DependencyInjection
 	public static class IExportTypeSetConfigurationExtensions
 	{
         /// <summary>
+        /// Prioritize specfic types that
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="typesThat">types that match func</param>
+        /// <param name="priority">priority</param>
+        /// <returns>configuration object</returns>
+	    public static IExportTypeSetConfiguration Prioritize(this IExportTypeSetConfiguration configuration,Func<Type, bool> typesThat, int priority = 1)
+        {
+            configuration.WithInspector(new PrioritizeTypesThatInspector(typesThat, priority));
+
+            return configuration;
+        }
+
+        /// <summary>
         /// Adds an inspector action that can be used to configure all exports
         /// </summary>
         /// <param name="configuration">configuration object</param>

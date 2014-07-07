@@ -24,13 +24,13 @@ namespace Grace.DependencyInjection.Impl
 		#region Private Static
 
 		private static readonly Dictionary<string, ExportStrategyCollection> emptyStringExportStrategies =
-			new Dictionary<string, ExportStrategyCollection>(new Dictionary<string, ExportStrategyCollection>());
+			new Dictionary<string, ExportStrategyCollection>();
 
         private static readonly Dictionary<Type, ExportStrategyCollection> emptyTypeExportStrategies =
-            new Dictionary<Type, ExportStrategyCollection>(new Dictionary<Type, ExportStrategyCollection>());
+            new Dictionary<Type, ExportStrategyCollection>();
 
         private static readonly Dictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
-            new Dictionary<Type, IInjectionStrategy>(new Dictionary<Type, IInjectionStrategy>());
+            new Dictionary<Type, IInjectionStrategy>();
 
 		private static readonly MethodInfo locateLazyListMethodInfo;
 		private static readonly MethodInfo locateOwnedListMethodInfo;

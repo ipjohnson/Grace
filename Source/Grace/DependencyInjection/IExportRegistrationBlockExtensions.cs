@@ -26,6 +26,19 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
+        /// Prioritize types that match the provided delegate
+        /// </summary>
+        /// <param name="registrationBlock">registration block</param>
+        /// <param name="typesThat">delegate to filter types</param>
+        /// <param name="priority">priority to assign, default is 1</param>
+        public static void Prioritize(this IExportRegistrationBlock registrationBlock,
+            Func<Type, bool> typesThat,
+            int priority = 1)
+        {
+            
+        }
+
+        /// <summary>
         /// Register a configuration module
         /// </summary>
         /// <typeparam name="T">module type</typeparam>

@@ -684,5 +684,25 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.Equal(3, container.Diagnose().Exports.Count());
         }
         #endregion
+
+        #region Prioritize
+
+        [Fact]
+        public void PrioritizeTypesThat()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterfaces()
+                                      .Select(TypesThat.AreBasedOn<ISimpleObject>())
+                                      .Prioritize(TypesThat.EndWith("C")));
+
+            var simpleObject = container.Locate<ISimpleObject>();
+
+            Assert.NotNull(simpleObject);
+            Assert.IsType<SimpleObjectC>(simpleObject);
+        }
+
+        #endregion
     }
 }
