@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -26,12 +27,11 @@ namespace Grace.MVC.DependencyInjection
 
         public object Create(ControllerContext controllerContext, Type type)
         {
-            // We use the GUID because when ASP.Net compilier re-compile it uses the same type name but different GUID
             object returnObject = _container.Locate(type);
 
             if (returnObject == null)
             {
-                _container.Configure(c => c.Export(typeof(Type)));
+                _container.Configure(c => c.Export(type).ImportAttributedMembers());
 
                 returnObject = _container.Locate(type);
             }

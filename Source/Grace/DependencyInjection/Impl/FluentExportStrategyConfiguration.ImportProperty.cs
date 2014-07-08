@@ -19,7 +19,26 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Imports all public properties and methods that are attributed
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+	    public IFluentExportStrategyConfiguration ImportAttributedMembers()
+	    {
+            foreach (ImportPropertyInfo propertyInfo in AttributedInjectionStrategy.ProcessImportPropertiesOnType(exportType))
+	        {
+	            exportStrategy.ImportProperty(propertyInfo);
+	        }
+
+            foreach (ImportMethodInfo importMethodInfo in AttributedInjectionStrategy.ProcessMethodAttributesOnType(exportType))
+	        {
+	            exportStrategy.ImportMethod(importMethodInfo);
+	        }
+
+	        return this;
+	    }
+
+	    /// <summary>
 		/// Mark a property for import and specify if its required
 		/// </summary>
 		public IFluentImportPropertyConfiguration ImportProperty(string propertyName)
@@ -131,7 +150,26 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Imports all public properties and methods that are attributed
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+	    public IFluentExportStrategyConfiguration<T> ImportAttributedMembers()
+	    {
+            foreach (ImportPropertyInfo propertyInfo in AttributedInjectionStrategy.ProcessImportPropertiesOnType(exportStrategy.ActivationType))
+            {
+                exportStrategy.ImportProperty(propertyInfo);
+            }
+
+            foreach (ImportMethodInfo importMethodInfo in AttributedInjectionStrategy.ProcessMethodAttributesOnType(exportStrategy.ActivationType))
+            {
+                exportStrategy.ImportMethod(importMethodInfo);
+            }
+
+            return this;
+	    }
+
+	    /// <summary>
 		/// Mark a property for Import (using dependency injection container)
 		/// </summary>
 		/// <returns></returns>

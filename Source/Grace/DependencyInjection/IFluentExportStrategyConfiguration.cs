@@ -111,6 +111,12 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration ExternallyOwned();
 
+        /// <summary>
+        /// Imports all public properties and methods that are attributed
+        /// </summary>
+        /// <returns>configuration object</returns>
+	    IFluentExportStrategyConfiguration ImportAttributedMembers();
+
 		/// <summary>
 		/// Allows you to specify an import constructor
 		/// </summary>
@@ -125,10 +131,10 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentImportMethodConfiguration ImportMethod(string methodName);
 
-		/// <summary>
-		/// Mark a property for import and specify if its required
-		/// </summary>
-		IFluentImportPropertyConfiguration ImportProperty(string propertyName);
+	    /// <summary>
+	    /// Mark a property for import and specify if its required
+	    /// </summary>
+	    IFluentImportPropertyConfiguration ImportProperty(string propertyName);
 
 		/// <summary>
 		/// Defines which environment this export should be exported in
@@ -333,6 +339,12 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration<T> ExternallyOwned();
+        
+        /// <summary>
+        /// Imports all public properties and methods that are attributed
+        /// </summary>
+        /// <returns>configuration object</returns>
+        IFluentExportStrategyConfiguration<T> ImportAttributedMembers();
 
 		/// <summary>
 		/// Import a property as a collection allowing for you to specify the sort order for the import

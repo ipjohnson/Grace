@@ -138,7 +138,16 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.ExternallyOwned();
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Imports all public properties and methods that are attributed
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+	    public IFluentExportStrategyConfiguration ImportAttributedMembers()
+	    {
+	        return strategy.ImportAttributedMembers();
+	    }
+
+	    /// <summary>
 		/// Allows you to specify an import constructor
 		/// </summary>
 		/// <param name="constructorInfo">ConstrcutorInfo object to use during construction</param>
@@ -375,7 +384,16 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.ExternallyOwned();
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Imports all public properties and methods that are attributed
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+	    public IFluentExportStrategyConfiguration<T> ImportAttributedMembers()
+	    {
+	        return strategy.ImportAttributedMembers();
+	    }
+
+	    /// <summary>
 		/// Export as a specific type (usually an interface)
 		/// </summary>
 		/// <typeparam name="TExportType"></typeparam>
