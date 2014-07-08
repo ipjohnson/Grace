@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -28,14 +29,16 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Export services as Singletons
 		/// </summary>
-		/// <returns>configuration object</returns>
+        /// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.Singleton()")]
 		IExportTypeSetConfiguration AndSingleton();
 
 		/// <summary>
 		/// Exports are to be marked as shared, similar to a singleton only using a weak reference.
 		/// It can not be of type IDisposable
 		/// </summary>
-		/// <returns>configuration object</returns>
+        /// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.WeakSingleton()")]
 		IExportTypeSetConfiguration AndWeakSingleton();
 
 		/// <summary>
@@ -160,6 +163,11 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
 
+        /// <summary>
+        /// Assign a lifestyle to all exports
+        /// </summary>
+        LifestyleBulkConfiguration Lifestyle { get; }
+
 		/// <summary>
 		/// Allows you to filter out types based on the provided where clause
 		/// </summary>
@@ -173,6 +181,21 @@ namespace Grace.DependencyInjection
 		/// <param name="conditionDelegate">condition delegate</param>
 		/// /// <returns>configuration object</returns>
 		IExportTypeSetConfiguration Unless(ExportConditionDelegate conditionDelegate);
+
+
+        /// <summary>
+        /// Set a particular life style
+        /// </summary>
+        /// <param name="container">lifestyle</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration UsingLifestyle(ILifestyle container);
+
+        /// <summary>
+        /// Set a particular life style using a func
+        /// </summary>
+        /// <param name="lifestyleFunc">pick a lifestyle</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration UsingLifestyle(Func<Type, ILifestyle> lifestyleFunc);
 
 		/// <summary>
 		/// Adds a condition to the export
@@ -217,13 +240,15 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="container">lifestyle</param>
 		/// <returns>configuration object</returns>
+		[Obsolete("Please use UsingLifestyle")]
 		IExportTypeSetConfiguration WithLifestyle(ILifestyle container);
 
 		/// <summary>
 		/// Set a particular life style using a func
 		/// </summary>
 		/// <param name="lifestyleFunc">pick a lifestyle</param>
-		/// <returns>configuration object</returns>
+        /// <returns>configuration object</returns>
+        [Obsolete("Please use UsingLifestyle")]
 		IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc);
 
 

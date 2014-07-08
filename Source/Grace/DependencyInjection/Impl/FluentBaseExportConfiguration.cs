@@ -92,7 +92,16 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.InNewContext();
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Applies a lifestyle to an export
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+        public LifestyleConfiguration Lifestyle
+	    {
+	        get { return strategy.Lifestyle; }
+	    }
+
+	    /// <summary>
 		/// Export this type as a particular name
 		/// </summary>
 		/// <param name="name"></param>
@@ -441,7 +450,16 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.InNewContext();
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Applies a lifestyle to an export
+	    /// </summary>
+	    /// <returns>configuration object</returns>
+	    public LifestyleConfiguration<T> Lifestyle
+	    {
+	        get { return strategy.Lifestyle; }
+	    }
+
+	    /// <summary>
 		/// Export the type under the specified name
 		/// </summary>
 		/// <param name="name">name to export under</param>

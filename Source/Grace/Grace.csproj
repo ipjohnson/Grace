@@ -120,6 +120,8 @@
     <Compile Include="DependencyInjection\Impl\ExportTypeSetCtorParamConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetImportPropertyConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />
+    <Compile Include="DependencyInjection\Impl\LifestyleBulkConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\LifestyleConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\PrioritizeTypesThatInspector.cs" />
     <Compile Include="DependencyInjection\TypeExtensions.cs" />
     <Compile Include="Diagnostics\IDependencyInjectionContainerExtensions.cs" />

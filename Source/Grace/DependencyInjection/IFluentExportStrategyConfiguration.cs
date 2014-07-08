@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -30,18 +31,22 @@ namespace Grace.DependencyInjection
 		/// Export will be treated as a singleton for the lifetime of the container
 		/// </summary>
 		/// <returns>configuration object</returns>
+		[Obsolete("Please use Lifestyle.Singleton()")]
 		IFluentExportStrategyConfiguration AndSingleton();
 
 		/// <summary>
 		/// Export will be treated as a singleton for the lifetime of the scope
 		/// </summary>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerScope()")]
 		IFluentExportStrategyConfiguration AndSingletonPerScope();
 
 		/// <summary>
 		/// Exports will be trated as a singleton using a weak reference
 		/// </summary>
 		/// <returns>configuration object</returns>
+
+        [Obsolete("Please use Lifestyle.WeakSingleton()")]
 		IFluentExportStrategyConfiguration AndWeakSingleton();
 
 		/// <summary>
@@ -146,8 +151,14 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// Export in a new context
 		/// </summary>
-		/// <returns></returns>
+        /// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration InNewContext();
+
+        /// <summary>
+        /// Applies a lifestyle to an export
+        /// </summary>
+        /// <returns>configuration object</returns>
+        LifestyleConfiguration Lifestyle { get; }
 		
 		/// <summary>
 		/// Adds a condition to the export
@@ -387,6 +398,12 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns></returns>
 		IFluentExportStrategyConfiguration<T> InNewContext();
+
+        /// <summary>
+        /// Applies a lifestyle to an export
+        /// </summary>
+        /// <returns>configuration object</returns>
+        LifestyleConfiguration<T> Lifestyle { get; }
 		
 		/// <summary>
 		/// Adds a condition to the export

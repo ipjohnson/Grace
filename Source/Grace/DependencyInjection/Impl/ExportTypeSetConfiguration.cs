@@ -17,10 +17,10 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public partial class ExportTypeSetConfiguration : IExportTypeSetConfiguration, IExportTypeSetImportPropertyConfiguration, IExportStrategyProvider
     {
-        private readonly List<Func<Type, IExportCondition>> conditions;
-        private readonly List<Func<Type, bool>> excludeClauses;
-        private readonly List<Type> exportBaseTypes;
-        private readonly List<Type> exportInterfaces;
+        private readonly List<Func<Type, IExportCondition>> _conditions;
+        private readonly List<Func<Type, bool>> _excludeClauses;
+        private readonly List<Type> _exportBaseTypes;
+        private readonly List<Type> _exportInterfaces;
         private readonly IInjectionScope injectionScope;
         private readonly List<Func<Type, bool>> interfaceMatchList;
         private readonly IEnumerable<Type> scanTypes;
@@ -32,15 +32,15 @@ namespace Grace.DependencyInjection.Impl
         private readonly List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>> enrichmentProviders;
         private bool exportAllByInterface;
         private bool exportAttributedTypes;
-        private bool exportByType;
+        private bool _exportByType;
         private Func<Type, IEnumerable<Type>> exportByTypeFunc;
         private bool exportByName;
         private Func<Type, string> exportByNameFunc;
         private ExportEnvironment exportEnvironment;
         private bool externallyOwned;
-        private Func<Type, int> priorityFunc;
-        private Func<Type, ILifestyle> lifestyleFunc;
-        private Func<Type, object> withKeyFunc; 
+        private Func<Type, int> _priorityFunc;
+        private Func<Type, ILifestyle> _lifestyleFunc;
+        private Func<Type, object> _withKeyFunc;
 
         /// <summary>
         /// Default Constructor
@@ -52,10 +52,10 @@ namespace Grace.DependencyInjection.Impl
             this.injectionScope = injectionScope;
             this.scanTypes = scanTypes;
 
-            exportInterfaces = new List<Type>();
-            exportBaseTypes = new List<Type>();
-            conditions = new List<Func<Type, IExportCondition>>();
-            excludeClauses = new List<Func<Type, bool>>();
+            _exportInterfaces = new List<Type>();
+            _exportBaseTypes = new List<Type>();
+            _conditions = new List<Func<Type, IExportCondition>>();
+            _excludeClauses = new List<Func<Type, bool>>();
             whereClauses = new List<Func<Type, bool>>();
             interfaceMatchList = new List<Func<Type, bool>>();
             inspectors = new List<IExportStrategyInspector>();
@@ -64,8 +64,8 @@ namespace Grace.DependencyInjection.Impl
             enrichWithDelegates = new List<Func<Type, IEnumerable<EnrichWithDelegate>>>();
             enrichmentProviders = new List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>>();
 
-            lifestyleFunc = type => null;
-            priorityFunc = type => 0;
+            _lifestyleFunc = type => null;
+            _priorityFunc = type => 0;
         }
 
         /// <summary>
@@ -76,8 +76,8 @@ namespace Grace.DependencyInjection.Impl
         {
             List<IExportStrategy> returnValues = new List<IExportStrategy>();
 
-            if (exportInterfaces.Count == 0 &&
-                 exportBaseTypes.Count == 0 &&
+            if (_exportInterfaces.Count == 0 &&
+                 _exportBaseTypes.Count == 0 &&
                  exportByTypeFunc == null &&
                  interfaceMatchList.Count == 0 &&
                  !exportAllByInterface)
@@ -97,7 +97,7 @@ namespace Grace.DependencyInjection.Impl
 
             returnValues.AddRange(ExportAll(filteredTypes));
 
-            if (withKeyFunc != null)
+            if (_withKeyFunc != null)
             {
                 foreach (IExportStrategy exportStrategy in returnValues)
                 {
@@ -105,7 +105,7 @@ namespace Grace.DependencyInjection.Impl
 
                     if (configurableExport != null)
                     {
-                        object objectKey = withKeyFunc(configurableExport.ActivationType);
+                        object objectKey = _withKeyFunc(configurableExport.ActivationType);
 
                         if (objectKey != null)
                         {
@@ -157,7 +157,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>returns self</returns>
         public IExportTypeSetConfiguration ByInterface(Type interfaceType)
         {
-            exportInterfaces.Add(interfaceType);
+            _exportInterfaces.Add(interfaceType);
 
             return this;
         }
@@ -168,7 +168,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>returns self</returns>
         public IExportTypeSetConfiguration ByInterface<T>()
         {
-            exportInterfaces.Add(typeof(T));
+            _exportInterfaces.Add(typeof(T));
 
             return this;
         }
@@ -199,7 +199,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration BasedOn(Type baseType)
         {
-            exportBaseTypes.Add(baseType);
+            _exportBaseTypes.Add(baseType);
 
             return this;
         }
@@ -210,7 +210,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration BasedOn<T>()
         {
-            exportBaseTypes.Add(typeof(T));
+            _exportBaseTypes.Add(typeof(T));
 
             return this;
         }
@@ -222,7 +222,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration ByType(Func<Type, Type> typeDelegate = null)
         {
-            exportByType = true;
+            _exportByType = true;
 
             if (typeDelegate == null)
             {
@@ -281,7 +281,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc)
         {
-            this.lifestyleFunc = lifestyleFunc;
+            _lifestyleFunc = lifestyleFunc;
 
             return this;
         }
@@ -293,7 +293,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration WithPriority(int priority)
         {
-            priorityFunc = type => priority;
+            _priorityFunc = type => priority;
 
             return this;
         }
@@ -305,7 +305,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration WithPriority(Func<Type, int> priorityFunc)
         {
-            this.priorityFunc = priorityFunc;
+            this._priorityFunc = priorityFunc;
 
             return this;
         }
@@ -335,6 +335,14 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Assign a lifestyle to all exports
+        /// </summary>
+        public LifestyleBulkConfiguration Lifestyle
+        {
+            get { return new LifestyleBulkConfiguration(this); }
+        }
+
+        /// <summary>
         /// Mark all exports as externally owned
         /// </summary>
         /// <returns>configuration object</returns>
@@ -352,7 +360,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration AndWeakSingleton()
         {
-            lifestyleFunc = type => new WeakSingletonLifestyle();
+            _lifestyleFunc = type => new WeakSingletonLifestyle();
 
             return this;
         }
@@ -364,7 +372,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc)
         {
-            conditions.Add(conditionFunc);
+            _conditions.Add(conditionFunc);
 
             return this;
         }
@@ -375,14 +383,19 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration AndSingleton()
         {
-            lifestyleFunc = type => new SingletonLifestyle();
+            _lifestyleFunc = type => new SingletonLifestyle();
 
             return this;
         }
 
+        /// <summary>
+        /// Provide a func that will be used to create a key that will be used to register
+        /// </summary>
+        /// <param name="withKeyFunc">key func</param>
+        /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration WithKey(Func<Type, object> withKeyFunc)
         {
-            this.withKeyFunc = withKeyFunc;
+            _withKeyFunc = withKeyFunc;
 
             return this;
         }
@@ -393,7 +406,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration WithLifestyle(ILifestyle container)
         {
-            lifestyleFunc = type => container.Clone();
+            _lifestyleFunc = type => container.Clone();
 
             return this;
         }
@@ -410,12 +423,36 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Set a particular life style
+        /// </summary>
+        /// <param name="container">lifestyle</param>
+        /// <returns>configuration object</returns>
+        public IExportTypeSetConfiguration UsingLifestyle(ILifestyle container)
+        {
+            _lifestyleFunc = type => container.Clone();
+
+            return this;
+        }
+
+        /// <summary>
+        /// Set a particular life style using a func
+        /// </summary>
+        /// <param name="lifestyleFunc">pick a lifestyle</param>
+        /// <returns>configuration object</returns>
+        public IExportTypeSetConfiguration UsingLifestyle(Func<Type, ILifestyle> lifestyleFunc)
+        {
+            _lifestyleFunc = lifestyleFunc;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a condition to the export
         /// </summary>
         /// <param name="conditionDelegate"></param>
         public IExportTypeSetConfiguration When(ExportConditionDelegate conditionDelegate)
         {
-            conditions.Add((x => new WhenCondition(conditionDelegate)));
+            _conditions.Add((x => new WhenCondition(conditionDelegate)));
 
             return this;
         }
@@ -426,7 +463,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="conditionDelegate"></param>
         public IExportTypeSetConfiguration Unless(ExportConditionDelegate conditionDelegate)
         {
-            conditions.Add((x => new UnlessCondition(conditionDelegate)));
+            _conditions.Add((x => new UnlessCondition(conditionDelegate)));
 
             return this;
         }
@@ -437,7 +474,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="condition"></param>
         public IExportTypeSetConfiguration AndCondition(IExportCondition condition)
         {
-            conditions.Add(x => condition);
+            _conditions.Add(x => condition);
 
             return this;
         }
@@ -461,7 +498,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude)
         {
-            excludeClauses.Add(exclude);
+            _excludeClauses.Add(exclude);
 
             return this;
         }
@@ -527,7 +564,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
 
-        
+
         private List<Type> FilterTypes()
         {
             List<Type> filteredTypes = new List<Type>();
@@ -539,11 +576,11 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                if (excludeClauses.Count > 0)
+                if (_excludeClauses.Count > 0)
                 {
                     bool continueFlag = false;
 
-                    foreach (Func<Type, bool> excludeClause in excludeClauses)
+                    foreach (Func<Type, bool> excludeClause in _excludeClauses)
                     {
                         if (excludeClause(exportedType))
                         {
@@ -576,7 +613,7 @@ namespace Grace.DependencyInjection.Impl
                     }
                 }
 
-                if (exportBaseTypes.Count > 0)
+                if (_exportBaseTypes.Count > 0)
                 {
                     Type matchedType;
 
@@ -735,7 +772,7 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (Type implementedInterface in exportedType.GetTypeInfo().ImplementedInterfaces)
             {
-                foreach (Type exportInterface in exportInterfaces)
+                foreach (Type exportInterface in _exportInterfaces)
                 {
                     if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
                     {
@@ -788,7 +825,7 @@ namespace Grace.DependencyInjection.Impl
 
         private bool MatchesExportBaseType(Type exportedType, out Type matchingType)
         {
-            foreach (Type exportBaseType in exportBaseTypes)
+            foreach (Type exportBaseType in _exportBaseTypes)
             {
                 if (ReflectionService.CheckTypeIsBasedOnAnotherType(exportedType, exportBaseType))
                 {
@@ -821,7 +858,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (exportStrategy.Lifestyle == null)
             {
-                exportStrategy.SetLifestyleContainer(lifestyleFunc(exportedType));
+                exportStrategy.SetLifestyleContainer(_lifestyleFunc(exportedType));
             }
 
             if (externallyOwned)
@@ -829,7 +866,7 @@ namespace Grace.DependencyInjection.Impl
                 exportStrategy.SetExternallyOwned();
             }
 
-            exportStrategy.SetPriority(priorityFunc(exportedType));
+            exportStrategy.SetPriority(_priorityFunc(exportedType));
             exportStrategy.SetEnvironment(exportEnvironment);
 
             if (exportTypes != null)
@@ -842,7 +879,7 @@ namespace Grace.DependencyInjection.Impl
                 exportNames.Apply(s => exportStrategy.AddExportName(s));
             }
 
-            foreach (Func<Type, IExportCondition> conditionFunc in conditions)
+            foreach (Func<Type, IExportCondition> conditionFunc in _conditions)
             {
                 IExportCondition condition = conditionFunc(exportedType);
 
