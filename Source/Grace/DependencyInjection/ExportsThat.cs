@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name">string to compare Type name to</param>
 		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith")]
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith will be removed at the end of 2014")]
 		public static ExportsThatConfiguration StartWith(string name)
 		{
 			return new ExportsThatConfiguration().StartWith(name);
@@ -68,7 +68,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name">string to compare Type name to</param>
 		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith")]
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith will be removed at the end of 2014")]
 		public static ExportsThatConfiguration EndWith(string name)
 		{
 			return new ExportsThatConfiguration().EndWith(name);
@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection
 		/// <param name="namespace">namespace the type should be in</param>
 		/// <param name="includeSubnamespaces">include sub namespaces</param>
 		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs will be removed at the end of 2014")]
 		public static ExportsThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
 		{
 			return new ExportsThatConfiguration().AreInTheSameNamespace(@namespace, includeSubnamespaces);
@@ -102,7 +102,7 @@ namespace Grace.DependencyInjection
 		/// <param name="type">class to check for</param>
 		/// <param name="includeSubnamespaces">include sub namespaces</param>
         /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs will be removed at the end of 2014")]
 		public static ExportsThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
 		{
 			return new ExportsThatConfiguration().AreInTheSameNamespace(type.Namespace, includeSubnamespaces);
@@ -114,7 +114,7 @@ namespace Grace.DependencyInjection
 		/// <typeparam name="T">class to check for</typeparam>
 		/// <param name="includeSubnamespaces">include sub namespace</param>
         /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs")]
+        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs will be removed at the end of 2014")]
 		public static ExportsThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
 		{
 			return new ExportsThatConfiguration().AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);

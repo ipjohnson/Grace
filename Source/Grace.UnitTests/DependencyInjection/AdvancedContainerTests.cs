@@ -704,5 +704,87 @@ namespace Grace.UnitTests.DependencyInjection
         }
 
         #endregion
+
+        #region Lifestyle Tests
+
+        [Fact]
+        public void LifestyleSingleton()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>()
+                                      .As<IBasicService>()
+                                      .Lifestyle.Singleton());
+
+            IBasicService basicService = container.Locate<IBasicService>();
+
+            Assert.NotNull(basicService);
+            Assert.Same(basicService, container.Locate<IBasicService>());
+        }
+
+        [Fact]
+        public void LifestyleSingletonPerScope()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>()
+                                      .As<IBasicService>()
+                                      .Lifestyle.SingletonPerScope());
+
+            IBasicService basicService = container.Locate<IBasicService>();
+
+            Assert.NotNull(basicService);
+            Assert.Same(basicService,container.Locate<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IBasicService basicService2 = scope.Locate<IBasicService>();
+
+                Assert.NotNull(basicService2);
+                Assert.Same(basicService2,scope.Locate<IBasicService>());
+                Assert.NotSame(basicService,basicService2);
+            }
+        }
+
+        [Fact]
+        public void BulkLifestyleSingleton()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterface<IBasicService>()
+                                      .Lifestyle.Singleton());
+
+            IBasicService basicService = container.Locate<IBasicService>();
+
+            Assert.NotNull(basicService);
+            Assert.Same(basicService, container.Locate<IBasicService>());
+        }
+
+        [Fact]
+        public void BulkLifestyleSingletonPerScope()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly())
+                                      .ByInterface<IBasicService>()
+                                      .Lifestyle.SingletonPerScope());
+
+            IBasicService basicService = container.Locate<IBasicService>();
+
+            Assert.NotNull(basicService);
+            Assert.Same(basicService, container.Locate<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IBasicService basicService2 = scope.Locate<IBasicService>();
+
+                Assert.NotNull(basicService2);
+                Assert.Same(basicService2, scope.Locate<IBasicService>());
+                Assert.NotSame(basicService, basicService2);
+            }
+        }
+
+        #endregion
     }
 }

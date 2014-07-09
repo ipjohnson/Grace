@@ -30,7 +30,7 @@ namespace Grace.DependencyInjection
 		/// Export services as Singletons
 		/// </summary>
         /// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.Singleton()")]
+        [Obsolete("Please use Lifestyle.Singleton() will be removed at the end of 2014")]
 		IExportTypeSetConfiguration AndSingleton();
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection
 		/// It can not be of type IDisposable
 		/// </summary>
         /// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.WeakSingleton()")]
+        [Obsolete("Please use Lifestyle.WeakSingleton() will be removed at the end of 2014")]
 		IExportTypeSetConfiguration AndWeakSingleton();
 
 		/// <summary>
@@ -240,7 +240,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="container">lifestyle</param>
 		/// <returns>configuration object</returns>
-		[Obsolete("Please use UsingLifestyle")]
+        [Obsolete("Please use UsingLifestyle will be removed at the end of 2014")]
 		IExportTypeSetConfiguration WithLifestyle(ILifestyle container);
 
 		/// <summary>
@@ -248,7 +248,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="lifestyleFunc">pick a lifestyle</param>
         /// <returns>configuration object</returns>
-        [Obsolete("Please use UsingLifestyle")]
+        [Obsolete("Please use UsingLifestyle will be removed at the end of 2014")]
 		IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc);
 
 
