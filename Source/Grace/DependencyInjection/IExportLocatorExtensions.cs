@@ -146,7 +146,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context to use</param>
 		/// <param name="consider">filter method to use</param>
 		/// <returns>export T</returns>
-        [Obsolete("Use the withKey optional parameter on locate will be removed at the end of 2014")]
+        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
 		public static T LocateByKey<T, TKey>(this IExportLocator locator,
 			[NotNull] TKey key,
 			IInjectionContext injectionContext = null,
@@ -165,7 +165,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter method</param>
 		/// <returns>export object, null if no object found</returns>
-        [Obsolete("Use the withKey optional parameter on locate will be removed at the end of 2014")]
+        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] string exportName,
 			[NotNull] TKey key,
@@ -185,7 +185,7 @@ namespace Grace.DependencyInjection
 		/// <param name="injectionContext">injection context</param>
 		/// <param name="consider">filter to use while locating</param>
 		/// <returns>export object, null if no export found</returns>
-        [Obsolete("Use the withKey optional parameter on locate will be removed at the end of 2014")]
+        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
 		public static object LocateByKey<TKey>(this IExportLocator locator,
 			[NotNull] Type exportType,
 			[NotNull] TKey key,

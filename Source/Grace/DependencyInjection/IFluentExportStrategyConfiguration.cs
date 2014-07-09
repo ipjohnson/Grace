@@ -31,14 +31,14 @@ namespace Grace.DependencyInjection
 		/// Export will be treated as a singleton for the lifetime of the container
 		/// </summary>
 		/// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.Singleton() will be removed at the end of 2014")]
+        [Obsolete("Please use Lifestyle.Singleton(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration AndSingleton();
 
 		/// <summary>
 		/// Export will be treated as a singleton for the lifetime of the scope
 		/// </summary>
 		/// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.SingletonPerScope() will be removed at the end of 2014")]
+        [Obsolete("Please use Lifestyle.SingletonPerScope(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration AndSingletonPerScope();
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns>configuration object</returns>
 
-        [Obsolete("Please use Lifestyle.WeakSingleton() will be removed at the end of 2014")]
+        [Obsolete("Please use Lifestyle.WeakSingleton(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration AndWeakSingleton();
 
 		/// <summary>
