@@ -48,14 +48,14 @@ namespace Grace.DependencyInjection.Impl
 
             if (propertyType == null)
             {
-                filters.Add(t => t.GetTypeInfo().DeclaredProperties.Any(x => x.Name == propertyName) == notValue);
+                filters.Add(t => t.GetRuntimeProperties().Any(x => x.Name == propertyName) == notValue);
             }
             else
             {
                 Type tempType = propertyType;
 
                 filters.Add(
-                    t => t.GetTypeInfo().DeclaredProperties.Any(
+                    t => t.GetRuntimeProperties().Any(
                         x => ReflectionService.CheckTypeIsBasedOnAnotherType(x.PropertyType, tempType) && 
                              x.Name == propertyName) == notValue);
             }
