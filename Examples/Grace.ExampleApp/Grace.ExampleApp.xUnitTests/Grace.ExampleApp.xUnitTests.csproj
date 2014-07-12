@@ -30,30 +30,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Grace, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.2.2.0-Nightly1154\lib\portable-windows8+net45\Grace.dll</HintPath>
+      <HintPath>..\packages\Grace.2.3.8\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Moq, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace.Moq, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.Moq.2.2.0-Nightly1154\lib\net45\Grace.Moq.dll</HintPath>
+      <HintPath>..\packages\Grace.Moq.2.3.8\lib\net45\Grace.Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Net, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace.Net, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.Net.2.2.0-Nightly1154\lib\net45\Grace.Net.dll</HintPath>
+      <HintPath>..\packages\Grace.Net.2.3.8\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.NSubstitute, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace.NSubstitute, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.NSubstitute.2.2.0-Nightly1154\lib\net45\Grace.NSubstitute.dll</HintPath>
+      <HintPath>..\packages\Grace.NSubstitute.2.3.8\lib\net45\Grace.NSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="NSubstitute, Version=1.7.1.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=4.1.1311.615, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NSubstitute.1.7.1.0\lib\NET40\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\Moq.4.1.1311.0615\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute, Version=1.6.1.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NSubstitute.1.6.1.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -80,13 +82,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Grace.ExampleApp\Grace.ExampleApp.csproj">
       <Project>{557129cf-7170-4673-b567-c7701199bee5}</Project>
       <Name>Grace.ExampleApp</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

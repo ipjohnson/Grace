@@ -47,13 +47,14 @@
             <param name="setterExpression">The setter expression.</param>
             <returns></returns>
         </member>
-        <member name="M:Moq.IInterceptStrategy.HandleIntercept(Moq.Proxy.ICallContext,Moq.InterceptStrategyContext)">
+        <member name="M:Moq.IInterceptStrategy.HandleIntercept(Moq.Proxy.ICallContext,Moq.InterceptorContext,Moq.CurrentInterceptContext)">
             <summary>
             Handle interception
             </summary>
             <param name="invocation">the current invocation context</param>
-            <param name="ctx">shared data among the strategies during an interception</param>
-            <returns>true if further interception has to be processed, otherwise false</returns>
+            <param name="ctx">shared data for the interceptor as a whole</param>
+            <param name="localCtx">shared data among the strategies during a single interception</param>
+            <returns>InterceptionAction.Continue if further interception has to be processed, otherwise InterceptionAction.Stop</returns>
         </member>
         <member name="T:Moq.IMock`1">
             <summary>
@@ -2238,6 +2239,58 @@
             </code>
             </example>
         </member>
+        <member name="T:Moq.Proxy.ProxyMethodHook">
+            <summary>
+            Hook used to tells Castle which methods to proxy in mocked classes.
+            
+            Here we proxy the default methods Castle suggests (everything Object's methods)
+            plus Object.ToString(), so we can give mocks useful default names.
+            
+            This is required to allow Moq to mock ToString on proxy *class* implementations.
+            </summary>
+        </member>
+        <member name="M:Moq.Proxy.ProxyMethodHook.ShouldInterceptMethod(System.Type,System.Reflection.MethodInfo)">
+            <summary>
+            Extends AllMethodsHook.ShouldInterceptMethod to also intercept Object.ToString().
+            </summary>
+        </member>
+        <member name="T:Moq.Proxy.InterfaceProxy">
+            <summary>
+            <para>The base class used for all our interface-inheriting proxies, which overrides the default
+            Object.ToString() behavior, to route it via the mock by default, unless overriden by a
+            real implementation.</para>
+            
+            <para>This is required to allow Moq to mock ToString on proxy *interface* implementations.</para>
+            </summary>
+            <remarks>
+            <para><strong>This is internal to Moq and should not be generally used.</strong></para>
+            
+            <para>Unfortunately it must be public, due to cross-assembly visibility issues with reflection, 
+            see github.com/Moq/moq4/issues/98 for details.</para>
+            </remarks>
+        </member>
+        <member name="M:Moq.Proxy.InterfaceProxy.ToString">
+            <summary>
+            Overrides the default ToString implementation to instead find the mock for this mock.Object,
+            and return MockName + '.Object' as the mocked object's ToString, to make it easy to relate
+            mocks and mock object instances in error messages.
+            </summary>
+        </member>
+        <member name="T:Moq.ReturnsExtensions">
+            <summary>
+            Defines async extension methods on IReturns.
+            </summary>
+        </member>
+        <member name="M:Moq.ReturnsExtensions.ReturnsAsync``2(Moq.Language.IReturns{``0,System.Threading.Tasks.Task{``1}},``1)">
+            <summary>
+            Allows to specify the return value of an asynchronous method.
+            </summary>
+        </member>
+        <member name="M:Moq.ReturnsExtensions.ThrowsAsync``2(Moq.Language.IReturns{``0,System.Threading.Tasks.Task{``1}},System.Exception)">
+            <summary>
+            Allows to specify the exception thrown by an asynchronous method.
+            </summary>
+        </member>
         <member name="T:Moq.Language.ISetupSequentialResult`1">
             <summary>
             Language for ReturnSequence
@@ -3097,654 +3150,6 @@
             Implements the fluent API.
             </summary>
         </member>
-        <member name="T:System.Action`5">
-            <summary>
-            Encapsulates a method that has five parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`6">
-            <summary>
-            Encapsulates a method that has five parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`6">
-            <summary>
-            Encapsulates a method that has six parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`7">
-            <summary>
-            Encapsulates a method that has six parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`7">
-            <summary>
-            Encapsulates a method that has seven parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`8">
-            <summary>
-            Encapsulates a method that has seven parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`8">
-            <summary>
-            Encapsulates a method that has eight parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`9">
-            <summary>
-            Encapsulates a method that has eight parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`9">
-            <summary>
-            Encapsulates a method that has nine parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`10">
-            <summary>
-            Encapsulates a method that has nine parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`10">
-            <summary>
-            Encapsulates a method that has ten parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`11">
-            <summary>
-            Encapsulates a method that has ten parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`11">
-            <summary>
-            Encapsulates a method that has eleven parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`12">
-            <summary>
-            Encapsulates a method that has eleven parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`12">
-            <summary>
-            Encapsulates a method that has twelve parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`13">
-            <summary>
-            Encapsulates a method that has twelve parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`13">
-            <summary>
-            Encapsulates a method that has thirteen parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`14">
-            <summary>
-            Encapsulates a method that has thirteen parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`14">
-            <summary>
-            Encapsulates a method that has fourteen parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`15">
-            <summary>
-            Encapsulates a method that has fourteen parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`15">
-            <summary>
-            Encapsulates a method that has fifteen parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T15">The type of the fifteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg15">The fifteenth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`16">
-            <summary>
-            Encapsulates a method that has fifteen parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T15">The type of the fifteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg15">The fifteenth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
-        <member name="T:System.Action`16">
-            <summary>
-            Encapsulates a method that has sixteen parameters and does not return a value.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T15">The type of the fifteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T16">The type of the sixteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg15">The fifteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg16">The sixteenth parameter of the method that this delegate encapsulates.</param>
-        </member>
-        <member name="T:System.Func`17">
-            <summary>
-            Encapsulates a method that has sixteen parameters and returns a value of the type specified by the <typeparamref name="TResult" /> parameter.
-            </summary>
-            <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T3">The type of the third parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T4">The type of the fourth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T5">The type of the fifth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T6">The type of the sixth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T7">The type of the seventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T8">The type of the eighth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T9">The type of the nineth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T10">The type of the tenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T11">The type of the eleventh parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T12">The type of the twelfth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T13">The type of the thirteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T14">The type of the fourteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T15">The type of the fifteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="T16">The type of the sixteenth parameter of the method that this delegate encapsulates.</typeparam>
-            <typeparam name="TResult">The type of the return value of the method that this delegate encapsulates.</typeparam>
-            <param name="arg1">The first parameter of the method that this delegate encapsulates.</param>
-            <param name="arg2">The second parameter of the method that this delegate encapsulates.</param>
-            <param name="arg3">The third parameter of the method that this delegate encapsulates.</param>
-            <param name="arg4">The fourth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg5">The fifth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg6">The sixth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg7">The seventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg8">The eighth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg9">The nineth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg10">The tenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg11">The eleventh parameter of the method that this delegate encapsulates.</param>
-            <param name="arg12">The twelfth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg13">The thirteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg14">The fourteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg15">The fifteenth parameter of the method that this delegate encapsulates.</param>
-            <param name="arg16">The sixteenth parameter of the method that this delegate encapsulates.</param>
-            <return>The return value of the method that this delegate encapsulates.</return>
-        </member>
         <member name="T:Moq.MockExtensions">
             <summary>
             Provides additional methods on mocks.
@@ -4017,6 +3422,11 @@
 		</remarks><example>
 			<code>var mock = new Mock&lt;MyProvider&gt;(someArgument, 25);</code>
 		</example><param name="behavior">Behavior of the mock.</param><param name="args">Optional constructor arguments if the mocked type is a class.</param>
+        </member>
+        <member name="M:Moq.Mock`1.ToString">
+            <summary>
+			Returns the name of the mock
+		</summary>
         </member>
         <member name="M:Moq.Mock`1.OnGetObject">
             <summary>
@@ -4508,6 +3918,11 @@
         <member name="P:Moq.Mock`1.Object">
             <summary>
 			Exposes the mocked object instance.
+		</summary>
+        </member>
+        <member name="P:Moq.Mock`1.Name">
+            <summary>
+			Allows naming of your mocks, so they can be easily identified in error messages (e.g. from failed assertions).
 		</summary>
         </member>
         <member name="P:Moq.Mock`1.DelegateInterfaceMethod">
