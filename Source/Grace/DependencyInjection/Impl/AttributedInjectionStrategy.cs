@@ -7,69 +7,70 @@ using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection.Impl
 {
-	/// <summary>
-	/// Injection strategy that uses attributes to define it's construction
-	/// </summary>
-	public class AttributedInjectionStrategy : BaseInjectionStrategy
-	{
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		/// <param name="injectionType"></param>
-		public AttributedInjectionStrategy(Type injectionType)
-			: base(injectionType)
-		{
-		}
+    /// <summary>
+    /// Injection strategy that uses attributes to define it's construction
+    /// </summary>
+    public class AttributedInjectionStrategy : BaseInjectionStrategy
+    {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="injectionType"></param>
+        public AttributedInjectionStrategy(Type injectionType)
+            : base(injectionType)
+        {
+        }
 
-		/// <summary>
-		/// Initialize
-		/// </summary>
-		public override void Initialize()
-		{
-			ProcessAttributesOnClass();
+        /// <summary>
+        /// Initialize
+        /// </summary>
+        public override void Initialize()
+        {
+            ProcessAttributesOnClass();
 
-			ProcessPropertyAttributes();
+            ProcessPropertyAttributes();
 
-			ProcessMethodAttributes();
+            ProcessMethodAttributes();
 
-			base.Initialize();
-		}
+            base.Initialize();
+        }
 
-	    private void ProcessPropertyAttributes()
-	    {
+        private void ProcessPropertyAttributes()
+        {
             foreach (ImportPropertyInfo importPropertyInfo in ProcessImportPropertiesOnType(TargeType))
-	        {
-	            ImportProperty(importPropertyInfo);
-	        }
-	    }
+            {
+                ImportProperty(importPropertyInfo);
+            }
+        }
 
-	    private void ProcessAttributesOnClass()
-		{
-			foreach (Attribute attribute in Attributes)
-			{
-				ICustomEnrichmentExpressionAttribute enrichment = attribute as ICustomEnrichmentExpressionAttribute;
+        private void ProcessAttributesOnClass()
+        {
+            foreach (Attribute attribute in Attributes)
+            {
+                ICustomEnrichmentExpressionAttribute enrichment = attribute as ICustomEnrichmentExpressionAttribute;
 
-				if (enrichment != null)
-				{
-					ICustomEnrichmentLinqExpressionProvider provider = enrichment.GetProvider(TargeType, null);
+                if (enrichment != null)
+                {
+                    ICustomEnrichmentLinqExpressionProvider provider = enrichment.GetProvider(TargeType, null);
 
-					if (provider != null)
-					{
-						EnrichmentExpressionProvider(provider);
-					}
-				}
+                    if (provider != null)
+                    {
+                        EnrichmentExpressionProvider(provider);
+                    }
+                }
 
-				IInNewContextAttribute newContextAttribute = attribute as IInNewContextAttribute;
+                IInNewContextAttribute newContextAttribute = attribute as IInNewContextAttribute;
 
-				if (newContextAttribute != null)
-				{
-					InNewContext();
-				}
-			}
-		}
-        
-	    public static IEnumerable<ImportPropertyInfo> ProcessImportPropertiesOnType(Type type)
-	    {
+                if (newContextAttribute != null)
+                {
+                    InNewContext();
+                }
+            }
+        }
+
+        public static IEnumerable<ImportPropertyInfo> ProcessImportPropertiesOnType(Type type)
+        {
+
             foreach (PropertyInfo runtimeProperty in type.GetRuntimeProperties())
             {
                 List<IExportCondition> exportConditions = new List<IExportCondition>();
@@ -137,29 +138,31 @@ namespace Grace.DependencyInjection.Impl
                     if (attributeInfo.ImportKey != null)
                     {
                         ExportStrategyFilter keyFilter =
-                            (context, strategy) => IExportLocatorExtensions.CompareKeyFunction(attributeInfo.ImportKey, context, strategy);
+                            (context, strategy) =>
+                                IExportLocatorExtensions.CompareKeyFunction(attributeInfo.ImportKey, context, strategy);
 
-                        filter = filter != null ?
-                                    new ExportStrategyFilterGroup(keyFilter, filter) : keyFilter;
+                        filter = filter != null
+                            ? new ExportStrategyFilterGroup(keyFilter, filter)
+                            : keyFilter;
                     }
 
                     ImportPropertyInfo importPropertyInfo = new ImportPropertyInfo
-                    {
-                        ComparerObject = comparer,
-                        ExportStrategyFilter = filter,
-                        ImportName = attributeInfo.ImportName,
-                        IsRequired = attributeInfo.IsRequired,
-                        Property = runtimeProperty,
-                        ValueProvider = attributeInfo.ValueProvider
-                    };
+                                                            {
+                                                                ComparerObject = comparer,
+                                                                ExportStrategyFilter = filter,
+                                                                ImportName = attributeInfo.ImportName,
+                                                                IsRequired = attributeInfo.IsRequired,
+                                                                Property = runtimeProperty,
+                                                                ValueProvider = attributeInfo.ValueProvider
+                                                            };
 
                     yield return importPropertyInfo;
                 }
             }
-	    }
+        }
 
-	    public static IEnumerable<ImportMethodInfo> ProcessMethodAttributesOnType(Type type)
-	    {
+        public static IEnumerable<ImportMethodInfo> ProcessMethodAttributesOnType(Type type)
+        {
             foreach (MethodInfo declaredMethod in type.GetRuntimeMethods())
             {
                 if (declaredMethod.IsPublic && !declaredMethod.IsStatic)
@@ -171,9 +174,9 @@ namespace Grace.DependencyInjection.Impl
                         if (attribute != null)
                         {
                             ImportMethodInfo methodInfo = new ImportMethodInfo
-                            {
-                                MethodToImport = declaredMethod
-                            };
+                                                          {
+                                                              MethodToImport = declaredMethod
+                                                          };
 
                             yield return methodInfo;
 
@@ -182,14 +185,14 @@ namespace Grace.DependencyInjection.Impl
                     }
                 }
             }
-	    }
+        }
 
         private void ProcessMethodAttributes()
-		{
+        {
             foreach (ImportMethodInfo importMethodInfo in ProcessMethodAttributesOnType(TargeType))
             {
                 ImportMethod(importMethodInfo);
             }
-		}
-	}
+        }
+    }
 }
