@@ -281,6 +281,7 @@
     <Compile Include="Utilities\MethodInfoWrapper.cs" />
     <Compile Include="Utilities\PropertyInfoWrapper.cs" />
     <Compile Include="Utilities\SafeDictionary.cs" />
+    <Compile Include="Utilities\SequentialGuid.cs" />
     <Compile Include="Utilities\TaskHelper.cs" />
     <Compile Include="Utilities\TypeWrapper.cs" />
     <Compile Include="Utilities\WeakAction.cs" />
