@@ -268,18 +268,21 @@ namespace Grace.DependencyInjection
 		/// Export will be treated as a singleton for the lifetime of the container
 		/// </summary>
 		/// <returns></returns>
+		[Obsolete("Please use Lifestyle.Singleton(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration<T> AndSingleton();
 
 		/// <summary>
 		/// Export will be treated as a singleton for the lifetime of the scope
 		/// </summary>
 		/// <returns></returns>
+		[Obsolete("Please use Lifestyle.SingletonPerScope(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration<T> AndSingletonPerScope();
 
 		/// <summary>
 		/// Exports will be trated as a singleton using a weak reference
 		/// </summary>
 		/// <returns></returns>
+		[Obsolete("Please use Lifestyle.WeakSingleton(), this will be removed at the end of 2014")]
 		IFluentExportStrategyConfiguration<T> AndWeakSingleton();
 
 		/// <summary>
