@@ -779,7 +779,14 @@ namespace Grace.DependencyInjection.Impl
                         if (implementedInterface.IsConstructedGenericType &&
                              implementedInterface.GetGenericTypeDefinition() == exportInterface)
                         {
-                            yield return exportInterface;
+                            if (exportedType.GetTypeInfo().IsGenericTypeDefinition)
+                            {
+                                yield return exportInterface;
+                            }
+                            else
+                            {
+                                yield return implementedInterface;
+                            }
                         }
                     }
                     else if (exportInterface.GetTypeInfo().IsAssignableFrom(implementedInterface.GetTypeInfo()))
