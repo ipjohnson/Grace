@@ -716,7 +716,7 @@ namespace Grace.Data
 	            }
 	            else
 	            {
-	                return checkType.GetTypeInfo().IsAssignableFrom(baseType.GetTypeInfo());
+                    return baseType.GetTypeInfo().IsAssignableFrom(checkType.GetTypeInfo());
 	            }
 	        }
 
