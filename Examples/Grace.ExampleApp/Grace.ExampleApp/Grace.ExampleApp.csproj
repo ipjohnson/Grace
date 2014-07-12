@@ -36,13 +36,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Grace, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace, Version=2.3.9.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.2.3.8\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Grace.dll</HintPath>
+      <HintPath>..\packages\Grace.2.3.9-Nightly1031\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Grace.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Net, Version=2.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Grace.Net, Version=2.3.9.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Grace.Net.2.3.8\lib\net45\Grace.Net.dll</HintPath>
+      <HintPath>..\packages\Grace.Net.2.3.9-Nightly1031\lib\net45\Grace.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -82,6 +82,9 @@
     <Compile Include="DependencyInjection\FluentConfiguration\ImportPropertyExamples.cs" />
     <Compile Include="DependencyInjection\FluentConfiguration\MultipleConstructorExamples.cs" />
     <Compile Include="DependencyInjection\FluentConfiguration\ScanAssemblyExamples.cs" />
+    <Compile Include="DependencyInjection\LifetimeScopes\ChildContainerExamples.cs" />
+    <Compile Include="DependencyInjection\LifetimeScopes\LifetimeScopesSubModules.cs" />
+    <Compile Include="DependencyInjection\LifetimeScopes\LightweightLifetimeScopeExample.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\CollectionExamples.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\ContainerExamples.cs" />
     <Compile Include="DependencyInjection\SpecialTypes\FuncOwnedExamples.cs" />
@@ -99,9 +102,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DependencyInjection\BasicFluentConfiguration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetDir)*" "$(ProjectDir)..\..\..\Output\Grace.ExampleApp\"</PostBuildEvent>
