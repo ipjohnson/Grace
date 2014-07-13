@@ -42,9 +42,11 @@
     <Compile Include="Annotations\JetBrains.Annotations.cs" />
     <Compile Include="Data\ComplexData.cs" />
     <Compile Include="Data\ComplexDataChangedArgs.cs" />
+    <Compile Include="Data\ImmutableHashTree.cs" />
     <Compile Include="Data\IComplexObject.cs" />
     <Compile Include="Data\IComplexObjectExtensions.cs" />
     <Compile Include="Data\IExtraDataContainer.cs" />
+    <Compile Include="Data\ImmutableList.cs" />
     <Compile Include="Data\IReflectionService.cs" />
     <Compile Include="Data\NotifyObject.cs" />
     <Compile Include="Data\ReflectionService.cs" />
