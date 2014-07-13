@@ -241,7 +241,41 @@ namespace Grace.Data
                 InternalValuesList(tree.Right, returnList);
             }
         }
-        
+
+        /// <summary>
+        /// Returns a list of Keys from the hashtree
+        /// </summary>
+        /// <typeparam name="TKey">key type</typeparam>
+        /// <typeparam name="TValue">value type</typeparam>
+        /// <param name="tree">immutable tree</param>
+        /// <returns>list of keys</returns>
+        public static List<TKey> Keys<TKey, TValue>(this ImmutableHashTree<TKey, TValue> tree)
+        {
+            List<TKey> returnList = new List<TKey>();
+
+            InternalKeysList(tree, returnList);
+
+            return returnList;
+        }
+
+        private static void InternalKeysList<TKey, TValue>(this ImmutableHashTree<TKey, TValue> tree,
+            List<TKey> returnList)
+        {
+            returnList.Add(tree.Key);
+
+            returnList.AddRange(tree.Duplicates.Select(x => x.Key));
+
+            if (tree.Left != ImmutableHashTree<TKey, TValue>.Empty)
+            {
+                InternalKeysList(tree.Left, returnList);
+            }
+
+            if (tree.Right != ImmutableHashTree<TKey, TValue>.Empty)
+            {
+                InternalKeysList(tree.Right, returnList);
+            }
+        }
+
         /// <summary>
         /// Searches for a <typeparamref name="TValue"/> using the given <paramref name="key"/>.
         /// </summary>
@@ -287,7 +321,7 @@ namespace Grace.Data
         /// <param name="key">The key to be associated with the value.</param>
         /// <param name="value">The value to be added to the tree.</param>
         /// <returns>A new <see cref="ImmutableHashTree{TKey,TValue}"/> that contains the new key/value pair.</returns>
-        internal static ImmutableHashTree<TKey, TValue> Add<TKey, TValue>(this ImmutableHashTree<TKey, TValue> tree, TKey key, TValue value)
+        public static ImmutableHashTree<TKey, TValue> Add<TKey, TValue>(this ImmutableHashTree<TKey, TValue> tree, TKey key, TValue value)
         {
             if (tree.IsEmpty)
             {

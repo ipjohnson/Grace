@@ -136,6 +136,7 @@
     <Compile Include="Classes\Simple\StaticPropertyClass.cs" />
     <Compile Include="Classes\Simple\Transient.cs" />
     <Compile Include="Classes\Simple\WithCtorParamClass.cs" />
+    <Compile Include="Data\ImmutableHashTreeTests.cs" />
     <Compile Include="DependencyInjection\AdvancedContainerTests.cs" />
     <Compile Include="DependencyInjection\AppConfigTests.cs" />
     <Compile Include="DependencyInjection\Attributes\BasicAttributeTests.cs" />
