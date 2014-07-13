@@ -10,7 +10,7 @@ namespace Grace.ExampleApp
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
@@ -32,8 +32,11 @@ namespace Grace.ExampleApp
 			{
 				Console.WriteLine("Exception thrown");
 				Console.WriteLine(exp.Message);
-				throw;
+
+			    return -1;
 			}
+
+		    return 0;
 		}
 	}
 }
