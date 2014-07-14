@@ -59,7 +59,7 @@ namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 										  c.Export<SimpleObjectB>().As<ISimpleObject>().WithKey(10);
 									  });
 
-			ISimpleObject simpleA = container.LocateByKey<ISimpleObject, int>(5);
+			ISimpleObject simpleA = container.Locate<ISimpleObject>(withKey: 5);
 
 			if (simpleA == null)
 			{
@@ -71,7 +71,7 @@ namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 				throw new Exception("simple should be SimpleObjectA");
 			}
 
-			ISimpleObject simpleB = container.LocateByKey<ISimpleObject, int>(10);
+            ISimpleObject simpleB = container.Locate<ISimpleObject>(withKey: 10);
 
 			if (simpleB == null)
 			{

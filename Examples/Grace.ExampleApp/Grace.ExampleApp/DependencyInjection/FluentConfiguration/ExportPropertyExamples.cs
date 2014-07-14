@@ -33,7 +33,7 @@ namespace Grace.ExampleApp.DependencyInjection.FluentConfiguration
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export<ExportProperty>().ExportProperty(p => p.BasicService).AndSingleton());
+			container.Configure(c => c.Export<ExportProperty>().ExportProperty(p => p.BasicService).Lifestyle.Singleton());
 
 			IBasicService basicService = container.Locate<IBasicService>();
 
