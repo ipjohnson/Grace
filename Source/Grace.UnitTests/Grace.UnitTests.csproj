@@ -136,6 +136,7 @@
     <Compile Include="Classes\Simple\StaticPropertyClass.cs" />
     <Compile Include="Classes\Simple\Transient.cs" />
     <Compile Include="Classes\Simple\WithCtorParamClass.cs" />
+    <Compile Include="Data\Immutable\ImmutableHashTreeTests.cs" />
     <Compile Include="DependencyInjection\AdvancedContainerTests.cs" />
     <Compile Include="DependencyInjection\AppConfigTests.cs" />
     <Compile Include="DependencyInjection\Attributes\BasicAttributeTests.cs" />
@@ -224,9 +225,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetDir)*" "$(ProjectDir)..\..\Output\Tests\$(PlatformName)\"</PostBuildEvent>
