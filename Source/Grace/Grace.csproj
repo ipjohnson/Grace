@@ -45,8 +45,6 @@
     <Compile Include="Data\IComplexObject.cs" />
     <Compile Include="Data\IComplexObjectExtensions.cs" />
     <Compile Include="Data\IExtraDataContainer.cs" />
-    <Compile Include="Data\Immutable\ImmutableArrayEnumerator.cs" />
-    <Compile Include="Data\Immutable\ImmutableStack.cs" />
     <Compile Include="Data\Immutable\KeyExistsException.cs" />
     <Compile Include="Data\IReflectionService.cs" />
     <Compile Include="Data\NotifyObject.cs" />
@@ -281,7 +279,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Immutable\ImmutableHashTree.cs" />
-    <Compile Include="Data\Immutable\ImmutableList.cs" />
+    <Compile Include="Data\Immutable\ImmutableArray.cs" />
     <Compile Include="Utilities\InternalMethodCacheHelper.cs" />
     <Compile Include="Utilities\MethodInfoWrapper.cs" />
     <Compile Include="Utilities\PropertyInfoWrapper.cs" />

@@ -70,7 +70,7 @@ namespace Grace.Data.Immutable
         /// <summary>
         /// Keys with the same hashcode
         /// </summary>
-        public readonly ImmutableList<KV<TKey, TValue>> Conflicts;
+        public readonly ImmutableArray<KV<TKey, TValue>> Conflicts;
 
         /// <summary>
         /// Left node of the hash tree
@@ -150,13 +150,13 @@ namespace Grace.Data.Immutable
 
         private ImmutableHashTree()
         {
-            Conflicts = ImmutableList<KV<TKey, TValue>>.Empty;
+            Conflicts = ImmutableArray<KV<TKey, TValue>>.Empty;
         }
 
         private ImmutableHashTree(int hash,
                                   TKey key,
                                   TValue value,
-                                  ImmutableList<KV<TKey, TValue>> conflicts,
+                                  ImmutableArray<KV<TKey, TValue>> conflicts,
                                   ImmutableHashTree<TKey, TValue> left,
                                   ImmutableHashTree<TKey, TValue> right)
         {
@@ -179,7 +179,7 @@ namespace Grace.Data.Immutable
                 return new ImmutableHashTree<TKey, TValue>(hashCode,
                                                            key,
                                                            value,
-                                                           ImmutableList<KV<TKey, TValue>>.Empty,
+                                                           ImmutableArray<KV<TKey, TValue>>.Empty,
                                                            Empty,
                                                            Empty);
             }

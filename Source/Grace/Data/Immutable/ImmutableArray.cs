@@ -6,46 +6,68 @@ using System.Linq;
 namespace Grace.Data.Immutable
 {
     /// <summary>
+    /// Immutable array create methods
+    /// </summary>
+    public static class ImmutableArray
+    {
+        /// <summary>
+        /// Create an array 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static ImmutableArray<T> Create<T>(params T[] array)
+        {
+            if (array == null || array.Length == 0)
+            {
+                return ImmutableArray<T>.Empty;
+            }
+
+            return new ImmutableArray<T>(CloneArray(array));
+        }
+
+        /// <summary>
+        /// Creates a new immutable list from an IEnumerable(T)
+        /// </summary>
+        /// <typeparam name="T">item type</typeparam>
+        /// <param name="list">list of T</param>
+        /// <returns>immutable array</returns>
+        public static ImmutableArray<T> From<T>(IEnumerable<T> list)
+        {
+            T[] array = list.ToArray();
+
+            return  new ImmutableArray<T>(array);
+        }
+
+        private static T[] CloneArray<T>(T[] array)
+        {
+            T[] returnValue = new T[array.Length];
+
+            Array.Copy(returnValue, 0, array, 0, array.Length);
+
+            return returnValue;
+        }
+    }
+
+    /// <summary>
     /// Immutable List that implements IReadOnlyList(T)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class ImmutableList<T> : IList<T>, IReadOnlyList<T>
+    public struct ImmutableArray<T> : IReadOnlyList<T>
     {
         private readonly T[] _list;
 
         /// <summary>
         /// Empty list
         /// </summary>
-        public static readonly ImmutableList<T> Empty = new ImmutableList<T>();
+        public static readonly ImmutableArray<T> Empty;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="list">list of T</param>
-        public ImmutableList(params T[] list)
+        static ImmutableArray()
         {
-            T[] newArray = new T[list.Length];
-
-            Array.Copy(list, 0, newArray, 0, list.Length);
-
-            _list = newArray;
+            Empty = new ImmutableArray<T>(new T[0]);
         }
 
-        /// <summary>
-        /// Constructor takes an IEnumerable of T
-        /// </summary>
-        /// <param name="list"></param>
-        public ImmutableList(IEnumerable<T> list)
-        {
-            _list = list.ToArray();
-        }
-
-        /// <summary>
-        /// THis constructor is here as an internal cosntructor that doesn't copy the list passed in
-        /// </summary>
-        /// <param name="extraParam"></param>
-        /// <param name="list"></param>
-        private ImmutableList(bool extraParam, T[] list)
+        internal ImmutableArray(T[] list)
         {
             _list = list;
         }
@@ -129,66 +151,7 @@ namespace Grace.Data.Immutable
 
             return -1;
         }
-
-        #region not implemented
-        /// <summary>
-        /// Not implemented
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="item"></param>
-        void IList<T>.Insert(int index, T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Not implemented
-        /// </summary>
-        /// <param name="index"></param>
-        void IList<T>.RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Index into list
-        /// </summary>
-        /// <param name="index">index</param>
-        /// <returns>T value</returns>
-        T IList<T>.this[int index]
-        {
-            get { return _list[index]; }
-            set { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Not implemented
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        bool ICollection<T>.Remove(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Not implemented
-        /// </summary>
-        /// <param name="item"></param>
-        void ICollection<T>.Add(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Not implemented
-        /// </summary>
-        void ICollection<T>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
+        
         /// <summary>
         /// Index into list
         /// </summary>
@@ -204,7 +167,7 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="value">new T</param>
         /// <returns>new list</returns>
-        public ImmutableList<T> Add(T value)
+        public ImmutableArray<T> Add(T value)
         {
             int listLength = _list.Length;
             T[] newArray = new T[listLength + 1];
@@ -213,7 +176,7 @@ namespace Grace.Data.Immutable
 
             newArray[listLength] = value;
 
-            return new ImmutableList<T>(false, newArray);
+            return new ImmutableArray<T>(newArray);
         }
 
         /// <summary>
@@ -221,7 +184,7 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="enumerable"></param>
         /// <returns></returns>
-        public ImmutableList<T> AddRange(IEnumerable<T> enumerable)
+        public ImmutableArray<T> AddRange(IEnumerable<T> enumerable)
         {
             return AddRange(enumerable.ToArray());
         }
@@ -231,7 +194,7 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public ImmutableList<T> AddRange(params T[] value)
+        public ImmutableArray<T> AddRange(params T[] value)
         {
             int listLength = _list.Length;
             int valueLength = value.Length;
@@ -240,8 +203,74 @@ namespace Grace.Data.Immutable
             Array.Copy(_list, 0, newArray, 0, listLength);
             Array.Copy(value, 0, newArray, listLength, valueLength);
 
-            return new ImmutableList<T>(false, newArray);
+            return new ImmutableArray<T>(newArray);
         }
 
+        /// <summary>
+        /// Implicit conversion from List(T)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static implicit operator ImmutableArray<T>(List<T> list)
+        {
+            return new ImmutableArray<T>(list.ToArray());
+        }
+
+        /// <summary>
+        /// Implicit conversion to List(T)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static implicit operator List<T>(ImmutableArray<T> list)
+        {
+            return new List<T>(list._list);
+        }
+
+        /// <summary>
+        /// Internal enumerator class used to enumerate lists, stacks and queues
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        internal class ImmutableArrayEnumerator<T> : IEnumerator<T>
+        {
+            private int _count = -1;
+            private readonly T[] _list;
+
+            public ImmutableArrayEnumerator(T[] list)
+            {
+                _list = list;
+            }
+
+            public bool MoveNext()
+            {
+                if (_count + 1 >= _list.Length)
+                {
+                    return false;
+                }
+
+                _count++;
+
+                return true;
+            }
+
+            public void Reset()
+            {
+                throw new NotSupportedException();
+            }
+
+            public T Current
+            {
+                get { return _list[_count]; }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public void Dispose()
+            {
+
+            }
+        }
     }
 }
