@@ -6,34 +6,6 @@ using System.Threading.Tasks;
 
 namespace Grace.Data.Immutable
 {
-    /// <summary>
-    /// Key value pair where using fields instead of properties for maximum performancec
-    /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
-    public class KV<TKey, TValue>
-    {
-        /// <summary>
-        /// Key portion of key value pair
-        /// </summary>
-        public readonly TKey Key;
-
-        /// <summary>
-        /// Value portion of key value pair
-        /// </summary>
-        public readonly TValue Value;
-
-        /// <summary>
-        /// Default constructor taking a key and value
-        /// </summary>
-        /// <param name="key">key used in KVP</param>
-        /// <param name="value">value used in KVP</param>
-        public KV(TKey key, TValue value)
-        {
-            Key = key;
-            Value = value;
-        }
-    }
 
     /// <summary>
     /// Immutable HashTree implementation http://en.wikipedia.org/wiki/AVL_tree
@@ -70,7 +42,7 @@ namespace Grace.Data.Immutable
         /// <summary>
         /// Keys with the same hashcode
         /// </summary>
-        public readonly ImmutableArray<KV<TKey, TValue>> Conflicts;
+        public readonly ImmutableArray<KeyValuePair<TKey, TValue>> Conflicts;
 
         /// <summary>
         /// Left node of the hash tree
@@ -90,6 +62,61 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public delegate TValue UpdateDelegate(TValue currentValue, TValue newValue);
 
+        /// <summary>
+        /// Provide an action that will be called for each node in the hash tree
+        /// </summary>
+        /// <param name="iterateAction"></param>
+        public void IterateInOrder(Action<TKey, TValue> iterateAction)
+        {
+            if (Left.Height > 0)
+            {
+                Left.IterateInOrder(iterateAction);
+            }
+
+            iterateAction(Key, Value);
+
+            if (Right.Height > 0)
+            {
+                Right.IterateInOrder(iterateAction);
+            }
+        }
+
+        /// <summary>
+        /// Return an enumerable of KVP
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<TKey, TValue>> IterateInOrder()
+        {
+            ImmutableHashTree<TKey, TValue>[] nodes = new ImmutableHashTree<TKey, TValue>[Height];
+            int nodeCount = 0;
+            ImmutableHashTree<TKey, TValue> currentNode = this;
+
+            while (!currentNode.IsEmpty || nodeCount != 0)
+            {
+                if (!currentNode.IsEmpty)
+                {
+                    nodes[nodeCount++] = currentNode;
+
+                    currentNode = currentNode.Left;
+                }
+                else
+                {
+                    currentNode = nodes[--nodeCount];
+                    
+                    yield return new KeyValuePair<TKey, TValue>(currentNode.Key, currentNode.Value);
+
+                    if (currentNode.Conflicts.Count > 0)
+                    {
+                        for (int i = 0; i < currentNode.Conflicts.Count; i++)
+                        {
+                            yield return currentNode.Conflicts[i];
+                        }
+                    }
+
+                    currentNode = currentNode.Right;
+                }
+            }
+        }
 
         /// <summary>
         /// Adds a new entry to the hashtree
@@ -133,14 +160,18 @@ namespace Grace.Data.Immutable
                     return true;
                 }
 
-                KV<TKey, TValue> kvp = currenNode.Conflicts.FirstOrDefault(x => key.Equals(x.Key));
-
-                if (kvp != null)
+                for (int i = 0; i < currenNode.Conflicts.Count; i++)
                 {
-                    value = kvp.Value;
+                    KeyValuePair<TKey, TValue> kvp = currenNode.Conflicts[i];
 
-                    return true;
+                    if (key.Equals(currenNode.Conflicts[i].Key))
+                    {
+                        value = kvp.Value;
+
+                        return true;
+                    }
                 }
+
             }
 
             value = default(TValue);
@@ -148,15 +179,23 @@ namespace Grace.Data.Immutable
             return false;
         }
 
+        /// <summary>
+        /// Is the hash tree empty
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return Height == 0; }
+        }
+
         private ImmutableHashTree()
         {
-            Conflicts = ImmutableArray<KV<TKey, TValue>>.Empty;
+            Conflicts = ImmutableArray<KeyValuePair<TKey, TValue>>.Empty;
         }
 
         private ImmutableHashTree(int hash,
                                   TKey key,
                                   TValue value,
-                                  ImmutableArray<KV<TKey, TValue>> conflicts,
+                                  ImmutableArray<KeyValuePair<TKey, TValue>> conflicts,
                                   ImmutableHashTree<TKey, TValue> left,
                                   ImmutableHashTree<TKey, TValue> right)
         {
@@ -179,7 +218,7 @@ namespace Grace.Data.Immutable
                 return new ImmutableHashTree<TKey, TValue>(hashCode,
                                                            key,
                                                            value,
-                                                           ImmutableArray<KV<TKey, TValue>>.Empty,
+                                                           ImmutableArray<KeyValuePair<TKey, TValue>>.Empty,
                                                            Empty,
                                                            Empty);
             }
@@ -244,7 +283,7 @@ namespace Grace.Data.Immutable
                 return new ImmutableHashTree<TKey, TValue>(Hash, key, newValue, Conflicts, Left, Right);
             }
 
-            return new ImmutableHashTree<TKey, TValue>(Hash, Key, Value, Conflicts.Add(new KV<TKey, TValue>(key, value)), Left, Right);
+            return new ImmutableHashTree<TKey, TValue>(Hash, Key, Value, Conflicts.Add(new KeyValuePair<TKey, TValue>(key, value)), Left, Right);
         }
 
         private ImmutableHashTree<TKey, TValue> New(ImmutableHashTree<TKey, TValue> left,
@@ -252,7 +291,7 @@ namespace Grace.Data.Immutable
         {
             return new ImmutableHashTree<TKey, TValue>(Hash, Key, Value, Conflicts, left, right);
         }
-        
+
         private static TValue KeyAlreadyExists(TValue currentValue, TValue newValue)
         {
             throw new KeyExistsException<TKey>();

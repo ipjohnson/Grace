@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Grace.Data.Immutable
 {
@@ -36,10 +37,10 @@ namespace Grace.Data.Immutable
         {
             T[] array = list.ToArray();
 
-            return  new ImmutableArray<T>(array);
+            return new ImmutableArray<T>(array);
         }
 
-        private static T[] CloneArray<T>(T[] array)
+        internal static T[] CloneArray<T>(T[] array)
         {
             T[] returnValue = new T[array.Length];
 
@@ -53,7 +54,7 @@ namespace Grace.Data.Immutable
     /// Immutable List that implements IReadOnlyList(T)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ImmutableArray<T> : IReadOnlyList<T>
+    public struct ImmutableArray<T> : IReadOnlyList<T>, IEqualityComparer<ImmutableArray<T>>, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] _list;
 
@@ -151,7 +152,7 @@ namespace Grace.Data.Immutable
 
             return -1;
         }
-        
+
         /// <summary>
         /// Index into list
         /// </summary>
@@ -211,9 +212,14 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static implicit operator ImmutableArray<T>(List<T> list)
+        public static explicit operator ImmutableArray<T>(T[] list)
         {
-            return new ImmutableArray<T>(list.ToArray());
+            if (list == null || list.Length == 0)
+            {
+                return Empty;
+            }
+
+            return new ImmutableArray<T>(ImmutableArray.CloneArray(list));
         }
 
         /// <summary>
@@ -221,11 +227,176 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static implicit operator List<T>(ImmutableArray<T> list)
+        public static explicit operator T[](ImmutableArray<T> list)
         {
-            return new List<T>(list._list);
+            if (list._list != null)
+            {
+                return ImmutableArray.CloneArray(list._list);
+            }
+
+            return Empty._list;
         }
 
+        /// <summary>
+        /// Equals override
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is ImmutableArray<T>)
+            {
+                return Equals((ImmutableArray<T>)obj, this);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Get hashcode of array
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            if (_list != null)
+            {
+                return _list.GetHashCode();
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Compare arrays
+        /// </summary>
+        /// <param name="other"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        int IStructuralComparable.CompareTo(object other, IComparer comparer)
+        {
+            Array compareArray = other as Array;
+
+            if (compareArray == null && other is ImmutableArray<T>)
+            {
+                compareArray = ((ImmutableArray<T>)other)._list;
+
+                if (compareArray == null && _list == null)
+                {
+                    return 0;
+                }
+
+                if (compareArray == null ^ _list == null)
+                {
+                    throw new ArgumentNullException("other", "Arrays not initialized properly");
+                }
+            }
+
+            if (compareArray != null)
+            {
+                return ((IStructuralComparable)compareArray).CompareTo(_list, comparer);
+            }
+
+            throw new ArgumentNullException("other", "Other is not an array of T");
+        }
+
+        public bool Equals(ImmutableArray<T> x, ImmutableArray<T> y)
+        {
+            return x._list == y._list;
+        }
+
+        public int GetHashCode(ImmutableArray<T> obj)
+        {
+            if (obj._list != null)
+            {
+                return obj._list.GetHashCode();
+            }
+
+            return 0;
+        }
+
+        bool IStructuralEquatable.Equals(object other, IEqualityComparer comparer)
+        {
+            Array compareArray = other as Array;
+
+            if (compareArray == null && other is ImmutableArray<T>)
+            {
+                compareArray = ((ImmutableArray<T>)other)._list;
+
+                if (compareArray == null && _list == null)
+                {
+                    return false;
+                }
+
+                if (compareArray == null ^ _list == null)
+                {
+                    throw new ArgumentNullException("other", "Arrays not initialized properly");
+                }
+            }
+
+            if (compareArray != null)
+            {
+                return ((IStructuralEquatable)compareArray).Equals(_list, comparer);
+            }
+
+            throw new ArgumentNullException("other", "Other is not an array of T");
+        }
+
+        int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)
+        {
+            IStructuralEquatable structuralEquatable = _list;
+
+            return structuralEquatable == null ? 
+                   GetHashCode() : 
+                   structuralEquatable.GetHashCode(comparer);
+        }
+
+
+        /// <summary>
+        /// Equals override
+        /// </summary>
+        /// <param name="left">left side of statement</param>
+        /// <param name="right">right side of statement</param>
+        /// <returns>true if euqal</returns>
+        public static bool operator ==(ImmutableArray<T> left, ImmutableArray<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Not equal override
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator !=(ImmutableArray<T> left, ImmutableArray<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+
+        /// <summary>
+        /// Equal override for nullable
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator ==(ImmutableArray<T>? left, ImmutableArray<T>? right)
+        {
+            return left.GetValueOrDefault().Equals(right.GetValueOrDefault());
+        }
+
+        /// <summary>
+        /// Not equal override for nullable
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator !=(ImmutableArray<T>? left, ImmutableArray<T>? right)
+        {
+            return !left.GetValueOrDefault().Equals(right.GetValueOrDefault());
+        }
+
+        #region
         /// <summary>
         /// Internal enumerator class used to enumerate lists, stacks and queues
         /// </summary>
@@ -272,5 +443,6 @@ namespace Grace.Data.Immutable
 
             }
         }
+        #endregion
     }
 }
