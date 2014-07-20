@@ -196,7 +196,18 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Configure the export lifestyle
+	    /// </summary>
+	    public InstanceLifestyleConfiguration<T> Lifestyle
+	    {
+	        get
+	        {
+	            return new InstanceLifestyleConfiguration<T>(this);
+	        }
+	    }
+
+	    /// <summary>
 		/// Sets the export strategy 
 		/// </summary>
 		/// <param name="lifestyle"></param>

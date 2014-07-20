@@ -1,5 +1,6 @@
 ﻿using System;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -106,7 +107,12 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportInstanceConfiguration<T> DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate);
 
-		/// <summary>
+        /// <summary>
+        /// Configure the export lifestyle
+        /// </summary>
+        InstanceLifestyleConfiguration<T> Lifestyle { get; }
+            
+        /// <summary>
 		/// Specify a lifestyle to use with the export
 		/// </summary>
 		/// <param name="lifestyle"></param>
