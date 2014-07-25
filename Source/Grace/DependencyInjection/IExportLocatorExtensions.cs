@@ -14,6 +14,16 @@ namespace Grace.DependencyInjection
 	// ReSharper disable once InconsistentNaming
 	public static class IExportLocatorExtensions
 	{
+        /// <summary>
+        /// Configure container with IConfigurationModule
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="locator"></param>
+	    public static void ConfigureWith<T>(this IExportLocator locator) where T : IConfigurationModule, new ()
+	    {
+	        locator.Configure(new T());
+	    }
+
 		/// <summary>
 		/// This method returns a summary of the exports contained in an ExportLocator
 		/// </summary>

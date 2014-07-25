@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection
             Func<Type, bool> typesThat,
             int priority = 1)
         {
-            
+            throw new NotImplementedException("TODO");
         }
 
         /// <summary>
