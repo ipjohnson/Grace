@@ -269,6 +269,7 @@
     <Compile Include="Diagnostics\ExportListDebuggerView.cs" />
     <Compile Include="Diagnostics\InjectionScopeDiagnostic.cs" />
     <Compile Include="Diagnostics\PossibleMissingDependency.cs" />
+    <Compile Include="LanguageExtensions\DateTimeExtensions.cs" />
     <Compile Include="LanguageExtensions\IEnumerableExtensions.cs" />
     <Compile Include="Logging\DebugConsoleLog.cs" />
     <Compile Include="Logging\DebugConsoleLogService.cs" />
