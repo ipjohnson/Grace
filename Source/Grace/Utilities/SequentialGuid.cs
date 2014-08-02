@@ -42,6 +42,7 @@ namespace Grace.Utilities
 
         /// <summary>
         /// Gets the next sequential guid, depending on where you are storing will dictate which type you want
+        /// Note: When called within the same millisecond there is no guarntee it will be in sequence but it will be unique
         /// </summary>
         /// <param name="guidType"></param>
         /// <returns></returns>
