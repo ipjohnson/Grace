@@ -102,5 +102,17 @@ namespace Grace.DependencyInjection.Impl
 
             return _typeSetConfiguration;
         }
+
+        /// <summary>
+        /// Exports a type that will be shared per named scope
+        /// </summary>
+        /// <param name="namedScope"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration SingletonPerNamedScope(string namedScope)
+        {
+            _typeSetConfiguration.UsingLifestyle(new SingletonPerNamedScopeLifestyle(namedScope));
+
+            return _typeSetConfiguration;
+        }
     }
 }

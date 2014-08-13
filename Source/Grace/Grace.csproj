@@ -108,6 +108,7 @@
     <Compile Include="DependencyInjection\Enumerations.cs" />
     <Compile Include="DependencyInjection\Exceptions\CircularDependencyDetectedException.cs" />
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
+    <Compile Include="DependencyInjection\Exceptions\InjectionScopeCouldNotBeFoundException.cs" />
     <Compile Include="DependencyInjection\Exceptions\LocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\MissingDependencyException.cs" />
     <Compile Include="DependencyInjection\Exceptions\PublicConstructorNotFoundException.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="DependencyInjection\Impl\LifestyleBulkConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\LifestyleConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\PrioritizeTypesThatInspector.cs" />
+    <Compile Include="DependencyInjection\Lifestyle\SingletonPerNamedScopeLifestyle.cs" />
     <Compile Include="DependencyInjection\TypeExtensions.cs" />
     <Compile Include="Diagnostics\IDependencyInjectionContainerExtensions.cs" />
     <Compile Include="DependencyInjection\IEnumerableExtensions.cs" />

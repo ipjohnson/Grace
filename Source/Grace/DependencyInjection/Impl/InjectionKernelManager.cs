@@ -118,7 +118,9 @@ namespace Grace.DependencyInjection.Impl
 				}
 				else
 				{
-					throw new Exception("Kernel not found by name: " + kernelName);
+                    IDisposalScopeProvider newScopeProvider = scopeProvider ?? parentScopeProvider;
+
+                    newKernel = new InjectionKernel(this, parentKernel, newScopeProvider, kernelName, comparer);
 				}
 			}
 

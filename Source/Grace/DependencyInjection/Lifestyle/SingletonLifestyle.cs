@@ -59,16 +59,7 @@ namespace Grace.DependencyInjection.Lifestyle
 				{
 					if (instance == null)
 					{
-						IDisposalScope disposalScope = injectionContext.DisposalScope;
-						IInjectionScope requestingScope = injectionContext.RequestingScope;
-
-						injectionContext.DisposalScope = exportStrategy.OwningScope;
-						injectionContext.RequestingScope = exportStrategy.OwningScope;
-
-						instance = creationDelegate(exportStrategyScope, injectionContext);
-
-						injectionContext.DisposalScope = disposalScope;
-						injectionContext.RequestingScope = requestingScope;
+						instance = CreateInSingletonScope(creationDelegate, exportStrategy.OwningScope, injectionContext);
 					}
 				}
 			}
@@ -76,7 +67,34 @@ namespace Grace.DependencyInjection.Lifestyle
 			return instance;
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Creates an instance in a singleton scope
+        /// </summary>
+        /// <param name="creationDelegate"></param>
+        /// <param name="exportStrategyScope"></param>
+        /// <param name="injectionContext"></param>
+        /// <returns></returns>
+	    public static object CreateInSingletonScope(ExportActivationDelegate creationDelegate,
+	        IInjectionScope exportStrategyScope,
+	        IInjectionContext injectionContext)
+	    {
+	        object returnValue = null;
+
+	        IDisposalScope disposalScope = injectionContext.DisposalScope;
+	        IInjectionScope requestingScope = injectionContext.RequestingScope;
+
+            injectionContext.DisposalScope = exportStrategyScope;
+            injectionContext.RequestingScope = exportStrategyScope;
+
+	        returnValue = creationDelegate(exportStrategyScope, injectionContext);
+
+	        injectionContext.DisposalScope = disposalScope;
+	        injectionContext.RequestingScope = requestingScope;
+
+	        return returnValue;
+	    }
+
+	    /// <summary>
 		/// This method is used to clone a Lifestyle container
 		/// </summary>
 		/// <returns></returns>

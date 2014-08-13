@@ -190,9 +190,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			return CreateChildScope(configurationModule.Configure, scopeName, disposalScopeProvider);
 		}
-
-		public string Name { get; private set; }
-
+        
 		/// <summary>
 		/// Adds a secondary resolver to the injection scope
 		/// </summary>

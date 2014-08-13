@@ -102,6 +102,18 @@ namespace Grace.DependencyInjection.Impl
 
             return _strategyConfiguration;
         }
+
+        /// <summary>
+        /// Marks an export as singleton per named scope
+        /// </summary>
+        /// <param name="scopeName">name of scope to share export in</param>
+        /// <returns>configuration object</returns>
+        public IFluentExportStrategyConfiguration SingletonPerNamedScope(string scopeName)
+        {
+            _strategyConfiguration.UsingLifestyle(new SingletonPerNamedScopeLifestyle(scopeName));
+
+            return _strategyConfiguration;
+        }
     }
 
     /// <summary>
@@ -196,6 +208,18 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> SingletonPerAncestor(Type ancestorType, object metdata = null)
         {
             _strategyConfiguration.UsingLifestyle(new SingletonPerAncestorLifestyle(ancestorType, metdata));
+
+            return _strategyConfiguration;
+        }
+
+        /// <summary>
+        /// Exports will create a singleton per named scope
+        /// </summary>
+        /// <param name="scopeName"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> SingletonPerNamedScope(string scopeName)
+        {
+            _strategyConfiguration.UsingLifestyle(new SingletonPerNamedScopeLifestyle(scopeName));
 
             return _strategyConfiguration;
         }
