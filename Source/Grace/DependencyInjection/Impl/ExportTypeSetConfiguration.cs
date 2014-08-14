@@ -34,6 +34,7 @@ namespace Grace.DependencyInjection.Impl
         private bool exportAttributedTypes;
         private bool _exportByType;
         private Func<Type, IEnumerable<Type>> exportByTypeFunc;
+        private Func<Type, IEnumerable<Tuple<Type, object>>> exportKeyedTypeFunc;
         private bool exportByName;
         private Func<Type, string> exportByNameFunc;
         private ExportEnvironment exportEnvironment;
@@ -79,6 +80,7 @@ namespace Grace.DependencyInjection.Impl
             if (_exportInterfaces.Count == 0 &&
                  _exportBaseTypes.Count == 0 &&
                  exportByTypeFunc == null &&
+                 exportKeyedTypeFunc == null &&
                  interfaceMatchList.Count == 0 &&
                  !exportAllByInterface)
             {
@@ -256,6 +258,23 @@ namespace Grace.DependencyInjection.Impl
             }
 
             exportByTypeFunc = typeDelegate;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Export a type by a set of keyed types
+        /// </summary>
+        /// <param name="keyedDelegate">keyed types</param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate)
+        {
+            if (keyedDelegate == null)
+            {
+                throw new ArgumentNullException("keyedDelegate");
+            }
+
+            exportKeyedTypeFunc = keyedDelegate;
 
             return this;
         }
@@ -662,11 +681,28 @@ namespace Grace.DependencyInjection.Impl
 
                 List<Type> exportTypes = new List<Type>();
                 List<string> exportNames = new List<string>();
+                List<Tuple<Type, object>> keyedExportType = new List<Tuple<Type, object>>();
+
                 bool isGeneric = filteredType.GetTypeInfo().IsGenericTypeDefinition;
 
                 if (exportByTypeFunc != null)
                 {
-                    exportTypes.AddRange(exportByTypeFunc(filteredType).ToArray());
+                    var types = exportByTypeFunc(filteredType);
+
+                    if (types != null)
+                    {
+                        exportTypes.AddRange(types.ToArray());
+                    }
+                }
+
+                if (exportKeyedTypeFunc != null)
+                {
+                    var keyedTypes = exportKeyedTypeFunc(filteredType);
+
+                    if (keyedTypes != null)
+                    {
+                        keyedExportType.AddRange(keyedTypes);
+                    }
                 }
 
                 if (exportByNameFunc != null)
@@ -676,9 +712,9 @@ namespace Grace.DependencyInjection.Impl
 
                 exportTypes.AddRange(ScanTypeForExportedInterfaces(filteredType));
 
-                if (exportTypes.Count > 0)
+                if (exportTypes.Count > 0 || exportNames.Count > 0 || keyedExportType.Count > 0)
                 {
-                    yield return CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes, exportNames);
+                    yield return CreateCompiledExportStrategy(filteredType, isGeneric, exportTypes, keyedExportType, exportNames);
                 }
             }
         }
@@ -847,10 +883,7 @@ namespace Grace.DependencyInjection.Impl
             return false;
         }
 
-        private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType,
-            bool generic,
-            IEnumerable<Type> exportTypes,
-            IEnumerable<string> exportNames)
+        private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType, bool generic, IEnumerable<Type> exportTypes, List<Tuple<Type, object>> keyedExportType, IEnumerable<string> exportNames)
         {
             ICompiledExportStrategy exportStrategy;
 
@@ -884,6 +917,11 @@ namespace Grace.DependencyInjection.Impl
             if (exportNames != null)
             {
                 exportNames.Apply(s => exportStrategy.AddExportName(s));
+            }
+
+            if (keyedExportType != null)
+            {
+                keyedExportType.Apply(kt => exportStrategy.AddKeyedExportType(kt.Item1, kt.Item2));
             }
 
             foreach (Func<Type, IExportCondition> conditionFunc in _conditions)
@@ -920,18 +958,26 @@ namespace Grace.DependencyInjection.Impl
                         runtimeProperty.SetMethod.IsPublic &&
                         CheckPropertyTypesMatch(exportedType, runtimeProperty.PropertyType, importProperty))
                     {
-                        if (importProperty.PropertyName == null ||
-                            importProperty.PropertyName.ToLowerInvariant() == runtimeProperty.Name.ToLowerInvariant())
+                        if (importProperty.PropertyName != null &&
+                            importProperty.PropertyName.ToLowerInvariant() != runtimeProperty.Name.ToLowerInvariant())
                         {
-                            exportStrategy.ImportProperty(new ImportPropertyInfo
-                                                          {
-                                                              Property = runtimeProperty,
-                                                              IsRequired = importProperty.IsRequired,
-                                                              ValueProvider = importProperty.ValueProvider,
-                                                              ExportStrategyFilter = importProperty.Consider,
-                                                              AfterConstruction = importProperty.AfterConstruction
-                                                          });
+                            continue;
                         }
+
+                        if (importProperty.PropertyFilter != null &&
+                            importProperty.PropertyFilter(runtimeProperty))
+                        {
+                            continue;
+                        }
+
+                        exportStrategy.ImportProperty(new ImportPropertyInfo
+                                                      {
+                                                          Property = runtimeProperty,
+                                                          IsRequired = importProperty.IsRequired,
+                                                          ValueProvider = importProperty.ValueProvider,
+                                                          ExportStrategyFilter = importProperty.Consider,
+                                                          AfterConstruction = importProperty.AfterConstruction
+                                                      });
                     }
                 }
             }
@@ -987,12 +1033,6 @@ namespace Grace.DependencyInjection.Impl
 
         private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
         {
-            if (importProperty.TypeFilter != null &&
-                !importProperty.TypeFilter(exportedType))
-            {
-                return false;
-            }
-
             if (importType.GetTypeInfo().IsGenericTypeDefinition)
             {
                 if (importProperty.PropertyType.GetTypeInfo().IsGenericTypeDefinition &&

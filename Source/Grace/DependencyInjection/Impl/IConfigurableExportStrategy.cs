@@ -32,6 +32,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="exportType">new type to export</param>
 		void AddExportType(Type exportType);
 
+        /// <summary>
+        /// Add a keyed export type for the strategy
+        /// </summary>
+        /// <param name="exportType">export type</param>
+        /// <param name="key">export key</param>
+	    void AddKeyedExportType(Type exportType, object key);
+
 		/// <summary>
 		/// Set the export environment for the strategy
 		/// </summary>

@@ -67,11 +67,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			return null;
 		}
 
-		public void AddExport(IExportStrategy exportStrategy)
+		public void AddExport(IExportStrategy exportStrategy, object key)
 		{
 		}
 
-		public void RemoveExport(IExportStrategy exportStrategy)
+		public void RemoveExport(IExportStrategy exportStrategy, object key)
 		{
 		}
 	}

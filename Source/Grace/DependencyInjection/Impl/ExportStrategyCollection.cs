@@ -420,11 +420,12 @@ namespace Grace.DependencyInjection.Impl
         /// Add an export strategy to the collection
         /// </summary>
         /// <param name="exportStrategy"></param>
-        public void AddExport(IExportStrategy exportStrategy)
+        /// <param name="key"></param>
+        public void AddExport(IExportStrategy exportStrategy, object key)
         {
             lock (exportStrategiesLock)
             {
-                if (exportStrategy.Key == null)
+                if (key == null)
                 {
                     if (exportStrategies.Any(exportStrategy.Equals))
                     {
@@ -457,7 +458,7 @@ namespace Grace.DependencyInjection.Impl
                                     new Dictionary<object, IExportStrategy>() :
                                     new Dictionary<object, IExportStrategy>(keyedStrategies);
 
-                    newDictionary[exportStrategy.Key] = exportStrategy;
+                    newDictionary[key] = exportStrategy;
 
                     Interlocked.Exchange(ref keyedStrategies, newDictionary);
                 }
@@ -468,11 +469,12 @@ namespace Grace.DependencyInjection.Impl
         /// Remove an export strategy from the collection
         /// </summary>
         /// <param name="exportStrategy"></param>
-        public void RemoveExport(IExportStrategy exportStrategy)
+        /// <param name="key"></param>
+        public void RemoveExport(IExportStrategy exportStrategy, object key)
         {
             lock (exportStrategiesLock)
             {
-                if (exportStrategy.Key == null)
+                if (key == null)
                 {
                     if (exportStrategies.Contains(exportStrategy))
                     {
@@ -499,7 +501,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         Dictionary<object, IExportStrategy> newDictionary = new Dictionary<object, IExportStrategy>(keyedStrategies);
 
-                        newDictionary.Remove(exportStrategy.Key);
+                        newDictionary.Remove(key);
 
                         Interlocked.Exchange(ref keyedStrategies, newDictionary);
                     }

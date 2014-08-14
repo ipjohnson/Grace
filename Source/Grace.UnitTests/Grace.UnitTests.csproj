@@ -176,6 +176,7 @@
     <Compile Include="DependencyInjection\Impl\SimpleExportStrategyTests.cs" />
     <Compile Include="DependencyInjection\Impl\SimpleSecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\InjectionContextTests.cs" />
+    <Compile Include="DependencyInjection\KeyedTests.cs" />
     <Compile Include="DependencyInjection\LazyTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonLifecycleTests.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerNamedScopeTests.cs" />

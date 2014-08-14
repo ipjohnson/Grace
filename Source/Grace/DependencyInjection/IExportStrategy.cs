@@ -62,7 +62,13 @@ namespace Grace.DependencyInjection
 		[NotNull]
 		IEnumerable<Type> ExportTypes { get; }
 
-		/// <summary>
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        [NotNull]
+        IEnumerable<Tuple<Type, object>> KeyedExportTypes { get; }
+            
+        /// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
 		ExportEnvironment Environment { get; }

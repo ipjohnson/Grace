@@ -21,6 +21,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="configuration">configuration object</param>
 		/// <returns>configuration object</returns>
+		[Obsolete("Please use Lifestyle.SingletonPerInjection")]
 		public static IFluentExportStrategyConfiguration AndSingletonPerInjectionContext(this IFluentExportStrategyConfiguration configuration)
 		{
 			configuration.UsingLifestyle(new SingletonPerInjectionContextLifestyle());
@@ -33,6 +34,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="configuration">configuration object</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerInjection")]
 		public static IFluentExportStrategyConfiguration<T> AndSingletonPerInjectionContext<T>(this IFluentExportStrategyConfiguration<T> configuration)
 		{
 			configuration.UsingLifestyle(new SingletonPerInjectionContextLifestyle());
@@ -49,6 +51,7 @@ namespace Grace.DependencyInjection
 		/// <param name="configuration">configuration object</param>
 		/// <param name="metadataObject">metadata to match</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerAncestor")]
 		public static IFluentExportStrategyConfiguration AndSingletonPerAncestor<TAncestor>(this IFluentExportStrategyConfiguration configuration, object metadataObject = null)
 		{
 			configuration.UsingLifestyle(new SingletonPerAncestorLifestyle(typeof(TAncestor), metadataObject));
@@ -63,6 +66,7 @@ namespace Grace.DependencyInjection
 		/// <param name="configuration">configuration object</param>
 		/// <param name="metadata">metadata to match</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerAncestor")]
 		public static IFluentExportStrategyConfiguration AndSingletonPerAncestor<TAncestor>(this IFluentExportStrategyConfiguration configuration, IEnumerable<KeyValuePair<string, object>> metadata)
 		{
 			configuration.UsingLifestyle(new SingletonPerAncestorLifestyle(typeof(TAncestor), metadata));
@@ -78,6 +82,7 @@ namespace Grace.DependencyInjection
 		/// <param name="configuration">configuration object</param>
 		/// <param name="metadata">metadata to match</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerAncestor")]
 		public static IFluentExportStrategyConfiguration<T> AndSingletonPerAncestor<T, TAncestor>(this IFluentExportStrategyConfiguration<T> configuration, IEnumerable<KeyValuePair<string, object>> metadata)
 		{
 			configuration.UsingLifestyle(new SingletonPerAncestorLifestyle(typeof(TAncestor), metadata));
@@ -92,6 +97,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="configuration">configuration object</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerRequest")]
 		public static IFluentExportStrategyConfiguration AndSingletonPerRequest(this IFluentExportStrategyConfiguration configuration)
 		{
 			configuration.UsingLifestyle(new SingletonPerRequestLifestyle());
@@ -104,6 +110,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="configuration">configuration object</param>
 		/// <returns>configuration object</returns>
+        [Obsolete("Please use Lifestyle.SingletonPerRequest")]
 		public static IFluentExportStrategyConfiguration<T> AndSingletonPerRequest<T>(this IFluentExportStrategyConfiguration<T> configuration)
 		{
 			configuration.UsingLifestyle(new SingletonPerRequestLifestyle());
@@ -206,6 +213,5 @@ namespace Grace.DependencyInjection
 		}
 
 		#endregion
-
-	}
+    }
 }

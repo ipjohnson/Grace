@@ -11,12 +11,11 @@ namespace Grace.DependencyInjection
 	/// <typeparam name="T"></typeparam>
 	public interface IFluentExportInstanceConfiguration<T>
 	{
-		/// <summary>
-		/// Export the type with the specified priority
-		/// </summary>
-		/// <param name="priority"></param>
-		/// <returns></returns>
-		IFluentExportInstanceConfiguration<T> WithPriority(int priority);
+        /// <summary>
+        /// Adds a condition to the export
+        /// </summary>
+        /// <param name="condition"></param>
+        IFluentExportInstanceConfiguration<T> AndCondition(IExportCondition condition);
 
 		/// <summary>
 		/// Export as a specific type (usually an interface)
@@ -32,12 +31,22 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportInstanceConfiguration<T> As(Type exportType);
 
-		/// <summary>
-		/// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
-		/// </summary>
-		/// <param name="environment"></param>
-		/// <returns></returns>
-		IFluentExportInstanceConfiguration<T> InEnvironment(ExportEnvironment environment);
+        /// <summary>
+        /// Export this type as particular type under the specified key
+        /// </summary>
+        /// <typeparam name="TExportType">export type</typeparam>
+        /// <typeparam name="TKey">type of key</typeparam>
+        /// <param name="key">key to export under</param>
+        /// <returns>configuration object</returns>
+        IFluentExportInstanceConfiguration<T> AsKeyed<TExportType, TKey>(TKey key);
+
+        /// <summary>
+        /// Export this type as particular type under the specified key
+        /// </summary>
+        /// <param name="exportType">type to export under</param>
+        /// <param name="key">export key</param>
+        /// <returns>configuration object</returns>
+        IFluentExportInstanceConfiguration<T> AsKeyed(Type exportType, object key);
 
 		/// <summary>
 		/// Export the type under the specified name
@@ -46,24 +55,44 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportInstanceConfiguration<T> AsName(string name);
 
+        /// <summary>
+        /// You can provide a cleanup method to be called 
+        /// </summary>
+        /// <param name="disposalCleanupDelegate"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate);
+        
+        /// <summary>
+        /// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> InEnvironment(ExportEnvironment environment);
+
+        /// <summary>
+        /// Configure the export lifestyle
+        /// </summary>
+        InstanceLifestyleConfiguration<T> Lifestyle { get; }
+        
+        /// <summary>
+        /// Adds a condition to the export
+        /// </summary>
+        /// <param name="conditionDelegate"></param>
+        IFluentExportInstanceConfiguration<T> Unless(ExportConditionDelegate conditionDelegate);
+
+        /// <summary>
+        /// Specify a lifestyle to use with the export
+        /// </summary>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> UsingLifestyle(ILifestyle lifestyle);
+
 		/// <summary>
 		/// Adds a condition to the export
 		/// </summary>
 		/// <param name="conditionDelegate"></param>
 		IFluentExportInstanceConfiguration<T> When(ExportConditionDelegate conditionDelegate);
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="conditionDelegate"></param>
-		IFluentExportInstanceConfiguration<T> Unless(ExportConditionDelegate conditionDelegate);
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="condition"></param>
-		IFluentExportInstanceConfiguration<T> AndCondition(IExportCondition condition);
-
+        
 		/// <summary>
 		/// Applies a new WhenInjectedInto condition on the export, using the export only when injecting into the specified class
 		/// </summary>
@@ -100,23 +129,11 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportInstanceConfiguration<T> WithMetadata(string metadataName, object metadataValue);
 
-		/// <summary>
-		/// You can provide a cleanup method to be called 
-		/// </summary>
-		/// <param name="disposalCleanupDelegate"></param>
-		/// <returns></returns>
-		IFluentExportInstanceConfiguration<T> DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate);
-
         /// <summary>
-        /// Configure the export lifestyle
+        /// Export the type with the specified priority
         /// </summary>
-        InstanceLifestyleConfiguration<T> Lifestyle { get; }
-            
-        /// <summary>
-		/// Specify a lifestyle to use with the export
-		/// </summary>
-		/// <param name="lifestyle"></param>
-		/// <returns></returns>
-		IFluentExportInstanceConfiguration<T> UsingLifestyle(ILifestyle lifestyle);
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> WithPriority(int priority);
 	}
 }

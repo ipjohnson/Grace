@@ -326,7 +326,7 @@ namespace Grace.DependencyInjection.Impl
 
 					if (exportNames != null)
 					{
-						foreach (string exportName in exportStrategy.ExportNames)
+                        foreach (string exportName in exportNames)
 						{
 							string lowerName = exportName.ToLowerInvariant();
 							ExportStrategyCollection currentCollection;
@@ -338,7 +338,7 @@ namespace Grace.DependencyInjection.Impl
 								newExportsByName[lowerName] = currentCollection;
 							}
 
-							currentCollection.AddExport(exportStrategy);
+							currentCollection.AddExport(exportStrategy, exportStrategy.Key);
 						}
 					}
 				}
@@ -357,7 +357,7 @@ namespace Grace.DependencyInjection.Impl
 
 					if (exportTypes != null)
 					{
-						foreach (Type exportType in exportStrategy.ExportTypes)
+                        foreach (Type exportType in exportTypes)
 						{
 							ExportStrategyCollection currentCollection;
 
@@ -368,9 +368,28 @@ namespace Grace.DependencyInjection.Impl
 								newExportsByType[exportType] = currentCollection;
 							}
 
-							currentCollection.AddExport(exportStrategy);
+							currentCollection.AddExport(exportStrategy, exportStrategy.Key);
 						}
 					}
+
+				    IEnumerable<Tuple<Type, object>> keyedExportTypes = exportStrategy.KeyedExportTypes;
+
+				    if (keyedExportTypes != null)
+				    {
+				        foreach (Tuple<Type, object> keyedExportType in keyedExportTypes)
+				        {
+                            ExportStrategyCollection currentCollection;
+
+                            if (!newExportsByType.TryGetValue(keyedExportType.Item1, out currentCollection))
+                            {
+                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+
+                                newExportsByType[keyedExportType.Item1] = currentCollection;
+                            }
+
+                            currentCollection.AddExport(exportStrategy, keyedExportType.Item2);  
+				        }
+				    }
 				}
 
 			    Interlocked.Exchange(ref exportsByType, newExportsByType);
@@ -1237,31 +1256,50 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="knownStrategy">strategy to remove</param>
 		public void RemoveStrategy(IExportStrategy knownStrategy)
 		{
-			if (knownStrategy.ExportNames != null)
+		    var exportNames = knownStrategy.ExportNames;
+
+            if (exportNames != null)
 			{
-				foreach (string exportName in knownStrategy.ExportNames)
+                foreach (string exportName in exportNames)
 				{
 					ExportStrategyCollection collection;
 
 					if (exportsByName.TryGetValue(exportName, out collection))
 					{
-						collection.RemoveExport(knownStrategy);
+						collection.RemoveExport(knownStrategy, knownStrategy.Key);
 					}
 				}
 			}
 
-			if (knownStrategy.ExportTypes != null)
+		    var exportTypes = knownStrategy.ExportTypes;
+
+            if (exportTypes != null)
 			{
-				foreach (Type exportType in knownStrategy.ExportTypes)
+                foreach (Type exportType in exportTypes)
 				{
 					ExportStrategyCollection collection;
 
 					if (exportsByType.TryGetValue(exportType, out collection))
 					{
-						collection.RemoveExport(knownStrategy);
+						collection.RemoveExport(knownStrategy, knownStrategy.Key);
 					}
 				}
 			}
+
+		    var keyedExportTypes = knownStrategy.KeyedExportTypes;
+
+		    if (keyedExportTypes != null)
+		    {
+		        foreach (Tuple<Type, object> keyedExportType in keyedExportTypes)
+		        {
+                    ExportStrategyCollection collection;
+
+                    if (exportsByType.TryGetValue(keyedExportType.Item1, out collection))
+                    {
+                        collection.RemoveExport(knownStrategy, keyedExportType.Item2);
+                    }
+		        }
+		    }
 		}
 
 		/// <summary>

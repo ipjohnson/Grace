@@ -17,7 +17,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			collection.AddExport(new FauxExportStrategy(() => 5));
+			collection.AddExport(new FauxExportStrategy(() => 5), null);
 
 			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 		}
@@ -30,7 +30,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			collection.AddExport(new FauxExportStrategy(() => 5));
+			collection.AddExport(new FauxExportStrategy(() => 5), null);
 
 			collection.Dispose();
 
@@ -47,13 +47,13 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy tenExport = new FauxExportStrategy(() => 10) { Priority = 10 };
 
-			collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 });
-			collection.AddExport(tenExport);
-			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
+			collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
+            collection.AddExport(tenExport, null);
+            collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 }, null);
 
 			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
-			collection.RemoveExport(tenExport);
+            collection.RemoveExport(tenExport, null);
 
 			Assert.Equal(5, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 			Assert.Equal(2, collection.ActivateAll<int>(new FauxInjectionContext(), null, null).Count());
@@ -67,9 +67,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 });
-			collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 });
-			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
+            collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 }, null);
 
 			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 		}
@@ -84,18 +84,18 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
 			                     {
-				                     Environment = ExportEnvironment.RunTime
-			                     });
+			                         Environment = ExportEnvironment.RunTime
+                                 }, null);
+
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
 			                     {
-				                     Environment =
-					                     ExportEnvironment.DesignTime
-			                     });
+			                         Environment =ExportEnvironment.DesignTime
+                                 }, null);
+
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest)
 			                     {
-				                     Environment =
-					                     ExportEnvironment.UnitTest
-			                     });
+			                         Environment = ExportEnvironment.UnitTest
+                                 }, null);
 
 			Assert.Equal(ExportEnvironment.RunTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
@@ -112,18 +112,18 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
 			                     {
-				                     Environment = ExportEnvironment.RunTime
-			                     });
+			                         Environment = ExportEnvironment.RunTime
+                                 }, null);
+
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
 			                     {
-				                     Environment =
-					                     ExportEnvironment.DesignTime
-			                     });
+			                         Environment = ExportEnvironment.DesignTime
+                                 }, null);
+
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest)
 			                     {
-				                     Environment =
-					                     ExportEnvironment.UnitTest
-			                     });
+			                         Environment = ExportEnvironment.UnitTest
+                                 }, null);
 
 			Assert.Equal(ExportEnvironment.DesignTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
@@ -140,18 +140,20 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
 			                     {
-				                     Environment = ExportEnvironment.RunTime
-			                     });
+			                         Environment = ExportEnvironment.RunTime
+                                 }, null);
+
 			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
 			                     {
-				                     Environment =
-					                     ExportEnvironment.DesignTime
-			                     });
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest)
+			                         Environment =
+			                             ExportEnvironment.DesignTime
+                                 }, null);
+
+			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest) 
 			                     {
-				                     Environment =
-					                     ExportEnvironment.UnitTest
-			                     });
+			                         Environment =
+			                             ExportEnvironment.UnitTest
+                                 }, null);
 
 			Assert.Equal(ExportEnvironment.UnitTest, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 
@@ -166,9 +168,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 });
-			collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 });
-			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
+            collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 }, null);
 
 			List<int> exports = new List<int>(collection.ActivateAll<int>(new FauxInjectionContext(), null, null));
 
@@ -186,9 +188,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 });
-			collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 });
-			collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 });
+            collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
+            collection.AddExport(new FauxExportStrategy(() => 1) { Priority = 1 }, null);
 
 			List<int> exports =
 				new List<int>(collection.ActivateAll<int>(new FauxInjectionContext(),

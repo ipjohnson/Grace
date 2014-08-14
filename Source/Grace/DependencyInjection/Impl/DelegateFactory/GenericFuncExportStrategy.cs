@@ -205,6 +205,14 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			get { yield return typeof(Func<TIn, TOut>); }
 		}
+
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+        {
+            get { return new Tuple<Type, object>[0]; }
+        }
 	}
 
 	/// <summary>
@@ -275,6 +283,14 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			get { yield return typeof(Func<TIn1, TIn2, TOut>); }
 		}
+
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+        {
+            get { return new Tuple<Type, object>[0]; }
+        }
 	}
 
 	/// <summary>
@@ -347,6 +363,14 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			get { yield return typeof(Func<TIn1, TIn2, TIn3, TOut>); }
 		}
+
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+        {
+            get { return new Tuple<Type, object>[0]; }
+        }
 	}
 
 	/// <summary>
@@ -422,6 +446,14 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TOut>); }
 		}
+
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+        {
+            get { return new Tuple<Type, object>[0]; }
+        }
 	}
 
 	/// <summary>
@@ -501,5 +533,13 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		{
 			get { yield return typeof(Func<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>); }
 		}
+
+        /// <summary>
+        /// List of keyed interface to export under
+        /// </summary>
+        public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+        {
+            get { return new Tuple<Type, object>[0]; }
+        }
 	}
 }

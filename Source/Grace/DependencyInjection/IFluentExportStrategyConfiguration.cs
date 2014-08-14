@@ -69,6 +69,23 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration AsName(string name);
 
+        /// <summary>
+        /// Export this type as particular type under the specified key
+        /// </summary>
+        /// <typeparam name="T">export type</typeparam>
+        /// <typeparam name="TKey">type of key</typeparam>
+        /// <param name="key">key to export under</param>
+        /// <returns>configuration object</returns>
+	    IFluentExportStrategyConfiguration AsKeyed<T, TKey>(TKey key);
+
+        /// <summary>
+        /// Export this type as particular type under the specified key
+        /// </summary>
+        /// <param name="exportType">type to export under</param>
+        /// <param name="key">export key</param>
+        /// <returns>configuration object</returns>
+	    IFluentExportStrategyConfiguration AsKeyed(Type exportType, object key);
+
 		/// <summary>
 		/// Marks all properties on the object for injection
 		/// Note: Only public writeable properties will be imported
@@ -298,6 +315,23 @@ namespace Grace.DependencyInjection
 		/// <param name="exportType"></param>
 		/// <returns></returns>
 		IFluentExportStrategyConfiguration<T> As(Type exportType);
+
+	    /// <summary>
+	    /// Export this type as particular type under the specified key
+	    /// </summary>
+	    /// <typeparam name="TExportType">export type</typeparam>
+	    /// <typeparam name="TKey">type of key</typeparam>
+	    /// <param name="key">key to export under</param>
+	    /// <returns>configuration object</returns>
+	    IFluentExportStrategyConfiguration<T> AsKeyed<TExportType, TKey>(TKey key);
+
+        /// <summary>
+        /// Export this type as particular type under the specified key
+        /// </summary>
+        /// <param name="exportType">type to export under</param>
+        /// <param name="key">export key</param>
+        /// <returns>configuration object</returns>
+        IFluentExportStrategyConfiguration<T> AsKeyed(Type exportType, object key);
 		
 		/// <summary>
 		/// Export the type under the specified name

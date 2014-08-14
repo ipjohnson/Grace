@@ -111,7 +111,17 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.AsName(name);
 		}
 
-		/// <summary>
+	    public IFluentExportStrategyConfiguration AsKeyed<T, TKey>(TKey key)
+	    {
+	        return strategy.AsKeyed<T, TKey>(key);
+	    }
+
+	    public IFluentExportStrategyConfiguration AsKeyed(Type exportType, object key)
+	    {
+	        return strategy.AsKeyed(exportType, key);
+	    }
+
+	    /// <summary>
 		/// Export will be treated as a singleton for the lifetime of the container
 		/// </summary>
 		/// <returns>configuration object</returns>
@@ -422,7 +432,17 @@ namespace Grace.DependencyInjection.Impl
 			return strategy.As(exportType);
 		}
 
-		/// <summary>
+	    public IFluentExportStrategyConfiguration<T> AsKeyed<TExportType, TKey>(TKey key)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    IFluentExportStrategyConfiguration<T> IFluentExportStrategyConfiguration<T>.AsKeyed(Type exportType, object key)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Export the type by the interfaces it implements
 		/// </summary>
 		/// <returns></returns>
@@ -457,6 +477,11 @@ namespace Grace.DependencyInjection.Impl
 	    public LifestyleConfiguration<T> Lifestyle
 	    {
 	        get { return strategy.Lifestyle; }
+	    }
+
+	    public IFluentExportStrategyConfiguration AsKeyed(Type exportType, object key)
+	    {
+	        throw new NotImplementedException();
 	    }
 
 	    /// <summary>

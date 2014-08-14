@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Grace.DependencyInjection.Impl
 
             public bool AfterConstruction { get; set; }
 
-            public Func<Type, bool> TypeFilter { get; set; }
+            public Func<PropertyInfo, bool> PropertyFilter { get; set; }
 
             public ExportStrategyFilter Consider { get; set; }
 
@@ -152,11 +153,20 @@ namespace Grace.DependencyInjection.Impl
         {
             if (importPropertiesList.Count > 0)
             {
-                importPropertiesList[importPropertiesList.Count - 1].TypeFilter = filter;
+                importPropertiesList[importPropertiesList.Count - 1].PropertyFilter = p => filter(p.PropertyType);
             }
 
             return this;
         }
 
+        IExportTypeSetImportPropertyConfiguration IExportTypeSetImportPropertyConfiguration.Matching(Func<PropertyInfo, bool> matchingFilter)
+        {
+            if (importPropertiesList.Count > 0)
+            {
+                importPropertiesList[importPropertiesList.Count - 1].PropertyFilter = matchingFilter;
+            }
+
+            return this;
+        }
     }
 }

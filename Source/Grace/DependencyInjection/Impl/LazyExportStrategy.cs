@@ -114,7 +114,15 @@ namespace Grace.DependencyInjection.Impl
 			get { yield return typeof(Lazy<T>); }
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// List of keyed interface to export under
+	    /// </summary>
+	    public IEnumerable<Tuple<Type, object>> KeyedExportTypes
+	    {
+            get { return new Tuple<Type, object>[0]; }
+	    }
+
+	    /// <summary>
 		/// What environement is this strategy being exported under.
 		/// </summary>
 		public ExportEnvironment Environment

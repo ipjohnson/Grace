@@ -25,15 +25,20 @@ namespace Grace.Utilities
         /// Store uniqueness at end useful for MSSQL as it uses the last 6 digits of the guid first
         /// </summary>
         SequentialAtEnd
-    } 
+    }
 
     /// <summary>
     /// This is a utility class for creating sequential guids down to the millisecond 
     /// </summary>
     public static class SequentialGuid
     {
+        private static Random _globalRandom = new Random();
+
         [ThreadStatic]
         private static Random _random;
+
+        [ThreadStatic]
+        private static ushort _count;
 
         /// <summary>
         /// Default Type of Guid to generate
@@ -48,12 +53,15 @@ namespace Grace.Utilities
         /// <returns></returns>
         public static Guid Next(SequentialGuidType? guidType = null)
         {
-            byte[] randomBytes = new byte[10];
-
             if (_random == null)
             {
-                _random = new Random();
+                _random = new Random(_globalRandom.Next());
+                _count = (ushort)_random.Next();
             }
+
+            byte[] countBytes = BitConverter.GetBytes(_count++);
+
+            byte[] randomBytes = new byte[10 - countBytes.Length];
 
             _random.NextBytes(randomBytes);
 
@@ -77,7 +85,8 @@ namespace Grace.Utilities
                 case SequentialGuidType.SequentialAsString:
                 case SequentialGuidType.SequentialAsBinary:
                     Buffer.BlockCopy(timestampBytes, 2, guidBytes, 0, 6);
-                    Buffer.BlockCopy(randomBytes, 0, guidBytes, 6, 10);
+                    Buffer.BlockCopy(countBytes, 0, guidBytes, 6, countBytes.Length);
+                    Buffer.BlockCopy(randomBytes, 0, guidBytes, 6 + countBytes.Length, randomBytes.Length);
 
                     // If formatting as a string, we have to reverse the order
                     // of the Data1 and Data2 blocks on little-endian systems.
@@ -89,7 +98,8 @@ namespace Grace.Utilities
                     break;
 
                 case SequentialGuidType.SequentialAtEnd:
-                    Buffer.BlockCopy(randomBytes, 0, guidBytes, 0, 10);
+                    Buffer.BlockCopy(countBytes, 0, guidBytes, 0, countBytes.Length);
+                    Buffer.BlockCopy(randomBytes, 0, guidBytes, countBytes.Length, randomBytes.Length);
                     Buffer.BlockCopy(timestampBytes, 2, guidBytes, 10, 6);
                     break;
             }

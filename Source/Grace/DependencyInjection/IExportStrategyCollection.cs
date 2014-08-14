@@ -75,16 +75,18 @@ namespace Grace.DependencyInjection
 							ExportStrategyFilter filter, 
 							object locateKey);
 
-		/// <summary>
-		/// Add an export strategy to the collection
-		/// </summary>
-		/// <param name="exportStrategy">new export strategy</param>
-		void AddExport(IExportStrategy exportStrategy);
+	    /// <summary>
+	    /// Add an export strategy to the collection
+	    /// </summary>
+	    /// <param name="exportStrategy">new export strategy</param>
+	    /// <param name="key"></param>
+	    void AddExport(IExportStrategy exportStrategy, object key);
 
-		/// <summary>
-		/// Remove an export strategy from the collection
-		/// </summary>
-		/// <param name="exportStrategy">old export strategy</param>
-		void RemoveExport(IExportStrategy exportStrategy);
+	    /// <summary>
+	    /// Remove an export strategy from the collection
+	    /// </summary>
+	    /// <param name="exportStrategy">old export strategy</param>
+	    /// <param name="key"></param>
+	    void RemoveExport(IExportStrategy exportStrategy, object key);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl;
@@ -88,6 +89,13 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate);
 
+        /// <summary>
+        /// Export a type by a set of keyed types
+        /// </summary>
+        /// <param name="keyedDelegate">keyed types</param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type,object>>> keyedDelegate);
+
 		/// <summary>
 		/// Export by a particular name 
 		/// </summary>
@@ -155,7 +163,7 @@ namespace Grace.DependencyInjection
 		/// <param name="propertyType"></param>
 		/// <returns></returns>
 		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType);
-
+        
 		/// <summary>
 		/// Export in the specified Environment
 		/// </summary>
@@ -334,5 +342,12 @@ namespace Grace.DependencyInjection
 		/// <param name="filter">type filter</param>
 		/// <returns>configuration object</returns>
 		IExportTypeSetImportPropertyConfiguration OnlyOn(Func<Type, bool> filter);
+
+        /// <summary>
+        /// Import only properties that match the filter
+        /// </summary>
+        /// <param name="matchingFilter">matching filter</param>
+        /// <returns>configuration object</returns>
+	    IExportTypeSetImportPropertyConfiguration Matching(Func<PropertyInfo, bool> matchingFilter);
 	}
 }

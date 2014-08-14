@@ -178,6 +178,20 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IFluentExportStrategyConfiguration AsKeyed<T, TKey>(TKey key)
+        {
+            exportStrategy.AddKeyedExportType(typeof(T), key);
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration AsKeyed(Type exportType, object key)
+        {
+            exportStrategy.AddKeyedExportType(exportType, key);
+
+            return this;
+        }
+
         /// <summary>
         /// Export will be treated as a singleton for the lifetime of the container
         /// </summary>
@@ -483,6 +497,20 @@ namespace Grace.DependencyInjection.Impl
             }
 
             exportStrategy.AddExportType(exportType);
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> AsKeyed<TExportType, TKey>(TKey key)
+        {
+            exportStrategy.AddKeyedExportType(typeof(TExportType), key);
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> AsKeyed(Type exportType, object key)
+        {
+            exportStrategy.AddKeyedExportType(exportType, key);
 
             return this;
         }

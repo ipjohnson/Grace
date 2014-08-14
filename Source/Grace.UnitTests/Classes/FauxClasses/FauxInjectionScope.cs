@@ -143,7 +143,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 					exports[exportType] = collection;
 				}
 
-				collection.AddExport(addStrategy);
+                collection.AddExport(addStrategy, null);
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			{
 				if (exports.TryGetValue(exporType, out collection))
 				{
-					collection.RemoveExport(knownStrategy);
+                    collection.RemoveExport(knownStrategy, null);
 				}
 			}
 		}
