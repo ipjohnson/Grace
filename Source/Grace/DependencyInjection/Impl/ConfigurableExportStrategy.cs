@@ -18,8 +18,8 @@ namespace Grace.DependencyInjection.Impl
     {
         private ILog _log;
         private bool _allowingFiltering = true;
-        protected ImmutableArray<IExportCondition> _conditions;
         protected bool _disposed;
+        protected ImmutableArray<IExportCondition> _conditions;
         protected ImmutableArray<EnrichWithDelegate> _enrichWithDelegates;
         protected ImmutableArray<string> _exportNames;
         protected ImmutableArray<Type> _exportTypes;
@@ -46,7 +46,8 @@ namespace Grace.DependencyInjection.Impl
             _keyedExportTypes = ImmutableArray<Tuple<Type, object>>.Empty;
             _enrichWithDelegates = ImmutableArray<EnrichWithDelegate>.Empty;
             _secondaryExports = ImmutableArray<IExportStrategy>.Empty;
-
+            _conditions = ImmutableArray<IExportCondition>.Empty;
+            
             Environment = ExportEnvironment.Any;
         }
 
@@ -157,7 +158,7 @@ namespace Grace.DependencyInjection.Impl
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            _exportNames.Add(exportName);
+            _exportNames = _exportNames.Add(exportName);
         }
 
         /// <summary>
@@ -171,9 +172,14 @@ namespace Grace.DependencyInjection.Impl
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            _exportTypes.Add(exportType);
+            _exportTypes = _exportTypes.Add(exportType);
         }
 
+        /// <summary>
+        /// Add Keyed export type
+        /// </summary>
+        /// <param name="exportType"></param>
+        /// <param name="key"></param>
         public void AddKeyedExportType(Type exportType, object key)
         {
             if (_locked)
@@ -181,7 +187,7 @@ namespace Grace.DependencyInjection.Impl
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            _keyedExportTypes.Add(new Tuple<Type, object>(exportType, key));
+            _keyedExportTypes = _keyedExportTypes.Add(new Tuple<Type, object>(exportType, key));
         }
 
         public virtual ExportEnvironment Environment { get; private set; }
@@ -266,7 +272,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public virtual bool MeetsCondition(IInjectionContext injectionContext)
         {
-            if (_conditions == null)
+            if (_conditions.Length == 0)
             {
                 return true;
             }

@@ -161,5 +161,52 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 															OrderByDescending(x => x.GetParameters().Count()).
 															FirstOrDefault();
 		}
+
+        private class CustomConstructorEnrichmentLinqExpressionContext : ICustomConstructorEnrichmentLinqExpressionContext
+        {
+            private InstanceCompiledExportDelegate _instanceCompiledExport;
+
+            public CustomConstructorEnrichmentLinqExpressionContext(
+                InstanceCompiledExportDelegate instanceCompiledExport)
+            {
+                _instanceCompiledExport = instanceCompiledExport;
+            }
+
+            public BlockExpression GetConstructorExpression(out ConstructorInfo constructorInfo, out IEnumerable<ParameterExpression> constructorParameters)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ParameterExpression GetLocateDependencyExpression(Type importType = null,
+                IInjectionTargetInfo targetInfo = null,
+                string exportName = null,
+                string variableName = null,
+                bool isRequired = true,
+                IExportValueProvider valueProvider = null,
+                ExportStrategyFilter exportStrategyFilter = null,
+                ILocateKeyValueProvider locateKey = null,
+                object comparerObject = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ParameterExpression GetLocateDependencyExpression(Type importType = null,
+                string importName = null,
+                IInjectionTargetInfo targetInfo = null,
+                string variableName = null,
+                bool isRequired = true,
+                IExportValueProvider valueProvider = null,
+                ExportStrategyFilter exportStrategyFilter = null,
+                ILocateKeyValueProvider locateKey = null,
+                object comparerObject = null)
+            {
+                if (importType == null && importName == null)
+                {
+                    throw new ArgumentException("GetLocateDependencyExpression must be called with importType or ");
+                }
+
+                return null;
+            }
+        }
 	}
 }
