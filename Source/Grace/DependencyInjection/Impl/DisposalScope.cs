@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Grace.Data.Immutable;
 using Grace.Logging;
 
 namespace Grace.DependencyInjection.Impl
@@ -151,7 +152,7 @@ namespace Grace.DependencyInjection.Impl
 					return disposables.Select(x => x.Item1).ToArray();
 				}
 
-				return new IDisposable[0];
+				return ImmutableArray<IDisposable>.Empty;
 			}
 		}
 	}

@@ -120,9 +120,17 @@ namespace Grace.Data.Immutable
         }
 
         /// <summary>
-        /// Count of list
+        /// Length of the array
         /// </summary>
         public int Count
+        {
+            get { return _list.Length; }
+        }
+
+        /// <summary>
+        /// Length of the array
+        /// </summary>
+        public int Length
         {
             get { return _list.Length; }
         }

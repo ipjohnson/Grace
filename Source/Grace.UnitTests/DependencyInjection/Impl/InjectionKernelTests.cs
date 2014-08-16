@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl;
@@ -1027,7 +1028,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			FauxExportStrategy basicExport = new FauxExportStrategy(() => new BasicService());
 
-			basicExport.ExportNames = new string[0];
+			basicExport.ExportNames = ImmutableArray<string>.Empty;
 			basicExport.ExportTypes = new[] { typeof(IBasicService) };
 
 			injectionKernel.Configure(c => c.AddExportStrategy(basicExport));

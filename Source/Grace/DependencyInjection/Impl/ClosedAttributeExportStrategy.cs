@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (strategy != null &&
 			    strategy.CreatingStrategy == CreatingStrategy &&
-			    strategy.exportType == exportType)
+			    strategy._exportType == _exportType)
 			{
 				return true;
 			}
@@ -42,17 +42,17 @@ namespace Grace.DependencyInjection.Impl
 
 		protected override void ProcessExportAttribute(IExportAttribute exportAttribute)
 		{
-			foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
+			foreach (string provideExportName in exportAttribute.ProvideExportNames(_exportType))
 			{
 				AddExportName(provideExportName);
 			}
 
-			foreach (Type provideExportType in exportAttribute.ProvideExportTypes(exportType))
+			foreach (Type provideExportType in exportAttribute.ProvideExportTypes(_exportType))
 			{
 				if (provideExportType.GetTypeInfo().IsGenericTypeDefinition)
 				{
 					Type closedType =
-						provideExportType.MakeGenericType(exportType.GetTypeInfo().GenericTypeArguments);
+						provideExportType.MakeGenericType(_exportType.GetTypeInfo().GenericTypeArguments);
 
 					AddExportType(closedType);
 				}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 
@@ -101,14 +102,14 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			IInjectionContext injectionContext,
 			ExportStrategyFilter exportFilter = null)
 		{
-			return new IExportStrategy[0];
+			return ImmutableArray<IExportStrategy>.Empty;
 		}
 
 		public IEnumerable<IExportStrategy> GetStrategies(Type exportType,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter exportFilter = null)
 		{
-			return new IExportStrategy[0];
+			return ImmutableArray<IExportStrategy>.Empty;
 		}
 
 		public IExportStrategyCollection GetStrategyCollection(Type exportType)

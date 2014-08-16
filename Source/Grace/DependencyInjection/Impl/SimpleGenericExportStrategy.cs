@@ -39,7 +39,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IExportStrategy CreateClosedStrategy(Type requestingType)
 		{
-			Type closedType = OpenGenericUtilities.CreateClosedExportTypeFromRequestingType(exportType, requestingType);
+			Type closedType = OpenGenericUtilities.CreateClosedExportTypeFromRequestingType(_exportType, requestingType);
 
 			if(closedType != null)
 			{
@@ -55,9 +55,9 @@ namespace Grace.DependencyInjection.Impl
 					newExportStrategy.AddExportName(exportName);
 				}
 
-				if (exportTypes != null)
+				if (_exportTypes != null)
 				{
-					foreach (Type type in exportTypes)
+					foreach (Type type in _exportTypes)
 					{
 						Type newExportType = null;
 
@@ -91,9 +91,9 @@ namespace Grace.DependencyInjection.Impl
 					newExportStrategy.SetLifestyleContainer(Lifestyle.Clone());
 				}
 
-				if (enrichWithDelegates != null)
+				if (_enrichWithDelegates != null)
 				{
-					foreach (var item in enrichWithDelegates)
+					foreach (var item in _enrichWithDelegates)
 					{
 						newExportStrategy.EnrichWithDelegate(item);
 					}

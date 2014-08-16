@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
         public void Dispose()
         {
-
+            // don't do anything all disposal of objects created is handled by the named scope
         }
 
         public bool Transient

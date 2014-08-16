@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data.Immutable;
 
 namespace Grace.Validation.Attributes
 {
@@ -56,7 +57,7 @@ namespace Grace.Validation.Attributes
 
 		public IEnumerable<string> GetPropertiesToValidate(Type objectType, IEnumerable<string> standards)
 		{
-			return new string[0];
+			return ImmutableArray<string>.Empty;
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection.Impl
 			ConcreteAttributeExportStrategy strategy = obj as ConcreteAttributeExportStrategy;
 
 			if (strategy != null &&
-			    strategy.exportType == exportType &&
+			    strategy._exportType == _exportType &&
 			    OwningScope == strategy.OwningScope)
 			{
 				return true;

@@ -60,9 +60,9 @@ namespace Grace.DependencyInjection.Impl
 
 			try
 			{
-				if (lifestyle != null)
+				if (_lifestyle != null)
 				{
-					return lifestyle.Locate(activationDelegate, exportInjectionScope, context, this);
+					return _lifestyle.Locate(activationDelegate, exportInjectionScope, context, this);
 				}
 
 				return activationDelegate(exportInjectionScope, context);
@@ -199,11 +199,11 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		protected virtual CompiledExportDelegateInfo GetCompiledInfo()
 		{
-			delegateInfo.IsTransient = lifestyle == null || lifestyle.Transient;
+			delegateInfo.IsTransient = _lifestyle == null || _lifestyle.Transient;
 
-			if (enrichWithDelegates != null)
+			if (_enrichWithDelegates != null)
 			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				foreach (EnrichWithDelegate enrichWithDelegate in _enrichWithDelegates)
 				{
 					delegateInfo.EnrichWithDelegate(enrichWithDelegate);
 				}

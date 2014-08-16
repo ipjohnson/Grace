@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
 using JetBrains.Annotations;
 
@@ -14,10 +15,9 @@ namespace Grace.DependencyInjection.Lifestyle
 	/// </summary>
 	public sealed class LifetimeScope : IInjectionScope
 	{
-		private bool disposed;
-		private readonly IDisposalScope disposalScope;
-		private readonly object extraDataLock = new object();
-		private volatile Dictionary<string, object> extraData;
+		private readonly IDisposalScope _disposalScope;
+		private readonly object _extraDataLock = new object();
+		private volatile Dictionary<string, object> _extraData;
 
 		/// <summary>
 		/// Default lifetime scope
@@ -31,8 +31,8 @@ namespace Grace.DependencyInjection.Lifestyle
 				throw new ArgumentNullException("parentLocator");
 			}
 
-			disposalScope = new DisposalScope();
-			ScopeName = scopeName;
+			_disposalScope = new DisposalScope();
+			ScopeName = scopeName ?? string.Empty;
 			ScopeId = Guid.NewGuid();
 			ParentScope = parentLocator;
 		}
@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		public IEnumerable<ISecondaryExportLocator> SecondaryExportLocators
 		{
-			get { return new ISecondaryExportLocator[0]; }
+			get { return ImmutableArray<ISecondaryExportLocator>.Empty; }
 		}
 
 		/// <summary>
@@ -398,7 +398,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <param name="cleanupDelegate"></param>
 		public void AddDisposable(IDisposable disposable, BeforeDisposalCleanupDelegate cleanupDelegate = null)
 		{
-			disposalScope.AddDisposable(disposable, cleanupDelegate);
+			_disposalScope.AddDisposable(disposable, cleanupDelegate);
 		}
 
 		/// <summary>
@@ -407,7 +407,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <param name="disposable"></param>
 		public void RemoveDisposable(IDisposable disposable)
 		{
-			disposalScope.RemoveDisposable(disposable);
+			_disposalScope.RemoveDisposable(disposable);
 		}
 		#endregion
 
@@ -438,11 +438,11 @@ namespace Grace.DependencyInjection.Lifestyle
 		{
 			object returnValue = null;
 
-			if (extraData != null)
+			if (_extraData != null)
 			{
-				lock (extraDataLock)
+				lock (_extraDataLock)
 				{
-					extraData.TryGetValue(dataName, out returnValue);
+					_extraData.TryGetValue(dataName, out returnValue);
 				}
 			}
 
@@ -456,14 +456,14 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <param name="newValue"></param>
 		public void SetExtraData(string dataName, object newValue)
 		{
-			lock (extraDataLock)
+			lock (_extraDataLock)
 			{
-				if (extraData == null)
+				if (_extraData == null)
 				{
-					extraData = new Dictionary<string, object>();
+					_extraData = new Dictionary<string, object>();
 				}
 
-				extraData[dataName] = newValue;
+				_extraData[dataName] = newValue;
 			}
 		}
 
@@ -474,12 +474,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		public void Dispose()
 		{
-			if (disposed)
-			{
-				return;
-			}
-
-			disposalScope.Dispose();
+			_disposalScope.Dispose();
 		}
 
 		/// <summary>

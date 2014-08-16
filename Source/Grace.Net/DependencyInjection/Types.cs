@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
 using Grace.Logging;
 
@@ -119,7 +120,7 @@ namespace Grace.DependencyInjection
                 return loadedAssembly.DefinedTypes.Where(consider);
 	        }
 
-			return new Type[0];
+			return ImmutableArray<Type>.Empty;
 		}
 
 		/// <summary>

@@ -24,12 +24,12 @@ namespace Grace.DependencyInjection.Impl
 
 				if (exportAttribute != null)
 				{
-					foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
+					foreach (string provideExportName in exportAttribute.ProvideExportNames(_exportType))
 					{
 						AddExportName(provideExportName);
 					}
 
-					foreach (Type provideExportType in exportAttribute.ProvideExportTypes(exportType))
+					foreach (Type provideExportType in exportAttribute.ProvideExportTypes(_exportType))
 					{
 						AddExportType(provideExportType);
 					}
@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Impl
 	
 		public IExportStrategy CreateClosedStrategy(Type requestedType)
 		{
-			Type closedType = OpenGenericUtilities.CreateClosedExportTypeFromRequestingType(exportType, requestedType);
+			Type closedType = OpenGenericUtilities.CreateClosedExportTypeFromRequestingType(_exportType, requestedType);
 
 			if (closedType != null)
 			{

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Attributes
@@ -29,7 +30,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns>list of types to export by</returns>
 		public virtual IEnumerable<Type> ProvideExportTypes(Type attributedType)
 		{
-			return new Type[0];
+			return ImmutableArray<Type>.Empty;
 		}
 	}
 }

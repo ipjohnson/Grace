@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.DelegateFactory
@@ -9,6 +10,8 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 	/// </summary>
 	public abstract class BaseGenericDelegateExportStrategy : IExportStrategy
 	{
+        private readonly ExportMetadata _metadata = new ExportMetadata(null);
+
 		/// <summary>
 		/// Activate the object
 		/// </summary>
@@ -80,7 +83,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
         /// </summary>
         public IEnumerable<Tuple<Type, object>> KeyedExportTypes
         {
-            get { return new Tuple<Type, object>[0]; }
+            get { return ImmutableArray<Tuple<Type, object>>.Empty; }
         }
 
 	    /// <summary>
@@ -128,7 +131,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
 		/// </summary>
 		public IExportMetadata Metadata
 		{
-			get { return new ExportMetadata(null, new Dictionary<string, object>()); }
+            get { return _metadata; }
 		}
 
 		/// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Diagnostics;
@@ -15,28 +16,36 @@ namespace Grace.DependencyInjection.Impl
     [DebuggerTypeProxy(typeof(ConfigurableExportStrategyDiagnostic))]
     public abstract class ConfigurableExportStrategy : IConfigurableExportStrategy
     {
-        private ILog log;
-        private bool allowingFiltering = true;
-        protected List<IExportCondition> conditions;
-        protected bool disposed;
-        protected List<EnrichWithDelegate> enrichWithDelegates;
-        protected List<string> exportNames;
-        protected List<Type> exportTypes;
-        protected List<Tuple<Type, object>> keyedExportTypes;
-        protected Type exportType;
-        protected ILifestyle lifestyle;
-        private bool locked;
-        protected ExportMetadata metadata;
-        protected List<IExportStrategy> secondaryExports;
+        private ILog _log;
+        private bool _allowingFiltering = true;
+        protected ImmutableArray<IExportCondition> _conditions;
+        protected bool _disposed;
+        protected ImmutableArray<EnrichWithDelegate> _enrichWithDelegates;
+        protected ImmutableArray<string> _exportNames;
+        protected ImmutableArray<Type> _exportTypes;
+        protected ImmutableArray<Tuple<Type, object>> _keyedExportTypes;
+        protected ImmutableArray<IExportStrategy> _secondaryExports;
+        protected Type _exportType;
+        protected ILifestyle _lifestyle;
+        private bool _locked;
+        protected ExportMetadata _metadata;
 
+        /// <summary>
+        /// Default constructor takes the type to export
+        /// </summary>
+        /// <param name="exportType">export type</param>
         protected ConfigurableExportStrategy(Type exportType)
         {
             ActivationName = exportType.FullName;
             ActivationType = exportType;
-            exportNames = new List<string>();
-            exportTypes = new List<Type>();
-            keyedExportTypes = new List<Tuple<Type, object>>();
-            this.exportType = exportType;
+
+            _exportType = exportType;
+
+            _exportNames = ImmutableArray<string>.Empty;
+            _exportTypes = ImmutableArray<Type>.Empty;
+            _keyedExportTypes = ImmutableArray<Tuple<Type, object>>.Empty;
+            _enrichWithDelegates = ImmutableArray<EnrichWithDelegate>.Empty;
+            _secondaryExports = ImmutableArray<IExportStrategy>.Empty;
 
             Environment = ExportEnvironment.Any;
         }
@@ -54,7 +63,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual void Lock()
         {
-            locked = true;
+            _locked = true;
         }
 
         /// <summary>
@@ -73,8 +82,8 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual bool AllowingFiltering
         {
-            get { return allowingFiltering; }
-            protected set { allowingFiltering = value; }
+            get { return _allowingFiltering; }
+            protected set { _allowingFiltering = value; }
         }
 
         /// <summary>
@@ -83,7 +92,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual IEnumerable<Attribute> Attributes
         {
-            get { return new Attribute[0]; }
+            get { return ImmutableArray<Attribute>.Empty; }
         }
 
         /// <summary>
@@ -110,7 +119,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual IEnumerable<string> ExportNames
         {
-            get { return exportNames; }
+            get { return _exportNames; }
         }
 
         /// <summary>
@@ -120,12 +129,12 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                if (exportTypes.Count == 0 && exportNames.Count == 0)
+                if (_exportTypes.Count == 0 && _exportNames.Count == 0)
                 {
-                    return new[] { exportType };
+                    return new[] { _exportType };
                 }
 
-                return exportTypes;
+                return _exportTypes;
             }
         }
 
@@ -134,7 +143,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public IEnumerable<Tuple<Type, object>> KeyedExportTypes
         {
-            get { return keyedExportTypes; }
+            get { return _keyedExportTypes; }
         }
 
         /// <summary>
@@ -143,12 +152,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportName"></param>
         public virtual void AddExportName(string exportName)
         {
-            if (locked)
+            if (_locked)
             {
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            exportNames.Add(exportName);
+            _exportNames.Add(exportName);
         }
 
         /// <summary>
@@ -157,22 +166,22 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportType"></param>
         public virtual void AddExportType(Type exportType)
         {
-            if (locked)
+            if (_locked)
             {
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            exportTypes.Add(exportType);
+            _exportTypes.Add(exportType);
         }
 
         public void AddKeyedExportType(Type exportType, object key)
         {
-            if (locked)
+            if (_locked)
             {
                 throw new ArgumentException("Strategy is locked can't be changed");
             }
 
-            keyedExportTypes.Add(new Tuple<Type, object>(exportType, key));
+            _keyedExportTypes.Add(new Tuple<Type, object>(exportType, key));
         }
 
         public virtual ExportEnvironment Environment { get; private set; }
@@ -213,7 +222,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual ILifestyle Lifestyle
         {
-            get { return lifestyle; }
+            get { return _lifestyle; }
         }
 
         /// <summary>
@@ -222,9 +231,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="container"></param>
         public virtual void SetLifestyleContainer(ILifestyle container)
         {
-            if (lifestyle == null)
+            if (_lifestyle == null)
             {
-                lifestyle = container;
+                _lifestyle = container;
             }
         }
 
@@ -242,17 +251,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportCondition"></param>
         public virtual void AddCondition(IExportCondition exportCondition)
         {
-            if (locked)
+            if (_locked)
             {
                 throw new ArgumentException("Strategy is locked, can't be changed");
             }
 
-            if (conditions == null)
-            {
-                conditions = new List<IExportCondition>(1);
-            }
-
-            conditions.Add(exportCondition);
+            _conditions = _conditions.Add(exportCondition);
         }
 
         /// <summary>
@@ -262,12 +266,12 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public virtual bool MeetsCondition(IInjectionContext injectionContext)
         {
-            if (conditions == null)
+            if (_conditions == null)
             {
                 return true;
             }
 
-            List<IExportCondition> currentConditions = conditions;
+            ImmutableArray<IExportCondition> currentConditions = _conditions;
 
             for (int i = 0; i < currentConditions.Count; i++)
             {
@@ -286,12 +290,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public virtual IEnumerable<IExportStrategy> SecondaryStrategies()
         {
-            if (secondaryExports != null)
-            {
-                return secondaryExports;
-            }
-
-            return new IExportStrategy[0];
+            return _secondaryExports;
         }
 
         /// <summary>
@@ -300,12 +299,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="enrichWithDelegate"></param>
         public virtual void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
         {
-            if (enrichWithDelegates == null)
-            {
-                enrichWithDelegates = new List<EnrichWithDelegate>();
-            }
-
-            enrichWithDelegates.Add(enrichWithDelegate);
+            _enrichWithDelegates = _enrichWithDelegates.Add(enrichWithDelegate);
         }
 
         /// <summary>
@@ -313,7 +307,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual IEnumerable<ExportStrategyDependency> DependsOn
         {
-            get { return new ExportStrategyDependency[0]; }
+            get { return ImmutableArray<ExportStrategyDependency>.Empty; }
         }
 
         /// <summary>
@@ -323,12 +317,12 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                if (metadata != null)
+                if (_metadata != null)
                 {
-                    return metadata;
+                    return _metadata;
                 }
 
-                return new ExportMetadata(Key, new Dictionary<string, object>());
+                return new ExportMetadata(null);
             }
         }
 
@@ -337,7 +331,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public bool HasConditions
         {
-            get { return conditions != null && conditions.Count > 0; }
+            get { return _conditions != null && _conditions.Count > 0; }
         }
 
         /// <summary>
@@ -362,23 +356,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="value">metadata value</param>
         public void AddMetadata(string name, object value)
         {
-            if (metadata == null)
+            if (_metadata == null)
             {
-                metadata = new ExportMetadata(Key, new Dictionary<string, object> { { name, value } });
+                _metadata = new ExportMetadata(Key, new Dictionary<string, object> { { name, value } });
             }
-            else
-            {
-                IDictionary<string, object> newDict = new Dictionary<string, object>();
 
-                foreach (KeyValuePair<string, object> keyValuePair in metadata)
-                {
-                    newDict.Add(keyValuePair);
-                }
-
-                newDict[name] = value;
-
-                metadata = new ExportMetadata(Key, newDict);
-            }
+            _metadata.AddOrUpdate(name, value);
         }
 
         /// <summary>
@@ -387,26 +370,26 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="dispose"></param>
         protected virtual void Dispose(bool dispose)
         {
-            if (disposed)
+            if (_disposed)
             {
                 return;
             }
 
             if (dispose)
             {
-                ILifestyle lifestyleTemp = lifestyle;
+                ILifestyle lifestyleTemp = _lifestyle;
 
-                lifestyle = null;
+                _lifestyle = null;
 
                 if (lifestyleTemp != null)
                 {
                     lifestyleTemp.Dispose();
                 }
 
-                conditions = null;
-                enrichWithDelegates = null;
+                _conditions = ImmutableArray<IExportCondition>.Empty;
+                _enrichWithDelegates = ImmutableArray<EnrichWithDelegate>.Empty;
 
-                disposed = true;
+                _disposed = true;
             }
         }
 
@@ -416,12 +399,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="strategy">export strategy</param>
         protected void AddSecondaryExport(IExportStrategy strategy)
         {
-            if (secondaryExports == null)
-            {
-                secondaryExports = new List<IExportStrategy>();
-            }
-
-            secondaryExports.Add(strategy);
+            _secondaryExports = _secondaryExports.Add(strategy);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -432,24 +410,24 @@ namespace Grace.DependencyInjection.Impl
             {
                 string returnValue = null;
 
-                if (exportNames.Count > 0)
+                if (_exportNames.Count > 0)
                 {
-                    string exportName = exportNames[0];
+                    string exportName = _exportNames[0];
 
                     returnValue = "  as  " + exportName;
 
-                    if (exportNames.Count > 1)
+                    if (_exportNames.Count > 1)
                     {
                         returnValue += " ...";
                     }
                 }
-                else if (exportTypes.Count > 0)
+                else if (_exportTypes.Count > 0)
                 {
-                    string exportName = exportTypes[0].FullName;
+                    string exportName = _exportTypes[0].FullName;
 
                     returnValue += "  as  " + exportName;
 
-                    if (exportNames.Count > 1)
+                    if (_exportNames.Count > 1)
                     {
                         returnValue += " ...";
                     }
@@ -474,7 +452,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         protected ILog Log
         {
-            get { return log ?? (log = Logger.GetLogger(GetType())); }
+            get { return _log ?? (_log = Logger.GetLogger(GetType())); }
         }
     }
 }

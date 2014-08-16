@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledExport;
 using Grace.Utilities;
 
@@ -31,7 +32,7 @@ namespace Grace.DependencyInjection.Impl
 			delegateInfo = new CompiledExportDelegateInfo
 			               {
 				               ActivationType = exportType,
-				               Attributes = new Attribute[0]
+                               Attributes = ImmutableArray<Attribute>.Empty
 			               };
 		}
 
@@ -44,7 +45,7 @@ namespace Grace.DependencyInjection.Impl
 
 			Tuple<ExportActivationDelegate, List<ExportStrategyDependency>> activationInfo;
 
-			if (!delegateDictionary.TryGetValue(exportType, out activationInfo))
+			if (!delegateDictionary.TryGetValue(_exportType, out activationInfo))
 			{
 				SimpleCompiledExportDelegate compiledExportDelegate = new SimpleCompiledExportDelegate(delegateInfo, this);
 
@@ -52,7 +53,7 @@ namespace Grace.DependencyInjection.Impl
 
 				dependsOn = compiledExportDelegate.Dependencies;
 
-				delegateDictionary[exportType] =
+				delegateDictionary[_exportType] =
 					new Tuple<ExportActivationDelegate, List<ExportStrategyDependency>>(activationDelegate,
 						compiledExportDelegate.Dependencies);
 			}
@@ -81,9 +82,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns>activated object</returns>
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			if (lifestyle != null)
+			if (_lifestyle != null)
 			{
-				return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
+				return _lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
 			}
 
 			return InternalActivate(exportInjectionScope, context);
@@ -115,9 +116,9 @@ namespace Grace.DependencyInjection.Impl
 				}
 			}
 
-			if (enrichWithDelegates != null)
+			if (_enrichWithDelegates != null)
 			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				foreach (EnrichWithDelegate enrichWithDelegate in _enrichWithDelegates)
 				{
 					returnValue = enrichWithDelegate(injectionscope, context, returnValue);
 				}
@@ -132,7 +133,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		protected virtual CompiledExportDelegateInfo GetCompiledInfo()
 		{
-			delegateInfo.IsTransient = lifestyle == null || lifestyle.Transient;
+			delegateInfo.IsTransient = _lifestyle == null || _lifestyle.Transient;
 
 			if (!ExternallyOwned &&
 			    delegateInfo.IsTransient &&

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
@@ -23,53 +24,53 @@ namespace Grace.DependencyInjection.Impl
 	{
 		#region Private Static
 
-		private static readonly Dictionary<string, ExportStrategyCollection> emptyStringExportStrategies =
+		private static readonly Dictionary<string, ExportStrategyCollection> _emptyStringExportStrategies =
 			new Dictionary<string, ExportStrategyCollection>();
 
-        private static readonly Dictionary<Type, ExportStrategyCollection> emptyTypeExportStrategies =
+        private static readonly Dictionary<Type, ExportStrategyCollection> _emptyTypeExportStrategies =
             new Dictionary<Type, ExportStrategyCollection>();
 
-        private static readonly Dictionary<Type, IInjectionStrategy> emptyInjectionStrategies =
+        private static readonly Dictionary<Type, IInjectionStrategy> _emptyInjectionStrategies =
             new Dictionary<Type, IInjectionStrategy>();
 
-		private static readonly MethodInfo locateLazyListMethodInfo;
-		private static readonly MethodInfo locateOwnedListMethodInfo;
-		private static readonly MethodInfo locateMetaListMethodInfo;
-		private static readonly Dictionary<Type, Type> openGenericStrategyMapping;
+		private static readonly MethodInfo _locateLazyListMethodInfo;
+		private static readonly MethodInfo _locateOwnedListMethodInfo;
+		private static readonly MethodInfo _locateMetaListMethodInfo;
+		private static readonly Dictionary<Type, Type> _openGenericStrategyMapping;
 
 		static InjectionKernel()
 		{
-			locateLazyListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+			_locateLazyListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
 				.First(x => x.Name == "LocateListOfLazyExports");
-			locateMetaListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+			_locateMetaListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
 				.First(x => x.Name == "LocateListOfMetaExports");
-			locateOwnedListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
+			_locateOwnedListMethodInfo = typeof(InjectionKernel).GetRuntimeMethods()
 				.First(x => x.Name == "LocateListOfOwnedExports");
 
-			openGenericStrategyMapping = new Dictionary<Type, Type>();
+			_openGenericStrategyMapping = new Dictionary<Type, Type>();
 
-			openGenericStrategyMapping[typeof(IEnumerable<>)] = typeof(ListExportStrategy<>);
-			openGenericStrategyMapping[typeof(ICollection<>)] = typeof(ListExportStrategy<>);
-			openGenericStrategyMapping[typeof(IList<>)] = typeof(ListExportStrategy<>);
-			openGenericStrategyMapping[typeof(List<>)] = typeof(ListExportStrategy<>);
+			_openGenericStrategyMapping[typeof(IEnumerable<>)] = typeof(ListExportStrategy<>);
+			_openGenericStrategyMapping[typeof(ICollection<>)] = typeof(ListExportStrategy<>);
+			_openGenericStrategyMapping[typeof(IList<>)] = typeof(ListExportStrategy<>);
+			_openGenericStrategyMapping[typeof(List<>)] = typeof(ListExportStrategy<>);
 
-			openGenericStrategyMapping[typeof(IReadOnlyCollection<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
-			openGenericStrategyMapping[typeof(IReadOnlyList<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
-			openGenericStrategyMapping[typeof(ReadOnlyCollection<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
+			_openGenericStrategyMapping[typeof(IReadOnlyCollection<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
+			_openGenericStrategyMapping[typeof(IReadOnlyList<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
+			_openGenericStrategyMapping[typeof(ReadOnlyCollection<>)] = typeof(ReadOnlyCollectionExportStrategy<>);
 
-			openGenericStrategyMapping[typeof(Owned<>)] = typeof(OwnedStrategy<>);
-			openGenericStrategyMapping[typeof(Meta<>)] = typeof(MetaStrategy<>);
-			openGenericStrategyMapping[typeof(Lazy<>)] = typeof(LazyExportStrategy<>);
+			_openGenericStrategyMapping[typeof(Owned<>)] = typeof(OwnedStrategy<>);
+			_openGenericStrategyMapping[typeof(Meta<>)] = typeof(MetaStrategy<>);
+			_openGenericStrategyMapping[typeof(Lazy<>)] = typeof(LazyExportStrategy<>);
 
-			openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncExportStrategy<>);
+			_openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncExportStrategy<>);
 
-			openGenericStrategyMapping[typeof(KeyedLocateDelegate<,>)] = typeof(KeyedLocateDelegateStrategy<,>);
+			_openGenericStrategyMapping[typeof(KeyedLocateDelegate<,>)] = typeof(KeyedLocateDelegateStrategy<,>);
 
-			openGenericStrategyMapping[typeof(Func<,>)] = typeof(GenericFuncExportStrategy<,>);
-			openGenericStrategyMapping[typeof(Func<,,>)] = typeof(GenericFuncExportStrategy<,,>);
-			openGenericStrategyMapping[typeof(Func<,,,>)] = typeof(GenericFuncExportStrategy<,,,>);
-			openGenericStrategyMapping[typeof(Func<,,,,>)] = typeof(GenericFuncExportStrategy<,,,,>);
-			openGenericStrategyMapping[typeof(Func<,,,,,>)] = typeof(GenericFuncExportStrategy<,,,,,>);
+			_openGenericStrategyMapping[typeof(Func<,>)] = typeof(GenericFuncExportStrategy<,>);
+			_openGenericStrategyMapping[typeof(Func<,,>)] = typeof(GenericFuncExportStrategy<,,>);
+			_openGenericStrategyMapping[typeof(Func<,,,>)] = typeof(GenericFuncExportStrategy<,,,>);
+			_openGenericStrategyMapping[typeof(Func<,,,,>)] = typeof(GenericFuncExportStrategy<,,,,>);
+			_openGenericStrategyMapping[typeof(Func<,,,,,>)] = typeof(GenericFuncExportStrategy<,,,,,>);
 		}
 
 		#endregion
@@ -109,14 +110,14 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ScopeId = Guid.NewGuid();
 
-			exportsByName = emptyStringExportStrategies;
-			exportsByType = emptyTypeExportStrategies;
-			injections = emptyInjectionStrategies;
+			exportsByName = _emptyStringExportStrategies;
+			exportsByType = _emptyTypeExportStrategies;
+			injections = _emptyInjectionStrategies;
 
 			this.kernelManager = kernelManager;
 			this.comparer = comparer;
 			disposalScopeProvider = scopeProvider;
-			ScopeName = scopeName;
+			ScopeName = scopeName ?? string.Empty;
 			ParentScope = parentScope;
 		}
 
@@ -224,7 +225,7 @@ namespace Grace.DependencyInjection.Impl
 					return secondaryResolvers;
 				}
 
-				return new ISecondaryExportLocator[0];
+				return ImmutableArray<ISecondaryExportLocator>.Empty;
 			}
 		}
 
@@ -1515,7 +1516,7 @@ namespace Grace.DependencyInjection.Impl
 				return new Func<Type, IInjectionContext, object>((inType, context) => Locate(inType, context, consider, locateKey));
 			}
 
-			if (openGenericStrategyMapping.TryGetValue(openGenericType, out exportStrategyType))
+			if (_openGenericStrategyMapping.TryGetValue(openGenericType, out exportStrategyType))
 			{
 				Type closedExportStrategyType = exportStrategyType.MakeGenericType(type.GenericTypeArguments);
 
@@ -1636,7 +1637,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (genericType == typeof(Lazy<>))
 				{
-					MethodInfo methodInfo = locateLazyListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
+					MethodInfo methodInfo = _locateLazyListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
 					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 
@@ -1644,7 +1645,7 @@ namespace Grace.DependencyInjection.Impl
 				}
 				else if (genericType == typeof(Owned<>))
 				{
-					MethodInfo methodInfo = locateOwnedListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
+					MethodInfo methodInfo = _locateOwnedListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
 					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 
@@ -1652,7 +1653,7 @@ namespace Grace.DependencyInjection.Impl
 				}
 				else if (genericType == typeof(Meta<>))
 				{
-					MethodInfo methodInfo = locateMetaListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
+					MethodInfo methodInfo = _locateMetaListMethodInfo.MakeGenericMethod(locateType, genericArgs[0]);
 
 					methodInfo.Invoke(this, new[] { injectionContext, exportFilter, locateKey, returnValue });
 

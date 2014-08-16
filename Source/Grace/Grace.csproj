@@ -115,6 +115,7 @@
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
+    <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionProvider.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
     <Compile Include="DependencyInjection\IExportTypeSetCtorParamConfiguration.cs" />

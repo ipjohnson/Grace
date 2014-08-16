@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -68,7 +69,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<Attribute> Attributes
 		{
-			get { return new Attribute[0]; }
+            get { return ImmutableArray<Attribute>.Empty; }
 		}
 
 		/// <summary>
@@ -89,7 +90,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IEnumerable<string> ExportNames
 		{
-			get { return new string[0]; }
+			get { return ImmutableArray<string>.Empty; }
 		}
 
 		/// <summary>
@@ -111,7 +112,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public IEnumerable<Tuple<Type, object>> KeyedExportTypes
         {
-            get { return new Tuple<Type, object>[0]; }
+            get { return ImmutableArray<Tuple<Type, object>>.Empty; }
         }
 
 	    /// <summary>
@@ -194,7 +195,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IExportMetadata Metadata
 		{
-			get { return new ExportMetadata(Key, new Dictionary<string, object>()); }
+            get { return new ExportMetadata(null); }
 		}
 
 		public override bool Equals(object obj)

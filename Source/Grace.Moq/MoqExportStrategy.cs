@@ -34,9 +34,9 @@ namespace Grace.Moq
 		/// <returns></returns>
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			if (lifestyle != null)
+			if (_lifestyle != null)
 			{
-				return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
+				return _lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
 			}
 
 			return InternalActivate(exportInjectionScope, context);
@@ -99,9 +99,9 @@ namespace Grace.Moq
 			Mock<T> mock = new Mock<T>();
 			object returnValue = mock;
 
-			if (enrichWithDelegates != null)
+			if (_enrichWithDelegates != null)
 			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				foreach (EnrichWithDelegate enrichWithDelegate in _enrichWithDelegates)
 				{
 					returnValue = enrichWithDelegate(injectionScope, context, mock);
 				}

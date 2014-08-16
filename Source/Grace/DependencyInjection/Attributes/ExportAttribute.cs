@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Attributes
@@ -87,7 +88,7 @@ namespace Grace.DependencyInjection.Attributes
 				return ExportNames;
 			}
 
-			return new string[0];
+			return ImmutableArray<string>.Empty;
 		}
 
 		/// <summary>
@@ -102,7 +103,7 @@ namespace Grace.DependencyInjection.Attributes
 				return ExportTypes;
 			}
 
-			return new Type[0];
+			return ImmutableArray<Type>.Empty;
 		}
 	}
 }

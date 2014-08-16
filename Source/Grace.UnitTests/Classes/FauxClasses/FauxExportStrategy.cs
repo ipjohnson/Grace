@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -64,7 +65,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public IEnumerable<IExportStrategy> SecondaryStrategies()
 		{
-			return new IExportStrategy[0];
+			return ImmutableArray<IExportStrategy>.Empty;
 		}
 
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)

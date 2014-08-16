@@ -58,11 +58,11 @@ namespace Grace.DependencyInjection.Impl
 		public override void Initialize()
 		{
 			ConstructorInfo info =
-				exportType.GetTypeInfo().DeclaredConstructors.FirstOrDefault(x => x.GetParameters().Length == 0);
+				_exportType.GetTypeInfo().DeclaredConstructors.FirstOrDefault(x => x.GetParameters().Length == 0);
 
 			if (info == null)
 			{
-				throw new Exception("Type does not have a default constructor: " + exportType.FullName);
+				throw new Exception("Type does not have a default constructor: " + _exportType.FullName);
 			}
 
 			Expression newExpression = Expression.New(info);

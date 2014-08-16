@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Impl
 
 			if (strategy != null &&
 			    strategy.CreatingStrategy == CreatingStrategy &&
-			    strategy.exportType == exportType)
+			    strategy._exportType == _exportType)
 			{
 				return true;
 			}

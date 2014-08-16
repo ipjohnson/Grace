@@ -33,9 +33,9 @@ namespace Grace.DependencyInjection.Impl
 		{
 			try
 			{
-				if (lifestyle != null)
+				if (_lifestyle != null)
 				{
-					return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
+					return _lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
 				}
 
 				return InternalActivate(exportInjectionScope, context);
@@ -68,9 +68,9 @@ namespace Grace.DependencyInjection.Impl
 
 			object returnValue = instanceFunc(injectionscope, context);
 
-			if (enrichWithDelegates != null)
+			if (_enrichWithDelegates != null)
 			{
-				foreach (EnrichWithDelegate enrichWithDelegate in enrichWithDelegates)
+				foreach (EnrichWithDelegate enrichWithDelegate in _enrichWithDelegates)
 				{
 					returnValue = enrichWithDelegate(injectionscope, context, returnValue);
 				}

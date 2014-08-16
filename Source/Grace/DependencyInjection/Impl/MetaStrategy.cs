@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -11,6 +12,8 @@ namespace Grace.DependencyInjection.Impl
 	/// <typeparam name="T"></typeparam>
 	public class MetaStrategy<T> : IExportStrategy
 	{
+        private readonly ExportMetadata _metadata = new ExportMetadata(null);
+
 		/// <summary>
 		/// Activate the meta strategy
 		/// </summary>
@@ -128,7 +131,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public IEnumerable<Tuple<Type, object>> KeyedExportTypes
         {
-            get { return new Tuple<Type, object>[0]; }
+            get { return ImmutableArray<Tuple<Type, object>>.Empty; }
         }
 
 	    /// <summary>
@@ -176,7 +179,7 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IExportMetadata Metadata
 		{
-			get { return new ExportMetadata(null, new Dictionary<string, object>()); }
+			get { return _metadata; }
 		}
 
 		/// <summary>

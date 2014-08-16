@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Grace.Data;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledExport;
@@ -237,8 +238,8 @@ namespace Grace.DependencyInjection.Impl
                                        var tempType = typeDelegate(type);
 
                                        return tempType != null ?
-                                              new[] { tempType } :
-                                              new Type[0];
+                                              ImmutableArray<Type>.Empty.Add(tempType) :
+                                              ImmutableArray<Type>.Empty;
                                    };
             }
 

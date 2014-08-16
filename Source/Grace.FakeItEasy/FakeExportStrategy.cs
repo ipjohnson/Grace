@@ -17,9 +17,9 @@ namespace Grace.FakeItEasy
 
 		public override object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			if (lifestyle != null)
+			if (_lifestyle != null)
 			{
-				return lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
+				return _lifestyle.Locate(InternalActivate, exportInjectionScope, context, this);
 			}
 
 			return InternalActivate(exportInjectionScope, context);

@@ -375,12 +375,14 @@ namespace Grace.DependencyInjection
 			return new DisposableInjectionContext(injectionScope);
 		}
 
-		/// <summary>
-		/// Creates a new life time scope
-		/// </summary>
-		/// <param name="exportLocator">export locate</param>
-		/// <returns></returns>
-		public static IInjectionScope BeginLifetimeScope(this IExportLocator exportLocator)
+	    /// <summary>
+	    /// Creates a new light weight lifetime scope. You can not add new exports to this scope only resolve from it.
+	    /// If you need to create a new context that you can add exports to 
+	    /// </summary>
+	    /// <param name="exportLocator">export locate</param>
+	    /// <param name="scopeName">scope name for begin lifetime scope</param>
+	    /// <returns></returns>
+	    public static IInjectionScope BeginLifetimeScope(this IExportLocator exportLocator,string scopeName = null)
 		{
 			IInjectionScope injectionScope = exportLocator as IInjectionScope;
 
@@ -393,7 +395,7 @@ namespace Grace.DependencyInjection
 				throw new Exception("BeginLifetimeScope can only be used on an injection scope and dependency injection container");
 			}
 
-			return new LifetimeScope(injectionScope);
+			return new LifetimeScope(injectionScope, scopeName);
 		}
 	}
 }

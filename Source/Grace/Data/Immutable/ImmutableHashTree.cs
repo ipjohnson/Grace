@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Grace.Data.Immutable
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public sealed class ImmutableHashTree<TKey, TValue>
+    public sealed class ImmutableHashTree<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IEnumerable<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// Empty hashtree, used as the starting point 
@@ -102,7 +103,7 @@ namespace Grace.Data.Immutable
                 else
                 {
                     currentNode = nodes[--nodeCount];
-                    
+
                     yield return new KeyValuePair<TKey, TValue>(currentNode.Key, currentNode.Value);
 
                     if (currentNode.Conflicts.Count > 0)
@@ -133,6 +134,18 @@ namespace Grace.Data.Immutable
             }
 
             return InternalAdd(key.GetHashCode(), key, value, updateDelegate);
+        }
+
+        /// <summary>
+        /// Checks to see if a key is contained in the hashtable
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool ContainsKey(TKey key)
+        {
+            TValue value;
+
+            return TryGetValue(key, out value);
         }
 
         /// <summary>
@@ -177,6 +190,37 @@ namespace Grace.Data.Immutable
             value = default(TValue);
 
             return false;
+        }
+
+        public TValue this[TKey key]
+        {
+            get
+            {
+                TValue value;
+
+                if (!TryGetValue(key, out value))
+                {
+                    throw new KeyNotFoundException(string.Format("Key {0} was not found",key));
+                }
+
+                return value;
+            }
+        }
+
+        /// <summary>
+        /// Returns all the keys in the hashtree
+        /// </summary>
+        public IEnumerable<TKey> Keys
+        {
+            get { return this.Select(x => x.Key); }
+        }
+
+        /// <summary>
+        /// returns all the values in the hashtree
+        /// </summary>
+        public IEnumerable<TValue> Values
+        {
+            get { return this.Select(x => x.Value); }
         }
 
         /// <summary>
@@ -295,6 +339,29 @@ namespace Grace.Data.Immutable
         private static TValue KeyAlreadyExists(TValue currentValue, TValue newValue)
         {
             throw new KeyExistsException<TKey>();
+        }
+
+        /// <summary>
+        /// Gets an enumerator for the immutable hash
+        /// </summary>
+        /// <returns>enumerator</returns>
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            return IterateInOrder().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Gets the count of the immutable hashtree. Note its faster to do a lookup than to do a count
+        /// If you want to test for emptyness use the IsEmpty property
+        /// </summary>
+        public int Count
+        {
+            get { return Height == 0 ? 0 : this.Count(); }
         }
     }
 }

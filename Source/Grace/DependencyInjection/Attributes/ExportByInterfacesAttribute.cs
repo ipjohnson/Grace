@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Attributes
@@ -17,7 +18,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns></returns>
 		public IEnumerable<string> ProvideExportNames(Type attributedType)
 		{
-			return new string[0];
+			return ImmutableArray<string>.Empty;
 		}
 
 		/// <summary>

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.LanguageExtensions;
 using Grace.Logging;
@@ -201,7 +202,7 @@ namespace Grace.DependencyInjection.Configuration
 					AppDomain.CurrentDomain.GetAssemblies().
 													SortEnumerable(SortAssemblies).
 													ReverseEnumerable().
-													SelectMany(x => x.IsDynamic ? new Type[0] : x.ExportedTypes).
+													SelectMany(x => x.IsDynamic ? ImmutableArray<Type>.Empty : x.ExportedTypes). 
 													FirstOrDefault(x => x.Name.ToLowerInvariant() == lower);
 			}
 

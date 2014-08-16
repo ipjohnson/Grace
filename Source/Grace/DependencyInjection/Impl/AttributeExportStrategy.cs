@@ -46,11 +46,11 @@ namespace Grace.DependencyInjection.Impl
 
 		private void ProcessConstructors()
 		{
-			if (exportType.GetTypeInfo().DeclaredConstructors.Count() > 1)
+			if (_exportType.GetTypeInfo().DeclaredConstructors.Count() > 1)
 			{
 				ConstructorInfo exportConstructor = null;
 
-				foreach (ConstructorInfo declaredConstructor in exportType.GetTypeInfo().DeclaredConstructors)
+				foreach (ConstructorInfo declaredConstructor in _exportType.GetTypeInfo().DeclaredConstructors)
 				{
 					if (declaredConstructor.GetCustomAttributes().FirstOrDefault(x => x is IImportAttribute) != null)
 					{
@@ -134,7 +134,7 @@ namespace Grace.DependencyInjection.Impl
 
 		private void ProcessPropertyAttributes()
 		{
-			foreach (PropertyInfo runtimeProperty in exportType.GetRuntimeProperties())
+			foreach (PropertyInfo runtimeProperty in _exportType.GetRuntimeProperties())
 			{
 				List<IExportCondition> exportConditions = new List<IExportCondition>();
 				List<IExportAttribute> exportAttributes = new List<IExportAttribute>();
@@ -154,14 +154,14 @@ namespace Grace.DependencyInjection.Impl
 
 					if (filterAttribute != null)
 					{
-						filter = filterAttribute.ProvideFilter(exportType, runtimeProperty.Name);
+						filter = filterAttribute.ProvideFilter(_exportType, runtimeProperty.Name);
 					}
 
 					IImportSortCollectionAttribute sortAttribute = customAttribute as IImportSortCollectionAttribute;
 
 					if (sortAttribute != null)
 					{
-						comparer = sortAttribute.ProvideComparer(exportType, runtimeProperty.Name);
+						comparer = sortAttribute.ProvideComparer(_exportType, runtimeProperty.Name);
 					}
 
 					IExportAttribute exportAttribute = customAttribute as IExportAttribute;
@@ -187,14 +187,14 @@ namespace Grace.DependencyInjection.Impl
 
 					if (afterConstruction != null)
 					{
-						importAfterConstruction = afterConstruction.ImportAfterConstruction(exportType, runtimeProperty.PropertyType);
+						importAfterConstruction = afterConstruction.ImportAfterConstruction(_exportType, runtimeProperty.PropertyType);
 					}
 				}
 
 				foreach (IExportAttribute exportAttribute in exportAttributes)
 				{
-					IEnumerable<string> propertyExportNames = exportAttribute.ProvideExportNames(exportType);
-					IEnumerable<Type> propertyExportTypes = exportAttribute.ProvideExportTypes(exportType);
+					IEnumerable<string> propertyExportNames = exportAttribute.ProvideExportNames(_exportType);
+					IEnumerable<Type> propertyExportTypes = exportAttribute.ProvideExportTypes(_exportType);
 
 					IExportCondition condition = null;
 
@@ -217,7 +217,7 @@ namespace Grace.DependencyInjection.Impl
 				if (importAttribute != null && runtimeProperty.CanWrite)
 				{
 					ImportAttributeInfo attributeInfo =
-						importAttribute.ProvideImportInfo(exportType, runtimeProperty.Name);
+						importAttribute.ProvideImportInfo(_exportType, runtimeProperty.Name);
 
 					if (filter == null)
 					{
@@ -256,7 +256,7 @@ namespace Grace.DependencyInjection.Impl
 
 		private void ProcessMethodAttributes()
 		{
-			foreach (MethodInfo declaredMethod in exportType.GetRuntimeMethods())
+			foreach (MethodInfo declaredMethod in _exportType.GetRuntimeMethods())
 			{
 				if (declaredMethod.IsPublic && !declaredMethod.IsStatic)
 				{
@@ -319,7 +319,7 @@ namespace Grace.DependencyInjection.Impl
 
 				if (provider != null)
 				{
-					ILifestyle container = provider.ProvideLifestyle(exportType);
+					ILifestyle container = provider.ProvideLifestyle(_exportType);
 
 					SetLifestyleContainer(container);
 
@@ -332,7 +332,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					IEnrichWithAttribute enrichWithAttribute = attribute;
 
-					EnrichWithDelegate(enrichWithAttribute.ProvideDelegate(exportType));
+					EnrichWithDelegate(enrichWithAttribute.ProvideDelegate(_exportType));
 
 					continue;
 				}
@@ -343,7 +343,7 @@ namespace Grace.DependencyInjection.Impl
 				{
 					IExportEnvironmentAttribute environmentAttribute = exportEnvironmentAttribute;
 
-					SetEnvironment(environmentAttribute.ProvideEnvironment(exportType));
+					SetEnvironment(environmentAttribute.ProvideEnvironment(_exportType));
 
 					continue;
 				}
@@ -354,26 +354,26 @@ namespace Grace.DependencyInjection.Impl
 				{
 					IExportPriorityAttribute priorityAttribute = exportPriorityAttribute;
 
-					SetPriority(priorityAttribute.ProvidePriority(exportType));
+					SetPriority(priorityAttribute.ProvidePriority(_exportType));
 				}
 
 				IExportKeyAttribute exportKeyAttribute = classAttribute as IExportKeyAttribute;
 
 				if (exportKeyAttribute != null)
 				{
-					SetKey(exportKeyAttribute.ProvideKey(exportType));
+					SetKey(exportKeyAttribute.ProvideKey(_exportType));
 				}
 			}
 		}
 
 		protected virtual void ProcessExportAttribute(IExportAttribute exportAttribute)
 		{
-			foreach (string provideExportName in exportAttribute.ProvideExportNames(exportType))
+			foreach (string provideExportName in exportAttribute.ProvideExportNames(_exportType))
 			{
 				AddExportName(provideExportName);
 			}
 
-			foreach (Type provideExportType in exportAttribute.ProvideExportTypes(exportType))
+			foreach (Type provideExportType in exportAttribute.ProvideExportTypes(_exportType))
 			{
 				AddExportType(provideExportType);
 			}
