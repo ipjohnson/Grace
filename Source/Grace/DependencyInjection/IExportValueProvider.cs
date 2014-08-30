@@ -17,8 +17,8 @@ namespace Grace.DependencyInjection
 		/// <param name="locateKey"></param>
 		/// <returns>activated object</returns>
 		object Activate([NotNull] IInjectionScope exportInjectionScope,
-							 [NotNull] IInjectionContext context,
-							 [CanBeNull] ExportStrategyFilter consider,
-							 [CanBeNull] object locateKey);
+                        [NotNull] IInjectionContext context,
+                        [CanBeNull] ExportStrategyFilter consider,
+                        [CanBeNull] object locateKey);
 	}
 }
