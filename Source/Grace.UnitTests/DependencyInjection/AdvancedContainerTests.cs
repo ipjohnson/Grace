@@ -448,5 +448,49 @@ namespace Grace.UnitTests.DependencyInjection
         }
 
         #endregion
+
+        #region PropertyInspector
+
+        [Fact]
+        public void PropertyInjectorInspector()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.AddInspector(new PropertyInjectionInspector<IBasicService>());
+
+            container.Configure(c =>
+                                {
+                                    c.Export<BasicService>().As<IBasicService>();
+                                    c.Export<ImportPropertyService>().As<IImportPropertyService>();
+                                });
+
+            IImportPropertyService propertyService = container.Locate<IImportPropertyService>();
+
+            Assert.NotNull(propertyService);
+            Assert.NotNull(propertyService.BasicService);
+        }
+
+        [Fact]
+        public void PropertyInjectorInspectorChildScope()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.AddInspector(new PropertyInjectionInspector<IBasicService>());
+
+            var child = container.CreateChildScope();
+
+            child.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<ImportPropertyService>().As<IImportPropertyService>();
+            });
+
+            IImportPropertyService propertyService = child.Locate<IImportPropertyService>();
+
+            Assert.NotNull(propertyService);
+            Assert.NotNull(propertyService.BasicService);
+        }
+
+        #endregion
     }
 }

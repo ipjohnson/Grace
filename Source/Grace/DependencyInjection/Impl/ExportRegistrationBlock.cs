@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Grace.LanguageExtensions;
 using Grace.Logging;
 
 namespace Grace.DependencyInjection.Impl
@@ -292,17 +293,32 @@ namespace Grace.DependencyInjection.Impl
 						Log.InfoFormat("Exporting type {0} as {1}", provideStrategy.ActivationType.FullName, exportNames);
 					}
 
-					foreach (IExportStrategyInspector exportStrategyInspector in inspectors)
-					{
-						exportStrategyInspector.Inspect(provideStrategy);
-					}
+					ApplyInspectors(provideStrategy);
 
 					yield return provideStrategy;
 				}
 			}
 		}
 
-		/// <summary>
+	    private void ApplyInspectors(IExportStrategy provideStrategy)
+	    {
+	        foreach (IExportStrategyInspector exportStrategyInspector in inspectors)
+	        {
+	            exportStrategyInspector.Inspect(provideStrategy);
+	        }
+
+
+            var currentScope = owningScope;
+
+            while (currentScope != null)
+            {
+                currentScope.Inspectors.Apply(x => x.StrategyInitializing(provideStrategy));
+
+                currentScope = currentScope.ParentScope;
+            }
+	    }
+
+	    /// <summary>
 		/// Filter out strategies that are exported for particular environments
 		/// </summary>
 		/// <param name="strategyEnvironment"></param>

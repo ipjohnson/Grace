@@ -23,6 +23,7 @@ namespace Grace.DependencyInjection
 		/// <summary>
 		/// The root scope for the container
 		/// </summary>
+        [NotNull]
 		IInjectionScope RootScope { get; }
 
 		/// <summary>
@@ -60,6 +61,6 @@ namespace Grace.DependencyInjection
         /// Add IStrategyInspector to the container. It will be called 
         /// </summary>
         /// <param name="inspector"></param>
-	    void AddInspector(IStrategyInspector inspector);
+        void AddInspector([NotNull]IStrategyInspector inspector);
 	}
 }

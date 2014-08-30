@@ -156,20 +156,6 @@ namespace Grace.DependencyInjection.Impl
                     inspectors.Apply(x => x.Inspect(strategy));
                 }
             }
-
-            var currentScope = injectionScope;
-
-            while (currentScope != null)
-            {
-                foreach (IExportStrategy exportStrategy in returnValues)
-                {
-                    IExportStrategy strategy = exportStrategy;
-
-                    currentScope.Inspectors.Apply(x => x.StrategyInitializing(strategy));
-                }
-
-                currentScope = currentScope.ParentScope;
-            }
         }
 
         /// <summary>

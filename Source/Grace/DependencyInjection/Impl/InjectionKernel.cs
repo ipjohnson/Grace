@@ -166,7 +166,7 @@ namespace Grace.DependencyInjection.Impl
 	    {
 	        lock (_strategyInspectorsLock)
 	        {
-	            _strategyInspectorsLock = _strategyInspectors.Add(inspector);
+                _strategyInspectors = _strategyInspectors.Add(inspector);
 	        }
 	    }
 

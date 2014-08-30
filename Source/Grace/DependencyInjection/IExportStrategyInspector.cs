@@ -1,4 +1,6 @@
-﻿namespace Grace.DependencyInjection
+﻿using JetBrains.Annotations;
+
+namespace Grace.DependencyInjection
 {
 	/// <summary>
 	/// Classes the implement this interface can be used 
@@ -10,6 +12,6 @@
 		/// It will be called before the strategy Initialize method is called
 		/// </summary>
 		/// <param name="exportStrategy"></param>
-		void Inspect(IExportStrategy exportStrategy);
+		void Inspect([NotNull]IExportStrategy exportStrategy);
 	}
 }

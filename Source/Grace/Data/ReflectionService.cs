@@ -678,7 +678,12 @@ namespace Grace.Data
         /// <returns>true if check type is base type</returns>
 	    public static bool CheckTypeIsBasedOnAnotherType(Type checkType, Type baseType)
 	    {
-	        if (baseType.GetTypeInfo().IsInterface)
+            if (checkType == baseType)
+            {
+                return true;
+            }
+
+            if (baseType.GetTypeInfo().IsInterface)
 	        {
 	            if (baseType.GetTypeInfo().IsGenericTypeDefinition)
 	            {
@@ -692,6 +697,10 @@ namespace Grace.Data
 	                    }
 	                }
 	            }
+                else if (checkType.GetTypeInfo().IsInterface)
+                {
+                    return baseType.GetTypeInfo().IsAssignableFrom(checkType.GetTypeInfo());
+                }
 	            else if (checkType.GetTypeInfo().ImplementedInterfaces.Contains(baseType))
 	            {
 	                return true;

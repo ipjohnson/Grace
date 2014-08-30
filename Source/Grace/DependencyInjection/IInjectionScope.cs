@@ -26,12 +26,13 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// List of Injection Inspectors for the scope
         /// </summary>
+        [NotNull]
         IEnumerable<IStrategyInspector> Inspectors { get; }
 
         /// <summary>
         /// Add inspector to scope
         /// </summary>
         /// <param name="inspector"></param>
-	    void AddInspector(IStrategyInspector inspector);
+        void AddInspector([NotNull]IStrategyInspector inspector);
 	}
 }
