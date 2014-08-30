@@ -149,7 +149,16 @@ namespace Grace.DependencyInjection
 			injectionKernelManager.Configure(scopeName, configurationModule.Configure);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Add IStrategyInspector to the container. It will be called 
+	    /// </summary>
+	    /// <param name="inspector"></param>
+	    public void AddInspector(IStrategyInspector inspector)
+	    {
+	        RootScope.AddInspector(inspector);
+	    }
+
+	    /// <summary>
 		/// Add an object for disposal 
 		/// </summary>
 		/// <param name="disposable"></param>

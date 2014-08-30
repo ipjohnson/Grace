@@ -35,7 +35,17 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 		public IInjectionScope ParentScope { get; set; }
 
-		public IEnumerable<IInjectionScope> ChildScopes()
+	    public IEnumerable<IStrategyInspector> Inspectors
+	    {
+	        get { return ImmutableArray<IStrategyInspector>.Empty;}
+	    }
+
+	    public void AddInspector(IStrategyInspector inspector)
+	    {
+
+	    }
+
+	    public IEnumerable<IInjectionScope> ChildScopes()
 		{
 			return new IInjectionScope[0];
 		}

@@ -9,15 +9,15 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 	/// </summary>
 	public class CompiledExportDelegateInfo
 	{
-		private List<MethodInfo> activationMethods;
-		private BeforeDisposalCleanupDelegate cleanupDelegate;
-		private List<ConstructorParamInfo> constructorParamInfos;
-		private List<EnrichWithDelegate> enrichWithDelegates;
-		private List<ICustomEnrichmentLinqExpressionProvider> enrichmentExpressionProviders; 
-		private List<ImportMethodInfo> importMethods;
-		private List<ImportPropertyInfo> importProperties;
+		private List<MethodInfo> _activationMethods;
+		private BeforeDisposalCleanupDelegate _cleanupDelegate;
+		private List<ConstructorParamInfo> _constructorParamInfos;
+		private List<EnrichWithDelegate> _enrichWithDelegates;
+		private List<ICustomEnrichmentLinqExpressionProvider> _enrichmentExpressionProviders; 
+		private List<ImportMethodInfo> _importMethods;
+		private List<ImportPropertyInfo> _importProperties;
 
-		/// <summary>
+	    /// <summary>
 		/// Attributes associated with the export type
 		/// </summary>
 		public IEnumerable<Attribute> Attributes { get; set; }
@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public BeforeDisposalCleanupDelegate CleanupDelegate
 		{
-			get { return cleanupDelegate; }
+			get { return _cleanupDelegate; }
 		}
 
 		/// <summary>
@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<ImportPropertyInfo> ImportProperties
 		{
-			get { return importProperties; }
+			get { return _importProperties; }
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<ImportMethodInfo> ImportMethods
 		{
-			get { return importMethods; }
+			get { return _importMethods; }
 		}
 
 		/// <summary>
@@ -76,7 +76,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<ConstructorParamInfo> ConstructorParams
 		{
-			get { return constructorParamInfos; }
+			get { return _constructorParamInfos; }
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<MethodInfo> ActivationMethodInfos
 		{
-			get { return activationMethods; }
+			get { return _activationMethods; }
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<EnrichWithDelegate> EnrichmentDelegates
 		{
-			get { return enrichWithDelegates; }
+			get { return _enrichWithDelegates; }
 		}
 
 		/// <summary>
@@ -100,21 +100,26 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public IEnumerable<ICustomEnrichmentLinqExpressionProvider> EnrichmentExpressionProviders
 		{
-			get { return enrichmentExpressionProviders; }
+			get { return _enrichmentExpressionProviders; }
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Custom constructor enrichment
+        /// </summary>
+	    public ICustomConstructorEnrichmentLinqExpressionProvider CustomConstructorEnrichment { get; set; }
+
+	    /// <summary>
 		/// Adds a constructor parameter info
 		/// </summary>
 		/// <param name="paramInfo"></param>
 		public void AddConstructorParamInfo(ConstructorParamInfo paramInfo)
 		{
-			if (constructorParamInfos == null)
+			if (_constructorParamInfos == null)
 			{
-				constructorParamInfos = new List<ConstructorParamInfo>(1);
+				_constructorParamInfos = new List<ConstructorParamInfo>(1);
 			}
 
-			constructorParamInfos.Add(paramInfo);
+			_constructorParamInfos.Add(paramInfo);
 		}
 
 		/// <summary>
@@ -123,12 +128,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <param name="info"></param>
 		public void ImportProperty(ImportPropertyInfo info)
 		{
-			if (importProperties == null)
+			if (_importProperties == null)
 			{
-				importProperties = new List<ImportPropertyInfo>(1);
+				_importProperties = new List<ImportPropertyInfo>(1);
 			}
 
-			importProperties.Add(info);
+			_importProperties.Add(info);
 		}
 
 		/// <summary>
@@ -136,12 +141,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public void ImportMethod(ImportMethodInfo info)
 		{
-			if (importMethods == null)
+			if (_importMethods == null)
 			{
-				importMethods = new List<ImportMethodInfo>(1);
+				_importMethods = new List<ImportMethodInfo>(1);
 			}
 
-			importMethods.Add(info);
+			_importMethods.Add(info);
 		}
 
 		/// <summary>
@@ -150,12 +155,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <param name="methodInfo"></param>
 		public void ActivateMethod(MethodInfo methodInfo)
 		{
-			if (activationMethods == null)
+			if (_activationMethods == null)
 			{
-				activationMethods = new List<MethodInfo>(1);
+				_activationMethods = new List<MethodInfo>(1);
 			}
 
-			activationMethods.Add(methodInfo);
+			_activationMethods.Add(methodInfo);
 		}
 
 		/// <summary>
@@ -164,12 +169,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <param name="enrichWithDelegate"></param>
 		public void EnrichWithDelegate(EnrichWithDelegate enrichWithDelegate)
 		{
-			if (enrichWithDelegates == null)
+			if (_enrichWithDelegates == null)
 			{
-				enrichWithDelegates = new List<EnrichWithDelegate>(1);
+				_enrichWithDelegates = new List<EnrichWithDelegate>(1);
 			}
 
-			enrichWithDelegates.Add(enrichWithDelegate);
+			_enrichWithDelegates.Add(enrichWithDelegate);
 		}
 
 		/// <summary>
@@ -178,12 +183,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <param name="provider">expression provider</param>
 		public void EnrichmentExpressionProvider(ICustomEnrichmentLinqExpressionProvider provider)
 		{
-			if (enrichmentExpressionProviders == null)
+			if (_enrichmentExpressionProviders == null)
 			{
-				enrichmentExpressionProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
+				_enrichmentExpressionProviders = new List<ICustomEnrichmentLinqExpressionProvider>();
 			}
 
-			enrichmentExpressionProviders.Add(provider);
+			_enrichmentExpressionProviders.Add(provider);
 		}
 
 		/// <summary>
@@ -201,7 +206,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// <param name="newCleanupDelegate"></param>
 		public void AddCleanupDelegate(BeforeDisposalCleanupDelegate newCleanupDelegate)
 		{
-			cleanupDelegate += newCleanupDelegate;
+			_cleanupDelegate += newCleanupDelegate;
 		}
 	}
 

@@ -23,8 +23,7 @@ namespace Grace.DependencyInjection
         public InjectionContext(IInjectionScope requestingScope) :
             this(requestingScope, requestingScope)
         {
-            currentInjectionInfo = new CurrentInjectionInfo[4];
-            MaxResolveDepth = 50;
+
         }
 
         /// <summary>

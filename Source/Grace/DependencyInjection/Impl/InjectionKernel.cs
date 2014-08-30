@@ -89,6 +89,8 @@ namespace Grace.DependencyInjection.Impl
 		private Dictionary<Type, ExportStrategyCollection> exportsByType;
 		private Dictionary<Type, IInjectionStrategy> injections;
 		private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
+        private ImmutableArray<IStrategyInspector> _strategyInspectors = ImmutableArray<IStrategyInspector>.Empty; 
+        private object _strategyInspectorsLock = new object();
 
 		#endregion
 
@@ -148,7 +150,27 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public IInjectionScope ParentScope { get; internal set; }
 
-		/// <summary>
+	    /// <summary>
+	    /// List of Injection Inspectors for the scope
+	    /// </summary>
+	    public IEnumerable<IStrategyInspector> Inspectors
+	    {
+	        get { return _strategyInspectors; }
+	    }
+
+	    /// <summary>
+	    /// Add inspector to scope
+	    /// </summary>
+	    /// <param name="inspector"></param>
+	    public void AddInspector(IStrategyInspector inspector)
+	    {
+	        lock (_strategyInspectorsLock)
+	        {
+	            _strategyInspectorsLock = _strategyInspectors.Add(inspector);
+	        }
+	    }
+
+	    /// <summary>
 		/// The environment for this scope (always inherited from the root scope)
 		/// </summary>
 		public ExportEnvironment Environment { get; internal set; }

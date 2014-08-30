@@ -55,5 +55,11 @@ namespace Grace.DependencyInjection
 		/// <param name="configurationModule">configuration module object to be used configure the scope</param>
 		/// <param name="scopeName">name of scope to configure</param>
 		void Configure([NotNull] string scopeName, [NotNull] IConfigurationModule configurationModule);
+
+        /// <summary>
+        /// Add IStrategyInspector to the container. It will be called 
+        /// </summary>
+        /// <param name="inspector"></param>
+	    void AddInspector(IStrategyInspector inspector);
 	}
 }

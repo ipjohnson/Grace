@@ -99,9 +99,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <returns>new injection context</returns>
 		public IInjectionContext CreateContext(IDisposalScope disposalScope = null)
 		{
-			InjectionContext context = new InjectionContext(disposalScope, this);
-
-			return context;
+			return new InjectionContext(disposalScope, this);
 		}
 
 		/// <summary>
@@ -489,5 +487,15 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// Parent scope
 		/// </summary>
 		public IInjectionScope ParentScope { get; private set; }
+
+	    public IEnumerable<IStrategyInspector> Inspectors
+	    {
+	        get { return ImmutableArray<IStrategyInspector>.Empty;}
+	    }
+
+	    public void AddInspector(IStrategyInspector inspector)
+	    {
+	        throw new NotSupportedException();
+	    }
 	}
 }

@@ -400,6 +400,12 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        public IFluentExportStrategyConfiguration EnrichWithCustomConstructorExpression(
+            ICustomConstructorEnrichmentLinqExpressionProvider provider)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -837,6 +843,12 @@ namespace Grace.DependencyInjection.Impl
             exportStrategy.EnrichWithExpression(provider);
 
             return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithCustomConstructorExpression(
+            ICustomConstructorEnrichmentLinqExpressionProvider provider)
+        {
+            throw new NotImplementedException();
         }
     }
 }

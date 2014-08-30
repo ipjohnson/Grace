@@ -120,6 +120,14 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportStrategyConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
 
+        /// <summary>
+        /// Using this method you can add your own constructor logic 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+	    IFluentExportStrategyConfiguration EnrichWithCustomConstructorExpression(
+	        ICustomConstructorEnrichmentLinqExpressionProvider provider);
+
 		/// <summary>
 		/// Export a specific property under a particular name
 		/// </summary>
@@ -373,6 +381,13 @@ namespace Grace.DependencyInjection
 		/// <param name="provider">provider class</param>
 		/// <returns></returns>
 		IFluentExportStrategyConfiguration<T> EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+
+        /// <summary>
+        /// Using this method you can provide custom construction
+        /// </summary>
+        /// <param name="provider">custom constructor provider</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> EnrichWithCustomConstructorExpression(ICustomConstructorEnrichmentLinqExpressionProvider provider);
 		
 		/// <summary>
 		/// Export a property to be imported by other exports

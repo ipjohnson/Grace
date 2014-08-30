@@ -12,7 +12,7 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public class DisposableInjectionContext : InjectionContext, IDisposable
 	{
-		private bool disposed;
+		private bool _disposed;
 
 		/// <summary>
 		/// Default constructor
@@ -28,12 +28,12 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		public void Dispose()
 		{
-			if (disposed)
+			if (_disposed)
 			{
 				return;
 			}
 
-			disposed = true;
+			_disposed = true;
 
 			if (DisposalScope != null)
 			{

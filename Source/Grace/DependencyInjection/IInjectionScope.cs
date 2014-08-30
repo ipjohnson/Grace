@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Grace.Data;
 using JetBrains.Annotations;
 
@@ -21,5 +22,16 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		[CanBeNull]
 		IInjectionScope ParentScope { get; }
+
+        /// <summary>
+        /// List of Injection Inspectors for the scope
+        /// </summary>
+        IEnumerable<IStrategyInspector> Inspectors { get; }
+
+        /// <summary>
+        /// Add inspector to scope
+        /// </summary>
+        /// <param name="inspector"></param>
+	    void AddInspector(IStrategyInspector inspector);
 	}
 }

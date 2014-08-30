@@ -118,15 +118,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            if (inspectors.Count > 0)
-            {
-                foreach (IExportStrategy exportStrategy in returnValues)
-                {
-                    IExportStrategy strategy = exportStrategy;
-
-                    inspectors.Apply(x => x.Inspect(strategy));
-                }
-            }
+            ApplyInspectors(returnValues);
 
             foreach (IExportStrategy exportStrategy in returnValues)
             {
@@ -151,6 +143,33 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return returnValues;
+        }
+
+        private void ApplyInspectors(List<IExportStrategy> returnValues)
+        {
+            if (inspectors.Count > 0)
+            {
+                foreach (IExportStrategy exportStrategy in returnValues)
+                {
+                    IExportStrategy strategy = exportStrategy;
+
+                    inspectors.Apply(x => x.Inspect(strategy));
+                }
+            }
+
+            var currentScope = injectionScope;
+
+            while (currentScope != null)
+            {
+                foreach (IExportStrategy exportStrategy in returnValues)
+                {
+                    IExportStrategy strategy = exportStrategy;
+
+                    currentScope.Inspectors.Apply(x => x.StrategyInitializing(strategy));
+                }
+
+                currentScope = currentScope.ParentScope;
+            }
         }
 
         /// <summary>

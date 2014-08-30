@@ -102,5 +102,17 @@ namespace Grace.DependencyInjection.Impl
 
             return _strategyConfiguration;
         }
+
+        /// <summary>
+        /// Exports will create a singleton per named scope
+        /// </summary>
+        /// <param name="scopeName"></param>
+        /// <returns></returns>
+        public IFluentExportInstanceConfiguration<T> SingletonPerNamedScope(string scopeName)
+        {
+            _strategyConfiguration.UsingLifestyle(new SingletonPerNamedScopeLifestyle(scopeName));
+
+            return _strategyConfiguration;
+        }
     }
 }
