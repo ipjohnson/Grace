@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection.Conditions
 		public bool ConditionMeet(IInjectionScope scope, IInjectionContext injectionContext, IExportStrategy exportStrategy)
 		{
 			bool found = false;
-			CurrentInjectionInfo[] injectionStack = injectionContext.GetInjectionStack();
+			var injectionStack = injectionContext.GetInjectionStack();
 
 			for (int i = injectionStack.Length - 1; i >= 0 && !found; i--)
 			{

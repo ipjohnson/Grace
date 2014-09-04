@@ -23,16 +23,5 @@ namespace Grace.DependencyInjection
 		[CanBeNull]
 		IInjectionScope ParentScope { get; }
 
-        /// <summary>
-        /// List of Injection Inspectors for the scope
-        /// </summary>
-        [NotNull]
-        IEnumerable<IStrategyInspector> Inspectors { get; }
-
-        /// <summary>
-        /// Add inspector to scope
-        /// </summary>
-        /// <param name="inspector"></param>
-        void AddInspector([NotNull]IStrategyInspector inspector);
 	}
 }

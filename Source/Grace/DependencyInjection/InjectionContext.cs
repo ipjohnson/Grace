@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection
@@ -10,11 +11,11 @@ namespace Grace.DependencyInjection
     /// </summary>
     public class InjectionContext : IInjectionContext, IEnumerable<KeyValuePair<string, ExportActivationDelegate>>
     {
-        private Dictionary<string, ExportActivationDelegate> exportsByName;
-        private Dictionary<Type, ExportActivationDelegate> exportsByType;
-        private Dictionary<string, object> extraData;
-        private int resolveDepth;
-        private CurrentInjectionInfo[] currentInjectionInfo;
+        private ImmutableHashTree<string, ExportActivationDelegate> _exportsByName;
+        private ImmutableHashTree<Type, ExportActivationDelegate> _exportsByType;
+        private ImmutableHashTree<string, object> _extraData;
+        private int _resolveDepth;
+        private CurrentInjectionInfo[] _currentInjectionInfo;
 
         /// <summary>
         /// Constructor that uses requesting scope as disposal scope
@@ -33,7 +34,7 @@ namespace Grace.DependencyInjection
         /// <param name="requestingScope"></param>
         public InjectionContext(IDisposalScope disposalScope, IInjectionScope requestingScope)
         {
-            currentInjectionInfo = new CurrentInjectionInfo[4];
+            _currentInjectionInfo = new CurrentInjectionInfo[4];
             MaxResolveDepth = 50;
 
             DisposalScope = disposalScope ?? requestingScope;
@@ -47,9 +48,9 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public IEnumerator<KeyValuePair<string, ExportActivationDelegate>> GetEnumerator()
         {
-            if (exportsByName != null)
+            if (_exportsByName != null)
             {
-                foreach (KeyValuePair<string, ExportActivationDelegate> exportActivationDelegate in exportsByName)
+                foreach (KeyValuePair<string, ExportActivationDelegate> exportActivationDelegate in _exportsByName)
                 {
                     yield return exportActivationDelegate;
                 }
@@ -71,31 +72,19 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public IInjectionContext Clone()
         {
-            InjectionContext injectionContext = new InjectionContext(DisposalScope, RequestingScope);
+            InjectionContext injectionContext = new InjectionContext(DisposalScope, RequestingScope)
+                                                {
+                                                    _exportsByName = _exportsByName,
+                                                    _exportsByType = _exportsByType,
+                                                    _extraData = _extraData,
+                                                    TargetInfo = TargetInfo,
+                                                    _resolveDepth = _resolveDepth,
+                                                    RequestingScope = RequestingScope,
+                                                    DisposalScope = DisposalScope,
+                                                    _currentInjectionInfo = new CurrentInjectionInfo[_currentInjectionInfo.Length]
+                                                };
 
-            if (exportsByName != null)
-            {
-                injectionContext.exportsByName = new Dictionary<string, ExportActivationDelegate>(exportsByName);
-            }
-
-            if (exportsByType != null)
-            {
-                injectionContext.exportsByType = new Dictionary<Type, ExportActivationDelegate>(exportsByType);
-            }
-
-            if (extraData != null)
-            {
-                injectionContext.extraData = new Dictionary<string, object>(extraData);
-            }
-
-            injectionContext.TargetInfo = TargetInfo;
-            injectionContext.resolveDepth = resolveDepth;
-            injectionContext.RequestingScope = RequestingScope;
-            injectionContext.DisposalScope = DisposalScope;
-
-            injectionContext.currentInjectionInfo = new CurrentInjectionInfo[currentInjectionInfo.Length];
-
-            injectionContext.currentInjectionInfo.CopyTo(currentInjectionInfo, 0);
+            injectionContext._currentInjectionInfo.CopyTo(_currentInjectionInfo, 0);
 
             return injectionContext;
         }
@@ -129,9 +118,9 @@ namespace Grace.DependencyInjection
         {
             object returnValue = null;
 
-            if (extraData != null)
+            if (_extraData != null)
             {
-                extraData.TryGetValue(dataName, out returnValue);
+                _extraData.TryGetValue(dataName, out returnValue);
             }
 
             return returnValue;
@@ -144,12 +133,12 @@ namespace Grace.DependencyInjection
         /// <param name="newValue"></param>
         public void SetExtraData(string dataName, object newValue)
         {
-            if (extraData == null)
+            if (_extraData == null)
             {
-                extraData = new Dictionary<string, object>();
+                _extraData = ImmutableHashTree<string, object>.Empty;
             }
 
-            extraData[dataName] = newValue;
+            _extraData = _extraData.Add(dataName, newValue);
         }
 
         /// <summary>
@@ -158,11 +147,11 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public object Locate<T>()
         {
-            if (exportsByType != null)
+            if (_exportsByType != null)
             {
                 ExportActivationDelegate activationDelegate;
 
-                if (exportsByType.TryGetValue(typeof(T), out activationDelegate))
+                if (_exportsByType.TryGetValue(typeof(T), out activationDelegate))
                 {
                     return activationDelegate(RequestingScope, this);
                 }
@@ -177,11 +166,11 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public object Locate(Type type)
         {
-            if (exportsByType != null)
+            if (_exportsByType != null)
             {
                 ExportActivationDelegate activationDelegate;
 
-                if (exportsByType.TryGetValue(type, out activationDelegate))
+                if (_exportsByType.TryGetValue(type, out activationDelegate))
                 {
                     return activationDelegate(RequestingScope, this);
                 }
@@ -197,11 +186,11 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public object Locate(string name)
         {
-            if (exportsByName != null)
+            if (_exportsByName != null)
             {
                 ExportActivationDelegate activationDelegate;
 
-                if (exportsByName.TryGetValue(name.ToLowerInvariant(), out activationDelegate))
+                if (_exportsByName.TryGetValue(name.ToLowerInvariant(), out activationDelegate))
                 {
                     return activationDelegate(RequestingScope, this);
                 }
@@ -227,12 +216,12 @@ namespace Grace.DependencyInjection
         /// <param name="activationDelegate"></param>
         public void Export(Type exportType, ExportActivationDelegate activationDelegate)
         {
-            if (exportsByType == null)
+            if (_exportsByType == null)
             {
-                exportsByType = new Dictionary<Type, ExportActivationDelegate>();
+                _exportsByType = ImmutableHashTree<Type, ExportActivationDelegate>.Empty;
             }
 
-            exportsByType[exportType] = activationDelegate;
+            _exportsByType = _exportsByType.Add(exportType, activationDelegate);
         }
 
         /// <summary>
@@ -244,12 +233,12 @@ namespace Grace.DependencyInjection
         {
             name = name.ToLowerInvariant();
 
-            if (exportsByName == null)
+            if (_exportsByName == null)
             {
-                exportsByName = new Dictionary<string, ExportActivationDelegate>();
+                _exportsByName = ImmutableHashTree<string, ExportActivationDelegate>.Empty;
             }
 
-            exportsByName[name] = activationDelegate;
+            _exportsByName = _exportsByName.Add(name, activationDelegate);
         }
 
         /// <summary>
@@ -263,7 +252,7 @@ namespace Grace.DependencyInjection
         /// <param name="exportStrategy">export strategy</param>
         public void PushCurrentInjectionInfo<T>(IExportStrategy exportStrategy)
         {
-            if (resolveDepth > MaxResolveDepth)
+            if (_resolveDepth > MaxResolveDepth)
             {
                 if (TargetInfo != null)
                 {
@@ -273,18 +262,18 @@ namespace Grace.DependencyInjection
                 throw new CircularDependencyDetectedException(null, (Type)null, this);
             }
 
-            if (resolveDepth >= currentInjectionInfo.Length)
+            if (_resolveDepth >= _currentInjectionInfo.Length)
             {
-                var temp = new CurrentInjectionInfo[currentInjectionInfo.Length * 2];
+                var temp = new CurrentInjectionInfo[_currentInjectionInfo.Length * 2];
 
-                currentInjectionInfo.CopyTo(temp, 0);
+                _currentInjectionInfo.CopyTo(temp, 0);
 
-                currentInjectionInfo = temp;
+                _currentInjectionInfo = temp;
             }
 
-            currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
+            _currentInjectionInfo[_resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
 
-            resolveDepth++;
+            _resolveDepth++;
         }
 
         /// <summary>
@@ -292,20 +281,16 @@ namespace Grace.DependencyInjection
         /// </summary>
         public void PopCurrentInjectionInfo()
         {
-            resolveDepth--;
+            _resolveDepth--;
         }
 
         /// <summary>
         /// Injection info all the way up the stack
         /// </summary>
         /// <returns></returns>
-        public CurrentInjectionInfo[] GetInjectionStack()
+        public ImmutableArray<CurrentInjectionInfo> GetInjectionStack()
         {
-            CurrentInjectionInfo[] returnValue = new CurrentInjectionInfo[resolveDepth];
-
-            Array.Copy(currentInjectionInfo, 0, returnValue, 0, resolveDepth);
-
-            return returnValue;
+            return ImmutableArray.From(_currentInjectionInfo, _resolveDepth);
         }
 
         /// <summary>

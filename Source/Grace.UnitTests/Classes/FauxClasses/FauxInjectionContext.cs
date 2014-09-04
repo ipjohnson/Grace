@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 
@@ -108,16 +109,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		/// Injection info all the way up the stack
 		/// </summary>
 		/// <returns></returns>
-		public CurrentInjectionInfo[] GetInjectionStack()
+		public ImmutableArray<CurrentInjectionInfo> GetInjectionStack()
 		{
-			CurrentInjectionInfo[] returnValue = new CurrentInjectionInfo[resolveDepth];
-
-			for (int i = 0; i < resolveDepth; i++)
-			{
-				returnValue[i] = currentInjectionInfo[resolveDepth];
-			}
-
-			return returnValue;
+		    return ImmutableArray.From(currentInjectionInfo, resolveDepth);
 		}
 	}
 }

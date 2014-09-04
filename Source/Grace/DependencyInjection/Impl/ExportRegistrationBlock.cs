@@ -306,8 +306,7 @@ namespace Grace.DependencyInjection.Impl
 	        {
 	            exportStrategyInspector.Inspect(provideStrategy);
 	        }
-
-
+            
             var currentScope = owningScope;
 
             while (currentScope != null)

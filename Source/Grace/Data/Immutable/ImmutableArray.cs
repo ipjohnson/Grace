@@ -24,7 +24,7 @@ namespace Grace.Data.Immutable
                 return ImmutableArray<T>.Empty;
             }
 
-            return new ImmutableArray<T>(CloneArray(array));
+            return new ImmutableArray<T>(CloneArray(array, array.Length));
         }
 
         /// <summary>
@@ -40,9 +40,21 @@ namespace Grace.Data.Immutable
             return new ImmutableArray<T>(array);
         }
 
-        internal static T[] CloneArray<T>(T[] array)
+        /// <summary>
+        /// Create a new immutable array from an T[]
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ts"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static ImmutableArray<T> From<T>(T[] ts, int count)
         {
-            T[] returnValue = new T[array.Length];
+            return new ImmutableArray<T>(CloneArray(ts,count));
+        }
+
+        internal static T[] CloneArray<T>(T[] array, int length)
+        {
+            T[] returnValue = new T[array.Length]; 
 
             Array.Copy(returnValue, 0, array, 0, array.Length);
 
@@ -227,7 +239,7 @@ namespace Grace.Data.Immutable
                 return Empty;
             }
 
-            return new ImmutableArray<T>(ImmutableArray.CloneArray(list));
+            return new ImmutableArray<T>(ImmutableArray.CloneArray(list, list.Length));
         }
 
         /// <summary>
@@ -239,7 +251,7 @@ namespace Grace.Data.Immutable
         {
             if (list._list != null)
             {
-                return ImmutableArray.CloneArray(list._list);
+                return ImmutableArray.CloneArray(list._list, list._list.Length);
             }
 
             return Empty._list;

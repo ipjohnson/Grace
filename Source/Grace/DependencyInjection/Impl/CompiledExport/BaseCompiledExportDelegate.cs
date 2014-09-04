@@ -31,6 +31,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         protected static readonly MethodInfo ConvertNamedExportToPropertyTypeMethod;
         protected static readonly MethodInfo CreateContextMethod;
         protected static readonly MethodInfo LocateKeyValueProviderMethod;
+        protected static readonly MethodInfo CloneInjectionContextMethod;
         protected static readonly ConstructorInfo DisposalScopeMissingExceptionConstructor;
         protected static readonly ConstructorInfo MissingDependencyExceptionConstructor;
         protected static readonly ConstructorInfo LocationInformationEntryConstructor;
@@ -117,6 +118,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
             InjectionContextLocateByNameMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
 
+            CloneInjectionContextMethod = typeof(IInjectionContext).GetRuntimeMethod("Clone", new Type[0]);
+            
             PushCurrentInjectionInfo = typeof(IInjectionContext).GetRuntimeMethod("PushCurrentInjectionInfo",
                                                                                                             new[]
 																											{
@@ -1399,7 +1402,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             else if (importType == typeof(IInjectionContext))
             {
                 expressionList.Add(
-                    Expression.Assign(importVariable, injectionContextParameter));
+                    Expression.Assign(importVariable,
+                                      Expression.Call(injectionContextParameter,CloneInjectionContextMethod)));
 
                 returnValue = true;
             }

@@ -156,6 +156,13 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
+            if (Height == 0)
+            {
+                value = default (TValue);
+
+                return false;
+            }
+
             ImmutableHashTree<TKey, TValue> currenNode = this;
             int keyHash = key.GetHashCode();
 

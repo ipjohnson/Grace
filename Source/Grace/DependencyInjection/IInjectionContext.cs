@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Grace.Data;
+using Grace.Data.Immutable;
 using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection
@@ -103,6 +104,6 @@ namespace Grace.DependencyInjection
 		/// Injection info all the way up the stack
 		/// </summary>
 		/// <returns></returns>
-		CurrentInjectionInfo[] GetInjectionStack();
+		ImmutableArray<CurrentInjectionInfo> GetInjectionStack();
 	}
 }

@@ -242,5 +242,18 @@ namespace Grace.DependencyInjection
 		/// <param name="injectedObject">object to be injected</param>
 		/// <param name="injectionContext">injection context</param>
 		void Inject([NotNull] object injectedObject, IInjectionContext injectionContext = null);
+
+
+        /// <summary>
+        /// List of Injection Inspectors for the scope
+        /// </summary>
+        [NotNull]
+        IEnumerable<IStrategyInspector> Inspectors { get; }
+
+        /// <summary>
+        /// Add inspector to scope
+        /// </summary>
+        /// <param name="inspector"></param>
+        void AddInspector([NotNull]IStrategyInspector inspector);
 	}
 }

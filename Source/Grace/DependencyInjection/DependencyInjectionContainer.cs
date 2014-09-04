@@ -429,7 +429,15 @@ namespace Grace.DependencyInjection
 			RootScope.Inject(injectedObject, injectionContext);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// List of Injection Inspectors for the scope
+	    /// </summary>
+	    public IEnumerable<IStrategyInspector> Inspectors
+	    {
+	        get { return RootScope.Inspectors; }
+	    }
+
+	    /// <summary>
 		/// Dispose of the container
 		/// </summary>
 		public void Dispose()

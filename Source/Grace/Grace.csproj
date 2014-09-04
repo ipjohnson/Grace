@@ -120,6 +120,7 @@
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionProvider.cs" />
     <Compile Include="DependencyInjection\IExportTypeSetCtorParamConfiguration.cs" />
+    <Compile Include="DependencyInjection\IInjectionContextExtensions.cs" />
     <Compile Include="DependencyInjection\ILocateKeyValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetCtorParamConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetImportPropertyConfiguration.cs" />
