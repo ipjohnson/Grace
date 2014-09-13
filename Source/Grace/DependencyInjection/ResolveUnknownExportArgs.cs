@@ -7,17 +7,19 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public class ResolveUnknownExportArgs : EventArgs
 	{
-		/// <summary>
-		/// CSTOR
-		/// </summary>
-		/// <param name="injectionContext"></param>
-		/// <param name="requestedName"></param>
-		/// <param name="requestedType"></param>
-		public ResolveUnknownExportArgs(IInjectionContext injectionContext, string requestedName, Type requestedType)
+	    /// <summary>
+	    /// CSTOR
+	    /// </summary>
+	    /// <param name="injectionContext"></param>
+	    /// <param name="requestedName"></param>
+	    /// <param name="requestedType"></param>
+	    /// <param name="locateKey"></param>
+	    public ResolveUnknownExportArgs(IInjectionContext injectionContext, string requestedName, Type requestedType, object locateKey)
 		{
 			InjectionContext = injectionContext;
 			RequestedName = requestedName;
 			RequestedType = requestedType;
+		    LocateKey = locateKey;
 		}
 
 		/// <summary>
@@ -34,6 +36,11 @@ namespace Grace.DependencyInjection
 		/// The type that was requested, can be null if requested by name only
 		/// </summary>
 		public Type RequestedType { get; private set; }
+
+        /// <summary>
+        /// Locate key
+        /// </summary>
+        public object LocateKey { get; private set; }
 
 		/// <summary>
 		/// You can provide an export value

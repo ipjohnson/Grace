@@ -522,6 +522,11 @@ namespace Grace.DependencyInjection.Impl
 					}
 				}
 
+			    if (returnValue != null)
+			    {
+			        
+			    }
+
 				ReadOnlyCollection<ISecondaryExportLocator> tempSecondaryResolvers = secondaryResolvers;
 
 				if (returnValue == null && tempSecondaryResolvers != null)

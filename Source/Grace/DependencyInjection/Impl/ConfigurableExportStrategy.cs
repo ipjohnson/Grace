@@ -438,6 +438,10 @@ namespace Grace.DependencyInjection.Impl
                         returnValue += " ...";
                     }
                 }
+                else
+                {
+                    returnValue = " as " + ActivationType.FullName;
+                }
 
                 return returnValue;
             }

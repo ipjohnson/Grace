@@ -122,6 +122,7 @@
     <Compile Include="DependencyInjection\IExportTypeSetCtorParamConfiguration.cs" />
     <Compile Include="DependencyInjection\IInjectionContextExtensions.cs" />
     <Compile Include="DependencyInjection\ILocateKeyValueProvider.cs" />
+    <Compile Include="DependencyInjection\IMissingExportStrategyProvider.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetCtorParamConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetImportPropertyConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />

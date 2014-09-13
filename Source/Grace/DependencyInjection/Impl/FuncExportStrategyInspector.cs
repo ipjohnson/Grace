@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class FuncExportStrategyInspector : IExportStrategyInspector
     {
-        private readonly Action<IExportStrategy> inspectAction;
+        private readonly Action<IExportStrategy> _inspectAction;
 
         /// <summary>
         /// Default export strategy inspector
@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="inspectAction">inspect action</param>
         public FuncExportStrategyInspector(Action<IExportStrategy> inspectAction)
         {
-            this.inspectAction = inspectAction;
+            _inspectAction = inspectAction;
         }
         
         /// <summary>
@@ -28,7 +28,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportStrategy">export strategy</param>
         public void Inspect(IExportStrategy exportStrategy)
         {
-            inspectAction(exportStrategy);
+            _inspectAction(exportStrategy);
         }
     }
 }

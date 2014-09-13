@@ -58,9 +58,9 @@ namespace Grace.DependencyInjection
 		void Configure([NotNull] string scopeName, [NotNull] IConfigurationModule configurationModule);
 
         /// <summary>
-        /// Add IStrategyInspector to the container. It will be called 
+        /// Missing export strategy providers can provide a set of exports that can be used to resolve a satisfy an import
         /// </summary>
-        /// <param name="inspector"></param>
-        void AddInspector([NotNull]IStrategyInspector inspector);
+        /// <param name="exportStrategyProvider">export strategy provider</param>
+	    void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider);
 	}
 }
