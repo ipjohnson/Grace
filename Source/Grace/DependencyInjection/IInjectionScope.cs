@@ -23,5 +23,11 @@ namespace Grace.DependencyInjection
 		[CanBeNull]
 		IInjectionScope ParentScope { get; }
 
+        /// <summary>
+        /// List of missing exports providers
+        /// </summary>
+        [NotNull]
+        IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders { get; } 
+
 	}
 }

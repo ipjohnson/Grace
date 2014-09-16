@@ -333,7 +333,17 @@ namespace Grace.DependencyInjection.Lifestyle
 			return ParentScope.GetStrategyCollection(exportType);
 		}
 
-		#region Not implemented
+	    /// <summary>
+	    /// Get the export collection by name
+	    /// </summary>
+	    /// <param name="exportName">export name</param>
+	    /// <returns></returns>
+	    public IExportStrategyCollection GetStrategyCollection(string exportName)
+	    {
+	        return ParentScope.GetStrategyCollection(exportName);
+	    }
+
+	    #region Not implemented
 
 		/// <summary>
 		/// Adds a secondary resolver to the container.
@@ -488,6 +498,14 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		public IInjectionScope ParentScope { get; private set; }
 
+	    /// <summary>
+	    /// List of missing exports providers
+	    /// </summary>
+	    public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
+	    {
+	        get { yield break; }
+	    }
+
 	    public IEnumerable<IStrategyInspector> Inspectors
 	    {
 	        get { return ImmutableArray<IStrategyInspector>.Empty;}
@@ -496,6 +514,11 @@ namespace Grace.DependencyInjection.Lifestyle
 	    public void AddInspector(IStrategyInspector inspector)
 	    {
 	        throw new NotSupportedException();
+	    }
+
+	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
+	    {
+	        throw new NotImplementedException();
 	    }
 	}
 }

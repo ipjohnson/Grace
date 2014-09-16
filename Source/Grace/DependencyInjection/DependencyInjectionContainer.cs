@@ -158,7 +158,7 @@ namespace Grace.DependencyInjection
         /// <param name="exportStrategyProvider">export strategy provider</param>
         public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
         {
-            _missingExportStrategyProviders = _missingExportStrategyProviders.Add(exportStrategyProvider);
+            RootScope.AddMissingExportStrategyProvider(exportStrategyProvider);
         }
 
         /// <summary>
@@ -411,6 +411,11 @@ namespace Grace.DependencyInjection
         public IExportStrategyCollection GetStrategyCollection(Type exportType)
         {
             return RootScope.GetStrategyCollection(exportType);
+        }
+
+        public IExportStrategyCollection GetStrategyCollection(string exportName)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

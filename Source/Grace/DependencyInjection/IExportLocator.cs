@@ -224,6 +224,14 @@ namespace Grace.DependencyInjection
 		[CanBeNull]
 		IExportStrategyCollection GetStrategyCollection([NotNull] Type exportType);
 
+        /// <summary>
+        /// Get the export collection by name
+        /// </summary>
+        /// <param name="exportName">export name</param>
+        /// <returns></returns>
+        [CanBeNull]
+        IExportStrategyCollection GetStrategyCollection([NotNull] string exportName);
+
 		/// <summary>
 		/// Adds a new strategy to the container
 		/// </summary>
@@ -250,10 +258,18 @@ namespace Grace.DependencyInjection
         [NotNull]
         IEnumerable<IStrategyInspector> Inspectors { get; }
 
+	    /// <summary>
+	    /// Add inspector to scope
+	    /// </summary>
+	    /// <param name="inspector"></param>
+	    void AddInspector([NotNull] IStrategyInspector inspector);
+
+
         /// <summary>
-        /// Add inspector to scope
+        /// Missing export strategy providers can provide a set of exports that can be used to resolve a satisfy an import
         /// </summary>
-        /// <param name="inspector"></param>
-        void AddInspector([NotNull]IStrategyInspector inspector);
+        /// <param name="exportStrategyProvider">export strategy provider</param>
+        void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider);
+
 	}
 }

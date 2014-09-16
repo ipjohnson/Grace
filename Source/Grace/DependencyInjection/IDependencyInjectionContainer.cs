@@ -57,10 +57,5 @@ namespace Grace.DependencyInjection
 		/// <param name="scopeName">name of scope to configure</param>
 		void Configure([NotNull] string scopeName, [NotNull] IConfigurationModule configurationModule);
 
-        /// <summary>
-        /// Missing export strategy providers can provide a set of exports that can be used to resolve a satisfy an import
-        /// </summary>
-        /// <param name="exportStrategyProvider">export strategy provider</param>
-	    void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider);
 	}
 }

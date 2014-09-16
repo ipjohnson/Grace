@@ -45,6 +45,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
 	    }
 
+	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
+	    {
+	        throw new NotImplementedException();
+	    }
+
 	    public IEnumerable<IInjectionScope> ChildScopes()
 		{
 			return new IInjectionScope[0];
@@ -141,7 +146,12 @@ namespace Grace.UnitTests.Classes.FauxClasses
 			return returnValue;
 		}
 
-		public void AddStrategy(IExportStrategy addStrategy)
+	    public IExportStrategyCollection GetStrategyCollection(string exportName)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void AddStrategy(IExportStrategy addStrategy)
 		{
 			IExportStrategyCollection collection;
 
