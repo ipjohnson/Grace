@@ -1266,9 +1266,31 @@ namespace Grace.DependencyInjection.Impl
             return returnValue;
         }
 
+        /// <summary>
+        /// Finds a collection by export name
+        /// </summary>
+        /// <param name="exportName"></param>
+        /// <returns></returns>
         public IExportStrategyCollection GetStrategyCollection(string exportName)
         {
-            throw new NotImplementedException();
+            ExportStrategyCollection returnValue;
+
+            if (!exportsByName.TryGetValue(exportName, out returnValue) && ParentScope == null)
+            {
+                lock (exportsLock)
+                {
+                    Dictionary<string, ExportStrategyCollection> newExports =
+                        new Dictionary<string, ExportStrategyCollection>(exportsByName);
+
+                    returnValue = new ExportStrategyCollection(this, Environment, comparer);
+
+                    newExports[exportName] = returnValue;
+
+                    Interlocked.Exchange(ref exportsByName, newExports);
+                }
+            }
+
+            return returnValue;
         }
 
         #endregion
