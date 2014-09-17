@@ -23,6 +23,6 @@ namespace Grace.DependencyInjection
         /// <param name="exportType"></param>
         /// <returns>list of exports</returns>
         [NotNull]
-        IEnumerable<IExportStrategy> ProvideExports([NotNull]IInjectionContext requestContext, [CanBeNull] string exportName, [CanBeNull] Type exportType, [CanBeNull] ExportStrategyFilter consider, [CanBeNull] object locateKey);
+        IEnumerable<IExportStrategy> ProvideExports(IInjectionContext requestContext, string exportName,  Type exportType, ExportStrategyFilter consider, object locateKey);
     }
 }
