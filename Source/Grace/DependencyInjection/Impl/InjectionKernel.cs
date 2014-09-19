@@ -91,7 +91,7 @@ namespace Grace.DependencyInjection.Impl
         private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
         private ImmutableArray<IStrategyInspector> _strategyInspectors = ImmutableArray<IStrategyInspector>.Empty;
         private ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableArray<IMissingExportStrategyProvider>.Empty;
-        private object _strategyInspectorsLock = new object();
+        private readonly object _strategyInspectorsLock = new object();
 
         #endregion
 
