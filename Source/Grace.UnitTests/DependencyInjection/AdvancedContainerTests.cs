@@ -259,7 +259,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -276,7 +275,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(3, simpleObjects.Count);
 
-            Assert.Equal(3, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -293,7 +291,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -310,7 +307,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -326,7 +322,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(5, simpleObjects.Count);
 
-            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]
@@ -343,7 +338,6 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(simpleObjects);
             Assert.Equal(3, simpleObjects.Count);
 
-            Assert.Equal(3, container.Diagnose().Exports.Count());
         }
         #endregion
 

@@ -293,8 +293,6 @@ namespace Grace.UnitTests.DependencyInjection
                 container.LocateAll<ISimpleObject>(withKey: new[] { 'A', 'C', 'E' });
 
             Assert.Equal(3, simpleObjects.Count);
-
-            Assert.Equal(5, container.Diagnose().Exports.Count());
         }
 
         [Fact]

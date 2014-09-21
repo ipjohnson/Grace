@@ -323,24 +323,26 @@ namespace Grace.DependencyInjection.Lifestyle
 			return ParentScope.GetStrategies(exportType, injectionContext, exportFilter);
 		}
 
-		/// <summary>
-		/// Get the export strategy collection
-		/// </summary>
-		/// <param name="exportType"></param>
-		/// <returns>can be null if nothing is registered by that name</returns>
-		public IExportStrategyCollection GetStrategyCollection(Type exportType)
+	    /// <summary>
+	    /// Get the export strategy collection
+	    /// </summary>
+	    /// <param name="exportType"></param>
+	    /// <param name="createIfDoesntExist"></param>
+	    /// <returns>can be null if nothing is registered by that name</returns>
+	    public IExportStrategyCollection GetStrategyCollection(Type exportType, bool createIfDoesntExist = true)
 		{
-			return ParentScope.GetStrategyCollection(exportType);
+			return ParentScope.GetStrategyCollection(exportType, createIfDoesntExist);
 		}
 
 	    /// <summary>
 	    /// Get the export collection by name
 	    /// </summary>
 	    /// <param name="exportName">export name</param>
+	    /// <param name="createIfDoesntExist"></param>
 	    /// <returns></returns>
-	    public IExportStrategyCollection GetStrategyCollection(string exportName)
+	    public IExportStrategyCollection GetStrategyCollection(string exportName, bool createIfDoesntExist = true)
 	    {
-	        return ParentScope.GetStrategyCollection(exportName);
+	        return ParentScope.GetStrategyCollection(exportName, createIfDoesntExist);
 	    }
 
 	    #region Not implemented
@@ -518,7 +520,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
 	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
 	    {
-	        throw new NotImplementedException();
+            throw new NotSupportedException();
 	    }
 	}
 }

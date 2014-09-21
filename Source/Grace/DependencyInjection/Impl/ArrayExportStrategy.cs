@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -21,7 +22,7 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
 		{
-			return context.RequestingScope.LocateAll<T>(context, consider, locateKey).ToArray();
+			return context.RequestingScope.Locate<IEnumerable<T>>(context, consider, locateKey).ToArray();
 		}
 
 		/// <summary>

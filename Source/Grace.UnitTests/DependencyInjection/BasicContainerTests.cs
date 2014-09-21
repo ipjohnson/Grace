@@ -162,7 +162,10 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c => c.Export<ImportConstructorService>().As<IImportConstructorService>());
 
-			container.ResolveUnknownExports += (sender, args) => { args.ExportedValue = new BasicService(); };
+			container.ResolveUnknownExports += (sender, args) =>
+			                                   {
+			                                       args.ExportedValue = new BasicService();
+			                                   };
 
 			IInjectionScope childScope = container.CreateChildScope();
 

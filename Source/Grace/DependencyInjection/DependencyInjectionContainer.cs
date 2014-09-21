@@ -407,15 +407,22 @@ namespace Grace.DependencyInjection
         /// Get the export strategy collection
         /// </summary>
         /// <param name="exportType"></param>
+        /// <param name="createIfDoesntExist"></param>
         /// <returns>can be null if nothing is registered by that name</returns>
-        public IExportStrategyCollection GetStrategyCollection(Type exportType)
+        public IExportStrategyCollection GetStrategyCollection(Type exportType, bool createIfDoesntExist = true)
         {
-            return RootScope.GetStrategyCollection(exportType);
+            return RootScope.GetStrategyCollection(exportType, createIfDoesntExist);
         }
 
-        public IExportStrategyCollection GetStrategyCollection(string exportName)
+        /// <summary>
+        /// Get the export collection by name
+        /// </summary>
+        /// <param name="exportName">export name</param>
+        /// <param name="createIfDoesntExist"></param>
+        /// <returns></returns>
+        public IExportStrategyCollection GetStrategyCollection(string exportName, bool createIfDoesntExist = true)
         {
-            throw new NotImplementedException();
+            return RootScope.GetStrategyCollection(exportName, createIfDoesntExist);
         }
 
         /// <summary>

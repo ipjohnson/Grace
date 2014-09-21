@@ -216,21 +216,23 @@ namespace Grace.DependencyInjection
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter exportFilter = null);
 
-		/// <summary>
-		/// Get the export strategy collection
-		/// </summary>
-		/// <param name="exportType"></param>
-		/// <returns>can be null if nothing is registered by that name</returns>
-		[CanBeNull]
-		IExportStrategyCollection GetStrategyCollection([NotNull] Type exportType);
+	    /// <summary>
+	    /// Get the export strategy collection
+	    /// </summary>
+	    /// <param name="exportType"></param>
+	    /// <param name="createIfDoesntExist"></param>
+	    /// <returns>can be null if nothing is registered by that name</returns>
+	    [CanBeNull]
+		IExportStrategyCollection GetStrategyCollection([NotNull] Type exportType, bool createIfDoesntExist = true);
 
-        /// <summary>
-        /// Get the export collection by name
-        /// </summary>
-        /// <param name="exportName">export name</param>
-        /// <returns></returns>
-        [CanBeNull]
-        IExportStrategyCollection GetStrategyCollection([NotNull] string exportName);
+	    /// <summary>
+	    /// Get the export collection by name
+	    /// </summary>
+	    /// <param name="exportName">export name</param>
+	    /// <param name="createIfDoesntExist"></param>
+	    /// <returns></returns>
+	    [CanBeNull]
+        IExportStrategyCollection GetStrategyCollection([NotNull] string exportName, bool createIfDoesntExist = true);
 
 		/// <summary>
 		/// Adds a new strategy to the container

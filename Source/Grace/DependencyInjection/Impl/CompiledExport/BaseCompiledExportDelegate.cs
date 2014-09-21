@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -855,6 +856,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                          importType != null &&
                          !importType.IsConstructedGenericType &&
                          importType.GetTypeInfo().BaseType != typeof(MulticastDelegate) &&
+                         !typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo()) &&
                          !InjectionKernel.ImportTypeByName(importType))
                     {
                         ImportForRootScope(importType, targetInfo, exportName, importVariable, locateKey, isRequired);
@@ -1516,10 +1518,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                     returnValue = true;
                 }
-                else if (genericType == typeof(IEnumerable<>) ||
-                            genericType == typeof(ICollection<>) ||
-                            genericType == typeof(IList<>) ||
-                            genericType == typeof(List<>))
+                else if ((genericType == typeof(IEnumerable<>) ||
+                          genericType == typeof(ICollection<>) ||
+                          genericType == typeof(IList<>) ||
+                          genericType == typeof(List<>)) && 
+                         comparerObject != null)
                 {
                     MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
                     Type comparerType = typeof(IComparer<>).MakeGenericType(importType.GenericTypeArguments);
@@ -1537,9 +1540,10 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                     returnValue = true;
                 }
-                else if (genericType == typeof(ReadOnlyCollection<>) ||
-                            genericType == typeof(IReadOnlyCollection<>) ||
-                            genericType == typeof(IReadOnlyList<>))
+                else if ((genericType == typeof(ReadOnlyCollection<>) ||
+                          genericType == typeof(IReadOnlyCollection<>) ||
+                          genericType == typeof(IReadOnlyList<>)) && 
+                         comparerObject != null)
                 {
                     Type closedType = typeof(ReadOnlyCollection<>).MakeGenericType(importType.GenericTypeArguments);
                     MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);

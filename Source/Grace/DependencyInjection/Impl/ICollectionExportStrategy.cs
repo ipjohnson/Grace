@@ -44,7 +44,7 @@ namespace Grace.DependencyInjection.Impl
 		{
 			ICollection<TItem> collection = activateT();
 
-			foreach (TItem item in exportInjectionScope.LocateAll<TItem>(context, consider, locateKey))
+			foreach (TItem item in exportInjectionScope.Locate<IEnumerable<TItem>>(context, consider, locateKey))
 			{
 				collection.Add(item);
 			}

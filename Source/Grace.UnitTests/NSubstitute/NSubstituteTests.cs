@@ -87,19 +87,5 @@ namespace Grace.UnitTests.NSubstitute
 			Assert.False(ReferenceEquals(importConstructorService.BasicService, container.Locate<IBasicService>()));
 		}
 
-		[Fact]
-		public void SubstituteMultiple()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer();
-
-			container.Substitute();
-
-			container.Configure(c => c.Export<ImportIEnumerableService>().As<IImportIEnumerableService>());
-
-			IImportIEnumerableService iEnumerableService = container.Locate<IImportIEnumerableService>();
-
-			Assert.NotNull(iEnumerableService);
-			Assert.Equal(1, iEnumerableService.Count);
-		}
 	}
 }

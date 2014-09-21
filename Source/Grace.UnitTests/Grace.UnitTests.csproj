@@ -162,7 +162,6 @@
     <Compile Include="DependencyInjection\ExportsThatTests.cs" />
     <Compile Include="DependencyInjection\Impl\BlackListTests.cs" />
     <Compile Include="DependencyInjection\Impl\ExportAssemblyConfigurationTests.cs" />
-    <Compile Include="DependencyInjection\Impl\ExportStrategyTests.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportTests.cs" />
     <Compile Include="DependencyInjection\Impl\FluentGenericExportTests.cs" />
     <Compile Include="DependencyInjection\Impl\FuncValueProviderTests.cs" />

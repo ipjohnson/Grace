@@ -132,11 +132,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
             return ImmutableArray<IExportStrategy>.Empty;
         }
 
-        public IExportStrategyCollection GetStrategyCollection(Type exportType)
+        public IExportStrategyCollection GetStrategyCollection(Type exportType, bool createIfDoesntExist = true)
         {
             IExportStrategyCollection returnValue;
 
-            if (!exports.TryGetValue(exportType, out returnValue) && ParentScope == null)
+            if (!exports.TryGetValue(exportType, out returnValue) && ParentScope == null && createIfDoesntExist)
             {
                 Dictionary<Type, IExportStrategyCollection> newExports =
                     new Dictionary<Type, IExportStrategyCollection>(exports);
@@ -151,9 +151,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
             return returnValue;
         }
 
-        public IExportStrategyCollection GetStrategyCollection(string exportName)
+        public IExportStrategyCollection GetStrategyCollection(string exportName, bool createIfDoesntExist = true)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void AddStrategy(IExportStrategy addStrategy)
