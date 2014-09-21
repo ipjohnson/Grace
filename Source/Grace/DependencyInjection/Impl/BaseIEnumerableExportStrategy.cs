@@ -24,9 +24,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object Activate(IInjectionScope exportInjectionScope, IInjectionContext context, ExportStrategyFilter consider, object locateKey)
         {
-            List<T> returnList = null;
-
-            ProcessExportsFromInjectionScope(context.RequestingScope, context, consider, locateKey, returnList);
+            List<T> returnList = ProcessExportsFromInjectionScope(context.RequestingScope, context, consider, locateKey, null);
 
             if (returnList == null)
             {
