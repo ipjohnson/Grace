@@ -110,9 +110,11 @@ namespace Grace.DependencyInjection.Impl
         /// Set the key value for the strategy
         /// </summary>
         /// <param name="key"></param>
-        public void SetKey(object key)
+        public IConfigurableExportStrategy SetKey(object key)
         {
             Key = key;
+
+            return this;
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace Grace.DependencyInjection.Impl
         /// Add an export name for strategy
         /// </summary>
         /// <param name="exportName"></param>
-        public virtual void AddExportName(string exportName)
+        public virtual IConfigurableExportStrategy AddExportName(string exportName)
         {
             if (_locked)
             {
@@ -159,13 +161,15 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _exportNames = _exportNames.Add(exportName);
+            
+            return this;
         }
 
         /// <summary>
         /// Add an export type for the strategy
         /// </summary>
         /// <param name="exportType"></param>
-        public virtual void AddExportType(Type exportType)
+        public virtual IConfigurableExportStrategy AddExportType(Type exportType)
         {
             if (_locked)
             {
@@ -173,6 +177,8 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _exportTypes = _exportTypes.Add(exportType);
+
+            return this;
         }
 
         /// <summary>
@@ -180,7 +186,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="exportType"></param>
         /// <param name="key"></param>
-        public void AddKeyedExportType(Type exportType, object key)
+        public IConfigurableExportStrategy AddKeyedExportType(Type exportType, object key)
         {
             if (_locked)
             {
@@ -188,6 +194,8 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _keyedExportTypes = _keyedExportTypes.Add(new Tuple<Type, object>(exportType, key));
+
+            return this;
         }
 
         public virtual ExportEnvironment Environment { get; private set; }
@@ -196,9 +204,11 @@ namespace Grace.DependencyInjection.Impl
         /// Set the export environment for the strategy
         /// </summary>
         /// <param name="environment"></param>
-        public virtual void SetEnvironment(ExportEnvironment environment)
+        public virtual IConfigurableExportStrategy SetEnvironment(ExportEnvironment environment)
         {
             Environment = environment;
+
+            return this;
         }
 
         /// <summary>
@@ -210,17 +220,21 @@ namespace Grace.DependencyInjection.Impl
         /// Set the priority for the strategy
         /// </summary>
         /// <param name="priority"></param>
-        public virtual void SetPriority(int priority)
+        public virtual IConfigurableExportStrategy SetPriority(int priority)
         {
             Priority = priority;
+
+            return this;
         }
 
         /// <summary>
         /// Set this export to be externally owned (IDisposable will not be tracked)
         /// </summary>
-        public void SetExternallyOwned()
+        public IConfigurableExportStrategy SetExternallyOwned()
         {
             ExternallyOwned = true;
+
+            return this;
         }
 
         /// <summary>
@@ -235,12 +249,14 @@ namespace Grace.DependencyInjection.Impl
         /// Set the life cycle container for the strategy
         /// </summary>
         /// <param name="container"></param>
-        public virtual void SetLifestyleContainer(ILifestyle container)
+        public virtual IConfigurableExportStrategy SetLifestyleContainer(ILifestyle container)
         {
             if (_lifestyle == null)
             {
                 _lifestyle = container;
             }
+
+            return this;
         }
 
         /// <summary>
@@ -255,7 +271,7 @@ namespace Grace.DependencyInjection.Impl
         /// Add a condition to the export
         /// </summary>
         /// <param name="exportCondition"></param>
-        public virtual void AddCondition(IExportCondition exportCondition)
+        public virtual IConfigurableExportStrategy AddCondition(IExportCondition exportCondition)
         {
             if (_locked)
             {
@@ -263,6 +279,8 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _conditions = _conditions.Add(exportCondition);
+
+            return this;
         }
 
         /// <summary>
@@ -360,7 +378,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="name">metadata name</param>
         /// <param name="value">metadata value</param>
-        public void AddMetadata(string name, object value)
+        public IConfigurableExportStrategy AddMetadata(string name, object value)
         {
             if (_metadata == null)
             {
@@ -368,6 +386,8 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _metadata.AddOrUpdate(name, value);
+
+            return this;
         }
 
         /// <summary>

@@ -126,6 +126,7 @@
     <Compile Include="DependencyInjection\Impl\BaseIEnumerableExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetCtorParamConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\ExportTypeSetImportPropertyConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\ExternalFuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />
     <Compile Include="DependencyInjection\Impl\IEnumerableExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IInjectionScopeExtensions.cs" />
