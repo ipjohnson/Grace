@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Exceptions
@@ -62,7 +63,7 @@ namespace Grace.DependencyInjection.Exceptions
 					LocateDisplayString,
 					dependencyType,
 					InjectionContext.TargetInfo.InjectionTargetName,
-					InjectionContext.TargetInfo.InjectionType.Name,
+					ReflectionService.GetFriendlyNameForType(InjectionContext.TargetInfo.InjectionType),
 					Environment.NewLine);
 
 				CreateMessageFromLocationInformation(outputString);

@@ -731,5 +731,32 @@ namespace Grace.Data
 
 	        return false;
 	    }
+
+	    public static string GetFriendlyNameForType(Type type)
+	    {
+	        if (type.IsConstructedGenericType)
+	        {
+	            int tickIndex = type.Name.LastIndexOf('`');
+	            string name = type.Name.Substring(0, tickIndex) + '<';
+
+	            Type[] types = type.GenericTypeArguments;
+
+	            for (int i = 0; i < types.Length; i++)
+	            {
+	                name += GetFriendlyNameForType(types[i]);
+
+	                if (i + 1 < types.Length)
+	                {
+	                    name += ',';
+	                }
+	            }
+
+	            name += '>';
+
+	            return name;
+	        }
+
+	        return type.Name;
+	    }
 	}
 }

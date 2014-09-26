@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.Data;
 using Grace.Utilities;
 using JetBrains.Annotations;
 
@@ -36,11 +37,15 @@ namespace Grace.DependencyInjection.Exceptions
 		/// <param name="stringBuilder">string builder</param>
 		public void CreateMessage(StringBuilder stringBuilder)
 		{
-			stringBuilder.AppendFormat("Activating type {0} ", exportStrategy.ActivationType.Name);
+			stringBuilder.AppendFormat("Activating type {0} ", ReflectionService.GetFriendlyNameForType( exportStrategy.ActivationType));
 
 			if (exportStrategy.Lifestyle != null)
 			{
-				stringBuilder.AppendFormat("with lifestyle {0}",exportStrategy.Lifestyle.GetType().Name);
+				stringBuilder.AppendFormat("with lifestyle {0}",ReflectionService.GetFriendlyNameForType(exportStrategy.Lifestyle.GetType()));
+			}
+			else
+			{
+			    stringBuilder.AppendFormat(" as transient");
 			}
 
 			stringBuilder.AppendLine();
@@ -113,7 +118,7 @@ namespace Grace.DependencyInjection.Exceptions
 			}
 			else
 			{
-				stringBuilder.AppendFormat("by type {0} ", locateType.Name);
+				stringBuilder.AppendFormat("by type {0} ", ReflectionService.GetFriendlyNameForType(locateType));
 			}
 
 			stringBuilder.AppendFormat("in scope '{0}' ", scopeName);
@@ -224,7 +229,7 @@ namespace Grace.DependencyInjection.Exceptions
 			}
 			else if (LocateType != null)
 			{
-				stringBuilder.AppendFormat("using type {0}", LocateType.Name);
+				stringBuilder.AppendFormat("using type {0}", ReflectionService.GetFriendlyNameForType(LocateType));
 			}
 
 			stringBuilder.AppendLine();
@@ -366,7 +371,7 @@ namespace Grace.DependencyInjection.Exceptions
 			{
 				if (LocatingType != null)
 				{
-					return locatingType.Name;
+					return ReflectionService.GetFriendlyNameForType(locatingType);
 				}
 
 				return LocateName;
