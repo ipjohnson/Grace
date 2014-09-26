@@ -963,7 +963,14 @@ namespace Grace.DependencyInjection.Impl
             if (injectionContext.RequestingScope == this &&
                 returnValue.Count == 0)
             {
-                CheckMissingExportStrategyProviders(this, injectionContext, name, null, consider, locateKey, returnValue);
+                List<object> outList;
+
+                CheckMissingExportStrategyProviders(this, injectionContext, name, null, consider, locateKey, out outList);
+
+                if (outList != null)
+                {
+                    return outList;
+                }
             }
 
             return returnValue;
@@ -1527,11 +1534,11 @@ namespace Grace.DependencyInjection.Impl
                 return null;
             }
 
-            List<object> exports = new List<object>();
+            List<object> exports;
 
-            CheckMissingExportStrategyProviders(this, context, exportName, exportType, consider, locateKey, exports);
+            CheckMissingExportStrategyProviders(this, context, exportName, exportType, consider, locateKey,out exports);
 
-            if (exports.Count > 0)
+            if (exports != null && exports.Count > 0)
             {
                 return exports[0];
             }
@@ -1861,9 +1868,11 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
-        private void CheckMissingExportStrategyProviders<T>(IInjectionScope scope, IInjectionContext injectionContext, string name, Type locateType, ExportStrategyFilter exportFilter, object locateKey, List<T> returnValue)
+        private void CheckMissingExportStrategyProviders<T>(IInjectionScope scope, IInjectionContext injectionContext, string name, Type locateType, ExportStrategyFilter exportFilter, object locateKey,out List<T> returnValue)
         {
             bool foundStrategy = false;
+
+            returnValue = null;
 
             foreach (IMissingExportStrategyProvider missingExportStrategyProvider in scope.MissingExportStrategyProviders)
             {
@@ -1889,18 +1898,32 @@ namespace Grace.DependencyInjection.Impl
 
                 if (collection != null)
                 {
-                    collection.ActivateAll<T>(injectionContext, exportFilter, locateKey);
+                    returnValue = collection.ActivateAll<T>(injectionContext, exportFilter, locateKey);
                 }
 
                 if (scope.ParentScope != null)
                 {
-                    CheckMissingExportStrategyProviders(scope.ParentScope,
+                    List<T> outList;
+                    
+                   CheckMissingExportStrategyProviders(scope.ParentScope,
                         injectionContext,
                         name,
                         locateType,
                         exportFilter,
                         locateKey,
-                        returnValue);
+                        out outList);
+
+                    if (outList != null)
+                    {
+                        if (returnValue == null)
+                        {
+                            returnValue = outList;
+                        }
+                        else
+                        {
+                            returnValue.AddRange(outList);
+                        }
+                    }
                 }
             }
         }
