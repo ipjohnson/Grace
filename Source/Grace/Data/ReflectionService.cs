@@ -732,31 +732,52 @@ namespace Grace.Data
 	        return false;
 	    }
 
-	    public static string GetFriendlyNameForType(Type type)
+	    public static string GetFriendlyNameForType(Type type, bool includeNamespace = false)
 	    {
 	        if (type.IsConstructedGenericType)
 	        {
-	            int tickIndex = type.Name.LastIndexOf('`');
-	            string name = type.Name.Substring(0, tickIndex) + '<';
+	            StringBuilder builder = new StringBuilder();
 
-	            Type[] types = type.GenericTypeArguments;
+	            if (includeNamespace)
+	            {
+	                builder.Append(type.Namespace);
+	                builder.Append('.');
+	            }
+
+	            CreateFriendlyNameForType(type, builder);
+
+	            return builder.ToString();
+	        }
+            
+	        return includeNamespace ? type.Namespace + '.' + type.Name : type.Name;
+	    }
+
+	    private static void CreateFriendlyNameForType(Type currentType, StringBuilder builder)
+	    {
+	        if (currentType.IsConstructedGenericType)
+	        {
+                int tickIndex = currentType.Name.LastIndexOf('`');
+	            builder.Append(currentType.Name.Substring(0, tickIndex));
+	            builder.Append('<');
+
+                Type[] types = currentType.GenericTypeArguments;
 
 	            for (int i = 0; i < types.Length; i++)
 	            {
-	                name += GetFriendlyNameForType(types[i]);
+                    CreateFriendlyNameForType(types[i], builder);
 
 	                if (i + 1 < types.Length)
 	                {
-	                    name += ',';
+	                    builder.Append(',');
 	                }
 	            }
 
-	            name += '>';
-
-	            return name;
+	            builder.Append('>');
 	        }
-
-	        return type.Name;
+	        else
+	        {
+	            builder.Append(currentType.Name);
+	        }
 	    }
 	}
 }

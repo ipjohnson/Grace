@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
@@ -449,7 +450,7 @@ namespace Grace.DependencyInjection.Impl
                 }
                 else if (_exportTypes.Count > 0)
                 {
-                    string exportName = _exportTypes[0].FullName;
+                    string exportName = ReflectionService.GetFriendlyNameForType(_exportTypes[0]);
 
                     returnValue += "  as  " + exportName;
 
@@ -460,7 +461,7 @@ namespace Grace.DependencyInjection.Impl
                 }
                 else
                 {
-                    returnValue = " as " + ActivationType.FullName;
+                    returnValue = " as " + ReflectionService.GetFriendlyNameForType(ActivationType);
                 }
 
                 return returnValue;
@@ -473,7 +474,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                return ActivationType.FullName;
+                return ReflectionService.GetFriendlyNameForType(ActivationType);
             }
         }
 

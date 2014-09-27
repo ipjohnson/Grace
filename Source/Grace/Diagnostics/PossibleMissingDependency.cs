@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Grace.Data;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -11,14 +12,14 @@ namespace Grace.Diagnostics
 		public IExportStrategy Strategy { get; set; }
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-      // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local
 		private string DebuggerNameDisplayString
 		{
 			get
 			{
 				if (Dependency.ImportType != null)
 				{
-					return Dependency.ImportType.FullName;
+					return ReflectionService.GetFriendlyNameForType(Dependency.ImportType, true);
 				}
 
 				return Dependency.ImportName;
@@ -29,7 +30,7 @@ namespace Grace.Diagnostics
 		// ReSharper disable once UnusedMember.Local
 		private string DebuggerValueDisplayString
 		{
-			get { return "For " + Strategy.ActivationType.FullName; }
+			get { return "For " + ReflectionService.GetFriendlyNameForType(Strategy.ActivationType); }
 		}
 
 	}

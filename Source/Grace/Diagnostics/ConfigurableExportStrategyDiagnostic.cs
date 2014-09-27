@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Grace.Data;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 
@@ -16,7 +17,7 @@ namespace Grace.Diagnostics
 			this.strategy = strategy;
 		}
 
-		[DebuggerDisplay("{ActivationType}", Name = "Export Type")]
+		[DebuggerDisplay("{ActivationType}", Name = "Activation Type")]
 		public Type ActivationType
 		{
 			get { return strategy.ActivationType; }
@@ -46,7 +47,7 @@ namespace Grace.Diagnostics
 			{
 				if (strategy.Lifestyle != null)
 				{
-					return strategy.Lifestyle.GetType().Name;
+					return ReflectionService.GetFriendlyNameForType(strategy.Lifestyle.GetType());
 				}
 
 				return "Transient";

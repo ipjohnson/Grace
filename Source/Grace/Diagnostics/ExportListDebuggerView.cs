@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using Grace.Data;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -31,33 +33,17 @@ namespace Grace.Diagnostics
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-      // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local
 		private string DisplayValue
 		{
 			get
 			{
-				string returnString = null;
-
-				foreach (IExportStrategy exportStrategy in Strategies)
-				{
-					if (returnString == null)
-					{
-						returnString = exportStrategy.ActivationType.FullName;
-					}
-					else
-					{
-						returnString += " ...";
-
-						break;
-					}
-				}
-
-				return returnString;
+				return "Count = " + Strategies.Count();
 			}
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-      // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedMember.Local
 		private string NameDisplayValue
 		{
 			get { return name + " "; }

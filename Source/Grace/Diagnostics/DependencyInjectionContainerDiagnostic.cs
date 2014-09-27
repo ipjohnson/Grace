@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Grace.Data;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -126,7 +127,7 @@ namespace Grace.Diagnostics
 
 						if (!returnValue.TryGetValue(exportType, out view))
 						{
-							view = new ExportListDebuggerView(exportType.FullName);
+							view = new ExportListDebuggerView(ReflectionService.GetFriendlyNameForType(exportType));
 
 							returnValue[exportType] = view;
 						}
