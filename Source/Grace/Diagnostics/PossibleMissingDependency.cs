@@ -19,7 +19,7 @@ namespace Grace.Diagnostics
 			{
 				if (Dependency.ImportType != null)
 				{
-					return ReflectionService.GetFriendlyNameForType(Dependency.ImportType, true);
+					return ReflectionService.GetFriendlyNameForType(Dependency.ImportType);
 				}
 
 				return Dependency.ImportName;
