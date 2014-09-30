@@ -48,13 +48,6 @@ namespace Grace.DependencyInjection.Lifestyle
 				returnValue = creationDelegate(exportStrategyScope, injectionContext);
 
 				requestScope.SetExtraData(uniqueId, returnValue);
-
-				IDisposable disposable = returnValue as IDisposable;
-
-				if (disposable != null)
-				{
-					requestScope.AddDisposable(disposable);
-				}
 			}
 
 			return returnValue;
