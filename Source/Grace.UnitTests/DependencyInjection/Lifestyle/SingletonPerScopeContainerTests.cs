@@ -20,6 +20,8 @@ namespace Grace.UnitTests.DependencyInjection.LifestyleContainers
 				                 {
 					                 DisposableService disposableService = new DisposableService();
 
+                                     scope.AddDisposable(disposableService);
+
 					                 disposableService.Disposing += (sender, args) => eventFired = true;
 
 					                 return disposableService;
