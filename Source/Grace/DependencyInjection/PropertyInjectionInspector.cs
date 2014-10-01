@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection
 
             if (compiledExportStrategy != null)
             {
-                foreach (PropertyInfo declaredProperty in exportStrategy.ActivationType.GetTypeInfo().DeclaredProperties)
+                foreach (PropertyInfo declaredProperty in exportStrategy.ActivationType.GetRuntimeProperties())
                 {
                     if (!declaredProperty.CanWrite ||
                         declaredProperty.SetMethod.IsStatic ||
