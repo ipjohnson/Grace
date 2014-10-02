@@ -971,7 +971,7 @@ namespace Grace.DependencyInjection.Impl
                         }
 
                         if (importProperty.PropertyFilter != null &&
-                            importProperty.PropertyFilter(runtimeProperty))
+                           !importProperty.PropertyFilter(runtimeProperty))
                         {
                             continue;
                         }
