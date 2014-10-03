@@ -474,7 +474,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                return ReflectionService.GetFriendlyNameForType(ActivationType);
+                return ReflectionService.GetFriendlyNameForType(ActivationType, true);
             }
         }
 
