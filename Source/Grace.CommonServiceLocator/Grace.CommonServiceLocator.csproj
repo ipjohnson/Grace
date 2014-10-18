@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Grace.CommonServiceLocator.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Grace.CommonServiceLocator.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
@@ -53,6 +55,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
+xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\Output\bin\$(PlatformName)\"
+
+xcopy /Y "$(TargetPath)" "$(ProjectDir)..\..\Nuget\lib\portable-net4+sl5+netcore45+wpa81+wp8\"
+xcopy /Y "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\..\Nuget\lib\portable-net4+sl5+netcore45+wpa81+wp8\"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\..\Nuget\lib\portable-net4+sl5+netcore45+wpa81+wp8\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

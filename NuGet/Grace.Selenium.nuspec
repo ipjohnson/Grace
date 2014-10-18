@@ -17,6 +17,8 @@
     <tags>IoC Dependency Injection Container Selenium</tags>
     <dependencies>
       <dependency id="Grace" version="$version$"/>
+      <dependency id="Selenium.WebDriver" version="2.43.1"/>
+      <dependency id="Selenium.Support" version="2.43.1"/>
     </dependencies>
   </metadata>
   <files>
