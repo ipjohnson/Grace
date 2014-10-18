@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace", "Grace\Grace.csproj", "{2E64FA60-F2CD-428C-8413-D71B4BF5935A}"
 EndProject
@@ -27,6 +27,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecFiles", "NuSpecFiles", "{F3A527B7-F1C4-4D78-AAE6-B908B6F93024}"
 	ProjectSection(SolutionItems) = preProject
 		..\NuGet\Grace.Common.Logging.nuspec = ..\NuGet\Grace.Common.Logging.nuspec
+		..\NuGet\Grace.CommonServiceLocator.nuspec = ..\NuGet\Grace.CommonServiceLocator.nuspec
 		..\NuGet\Grace.FakeItEasy.nuspec = ..\NuGet\Grace.FakeItEasy.nuspec
 		..\NuGet\Grace.log4net.nuspec = ..\NuGet\Grace.log4net.nuspec
 		..\NuGet\Grace.Moq.nuspec = ..\NuGet\Grace.Moq.nuspec
@@ -61,7 +62,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Common.Logging", "Gra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Validation", "Grace.Validation\Grace.Validation.csproj", "{8D654B69-45DB-47C5-BB82-CE6D02670220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.CommonServiceLocator", "Grace.CommonServiceLocator\Grace.CommonServiceLocator\Grace.CommonServiceLocator.csproj", "{D29F84FF-D8B1-46A4-A726-03A6FC88B836}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.CommonServiceLocator", "Grace.CommonServiceLocator\Grace.CommonServiceLocator.csproj", "{D29F84FF-D8B1-46A4-A726-03A6FC88B836}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{19FC5AF4-B9A1-4E52-89C0-0524CB4A4E9E}"
 EndProject
@@ -129,14 +130,14 @@ Global
 		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Release|Any CPU.Build.0 = Release|Any CPU
-		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
