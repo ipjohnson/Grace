@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection.Impl
         private Dictionary<Type, ExportStrategyCollection> exportsByType;
         private Dictionary<Type, IInjectionStrategy> injections;
         private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
-        private ImmutableArray<IStrategyInspector> _strategyInspectors = ImmutableArray<IStrategyInspector>.Empty;
+        private ImmutableArray<IExportStrategyInspector> _strategyInspectors = ImmutableArray<IExportStrategyInspector>.Empty;
         private ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableArray<IMissingExportStrategyProvider>.Empty;
         private readonly object _strategyInspectorsLock = new object();
 
@@ -166,22 +166,11 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// List of Injection Inspectors for the scope
         /// </summary>
-        public IEnumerable<IStrategyInspector> Inspectors
+        public IEnumerable<IExportStrategyInspector> Inspectors
         {
             get { return _strategyInspectors; }
         }
 
-        /// <summary>
-        /// Add inspector to scope
-        /// </summary>
-        /// <param name="inspector"></param>
-        public void AddInspector(IStrategyInspector inspector)
-        {
-            lock (_strategyInspectorsLock)
-            {
-                _strategyInspectors = _strategyInspectors.Add(inspector);
-            }
-        }
 
         /// <summary>
         /// Adds a missing export strategy provider to the scope
@@ -277,8 +266,12 @@ namespace Grace.DependencyInjection.Impl
         /// Add a strategy 
         /// </summary>
         /// <param name="inspector">strategy inspector</param>
-        public void AddStrategyInspector(IStrategyInspector inspector)
+        public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
+            lock (_strategyInspectorsLock)
+            {
+                _strategyInspectors = _strategyInspectors.Add(inspector);
+            }
         }
 
         /// <summary>

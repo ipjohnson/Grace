@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection
     /// Strategy Inspector that marks certain properties for injection
     /// Must be used before the strategy is initialized (i.e. can be added after the export is configured)
     /// </summary>
-    public class PropertyInjectionInspector : IStrategyInspector
+    public class PropertyInjectionInspector : IExportStrategyInspector
     {
         private readonly Type _propertyType;
         private readonly string _propertyName;
@@ -43,7 +43,7 @@ namespace Grace.DependencyInjection
             _afterConstructor = afterConstructor;
         }
 
-        public void StrategyInitializing(IExportStrategy exportStrategy)
+        public void Inspect(IExportStrategy exportStrategy)
         {
             CompiledExportStrategy compiledExportStrategy = exportStrategy as CompiledExportStrategy;
 

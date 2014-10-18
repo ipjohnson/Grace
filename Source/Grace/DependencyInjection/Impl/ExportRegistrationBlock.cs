@@ -311,7 +311,7 @@ namespace Grace.DependencyInjection.Impl
 
             while (currentScope != null)
             {
-                currentScope.Inspectors.Apply(x => x.StrategyInitializing(provideStrategy));
+                currentScope.Inspectors.Apply(x => x.Inspect(provideStrategy));
 
                 currentScope = currentScope.ParentScope;
             }

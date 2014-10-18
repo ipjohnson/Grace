@@ -200,7 +200,6 @@
     <Compile Include="DependencyInjection\Impl\SimpleExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\SimpleGenericExportStrategy.cs" />
     <Compile Include="DependencyInjection\IPerRequestScopeProvider.cs" />
-    <Compile Include="DependencyInjection\IStrategyInspector.cs" />
     <Compile Include="DependencyInjection\Impl\ExportsThatConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\IMissingExportHandler.cs" />
     <Compile Include="DependencyInjection\Impl\SimpleSecondaryExportLocator.cs" />

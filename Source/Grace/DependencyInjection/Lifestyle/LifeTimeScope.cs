@@ -360,7 +360,7 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// Add a strategy 
 		/// </summary>
 		/// <param name="inspector">strategy inspector</param>
-		public void AddStrategyInspector(IStrategyInspector inspector)
+        public void AddStrategyInspector(IExportStrategyInspector inspector)
 		{
 			throw new NotImplementedException("This feature is not supported");
 		}
@@ -508,15 +508,11 @@ namespace Grace.DependencyInjection.Lifestyle
 	        get { yield break; }
 	    }
 
-	    public IEnumerable<IStrategyInspector> Inspectors
+	    public IEnumerable<IExportStrategyInspector> Inspectors
 	    {
-	        get { return ImmutableArray<IStrategyInspector>.Empty;}
+            get { return ImmutableArray<IExportStrategyInspector>.Empty; }
 	    }
 
-	    public void AddInspector(IStrategyInspector inspector)
-	    {
-	        throw new NotSupportedException();
-	    }
 
 	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
 	    {

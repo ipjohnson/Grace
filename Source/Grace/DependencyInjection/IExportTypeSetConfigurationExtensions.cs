@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Grace.Data;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
@@ -26,6 +27,38 @@ namespace Grace.DependencyInjection
 	    public static IExportTypeSetConfiguration Prioritize(this IExportTypeSetConfiguration configuration,Func<Type, bool> typesThat, int priority = 1)
         {
             configuration.WithInspector(new PrioritizeTypesThatInspector(typesThat, priority));
+
+            return configuration;
+        }
+
+        /// <summary>
+        /// Configures exports lifestyles based on class name. If a class ends in Singleton or Service will be registered as Singleton,
+        /// classes ending in Scoped, ScopedSingleton, or ScopedService will be registered as Scoped Singleton. Everything else will be transient
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IExportTypeSetConfiguration UsingLifestyleConventions(this IExportTypeSetConfiguration configuration)
+        {
+            configuration.UsingLifestyle(
+                t =>
+                {
+                    string lowerName = t.Name.ToLower();
+
+                    if (lowerName.EndsWith("service") || 
+                        lowerName.EndsWith("singleton"))
+                    {
+                        return new SingletonLifestyle();
+                    }
+
+                    if (lowerName.EndsWith("scoped") || 
+                        lowerName.EndsWith("scopedsingleton") ||
+                        lowerName.EndsWith("scopedservice"))
+                    {
+                        return new SingletonPerScopeLifestyle();
+                    }
+                                             
+                    return null;
+                });
 
             return configuration;
         }

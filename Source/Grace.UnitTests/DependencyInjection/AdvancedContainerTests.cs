@@ -450,7 +450,7 @@ namespace Grace.UnitTests.DependencyInjection
         {
             DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-            container.AddInspector(new PropertyInjectionInspector<IBasicService>());
+            container.AddStrategyInspector(new PropertyInjectionInspector<IBasicService>());
 
             container.Configure(c =>
                                 {
@@ -469,7 +469,7 @@ namespace Grace.UnitTests.DependencyInjection
         {
             DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-            container.AddInspector(new PropertyInjectionInspector<IBasicService>());
+            container.AddStrategyInspector(new PropertyInjectionInspector<IBasicService>());
 
             var child = container.CreateChildScope();
 

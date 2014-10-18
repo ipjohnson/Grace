@@ -128,7 +128,7 @@ namespace Grace.DependencyInjection
         /// Add a strategy 
         /// </summary>
         /// <param name="inspector">strategy inspector</param>
-        public void AddStrategyInspector(IStrategyInspector inspector)
+        public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
             RootScope.AddStrategyInspector(inspector);
         }
@@ -161,14 +161,6 @@ namespace Grace.DependencyInjection
             RootScope.AddMissingExportStrategyProvider(exportStrategyProvider);
         }
 
-        /// <summary>
-        /// Add IStrategyInspector to the container. It will be called 
-        /// </summary>
-        /// <param name="inspector"></param>
-        public void AddInspector(IStrategyInspector inspector)
-        {
-            RootScope.AddInspector(inspector);
-        }
 
         /// <summary>
         /// Add an object for disposal 
@@ -456,7 +448,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// List of Injection Inspectors for the scope
         /// </summary>
-        public IEnumerable<IStrategyInspector> Inspectors
+        public IEnumerable<IExportStrategyInspector> Inspectors
         {
             get { return RootScope.Inspectors; }
         }

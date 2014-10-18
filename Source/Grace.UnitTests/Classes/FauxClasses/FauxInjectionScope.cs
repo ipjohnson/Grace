@@ -40,14 +40,9 @@ namespace Grace.UnitTests.Classes.FauxClasses
             get { yield break; }
         }
 
-        public IEnumerable<IStrategyInspector> Inspectors
+        public IEnumerable<IExportStrategyInspector> Inspectors
         {
-            get { return ImmutableArray<IStrategyInspector>.Empty; }
-        }
-
-        public void AddInspector(IStrategyInspector inspector)
-        {
-
+            get { return ImmutableArray<IExportStrategyInspector>.Empty; }
         }
 
         public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
@@ -85,7 +80,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
         public IEnumerable<ISecondaryExportLocator> SecondaryExportLocators { get; private set; }
 
-        public void AddStrategyInspector(IStrategyInspector inspector)
+        public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
             throw new NotImplementedException();
         }
