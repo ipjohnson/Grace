@@ -327,6 +327,8 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
+                ApplyInspectors(exportStrategy);
+
                 exportStrategy.OwningScope = this;
 
                 exportStrategy.Initialize();
@@ -335,6 +337,8 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (IExportStrategy secondaryStrategy in exportStrategy.SecondaryStrategies())
                 {
+                    ApplyInspectors(secondaryStrategy);
+
                     secondaryStrategy.OwningScope = this;
 
                     secondaryStrategy.Initialize();
