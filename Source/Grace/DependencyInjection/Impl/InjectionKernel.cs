@@ -1388,12 +1388,16 @@ namespace Grace.DependencyInjection.Impl
         {
             List<IExportStrategy> newExportStrategies = new List<IExportStrategy> { addStrategy };
 
+            ApplyInspectors(addStrategy);
+
             addStrategy.OwningScope = this;
 
             addStrategy.Initialize();
 
             foreach (IExportStrategy secondaryStrategy in addStrategy.SecondaryStrategies())
             {
+                ApplyInspectors(addStrategy);
+
                 secondaryStrategy.OwningScope = this;
 
                 secondaryStrategy.Initialize();
@@ -1701,6 +1705,21 @@ namespace Grace.DependencyInjection.Impl
                                                                     locateKey);
             }
             return returnValue;
+        }
+        
+        private void ApplyInspectors(IExportStrategy addStrategy)
+        {
+            IInjectionScope currentScope = this;
+
+            while (currentScope != null)
+            {
+                foreach (IExportStrategyInspector exportStrategyInspector in currentScope.Inspectors)
+                {
+                    exportStrategyInspector.Inspect(addStrategy);
+                }
+
+                currentScope = currentScope.ParentScope;
+            }
         }
 
         private object ProcessSpecialGenericType<T>(IInjectionContext injectionContext, Type type, ExportStrategyFilter consider, object locateKey)
