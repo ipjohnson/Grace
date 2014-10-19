@@ -59,7 +59,7 @@ namespace Grace.DependencyInjection
                     }
 
                     if (!string.IsNullOrEmpty(_propertyName) &&
-                        _propertyName != declaredProperty.Name)
+                        string.Compare(_propertyName,declaredProperty.Name,StringComparison.CurrentCultureIgnoreCase) != 0)
                     {
                         continue;
                     }
