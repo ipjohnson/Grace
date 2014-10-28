@@ -22,7 +22,6 @@
     <MSBuild Projects="Source\Grace.MVC5\Grace.MVC5.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.log4net\Grace.log4net.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.NLog\Grace.NLog.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
-    <MSBuild Projects="Source\Grace.Selenium\Grace.Selenium.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.Common.Logging\Grace.Common.Logging.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.CommonServiceLocator\Grace.CommonServiceLocator.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.UnitTests\Grace.UnitTests.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
