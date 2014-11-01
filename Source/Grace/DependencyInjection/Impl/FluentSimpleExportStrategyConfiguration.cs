@@ -70,7 +70,34 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Export this type as particular type under the specified key
+	    /// </summary>
+	    /// <typeparam name="T">export type</typeparam>
+	    /// <typeparam name="TKey">type of key</typeparam>
+	    /// <param name="key">key to export under</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentSimpleExportStrategyConfiguration AsKeyed<T, TKey>(TKey key)
+        {
+            exportStrategy.AddKeyedExportType(typeof(T), key);
+
+	        return this;
+	    }
+
+	    /// <summary>
+	    /// Export this type as particular type under the specified key
+	    /// </summary>
+	    /// <param name="exportType">type to export under</param>
+	    /// <param name="key">export key</param>
+	    /// <returns>configuration object</returns>
+	    public IFluentSimpleExportStrategyConfiguration AsKeyed(Type exportType, object key)
+	    {
+	        exportStrategy.AddKeyedExportType(exportType, key);
+
+	        return this;
+	    }
+
+	    /// <summary>
 		/// Defines which environment this export should be exported in
 		/// </summary>
 		/// <param name="environment"></param>
