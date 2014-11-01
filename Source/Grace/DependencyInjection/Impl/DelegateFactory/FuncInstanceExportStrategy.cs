@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl
 	/// This export strategy creates a new Func(T) that calls the current scope 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class FuncExportStrategy<T> : IExportStrategy
+	public class FuncInstanceExportStrategy<T> : IExportStrategy
 	{
 		/// <summary>
 		/// Activate the export

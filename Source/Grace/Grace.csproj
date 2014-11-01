@@ -115,6 +115,7 @@
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
+    <Compile Include="DependencyInjection\Impl\FuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionProvider.cs" />
     <Compile Include="DependencyInjection\ICustomEnrichmentLinqExpressionContext.cs" />
@@ -236,7 +237,7 @@
     <Compile Include="DependencyInjection\Impl\ExportRegistrationBlock.cs" />
     <Compile Include="DependencyInjection\Impl\ExportStrategyListProvider.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportStrategyConfiguration.cs" />
-    <Compile Include="DependencyInjection\Impl\DelegateFactory\FuncExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\DelegateFactory\FuncInstanceExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\FuncValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\FuncWithContextValueProvider.cs" />
     <Compile Include="DependencyInjection\Impl\DelegateFactory\GenericFuncExportStrategy.cs" />

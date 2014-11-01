@@ -63,7 +63,7 @@ namespace Grace.DependencyInjection.Impl
             _openGenericStrategyMapping[typeof(Meta<>)] = typeof(MetaStrategy<>);
             _openGenericStrategyMapping[typeof(Lazy<>)] = typeof(LazyExportStrategy<>);
 
-            _openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncExportStrategy<>);
+            _openGenericStrategyMapping[typeof(Func<>)] = typeof(FuncInstanceExportStrategy<>);
 
             _openGenericStrategyMapping[typeof(KeyedLocateDelegate<,>)] = typeof(KeyedLocateDelegateStrategy<,>);
 

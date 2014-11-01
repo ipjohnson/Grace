@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Grace.DependencyInjection
     /// </summary>
     [DebuggerDisplay("{DebugDisplayString,nq}")]
     [DebuggerTypeProxy(typeof(DependencyInjectionContainerDiagnostic))]
-    public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler
+    public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler, IEnumerable<IExportStrategy>
     {
         private readonly BlackList _blackList = new BlackList();
         private readonly InjectionKernelManager _injectionKernelManager;
@@ -131,6 +132,24 @@ namespace Grace.DependencyInjection
         public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
             RootScope.AddStrategyInspector(inspector);
+        }
+
+        /// <summary>
+        /// Adds a configuration module
+        /// </summary>
+        /// <param name="module"></param>
+        public void Add(IConfigurationModule module)
+        {
+            Configure(module);
+        }
+
+        /// <summary>
+        /// Adds registration block
+        /// </summary>
+        /// <param name="registrationAction"></param>
+        public void Add(ExportRegistrationDelegate registrationAction)
+        {
+            Configure(registrationAction);
         }
 
         /// <summary>
@@ -634,6 +653,16 @@ namespace Grace.DependencyInjection
         private string DebugDisplayString
         {
             get { return "Exports: " + GetAllStrategies().Count(); }
+        }
+
+        public IEnumerator<IExportStrategy> GetEnumerator()
+        {
+            return new List<IExportStrategy>(GetAllStrategies()).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
