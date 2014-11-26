@@ -101,7 +101,7 @@ namespace Grace.UnitTests.DependencyInjection
         {
             DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-            container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().AndSingletonPerScope());
+            container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.SingletonPerScope());
 
             IDisposableService service = container.Locate<IDisposableService>();
 

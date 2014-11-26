@@ -24,7 +24,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			Assembly assembly = GetType().Assembly;
 
-			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).AndSingleton());
+			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.Singleton());
 
 			ISimpleObject simpleObject = injectionKernel.Locate<ISimpleObject>();
 
@@ -47,7 +47,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			Assembly assembly = GetType().Assembly;
 
-			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).AndWeakSingleton());
+			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.WeakSingleton());
 
 			ISimpleObject simpleObject = injectionKernel.Locate<ISimpleObject>();
 

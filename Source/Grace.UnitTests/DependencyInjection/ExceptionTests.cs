@@ -90,7 +90,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			container.Configure(c =>
 			                    {
-				                    c.Export<ImportDisposableService>().ByInterfaces().AndWeakSingleton();
+                                    c.Export<ImportDisposableService>().ByInterfaces().Lifestyle.WeakSingleton();
 				                    c.Export<DisposableService>().ByInterfaces();
 			                    });
 

@@ -66,7 +66,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					"RootScope",
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)).AndSingleton());
+			injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)).Lifestyle.Singleton());
 
 			IGenericService<int> serviceA = injectionKernel.Locate<IGenericService<int>>();
 			IGenericService<int> serviceB = injectionKernel.Locate<IGenericService<int>>();

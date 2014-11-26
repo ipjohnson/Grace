@@ -122,39 +122,6 @@ namespace Grace.DependencyInjection.Impl
 		}
 
 		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the container
-		/// </summary>
-		/// <returns>configuration object</returns>
-		public IFluentSimpleExportStrategyConfiguration AndSingleton()
-		{
-			exportStrategy.SetLifestyleContainer(new SingletonLifestyle());
-
-			return this;
-		}
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the scope
-		/// </summary>
-		/// <returns>configuration object</returns>
-		public IFluentSimpleExportStrategyConfiguration AndSingletonPerScope()
-		{
-			exportStrategy.SetLifestyleContainer(new SingletonPerScopeLifestyle());
-
-			return this;
-		}
-
-		/// <summary>
-		/// Exports will be trated as a singleton using a weak reference
-		/// </summary>
-		/// <returns>configuration object</returns>
-		public IFluentSimpleExportStrategyConfiguration AndWeakSingleton()
-		{
-			exportStrategy.SetLifestyleContainer(new WeakSingletonLifestyle());
-
-			return this;
-		}
-
-		/// <summary>
 		/// Mark the export as externally owned, doing so will absolve the container of having to call Dispose when done
 		/// </summary>
 		/// <returns>configuration object</returns>

@@ -109,32 +109,7 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Creates a new type filter method that returns true if the Name of the type starts with name
-        /// </summary>
-        /// <param name="name">string to compare Type name to</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith, this will be removed at the end of 2014")]
-        public ExportsThatConfiguration StartWith(string name)
-        {
-            exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Name.StartsWith(name));
-
-            return this;
-        }
-
-        /// <summary>
-        /// Creates a new type filter that returns true if the Name ends with the provided string
-        /// </summary>
-        /// <param name="name">string to compare Type name to</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith, this will be removed at the end of 2014")]
-        public ExportsThatConfiguration EndWith(string name)
-        {
-            exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Name.EndsWith(name));
-
-            return this;
-        }
-
+       
 
         /// <summary>
         /// Creates a new export filter based on the type being activated
@@ -146,53 +121,6 @@ namespace Grace.DependencyInjection.Impl
             exportStrategyFilters.Add((context, strategy) => activateFilter(strategy.ActivationType));
 
             return this;
-        }
-
-        /// <summary>
-        /// Creates a new type filter based on the types namespace
-        /// </summary>
-        /// <param name="namespace">namespace the type should be in</param>
-        /// <param name="includeSubnamespaces">include sub namespaces</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-        public ExportsThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
-        {
-            if (includeSubnamespaces)
-            {
-                exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Namespace == @namespace ||
-                                                                                 strategy.ActivationType.Namespace != null &&
-                                                                                 strategy.ActivationType.Namespace.StartsWith(@namespace + "."));
-            }
-            else
-            {
-                exportStrategyFilters.Add((context, strategy) => strategy.ActivationType.Namespace == @namespace);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
-        /// </summary>
-        /// <param name="type">class to check for</param>
-        /// <param name="includeSubnamespaces">include sub namespaces</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-        public ExportsThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
-        {
-            return AreInTheSameNamespace(type.Namespace, includeSubnamespaces);
-        }
-
-        /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
-        /// </summary>
-        /// <typeparam name="T">class to check for</typeparam>
-        /// <param name="includeSubnamespaces">include sub namespace</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-        public ExportsThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
-        {
-            return AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
         }
 
         /// <summary>

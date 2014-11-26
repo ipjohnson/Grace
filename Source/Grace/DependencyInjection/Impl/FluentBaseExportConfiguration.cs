@@ -122,33 +122,6 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the container
-        /// </summary>
-        /// <returns>configuration object</returns>
-        public IFluentExportStrategyConfiguration AndSingleton()
-        {
-            return strategy.AndSingleton();
-        }
-
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the scope
-        /// </summary>
-        /// <returns>configuration object</returns>
-        public IFluentExportStrategyConfiguration AndSingletonPerScope()
-        {
-            return strategy.AndSingletonPerScope();
-        }
-
-        /// <summary>
-        /// Exports will be trated as a singleton using a weak reference
-        /// </summary>
-        /// <returns>configuration object</returns>
-        public IFluentExportStrategyConfiguration AndWeakSingleton()
-        {
-            return strategy.AndWeakSingleton();
-        }
-
-        /// <summary>
         /// Mark the export as externally owned, doing so will absolve the container of having to call Dispose when done
         /// </summary>
         /// <returns>configuration object</returns>
@@ -503,33 +476,6 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> AsName(string name)
         {
             return strategy.AsName(name);
-        }
-
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the container
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndSingleton()
-        {
-            return strategy.AndSingleton();
-        }
-
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the scope
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndSingletonPerScope()
-        {
-            return strategy.AndSingletonPerScope();
-        }
-
-        /// <summary>
-        /// Exports will be trated as a singleton using a weak reference
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndWeakSingleton()
-        {
-            return strategy.AndWeakSingleton();
         }
 
         /// <summary>

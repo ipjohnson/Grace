@@ -52,28 +52,7 @@ namespace Grace.DependencyInjection
 	        return new ExportsThatConfiguration().HaveAttribute(consider);
 	    }
 
-		/// <summary>
-		/// Creates a new type filter method that returns true if the Name of the type starts with name
-		/// </summary>
-		/// <param name="name">string to compare Type name to</param>
-		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.StartWith, this will be removed at the end of 2014")]
-		public static ExportsThatConfiguration StartWith(string name)
-		{
-			return new ExportsThatConfiguration().StartWith(name);
-		}
-
-		/// <summary>
-		/// Creates a new type filter that returns true if the Name ends with the provided string
-		/// </summary>
-		/// <param name="name">string to compare Type name to</param>
-		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.EndWith, this will be removed at the end of 2014")]
-		public static ExportsThatConfiguration EndWith(string name)
-		{
-			return new ExportsThatConfiguration().EndWith(name);
-		}
-
+		
         /// <summary>
         /// Matches exports that activate a particular type
         /// </summary>
@@ -81,45 +60,10 @@ namespace Grace.DependencyInjection
         /// <returns>export configuration object</returns>
 	    public static ExportsThatConfiguration Activate(Func<Type, bool> activateTypeFilter)
 	    {
-	        return new ExportsThatConfiguration();
+	        return new ExportsThatConfiguration().Activate(activateTypeFilter);
 	    }
 
-		/// <summary>
-		/// Creates a new type filter based on the types namespace
-		/// </summary>
-		/// <param name="namespace">namespace the type should be in</param>
-		/// <param name="includeSubnamespaces">include sub namespaces</param>
-		/// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-		public static ExportsThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
-		{
-			return new ExportsThatConfiguration().AreInTheSameNamespace(@namespace, includeSubnamespaces);
-		}
-
-		/// <summary>
-		/// Creates a new type filter that fiters based on if it's in the same namespace as another class
-		/// </summary>
-		/// <param name="type">class to check for</param>
-		/// <param name="includeSubnamespaces">include sub namespaces</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-		public static ExportsThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
-		{
-			return new ExportsThatConfiguration().AreInTheSameNamespace(type.Namespace, includeSubnamespaces);
-		}
-
-		/// <summary>
-		/// Creates a new type filter that fiters based on if it's in the same namespace as another class
-		/// </summary>
-		/// <typeparam name="T">class to check for</typeparam>
-		/// <param name="includeSubnamespaces">include sub namespace</param>
-        /// <returns>export configuration object</returns>
-        [Obsolete("Please use ExportsThat.Activate(TypesThat.AreInTheSameNamespaceAs, this will be removed at the end of 2014")]
-		public static ExportsThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
-		{
-			return new ExportsThatConfiguration().AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
-		}
-
+		
 		/// <summary>
 		/// Creates a new Filter that selects only exports that export as a specific interface
 		/// </summary>

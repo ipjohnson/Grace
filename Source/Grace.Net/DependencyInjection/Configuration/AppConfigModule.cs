@@ -253,7 +253,7 @@ namespace Grace.DependencyInjection.Configuration
 
 				if (lifestyle != null)
 				{
-					config.WithLifestyle(lifestyle);
+					config.UsingLifestyle(lifestyle);
 				}
 
 				if (exportInterfaceElement.ExternallyOwned)

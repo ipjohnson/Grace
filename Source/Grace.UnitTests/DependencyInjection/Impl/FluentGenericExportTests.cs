@@ -104,7 +104,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(
-				c => c.Export<BasicService>().AsName("IBasicService").As<IBasicService>().AndSingleton());
+				c => c.Export<BasicService>().AsName("IBasicService").As<IBasicService>().Lifestyle.Singleton());
 
 			IBasicService basicService = injectionKernel.Locate("IBasicService") as IBasicService;
 
@@ -182,7 +182,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			                          {
 				                          c.ExportAssembly(GetType().Assembly).ByInterface(typeof(ISimpleObject));
 				                          c.Export<ImportPropertySimpleObject>().
-					                         ImportProperty(x => x.SimpleObject).Consider(ExportsThat.EndWith("C"));
+					                         ImportProperty(x => x.SimpleObject).Consider(ExportsThat.Activate(TypesThat.EndWith("C")));
 			                          });
 
 			ImportPropertySimpleObject import = injectionKernel.Locate<ImportPropertySimpleObject>();
@@ -467,7 +467,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					"RootScope",
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().AndSingletonPerScope());
+			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -496,7 +496,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 					"RootScope",
 					DependencyInjectionContainer.CompareExportStrategies);
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().AndWeakSingleton());
+			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.WeakSingleton());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -798,34 +798,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		}
 
 		[Fact]
-		public void LocateWithKey()
-		{
-			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
-			InjectionKernel injectionKernel =
-				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
-
-			injectionKernel.Configure(c =>
-			                          {
-				                          c.Export<SimpleObjectA>().AsName("ISimpleObject").WithKey(1);
-				                          c.Export<SimpleObjectB>().AsName("ISimpleObject").WithKey(2);
-				                          c.Export<SimpleObjectC>().AsName("ISimpleObject").WithKey(3);
-				                          c.Export<SimpleObjectD>().AsName("ISimpleObject").WithKey(4);
-				                          c.Export<SimpleObjectE>().AsName("ISimpleObject").WithKey(5);
-			                          });
-
-			Assert.IsType(typeof(SimpleObjectA), injectionKernel.LocateByKey("ISimpleObject", 1));
-			Assert.IsType(typeof(SimpleObjectB), injectionKernel.LocateByKey("ISimpleObject", 2));
-			Assert.IsType(typeof(SimpleObjectC), injectionKernel.LocateByKey("ISimpleObject", 3));
-			Assert.IsType(typeof(SimpleObjectD), injectionKernel.LocateByKey("ISimpleObject", 4));
-			Assert.IsType(typeof(SimpleObjectE), injectionKernel.LocateByKey("ISimpleObject", 5));
-		}
-
-		[Fact]
 		public void LocateAllInEnvironment()
 		{
 			InjectionKernelManager injectionKernelManager =
@@ -1117,7 +1089,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 			container.Configure(c => c.Export<ExportPropertyService>().
 				As<IExportPropertyService>().
 				ExportProperty(p => p.BasicService).
-				AndSingleton());
+				Lifestyle.Singleton());
 
 			IBasicService basicService = container.Locate<IBasicService>();
 			IBasicService secondService = container.Locate<IBasicService>();

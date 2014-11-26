@@ -190,33 +190,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 		#region Basic Tests
 
-		[Fact]
-		public void BasicFuncExportTest()
-		{
-			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
-			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				null,
-				DependencyInjectionContainer.CompareExportStrategies);
-
-			injectionKernel.Configure(
-				ioc =>
-				{
-					ioc.ExportFunc((scope, context) => new BasicService()).As<IBasicService>();
-					ioc.ExportFunc((scope, context) => new ImportPropertyService())
-						.As<IImportPropertyService>()
-						.ImportProperty(x => x.BasicService);
-				});
-
-			IImportPropertyService importPropertyService = injectionKernel.Locate<IImportPropertyService>();
-
-			Assert.NotNull(importPropertyService);
-			Assert.NotNull(importPropertyService.BasicService);
-		}
-
+		
 		[Fact]
 		public void BasicInstanceExportTest()
 		{
@@ -317,7 +291,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				DependencyInjectionContainer.CompareExportStrategies);
 
 			injectionKernel.Configure(
-				ioc => ioc.Export<DisposableService>().As<IDisposableService>().AndSingleton());
+				ioc => ioc.Export<DisposableService>().As<IDisposableService>().Lifestyle.Singleton());
 
 			IDisposableService disposableService = injectionKernel.Locate<IDisposableService>();
 			bool eventFired = false;
@@ -540,9 +514,9 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				                          c.Export<SimpleObjectC>().As<ISimpleObject>().WithKey(20);
 			                          });
 
-			Assert.IsType(typeof(SimpleObjectA), injectionKernel.LocateByKey<ISimpleObject, int>(5));
-			Assert.IsType(typeof(SimpleObjectB), injectionKernel.LocateByKey<ISimpleObject, int>(10));
-			Assert.IsType(typeof(SimpleObjectC), injectionKernel.LocateByKey<ISimpleObject, int>(20));
+            Assert.IsType(typeof(SimpleObjectA), injectionKernel.Locate<ISimpleObject>(locateKey: 5));
+            Assert.IsType(typeof(SimpleObjectB), injectionKernel.Locate<ISimpleObject>(locateKey: 10));
+            Assert.IsType(typeof(SimpleObjectC), injectionKernel.Locate<ISimpleObject>(locateKey: 20));
 		}
 
 		[Fact]
@@ -1414,7 +1388,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				"RootScope",
 				DependencyInjectionContainer.CompareExportStrategies);
 
-			injectionKernel.Configure(c => c.Export<InjectionScopeImportService>().AndSingleton());
+			injectionKernel.Configure(c => c.Export<InjectionScopeImportService>().Lifestyle.Singleton());
 
 			IInjectionScope childScope = injectionKernel.CreateChildScope();
 

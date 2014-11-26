@@ -56,7 +56,7 @@ namespace Grace.UnitTests.DependencyInjection
 		{
 			DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-			container.Configure(c => c.Export<BasicService>().As<IBasicService>().AndSingleton());
+			container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton());
 
 			IBasicService basicService = container.RootScope.Locate<IBasicService>();
 
@@ -71,7 +71,7 @@ namespace Grace.UnitTests.DependencyInjection
 			container.Configure(
 				c =>
 				{
-					c.Export<BasicService>().As<IBasicService>().AndSingleton();
+					c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton();
 					c.Export<Transient>().As<ITransient>().ImportProperty(x => x.BasicService);
 				});
 
@@ -309,7 +309,7 @@ namespace Grace.UnitTests.DependencyInjection
 			container.Configure(c =>
 									  {
 										  c.Export<ImportDateTimeByName>();
-										  c.ExportFunc((scope, context) => DateTime.Now).AsName("DateTime");
+										  c.ExportInstance((scope, context) => DateTime.Now).AsName("DateTime");
 									  });
 
 			ImportDateTimeByName importName = container.Locate<ImportDateTimeByName>();

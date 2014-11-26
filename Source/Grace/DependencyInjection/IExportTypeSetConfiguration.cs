@@ -28,21 +28,6 @@ namespace Grace.DependencyInjection
 		IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc);
 
 		/// <summary>
-		/// Export services as Singletons
-		/// </summary>
-        /// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.Singleton(), this will be removed at the end of 2014")]
-		IExportTypeSetConfiguration AndSingleton();
-
-		/// <summary>
-		/// Exports are to be marked as shared, similar to a singleton only using a weak reference.
-		/// It can not be of type IDisposable
-		/// </summary>
-        /// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.WeakSingleton(), this will be removed at the end of 2014")]
-		IExportTypeSetConfiguration AndWeakSingleton();
-
-		/// <summary>
 		/// Export all types based on speficied type by Type
 		/// </summary>
 		/// <param name="baseType">base type to export</param>
@@ -242,23 +227,6 @@ namespace Grace.DependencyInjection
         /// <param name="withKeyFunc">key func</param>
         /// <returns>configuration object</returns>
         IExportTypeSetConfiguration WithKey(Func<Type, object> withKeyFunc);
-
-		/// <summary>
-		/// Set a particular life style
-		/// </summary>
-		/// <param name="container">lifestyle</param>
-		/// <returns>configuration object</returns>
-        [Obsolete("Please use UsingLifestyle, this will be removed at the end of 2014")]
-		IExportTypeSetConfiguration WithLifestyle(ILifestyle container);
-
-		/// <summary>
-		/// Set a particular life style using a func
-		/// </summary>
-		/// <param name="lifestyleFunc">pick a lifestyle</param>
-        /// <returns>configuration object</returns>
-        [Obsolete("Please use UsingLifestyle, this will be removed at the end of 2014")]
-		IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc);
-
 
 		/// <summary>
 		/// Export with the spcified priority

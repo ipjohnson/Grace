@@ -67,25 +67,7 @@ namespace Grace.DependencyInjection
 		/// <param name="name"></param>
 		/// <returns>configuration object</returns>
 		IFluentSimpleExportStrategyConfiguration AsName(string name);
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the container
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration AndSingleton();
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the scope
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration AndSingletonPerScope();
-
-		/// <summary>
-		/// Exports will be trated as a singleton using a weak reference
-		/// </summary>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration AndWeakSingleton();
-
+        
 		/// <summary>
 		/// Mark the export as externally owned, doing so will absolve the container of having to call Dispose when done
 		/// </summary>

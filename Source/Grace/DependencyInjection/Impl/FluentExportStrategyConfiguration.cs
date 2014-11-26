@@ -195,39 +195,7 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the container
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration AndSingleton()
-        {
-            exportStrategy.SetLifestyleContainer(new SingletonLifestyle());
-
-            return this;
-        }
-
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the scope
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration AndSingletonPerScope()
-        {
-            exportStrategy.SetLifestyleContainer(new SingletonPerScopeLifestyle());
-
-            return this;
-        }
-
-        /// <summary>
-        /// Exports will be trated as a singleton using a weak reference
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration AndWeakSingleton()
-        {
-            exportStrategy.SetLifestyleContainer(new WeakSingletonLifestyle());
-
-            return this;
-        }
-
+        
         /// <summary>
         /// Mark the export as externally owned, doing so will absolve the container of calling Dispose when done
         /// </summary>
@@ -599,38 +567,6 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the container
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndSingleton()
-        {
-            exportStrategy.SetLifestyleContainer(new SingletonLifestyle());
-
-            return this;
-        }
-
-        /// <summary>
-        /// Export will be treated as a singleton for the lifetime of the scope
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndSingletonPerScope()
-        {
-            exportStrategy.SetLifestyleContainer(new SingletonPerScopeLifestyle());
-
-            return this;
-        }
-
-        /// <summary>
-        /// Exports will be trated as a singleton using a weak reference
-        /// </summary>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> AndWeakSingleton()
-        {
-            exportStrategy.SetLifestyleContainer(new WeakSingletonLifestyle());
-
-            return this;
-        }
 
         /// <summary>
         /// Export under a specific key

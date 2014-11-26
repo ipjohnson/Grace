@@ -82,17 +82,6 @@ namespace Grace.DependencyInjection
 		IFluentExportInstanceConfiguration<T> ExportInstance<T>([NotNull] ExportFunction<T> instanceFunction);
 
 		/// <summary>
-		/// Register an export function, it allows you to import properties, import method and activate methods
-		/// of the T returned by the Func, if you don't need this functionality I recommend using ExportInstance
-		/// </summary>
-		/// <typeparam name="T">type to export</typeparam>
-		/// <param name="exportFunction">Function to create instance of T</param>
-		/// <returns>configuration object</returns>
-		[NotNull]
-        [Obsolete("Please use ExportInstance as this method will be deleted by end of 2014")]
-		IFluentExportStrategyConfiguration<T> ExportFunc<T>([NotNull] ExportFunction<T> exportFunction);
-
-		/// <summary>
 		/// Simple export allows you to export a type with a smaller set of options.
 		/// This method should be used to register types in child containers because the registration process is
 		/// much faster than Export and ExportFunc (though the fastest registeration option is still ExportInstance)

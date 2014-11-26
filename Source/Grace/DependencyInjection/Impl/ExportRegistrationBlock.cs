@@ -183,23 +183,6 @@ namespace Grace.DependencyInjection.Impl
 			return returnValue;
 		}
 
-		/// <summary>
-		/// Register an export function
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="exportFunction"></param>
-		/// <returns></returns>
-		public IFluentExportStrategyConfiguration<T> ExportFunc<T>(ExportFunction<T> exportFunction)
-		{
-			CompiledFuncExportStrategy<T> funcExport = new CompiledFuncExportStrategy<T>((x, y) => exportFunction(x, y));
-
-			FluentExportStrategyConfiguration<T> returnValue = new FluentExportStrategyConfiguration<T>(funcExport);
-
-			strategyProviders.Add(returnValue);
-
-			return returnValue;
-		}
-
 		public IFluentSimpleExportStrategyConfiguration SimpleExport<T>()
 		{
 			SimpleExportStrategy exportStrategy = new SimpleExportStrategy(typeof(T));

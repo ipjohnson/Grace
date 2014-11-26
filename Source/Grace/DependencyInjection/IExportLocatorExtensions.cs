@@ -145,67 +145,8 @@ namespace Grace.DependencyInjection
 
 			return builder.ToString();
 		}
-
-		/// <summary>
-		/// Locate an export by type with a key
-		/// </summary>
-		/// <typeparam name="T">type to locate</typeparam>
-		/// <typeparam name="TKey">type of key</typeparam>
-		/// <param name="locator">locator to use</param>
-		/// <param name="key">key to use while locating</param>
-		/// <param name="injectionContext">injection context to use</param>
-		/// <param name="consider">filter method to use</param>
-		/// <returns>export T</returns>
-        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
-		public static T LocateByKey<T, TKey>(this IExportLocator locator,
-			[NotNull] TKey key,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
-		{
-			return locator.Locate<T>(injectionContext, consider, key);
-		}
-
-		/// <summary>
-		/// Locate an export by name and key
-		/// </summary>
-		/// <typeparam name="TKey">key type</typeparam>
-		/// <param name="locator">locator to use</param>
-		/// <param name="exportName">name of export to locate</param>
-		/// <param name="key">key to use during location</param>
-		/// <param name="injectionContext">injection context</param>
-		/// <param name="consider">filter method</param>
-		/// <returns>export object, null if no object found</returns>
-        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
-		public static object LocateByKey<TKey>(this IExportLocator locator,
-			[NotNull] string exportName,
-			[NotNull] TKey key,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
-		{
-			return locator.Locate(exportName, injectionContext, consider, key);
-		}
-
-		/// <summary>
-		/// Locate an export by type and key
-		/// </summary>
-		/// <typeparam name="TKey">key type to locate</typeparam>
-		/// <param name="locator">locator to use</param>
-		/// <param name="exportType">type to locate</param>
-		/// <param name="key">key to use while locating</param>
-		/// <param name="injectionContext">injection context</param>
-		/// <param name="consider">filter to use while locating</param>
-		/// <returns>export object, null if no export found</returns>
-        [Obsolete("Use the withKey optional parameter on locate, this will be removed at the end of 2014")]
-		public static object LocateByKey<TKey>(this IExportLocator locator,
-			[NotNull] Type exportType,
-			[NotNull] TKey key,
-			IInjectionContext injectionContext = null,
-			ExportStrategyFilter consider = null)
-		{
-			return locator.Locate<TKey>(injectionContext, consider, key);
-		}
-
-		/// <summary>
+      
+        /// <summary>
 		/// Function to compare a key to an export strategy
 		/// </summary>
 		/// <param name="key"></param>

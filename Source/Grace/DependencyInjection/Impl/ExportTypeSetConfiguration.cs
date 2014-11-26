@@ -299,17 +299,6 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Set a particular life style using a func
-        /// </summary>
-        /// <param name="lifestyleFunc">pick a lifestyle</param>
-        /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration WithLifestyle(Func<Type, ILifestyle> lifestyleFunc)
-        {
-            _lifestyleFunc = lifestyleFunc;
-
-            return this;
-        }
 
         /// <summary>
         /// Export with the spcified priority
@@ -379,18 +368,6 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Exports are to be marked as shared, similar to a singleton only using a weak reference.
-        /// It can not be of type IDisposable
-        /// </summary>
-        /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration AndWeakSingleton()
-        {
-            _lifestyleFunc = type => new WeakSingletonLifestyle();
-
-            return this;
-        }
-
-        /// <summary>
         /// And condition func
         /// </summary>
         /// <param name="conditionFunc">condition picker</param>
@@ -402,16 +379,6 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        /// <summary>
-        /// Export services as Singletons
-        /// </summary>
-        /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration AndSingleton()
-        {
-            _lifestyleFunc = type => new SingletonLifestyle();
-
-            return this;
-        }
 
         /// <summary>
         /// Provide a func that will be used to create a key that will be used to register
@@ -421,17 +388,6 @@ namespace Grace.DependencyInjection.Impl
         public IExportTypeSetConfiguration WithKey(Func<Type, object> withKeyFunc)
         {
             _withKeyFunc = withKeyFunc;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Set a particular life cycle 
-        /// </summary>
-        /// <returns></returns>
-        public IExportTypeSetConfiguration WithLifestyle(ILifestyle container)
-        {
-            _lifestyleFunc = type => container.Clone();
 
             return this;
         }

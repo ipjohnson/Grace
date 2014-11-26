@@ -26,29 +26,7 @@ namespace Grace.DependencyInjection
 		/// <param name="condition">condition for export</param>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration AndCondition(IExportCondition condition);
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the container
-		/// </summary>
-		/// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.Singleton(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration AndSingleton();
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the scope
-		/// </summary>
-		/// <returns>configuration object</returns>
-        [Obsolete("Please use Lifestyle.SingletonPerScope(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration AndSingletonPerScope();
-
-		/// <summary>
-		/// Exports will be trated as a singleton using a weak reference
-		/// </summary>
-		/// <returns>configuration object</returns>
-
-        [Obsolete("Please use Lifestyle.WeakSingleton(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration AndWeakSingleton();
-
+        
 		/// <summary>
 		/// Export as a particular type
 		/// </summary>
@@ -288,27 +266,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="condition"></param>
 		IFluentExportStrategyConfiguration<T> AndCondition(IExportCondition condition);
-		
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the container
-		/// </summary>
-		/// <returns></returns>
-		[Obsolete("Please use Lifestyle.Singleton(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration<T> AndSingleton();
-
-		/// <summary>
-		/// Export will be treated as a singleton for the lifetime of the scope
-		/// </summary>
-		/// <returns></returns>
-		[Obsolete("Please use Lifestyle.SingletonPerScope(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration<T> AndSingletonPerScope();
-
-		/// <summary>
-		/// Exports will be trated as a singleton using a weak reference
-		/// </summary>
-		/// <returns></returns>
-		[Obsolete("Please use Lifestyle.WeakSingleton(), this will be removed at the end of 2014")]
-		IFluentExportStrategyConfiguration<T> AndWeakSingleton();
 
 		/// <summary>
 		/// Export as a specific type (usually an interface)
