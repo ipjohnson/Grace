@@ -128,6 +128,7 @@
     <Compile Include="Classes\Simple\OpenGenericPartiallyClosedInterface.cs" />
     <Compile Include="Classes\Simple\OtherBasicService.cs" />
     <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
+    <Compile Include="Classes\Simple\PersonClass.cs" />
     <Compile Include="Classes\Simple\PropertedPropertyImportClass.cs" />
     <Compile Include="Classes\Simple\RecursiveGeneric.cs" />
     <Compile Include="Classes\Simple\SimpleModule.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Moq\MoqTests.cs" />
     <Compile Include="NSubstitute\NSubstituteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestData\TestDataTests.cs" />
     <Compile Include="Utilities\TaskHelperTests.cs" />
     <Compile Include="Utilities\WeakActionTests.cs" />
     <Compile Include="Utilities\WeakFuncTests.cs" />
@@ -213,6 +215,10 @@
     <ProjectReference Include="..\Grace.NSubstitute\Grace.NSubstitute.csproj">
       <Project>{742cb845-347e-42f2-9133-e8775e36f83c}</Project>
       <Name>Grace.NSubstitute</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Grace.TestData\Grace.TestData.csproj">
+      <Project>{4a59783f-18eb-42db-9d79-2aa578eea389}</Project>
+      <Name>Grace.TestData</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grace\Grace.csproj">
       <Project>{2e64fa60-f2cd-428c-8413-d71b4bf5935a}</Project>

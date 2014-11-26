@@ -49,15 +49,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Data\IAddressRandomeDataService.cs" />
+    <Compile Include="Data\IPersonnelRandomDataService.cs" />
+    <Compile Include="Data\IRandomDataService.cs" />
     <Compile Include="SeleniumExportStrategyInspector.cs" />
     <Compile Include="PageObjectModel.cs" />
     <Compile Include="SeleniumContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeleniumSession.cs" />
+    <Compile Include="FormData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Grace.TestData\Grace.TestData.csproj">
+      <Project>{4a59783f-18eb-42db-9d79-2aa578eea389}</Project>
+      <Name>Grace.TestData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Grace\Grace.csproj">
       <Project>{2e64fa60-f2cd-428c-8413-d71b4bf5935a}</Project>
       <Name>Grace</Name>

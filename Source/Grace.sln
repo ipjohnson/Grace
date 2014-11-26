@@ -68,6 +68,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{19FC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Selenium", "Grace.Selenium\Grace.Selenium.csproj", "{391B7D9A-AC7D-434D-951A-0716C8F574A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.TestData", "Grace.TestData\Grace.TestData.csproj", "{4A59783F-18EB-42DB-9D79-2AA578EEA389}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{391B7D9A-AC7D-434D-951A-0716C8F574A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A59783F-18EB-42DB-9D79-2AA578EEA389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A59783F-18EB-42DB-9D79-2AA578EEA389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A59783F-18EB-42DB-9D79-2AA578EEA389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A59783F-18EB-42DB-9D79-2AA578EEA389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,5 +160,6 @@ Global
 		{FA16AAB4-B28A-46B1-810C-876E333B1373} = {36C6B292-1625-491E-9807-DB189E2A3587}
 		{D6695499-1CA3-455B-970E-FB0D2DAA18C2} = {F26376D4-77AC-4095-ACE8-9D17ADD1C543}
 		{391B7D9A-AC7D-434D-951A-0716C8F574A4} = {19FC5AF4-B9A1-4E52-89C0-0524CB4A4E9E}
+		{4A59783F-18EB-42DB-9D79-2AA578EEA389} = {19FC5AF4-B9A1-4E52-89C0-0524CB4A4E9E}
 	EndGlobalSection
 EndGlobal

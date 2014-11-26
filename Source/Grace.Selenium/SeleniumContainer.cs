@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
+using Grace.TestData;
 using OpenQA.Selenium;
 
 namespace Grace.Selenium
@@ -37,9 +38,12 @@ namespace Grace.Selenium
         private void SetupContainer()
         {
             Configure(c => c.ExportInstance((scope, context) => _webDriver));
+
+            Configure(new TestDataModule());
             
             AddStrategyInspector(new SeleniumExportStrategyInspector(_webDriver));
 
+            AddStrategyInspector(new PropertyInjectionInspector(typeof(ITestDataProvider)));
             AddStrategyInspector(new PropertyInjectionInspector(typeof(IExportLocator)));
             AddStrategyInspector(new PropertyInjectionInspector(typeof(IWebDriver)));
             AddStrategyInspector(new PropertyInjectionInspector(typeof(string),"baseaddress", afterConstructor: true, valueProvider: new FuncValueProvider<string>(() => BaseAddress)));
