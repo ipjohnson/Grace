@@ -122,7 +122,10 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (exportStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
                     {
-                        exportStrategy.AddExportType(interfaceTypes.GetGenericTypeDefinition());
+                        if (interfaceTypes.GetTypeInfo().IsGenericType)
+                        {
+                            exportStrategy.AddExportType(interfaceTypes.GetGenericTypeDefinition());
+                        }
                     }
                     else
                     {
