@@ -14,9 +14,6 @@
     
     <MSBuild Projects="Source\Grace\Grace.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.Net\Grace.Net.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
-    <MSBuild Projects="Source\Grace.NSubstitute\Grace.NSubstitute.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
-    <MSBuild Projects="Source\Grace.Moq\Grace.Moq.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
-    <MSBuild Projects="Source\Grace.FakeItEasy\Grace.FakeItEasy.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.WCF\Grace.WCF.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.MVC4\Grace.MVC4.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
     <MSBuild Projects="Source\Grace.MVC5\Grace.MVC5.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
