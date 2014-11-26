@@ -185,7 +185,6 @@
     <Compile Include="Diagnostics\IInjectionScopeDiagnosticTests.cs" />
     <Compile Include="Logging\DebugConsoleLogServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestData\TestDataTests.cs" />
     <Compile Include="Utilities\TaskHelperTests.cs" />
     <Compile Include="Utilities\WeakActionTests.cs" />
     <Compile Include="Utilities\WeakFuncTests.cs" />
