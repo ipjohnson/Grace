@@ -30,12 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy">
-      <HintPath>..\packages\FakeItEasy.1.14.0\lib\net40\FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.1.1311.0615\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.6.1.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
@@ -189,10 +183,7 @@
     <Compile Include="DependencyInjection\SecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\TypesThatTests.cs" />
     <Compile Include="Diagnostics\IInjectionScopeDiagnosticTests.cs" />
-    <Compile Include="FakeItEasy\FakeItEasyTests.cs" />
     <Compile Include="Logging\DebugConsoleLogServiceTests.cs" />
-    <Compile Include="Moq\MoqTests.cs" />
-    <Compile Include="NSubstitute\NSubstituteTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestData\TestDataTests.cs" />
     <Compile Include="Utilities\TaskHelperTests.cs" />
@@ -200,25 +191,9 @@
     <Compile Include="Utilities\WeakFuncTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Grace.FakeItEasy\Grace.FakeItEasy.csproj">
-      <Project>{2ed7b534-6054-4aae-858e-a6bc2b323cdb}</Project>
-      <Name>Grace.FakeItEasy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grace.Moq\Grace.Moq.csproj">
-      <Project>{4ee2f531-4968-4910-83e4-defd58537ba8}</Project>
-      <Name>Grace.Moq</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Grace.Net\Grace.Net.csproj">
       <Project>{c2fdc6dd-e8ba-4550-8c4e-97edf9a01b95}</Project>
       <Name>Grace.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grace.NSubstitute\Grace.NSubstitute.csproj">
-      <Project>{742cb845-347e-42f2-9133-e8775e36f83c}</Project>
-      <Name>Grace.NSubstitute</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grace.TestData\Grace.TestData.csproj">
-      <Project>{4a59783f-18eb-42db-9d79-2aa578eea389}</Project>
-      <Name>Grace.TestData</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grace\Grace.csproj">
       <Project>{2e64fa60-f2cd-428c-8413-d71b4bf5935a}</Project>
