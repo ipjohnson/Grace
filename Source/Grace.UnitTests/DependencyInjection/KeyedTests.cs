@@ -12,7 +12,6 @@ namespace Grace.UnitTests.DependencyInjection
 {
     public class KeyedTests
     {
-
         #region WithKey tests
 
         [Fact]
@@ -349,6 +348,21 @@ namespace Grace.UnitTests.DependencyInjection
         #endregion
 
         #region AsKeyed
+
+        [Fact]
+        public void AsKeyedStringTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+                                {
+                                    c.ExportInstance((scope, context) => "Hello");
+                                    c.ExportInstance((scope, context) => "HelloAgain").AsKeyed<string,string>("Key");
+                                });
+
+            Assert.Equal("Hello",container.Locate<string>());
+            Assert.Equal("HelloAgain",container.Locate<string>(withKey: "Key"));
+        }
 
         [Fact]
         public void AsKeyedBasicTest()

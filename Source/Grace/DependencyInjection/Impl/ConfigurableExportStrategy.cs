@@ -133,7 +133,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                if (_exportTypes.Count == 0 && _exportNames.Count == 0)
+                if (_exportTypes.Count == 0 && _exportNames.Count == 0 && _keyedExportTypes.Count == 0)
                 {
                     return new[] { _exportType };
                 }
