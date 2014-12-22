@@ -305,23 +305,8 @@
     <Compile Include="Utilities\TypeWrapper.cs" />
     <Compile Include="Utilities\WeakAction.cs" />
     <Compile Include="Utilities\WeakFunc.cs" />
-    <Compile Include="Validation\IAsyncValidationRule.cs" />
-    <Compile Include="Validation\IAttributeValidationRuleProvider.cs" />
-    <Compile Include="Validation\IRuleExecutionContext.cs" />
-    <Compile Include="Validation\ISyncValidationRule.cs" />
-    <Compile Include="Validation\IValidationContext.cs" />
-    <Compile Include="Validation\IValidationRule.cs" />
-    <Compile Include="Validation\IValidationRuleProvider.cs" />
-    <Compile Include="Validation\IValidationRuleResult.cs" />
-    <Compile Include="Validation\IValidationRuleResultPart.cs" />
-    <Compile Include="Validation\IValidationService.cs" />
-    <Compile Include="Validation\IValidationStandardsSelector.cs" />
-    <Compile Include="Validation\IValidationStateChangedHandler.cs" />
-    <Compile Include="Validation\ValidationState.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <!--
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.props" Condition="$(teamcity_build_id) != ''" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" Condition="$(teamcity_build_id) != ''" />

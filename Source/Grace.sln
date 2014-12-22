@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace", "Grace\Grace.csproj", "{2E64FA60-F2CD-428C-8413-D71B4BF5935A}"
 EndProject
@@ -48,8 +48,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Templates", "Grace.Templates\Grace.Templates.csproj", "{FA16AAB4-B28A-46B1-810C-876E333B1373}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Common.Logging", "Grace.Common.Logging\Grace.Common.Logging.csproj", "{D6695499-1CA3-455B-970E-FB0D2DAA18C2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.Validation", "Grace.Validation\Grace.Validation.csproj", "{8D654B69-45DB-47C5-BB82-CE6D02670220}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grace.CommonServiceLocator", "Grace.CommonServiceLocator\Grace.CommonServiceLocator.csproj", "{D29F84FF-D8B1-46A4-A726-03A6FC88B836}"
 EndProject
@@ -99,10 +97,6 @@ Global
 		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6695499-1CA3-455B-970E-FB0D2DAA18C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D654B69-45DB-47C5-BB82-CE6D02670220}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D29F84FF-D8B1-46A4-A726-03A6FC88B836}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -8,7 +8,6 @@ using System.Reflection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Logging;
 using Grace.Utilities;
-using Grace.Validation;
 
 namespace Grace.DependencyInjection.Impl.CompiledExport
 {
@@ -417,12 +416,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             if (attributes.Length == 0)
             {
                 attributes = EmptyAttributesArray;
-            }
-
-            // I'm forcing the importing of validation contexts to happen after construction
-            if (importPropertyInfo.Property.PropertyType == typeof(IValidationContext))
-            {
-                importPropertyInfo.AfterConstruction = true;
             }
 
             InjectionTargetInfo targetInfo = null;
