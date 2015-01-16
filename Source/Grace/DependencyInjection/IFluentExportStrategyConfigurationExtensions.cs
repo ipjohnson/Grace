@@ -15,8 +15,7 @@ namespace Grace.DependencyInjection
 	// ReSharper disable once InconsistentNaming
 	public static class IFluentExportStrategyConfigurationExtensions
 	{
-
-
+        
 		#region When Ancestor
 
 		/// <summary>
