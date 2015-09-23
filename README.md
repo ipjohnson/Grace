@@ -20,8 +20,6 @@ Getting Grace
 
 [NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, Windows Phone 8 and WinRT.
 
-[Visual Studio Templates](http://visualstudiogallery.msdn.microsoft.com/db6d9cb6-bb84-4c98-82b7-2edc4388cdef) are avaliable for creating new MVC 5, WCF, and Nancy applications
-
 
 Documented Grace
 ====
