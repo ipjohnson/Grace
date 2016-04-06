@@ -1663,7 +1663,7 @@ namespace Grace.DependencyInjection.Impl
 
                     addScope.AddStrategy(strategy);
 
-                    return strategy.Activate(this, injectionContext, consider, locateKey);
+                    return strategy.Activate(addScope, injectionContext, consider, locateKey);
                 }
 
                 return returnValue;

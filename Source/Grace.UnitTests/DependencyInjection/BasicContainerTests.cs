@@ -513,5 +513,17 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(value.BasicService);
 		}
 
+        [Fact]
+        public void ImportUnkownFromChildScopeWithDependencyInChild()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            using (var childScope = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+            {
+                var constructorService = childScope.Locate<ConstructorImportService>();
+
+                Assert.NotNull(constructorService);
+            }
+        }
 	}
 }
