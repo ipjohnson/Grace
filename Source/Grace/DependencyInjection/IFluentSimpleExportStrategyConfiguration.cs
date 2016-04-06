@@ -66,7 +66,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>configuration object</returns>
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		IFluentSimpleExportStrategyConfiguration AsName(string name);
         
 		/// <summary>

@@ -111,7 +111,6 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter to use while locating</param>
 		/// <param name="withKey"></param>
 		/// <returns>export object if found, other wise null</returns>
-		[Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		object Locate([NotNull] string exportName,
 						  IInjectionContext injectionContext = null,
 						  ExportStrategyFilter consider = null,
@@ -142,7 +141,6 @@ namespace Grace.DependencyInjection
 		/// <param name="comparer"></param>
 		/// <returns>List of objects, this will return an empty list if no exports are found</returns>
 		[NotNull]
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		List<object> LocateAll([NotNull] string name,
 									  IInjectionContext injectionContext = null,
 									  ExportStrategyFilter consider = null,
@@ -181,7 +179,6 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFilter"></param>
 		/// <param name="withKey"></param>
 		/// <returns></returns>
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		IExportStrategy GetStrategy(string name, IInjectionContext injectionContext = null, ExportStrategyFilter exportFilter = null, object withKey = null);
 
 		/// <summary>
@@ -203,7 +200,6 @@ namespace Grace.DependencyInjection
 		/// <param name="exportFilter"></param>
 		/// <returns></returns>
 		[NotNull]
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		IEnumerable<IExportStrategy> GetStrategies([NotNull] string name,
 			IInjectionContext injectionContext = null,
 			ExportStrategyFilter exportFilter = null);
@@ -236,7 +232,6 @@ namespace Grace.DependencyInjection
 	    /// <param name="createIfDoesntExist"></param>
 	    /// <returns></returns>
 	    [CanBeNull]
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
         IExportStrategyCollection GetStrategyCollection([NotNull] string exportName, bool createIfDoesntExist = true);
 
 		/// <summary>

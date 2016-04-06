@@ -86,7 +86,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="nameDelegate">delegate used to create export name, default is type => type.Name</param>
 		/// <returns>configuration object</returns>
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		IExportTypeSetConfiguration ByName(Func<Type, string> nameDelegate = null);
 
 		/// <summary>
