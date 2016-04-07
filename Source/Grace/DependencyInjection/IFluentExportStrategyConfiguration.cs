@@ -45,7 +45,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>configuration object</returns>
-        [Obsolete("Please use keyed export instead of exporting by name as this feature will be going away")]
 		IFluentExportStrategyConfiguration AsName(string name);
 
         /// <summary>
@@ -177,13 +176,13 @@ namespace Grace.DependencyInjection
 		/// <param name="lifestyle">Lifestyle container for the export</param>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle);
-
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="conditionDelegate">export condition delegate</param>
-		/// <returns>configuration object</returns>
-		IFluentExportStrategyConfiguration When(ExportConditionDelegate conditionDelegate);
+        
+        /// <summary>
+        /// Adds a condition to the export
+        /// </summary>
+        /// <param name="conditionDelegate">export condition delegate</param>
+        /// <returns>configuration object</returns>
+        IFluentExportStrategyConfiguration When(ExportConditionDelegate conditionDelegate);
 
 		/// <summary>
 		/// Add a specific value for a particuar parameter in the constructor
