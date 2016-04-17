@@ -27,23 +27,29 @@ namespace Grace.DependencyInjection.Impl
 			classAttributes = attributes;
 		}
 
-		/// <summary>
-		/// Initialize the strategy
-		/// </summary>
-		public override void Initialize()
-		{
-			ProcessClassAttributes();
+        protected override void LazyInitialize()
+        {
+            if(activationDelegate == null)
+            {
+                lock(classAttributes)
+                {
+                    if (activationDelegate == null)
+                    {
+                        ProcessClassAttributes();
 
-			ProcessConstructors();
+                        ProcessConstructors();
 
-			ProcessMethodAttributes();
+                        ProcessMethodAttributes();
 
-			ProcessPropertyAttributes();
+                        ProcessPropertyAttributes();
 
-			base.Initialize();
-		}
+                        base.LazyInitialize();
+                    }
+                }
+            }
+        }
 
-		private void ProcessConstructors()
+        private void ProcessConstructors()
 		{
 			if (_exportType.GetTypeInfo().DeclaredConstructors.Count() > 1)
 			{

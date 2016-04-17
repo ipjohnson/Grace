@@ -21,30 +21,42 @@ namespace Grace.DependencyInjection.Impl
 		{
 			this.exportActivationDelegate = exportActivationDelegate;
 		}
+        
+        /// <summary>
+        /// List of dependencies for this strategy
+        /// </summary>
+        public override IEnumerable<ExportStrategyDependency> DependsOn
+        {
+            get
+            {
+                if (dependencies == null)
+                {
+                    LazyInitialize();
+                }
 
-		/// <summary>
-		/// Initialize the strategy
-		/// </summary>
-		public override void Initialize()
-		{
-			base.Initialize();
+                return dependencies;
+            }
+        }
 
-			CompiledExportDelegateInfo info = GetCompiledInfo();
+        protected override void LazyInitialize()
+        {
+            if(activationDelegate == null)
+            {
+                lock(exportActivationDelegate)
+                {
+                    if(activationDelegate == null)
+                    {
+                        CompiledExportDelegateInfo info = GetCompiledInfo();
 
-			FuncCompiledExportDelegate delegateGenerator =
-				new FuncCompiledExportDelegate(info, exportActivationDelegate,this, OwningScope);
+                        FuncCompiledExportDelegate delegateGenerator =
+                            new FuncCompiledExportDelegate(info, exportActivationDelegate, this, OwningScope);
 
-			activationDelegate = delegateGenerator.CompileDelegate();
+                        activationDelegate = delegateGenerator.CompileDelegate();
 
-			dependencies = delegateGenerator.Dependencies;
-		}
-
-		/// <summary>
-		/// List of dependencies for this strategy
-		/// </summary>
-		public override IEnumerable<ExportStrategyDependency> DependsOn
-		{
-			get { return dependencies; }
-		}
-	}
+                        dependencies = delegateGenerator.Dependencies;
+                    }
+                }
+            }            
+        }
+    }
 }

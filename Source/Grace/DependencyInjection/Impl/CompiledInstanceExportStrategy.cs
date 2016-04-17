@@ -18,30 +18,42 @@ namespace Grace.DependencyInjection.Impl
 		public CompiledInstanceExportStrategy(Type exportType) : base(exportType)
 		{
 		}
-
-		/// <summary>
-		/// Initialize the strategy
-		/// </summary>
-		public override void Initialize()
-		{
-			base.Initialize();
-
-			CompiledExportDelegateInfo info = GetCompiledInfo();
-
-			InstanceCompiledExportDelegate delegateGenerator =
-				new InstanceCompiledExportDelegate(info,this, OwningScope);
-
-			activationDelegate = delegateGenerator.CompileDelegate();
-
-			dependencies = delegateGenerator.Dependencies;
-		}
-
+        
 		/// <summary>
 		/// List of dependencies for this strategy
 		/// </summary>
 		public override IEnumerable<ExportStrategyDependency> DependsOn
 		{
-			get { return dependencies; }
+			get
+            {
+                if(dependencies == null)
+                {
+                    LazyInitialize();
+                }
+
+                return dependencies;
+            }
 		}
-	}
+
+        protected override void LazyInitialize()
+        {
+            if (activationDelegate == null)
+            {
+                lock(delegateInfo)
+                {
+                    if (activationDelegate == null)
+                    {
+                        CompiledExportDelegateInfo info = GetCompiledInfo();
+
+                        InstanceCompiledExportDelegate delegateGenerator =
+                            new InstanceCompiledExportDelegate(info, this, OwningScope);
+
+                        activationDelegate = delegateGenerator.CompileDelegate();
+
+                        dependencies = delegateGenerator.Dependencies;
+                    }
+                }
+            }
+        }
+    }
 }

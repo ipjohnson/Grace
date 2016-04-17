@@ -60,6 +60,16 @@ namespace Grace.DependencyInjection.Impl
 
 			try
 			{
+                if(activationDelegate == null)
+                {
+                    LazyInitialize();
+
+                    if(activationDelegate == null)
+                    {
+                        throw new Exception("Could not find activationDelegate " + ActivationType.FullName);
+                    }
+                }
+
 				if (_lifestyle != null)
 				{
 					return _lifestyle.Locate(activationDelegate, exportInjectionScope, context, this);
@@ -192,6 +202,14 @@ namespace Grace.DependencyInjection.Impl
 		{
 			delegateInfo.InNewContext = true;
 		}
+
+        /// <summary>
+        /// Implement this incase you don't want to do initialization upfront
+        /// </summary>
+        protected virtual void LazyInitialize()
+        {
+
+        }
 
 		/// <summary>
 		/// Gets the CompiledExportDelegateInfo definition for this export
