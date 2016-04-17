@@ -171,3 +171,4 @@ $RECYCLE.BIN/
 /Output/Tests/AnyCPU/Grace.dll
 /Source/packages
 /NuGet/lib
+/Source/.vs/config/applicationhost.config
