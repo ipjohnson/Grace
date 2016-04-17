@@ -77,6 +77,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration ByInterfaces();
+
 		/// <summary>
 		/// You can provide a cleanup method to be called 
 		/// </summary>
@@ -132,12 +133,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo);
 
-		/// <summary>
-		/// Mark a property for import and specify if its required
-		/// </summary>
-		/// <param name="methodName">name of method to import</param>
-		/// <returns>configuration object</returns>
-		IFluentImportMethodConfiguration ImportMethod(string methodName);
+        /// <summary>
+        /// Import all members matching the filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> filter);
+
+        /// <summary>
+        /// Mark a property for import and specify if its required
+        /// </summary>
+        /// <param name="methodName">name of method to import</param>
+        /// <returns>configuration object</returns>
+        IFluentImportMethodConfiguration ImportMethod(string methodName);
 
 	    /// <summary>
 	    /// Mark a property for import and specify if its required
@@ -389,11 +397,18 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentImportMethodConfiguration<T> ImportMethod(Expression<Action<T>> method);
 
-		/// <summary>
-		/// Mark a property for Import (using dependency injection container)
-		/// </summary>
-		/// <returns></returns>
-		IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
+        /// <summary>
+        /// Import members that match a specfic delegate
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> filter);
+
+        /// <summary>
+        /// Mark a property for Import (using dependency injection container)
+        /// </summary>
+        /// <returns></returns>
+        IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
 		
 		/// <summary>
 		/// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)

@@ -20,7 +20,7 @@ namespace Grace.MVC.DependencyInjection
 			       {
 				       IsRequired = Required,
 				       ImportName = null,
-				       ValueProvider = new HttpQueryStringProvider(ParameterName)
+				       ValueProvider = new HttpQueryStringProvider(ParameterName ?? attributedName)
 			       };
 		}
 	}

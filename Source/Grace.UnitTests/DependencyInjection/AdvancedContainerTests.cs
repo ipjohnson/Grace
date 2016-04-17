@@ -8,6 +8,8 @@ using Grace.DependencyInjection.Lifestyle;
 using Grace.Diagnostics;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
+using Grace.UnitTests.Classes.Attributed;
+using Grace.DependencyInjection.Attributes;
 
 namespace Grace.UnitTests.DependencyInjection
 {
@@ -483,6 +485,47 @@ namespace Grace.UnitTests.DependencyInjection
 
             Assert.NotNull(propertyService);
             Assert.NotNull(propertyService.BasicService);
+        }
+
+        #endregion
+
+        #region Import Attribute
+
+        [Fact]
+        public void ImportAttributedMemberForExports()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(
+                c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespace("Grace.UnitTests.Classes.Attributed")))
+                      .ByInterfaces()
+                      .ImportAttributedMembers());
+
+            var importService = container.Locate<IAttributedImportPropertyService>();
+
+            Assert.NotNull(importService);
+            Assert.NotNull(importService.BasicService);
+        }
+
+        #endregion
+
+        #region Import Members
+
+        [Fact]
+        public void ImportMembersForExports()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(
+                c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespace("Grace.UnitTests.Classes.Attributed")))
+                      .ByInterfaces()
+                      .ImportMembers(MembersThat.HaveAttribute<ImportAttribute>().And.AreProperty()));
+
+            var importService = container.Locate<IAttributedImportPropertyService>();
+
+            Assert.NotNull(importService);
+            Assert.NotNull(importService.BasicService);
+
         }
 
         #endregion

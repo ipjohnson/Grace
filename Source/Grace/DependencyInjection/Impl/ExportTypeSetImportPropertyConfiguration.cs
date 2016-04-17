@@ -28,6 +28,29 @@ namespace Grace.DependencyInjection.Impl
 
 
         /// <summary>
+        /// Import attributed members
+        /// </summary>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ImportAttributedMembers()
+        {
+            _importAttributedMembers = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Import members matching filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ImportMembers(Func<MemberInfo, bool> filter)
+        {
+            importMembersList.Add(filter);
+
+            return this;
+        }
+
+        /// <summary>
         /// Import properties of type TProperty and by name
         /// </summary>
         /// <typeparam name="TProperty">property type</typeparam>
@@ -46,7 +69,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="propertyType"></param>
         /// <returns></returns>
-        public IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType)
+        public IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType = null)
         {
             importPropertiesList.Add(new ImportGlobalPropertyInfo { PropertyType = propertyType, IsRequired = true });
 

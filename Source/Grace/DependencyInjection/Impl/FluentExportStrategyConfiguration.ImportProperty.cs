@@ -64,6 +64,47 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
+        /// <summary>
+        /// Import members matching filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo,bool> filter)
+        {
+            foreach (var methodInfo in exportStrategy.ActivationType.GetRuntimeMethods())
+            {
+                if (methodInfo.IsStatic ||
+                  !methodInfo.IsPublic)
+                {
+                    continue;
+                }
+
+                if (filter(methodInfo))
+                {
+                    exportStrategy.ImportMethod(new ImportMethodInfo { MethodToImport = methodInfo });
+                }
+            }
+
+            foreach (var propertyInfo in exportStrategy.ActivationType.GetRuntimeProperties())
+            {
+                if (!propertyInfo.CanWrite ||
+                    propertyInfo.SetMethod.IsStatic ||
+                   !propertyInfo.SetMethod.IsPublic)
+                {
+                    if (filter(propertyInfo))
+                    {
+                        exportStrategy.ImportProperty(new ImportPropertyInfo
+                        {
+                            Property = propertyInfo,
+                            IsRequired = true,
+                        });
+                    }
+                }
+            }
+
+            return this;
+        }
+
 		/// <summary>
 		/// Is the property required
 		/// </summary>
@@ -191,7 +232,49 @@ namespace Grace.DependencyInjection.Impl
 
 			return new FluentImportPropertyConfiguration<T, TProp>(this, importPropertyInfo);
 		}
-	}
+
+
+        /// <summary>
+        /// Import members that match a specfic delegate
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> filter)
+        {            
+            foreach (var methodInfo in exportStrategy.ActivationType.GetRuntimeMethods())
+            {
+                if (methodInfo.IsStatic ||
+                  !methodInfo.IsPublic)
+                {
+                    continue;
+                }
+
+                if (filter(methodInfo))
+                {
+                    exportStrategy.ImportMethod(new ImportMethodInfo { MethodToImport = methodInfo });                        
+                }                
+            }
+
+            foreach (var propertyInfo in exportStrategy.ActivationType.GetRuntimeProperties())
+            {
+                if (!propertyInfo.CanWrite ||
+                    propertyInfo.SetMethod.IsStatic ||
+                   !propertyInfo.SetMethod.IsPublic)
+                {
+                    if (filter(propertyInfo))
+                    {
+                        exportStrategy.ImportProperty(new ImportPropertyInfo
+                        {
+                           Property = propertyInfo,
+                           IsRequired = true,
+                         });                        
+                    }
+                }
+            }
+
+            return this;
+        }
+    }
 
 	/// <summary>
 	/// Configuration object fo importing property

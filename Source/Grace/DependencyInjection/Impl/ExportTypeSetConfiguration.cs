@@ -28,6 +28,7 @@ namespace Grace.DependencyInjection.Impl
         private readonly List<Func<Type, bool>> whereClauses;
         private readonly List<IExportStrategyInspector> inspectors;
         private readonly List<ImportGlobalPropertyInfo> importPropertiesList;
+        private readonly List<Func<MemberInfo, bool>> importMembersList;
         private readonly List<WithCtorParamInfo> withCtorParams;
         private readonly List<Func<Type, IEnumerable<EnrichWithDelegate>>> enrichWithDelegates;
         private readonly List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>> enrichmentProviders;
@@ -43,6 +44,7 @@ namespace Grace.DependencyInjection.Impl
         private Func<Type, int> _priorityFunc;
         private Func<Type, ILifestyle> _lifestyleFunc;
         private Func<Type, object> _withKeyFunc;
+        private bool _importAttributedMembers;
 
         /// <summary>
         /// Default Constructor
@@ -62,6 +64,7 @@ namespace Grace.DependencyInjection.Impl
             interfaceMatchList = new List<Func<Type, bool>>();
             inspectors = new List<IExportStrategyInspector>();
             importPropertiesList = new List<ImportGlobalPropertyInfo>();
+            importMembersList = new List<Func<MemberInfo, bool>>();
             withCtorParams = new List<WithCtorParamInfo>();
             enrichWithDelegates = new List<Func<Type, IEnumerable<EnrichWithDelegate>>>();
             enrichmentProviders = new List<Func<Type, IEnumerable<ICustomEnrichmentLinqExpressionProvider>>>();
@@ -906,7 +909,73 @@ namespace Grace.DependencyInjection.Impl
                 ProcessImportProperties(exportedType, exportStrategy);
             }
 
+            if(importMembersList.Count > 0)
+            {
+                ProccessImportMembers(exportedType, exportStrategy);
+            }
+
+            if(_importAttributedMembers)
+            {
+                ProcessImportAttributedMembers(exportedType, exportStrategy);
+            }
+
             return exportStrategy;
+        }
+
+        private void ProcessImportAttributedMembers(Type exportedType, ICompiledExportStrategy exportStrategy)
+        {
+            foreach (ImportPropertyInfo propertyInfo in AttributedInjectionStrategy.ProcessImportPropertiesOnType(exportedType))
+            {
+                exportStrategy.ImportProperty(propertyInfo);
+            }
+
+            foreach (ImportMethodInfo importMethodInfo in AttributedInjectionStrategy.ProcessMethodAttributesOnType(exportedType))
+            {
+                exportStrategy.ImportMethod(importMethodInfo);
+            }
+        }
+
+        private void ProccessImportMembers(Type exportedType, ICompiledExportStrategy exportStrategy)
+        {
+            foreach (var methodInfo in exportedType.GetRuntimeMethods())
+            {
+                if(methodInfo.IsStatic || 
+                  !methodInfo.IsPublic)
+                {
+                    continue;
+                }
+
+                foreach(var filter in importMembersList)
+                {
+                    if(filter(methodInfo))
+                    {
+                        exportStrategy.ImportMethod(new ImportMethodInfo { MethodToImport = methodInfo });
+                        break;
+                    }
+                }
+            }
+
+            foreach (var propertyInfo in exportedType.GetRuntimeProperties())
+            {
+                if (!propertyInfo.CanWrite ||
+                    propertyInfo.SetMethod.IsStatic ||
+                   !propertyInfo.SetMethod.IsPublic)
+                {
+                    foreach (var filter in importMembersList)
+                    {
+                        if (filter(propertyInfo))
+                        {
+                            exportStrategy.ImportProperty(new ImportPropertyInfo
+                            {
+                                Property = propertyInfo,
+                                IsRequired = true,
+                            });
+
+                            break;
+                        }
+                    }
+                }                        
+            }            
         }
 
         private void ProcessImportProperties(Type exportedType, ICompiledExportStrategy exportStrategy)
@@ -995,6 +1064,11 @@ namespace Grace.DependencyInjection.Impl
 
         private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
         {
+            if(importProperty.PropertyType == null)
+            {
+                return true;
+            }
+
             if (importType.GetTypeInfo().IsGenericTypeDefinition)
             {
                 if (importProperty.PropertyType.GetTypeInfo().IsGenericTypeDefinition &&
@@ -1016,5 +1090,6 @@ namespace Grace.DependencyInjection.Impl
 
             return false;
         }
+
     }
 }

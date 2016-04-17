@@ -135,26 +135,39 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration ExternallyOwned();
 
-		/// <summary>
-		/// Import properties of type TProperty and by name
-		/// </summary>
-		/// <typeparam name="TProperty">property type</typeparam>
-		/// <returns>configuration object</returns>
-		IExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>();
+        /// <summary>
+        /// Import attributed members
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ImportAttributedMembers();
+
+        /// <summary>
+        /// Import Members that match the filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ImportMembers(Func<MemberInfo, bool> filter);
+
+        /// <summary>
+        /// Import properties of type TProperty and by name
+        /// </summary>
+        /// <typeparam name="TProperty">property type</typeparam>
+        /// <returns>configuration object</returns>
+        IExportTypeSetImportPropertyConfiguration ImportProperty<TProperty>();
 
 		/// <summary>
 		/// Import all properties that match the type
 		/// </summary>
-		/// <param name="propertyType"></param>
+		/// <param name="propertyType">property type</param>
 		/// <returns></returns>
-		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType);
-        
-		/// <summary>
-		/// Export in the specified Environment
-		/// </summary>
-		/// <param name="environment">environment to export in</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
+		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType = null);
+
+        /// <summary>
+        /// Export in the specified Environment
+        /// </summary>
+        /// <param name="environment">environment to export in</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
 
         /// <summary>
         /// Assign a lifestyle to all exports

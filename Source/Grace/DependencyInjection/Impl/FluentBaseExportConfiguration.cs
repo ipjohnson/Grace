@@ -158,6 +158,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo,bool> filter)
+        {
+            return strategy.ImportMembers(filter);
+        }
+
+        /// <summary>
         /// Mark a property for import and specify if its required
         /// </summary>
         /// <param name="methodName">name of method to import</param>
@@ -516,6 +526,17 @@ namespace Grace.DependencyInjection.Impl
         public IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property)
         {
             return strategy.ImportProperty(property);
+        }
+
+
+        /// <summary>
+        /// Import members that match a specfic delegate
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> filter)
+        {
+            return strategy.ImportMembers(filter);
         }
 
         /// <summary>

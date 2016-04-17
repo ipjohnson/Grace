@@ -302,7 +302,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         if (typeFilter(baseType))
                         {
-                            return true;
+                            return true == notValue;
                         }
 
                         baseType = baseType.GetTypeInfo().BaseType;
@@ -312,7 +312,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         if (typeFilter(implementedInterface))
                         {
-                            return notValue;
+                            return true == notValue;
                         }
                     }
 

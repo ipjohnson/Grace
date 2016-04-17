@@ -154,3 +154,20 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/Output/Tests/AnyCPU/xunit.xml
+/Output/Tests/AnyCPU/xunit.runner.visualstudio.testadapter.dll
+/Output/Tests/AnyCPU/xunit.runner.utility.desktop.dll
+/Output/Tests/AnyCPU/xunit.extensions.xml
+/Output/Tests/AnyCPU/xunit.extensions.dll
+/Output/Tests/AnyCPU/xunit.dll
+/Output/Tests/AnyCPU/xunit.abstractions.dll
+/Output/Tests/AnyCPU/NSubstitute.xml
+/Output/Tests/AnyCPU/NSubstitute.dll
+/Output/Tests/AnyCPU/Grace.xml
+/Output/Tests/AnyCPU/Grace.UnitTests.dll.config
+/Output/Tests/AnyCPU/Grace.UnitTests.dll
+/Output/Tests/AnyCPU/Grace.Net.xml
+/Output/Tests/AnyCPU/Grace.Net.dll
+/Output/Tests/AnyCPU/Grace.dll
+/Source/packages
+/NuGet/lib
