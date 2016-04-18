@@ -1,24 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2605CBB7-C958-4353-A371-AE655A3D8E31}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecFiles", "NuSpecFiles", "{F3A527B7-F1C4-4D78-AAE6-B908B6F93024}"
-	ProjectSection(SolutionItems) = preProject
-		..\NuGet\Grace.Common.Logging.nuspec = ..\NuGet\Grace.Common.Logging.nuspec
-		..\NuGet\Grace.CommonServiceLocator.nuspec = ..\NuGet\Grace.CommonServiceLocator.nuspec
-		..\NuGet\Grace.log4net.nuspec = ..\NuGet\Grace.log4net.nuspec
-		..\NuGet\Grace.MVC4.nuspec = ..\NuGet\Grace.MVC4.nuspec
-		..\NuGet\Grace.MVC5.nuspec = ..\NuGet\Grace.MVC5.nuspec
-		..\NuGet\Grace.Net.nuspec = ..\NuGet\Grace.Net.nuspec
-		..\NuGet\Grace.NLog.nuspec = ..\NuGet\Grace.NLog.nuspec
-		..\NuGet\Grace.nuspec = ..\NuGet\Grace.nuspec
-		..\NuGet\Grace.WCF.nuspec = ..\NuGet\Grace.WCF.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{3A1809AF-15A1-498A-97F5-79AD09EC8F81}"
