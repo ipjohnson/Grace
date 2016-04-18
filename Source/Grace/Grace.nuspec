@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Grace</id>
+    <version>$version$</version>
+    <title>Grace</title>
+    <authors>Ian Johnson</authors>
+    <owners>Ian Johnson</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</description>
+    <copyright>Copyright ©  2014</copyright>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>
