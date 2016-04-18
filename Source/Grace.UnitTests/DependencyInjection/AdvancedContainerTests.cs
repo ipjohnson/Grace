@@ -529,5 +529,19 @@ namespace Grace.UnitTests.DependencyInjection
         }
 
         #endregion
+
+        #region Attributed Export Property test
+        [Fact]
+        public void ExportAttributedPropertyTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.From(typeof(AttributedExportService), typeof(AttributeImportConstructorService))).ExportAttributedTypes());
+
+            var constructor = container.Locate<IAttributeImportConstructorService>();
+
+            Assert.NotNull(constructor);
+        }
+        #endregion
     }
 }

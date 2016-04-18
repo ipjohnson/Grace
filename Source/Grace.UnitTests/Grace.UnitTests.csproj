@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Attributed\AttributeBasicService.cs" />
+    <Compile Include="Classes\Attributed\AttributedExportService.cs" />
     <Compile Include="Classes\Attributed\AttributedMultipleSimpleObject.cs" />
     <Compile Include="Classes\Attributed\AttributedActivationService.cs" />
     <Compile Include="Classes\Attributed\AttributedImportMethodService.cs" />

@@ -27,6 +27,15 @@ namespace Grace.DependencyInjection.Impl
 			classAttributes = attributes;
 		}
 
+        public override void Initialize()
+        {            
+            ProcessClassAttributes();
+
+            ProcessPropertyAttributes();
+
+            base.Initialize();
+        }
+
         protected override void LazyInitialize()
         {
             if(activationDelegate == null)
@@ -35,13 +44,9 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (activationDelegate == null)
                     {
-                        ProcessClassAttributes();
-
                         ProcessConstructors();
 
                         ProcessMethodAttributes();
-
-                        ProcessPropertyAttributes();
 
                         base.LazyInitialize();
                     }
@@ -136,8 +141,8 @@ namespace Grace.DependencyInjection.Impl
 				}
 			}
 		}
-
-		private void ProcessPropertyAttributes()
+        
+        private void ProcessPropertyAttributes()
 		{
 			foreach (PropertyInfo runtimeProperty in _exportType.GetRuntimeProperties())
 			{

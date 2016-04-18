@@ -21,8 +21,8 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 
 			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
-			IAttributeBasicService basicService =
-				injectionKernel.Locate<IAttributeBasicService>();
+			IAttributedExportService basicService =
+				injectionKernel.Locate<IAttributedExportService>();
 
 			Assert.NotNull(basicService);
 		}
