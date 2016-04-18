@@ -6,15 +6,15 @@
     <owners>Ian Johnson</owners>
     <licenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</licenseUrl>
     <projectUrl>https://github.com/ipjohnson/Grace</projectUrl>
-    <id>Grace.MVC5</id>
-    <title>Grace.MVC5</title>
-    <summary>Grace.MVC5 is a companion library for Grace and MVC 5</summary>
-    <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC5 classes to integrate Grace and MVC 5</description>
+    <id>Grace.MVC4</id>
+    <title>Grace.MVC4</title>
+    <summary>Grace.MVC4 is a companion library for Grace and MVC 4</summary>
+    <description>Grace is a portable class library containing a feature rich dependency injection container. Grace.MVC4 classes to integrate Grace and MVC 4</description>
     <releaseNotes>$ReleaseNotes$</releaseNotes>
     <copyright>Copyright 2014 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
-    <tags>IoC Dependency Injection Container MVC</tags>
+    <tags>IoC Dependency Injection Container MVC 4</tags>
     <dependencies>
       <dependency id="Grace" version="$version$"/>
     </dependencies>

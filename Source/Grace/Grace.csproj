@@ -312,6 +312,7 @@
     <Compile Include="Utilities\WeakFunc.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Grace.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <!--
