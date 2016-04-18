@@ -311,6 +311,9 @@
     <Compile Include="Utilities\WeakAction.cs" />
     <Compile Include="Utilities\WeakFunc.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <!--
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.props" Condition="$(teamcity_build_id) != ''" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" Condition="$(teamcity_build_id) != ''" />

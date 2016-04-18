@@ -92,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Grace.MVC5.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
