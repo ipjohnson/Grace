@@ -11,7 +11,7 @@
     <summary>Grace.Net is the .Net adjunct library for Grace</summary>
     <description>Grace.Net provides feature for the Grace container that only existin in .Net such as scanning loaded assemblies.</description>
     <releaseNotes>$ReleaseNotes$</releaseNotes>
-    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container Portable Library</tags>

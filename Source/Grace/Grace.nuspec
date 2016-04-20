@@ -11,7 +11,7 @@
     <description>Grace is a portable class library that contains a feature rich Dependency Injection Container</description>
     <summary>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</summary>
     <releaseNotes>$ReleaseNotes$</releaseNotes>
-    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container Portable Library</tags>

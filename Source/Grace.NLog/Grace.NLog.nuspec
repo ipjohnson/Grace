@@ -11,7 +11,7 @@
     <summary>Grace.NLog provides a logging service using NLog and Grace</summary>
     <description>Grace.NLog provides integration class between NLog and Grace (Dependency Injection Container)</description>
     <releaseNotes>$ReleaseNotes$</releaseNotes>
-    <copyright>Copyright 2014 Ian Johnson</copyright>
+    <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container MVC</tags>
