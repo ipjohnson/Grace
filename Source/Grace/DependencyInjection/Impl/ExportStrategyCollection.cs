@@ -14,6 +14,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class ExportStrategyCollection : IExportStrategyCollection
     {
+        private static readonly IExportStrategy[] emptyStrategies = new IExportStrategy[0];
         private readonly ExportStrategyComparer comparer;
         private readonly ExportEnvironment environment;
         private readonly object exportStrategiesLock = new object();
@@ -38,7 +39,7 @@ namespace Grace.DependencyInjection.Impl
             this.comparer = comparer;
             this.injectionKernel = injectionKernel;
 
-            exportStrategies = new IExportStrategy[0];
+            exportStrategies = emptyStrategies;
         }
 
         /// <summary>
@@ -427,19 +428,28 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (key == null)
                 {
-                    if (exportStrategies.Any(exportStrategy.Equals))
+                    if (exportStrategies.Length == 0)
                     {
-                        return;
+                        IExportStrategy[] newArray = new IExportStrategy[] { exportStrategy };
+
+                        Interlocked.Exchange(ref exportStrategies, newArray);
                     }
+                    else
+                    {
+                        if (exportStrategies.Any(exportStrategy.Equals))
+                        {
+                            return;
+                        }
 
-                    List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+                        List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
 
-                    newList.Sort((x, y) => comparer(x, y, environment));
+                        newList.Sort((x, y) => comparer(x, y, environment));
 
-                    // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
-                    newList.Reverse();
+                        // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
+                        newList.Reverse();
 
-                    Interlocked.Exchange(ref exportStrategies, newList.ToArray());
+                        Interlocked.Exchange(ref exportStrategies, newList.ToArray());                        
+                    }
 
                     if (!exportStrategies[0].HasConditions)
                     {
