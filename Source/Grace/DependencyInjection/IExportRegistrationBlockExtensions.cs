@@ -142,5 +142,17 @@ namespace Grace.DependencyInjection
 
             throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
         }
+
+        /// <summary>
+        /// Export a particular type as a particular interface
+        /// </summary>
+        /// <typeparam name="T">Type to export</typeparam>
+        /// <typeparam name="TInterface">type to export as</typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <returns></returns>
+        public static IFluentExportStrategyConfiguration<T> ExportAs<T,TInterface>(this IExportRegistrationBlock registrationBlock) where T : TInterface
+        {
+            return registrationBlock.Export<T>().As<TInterface>();
+        }
     }
 }
