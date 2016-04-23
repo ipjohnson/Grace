@@ -13,6 +13,8 @@ namespace Grace.Data
 
 	public delegate object CallMethodDelegate(object instance, bool createIfPathMissing, params object[] parameters);
 
+    public delegate IDictionary<string, object> PropertyDictionaryDelegate(object instance);
+
 	/// <summary>
 	/// Simple service that allows the caller to access properties and call method on objects 
 	/// the only have string names for.
@@ -90,5 +92,12 @@ namespace Grace.Data
 		/// <param name="propertyName">property name (can be dotted form A.B.C)</param>
 		/// <returns>new property delegate</returns>
 		SetPropertyDelegate CreateSetPropertyDelegate(Type instanceType, string propertyName, Type indexType);
+
+        /// <summary>
+        /// Get all properties from an object
+        /// </summary>
+        /// <param name="annonymousObject">annonymous object</param>
+        /// <returns>Dictionary of properties</returns>
+        IDictionary<string, object> GetPropertiesFromObject(object annonymousObject);
 	}
 }

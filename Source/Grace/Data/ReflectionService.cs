@@ -16,40 +16,47 @@ namespace Grace.Data
 	/// </summary>
 	public class ReflectionService : IReflectionService
 	{
-		private static readonly ConstructorInfo exceptionConstructor = null;
-		private static readonly PropertyInfo objectArrayIndex = null;
+		private static readonly ConstructorInfo _exceptionConstructor = null;
+		private static readonly PropertyInfo _objectArrayIndex = null;
+        private static readonly MethodInfo _dictionaryAdd = null;
 
-		private readonly SafeDictionary<string, GetPropertyDelegate> getPropertyAccessors;
-		private readonly SafeDictionary<string, SetPropertyDelegate> setPropertyAccessors;
-		private readonly SafeDictionary<string, CallMethodDelegate> callAccessors;
+		private readonly SafeDictionary<string, GetPropertyDelegate> _getPropertyAccessors;
+		private readonly SafeDictionary<string, SetPropertyDelegate> _setPropertyAccessors;
+		private readonly SafeDictionary<string, CallMethodDelegate> _callAccessors;
+        private readonly SafeDictionary<Guid, PropertyDictionaryDelegate> _propertyDictionaryAccessors;
 
 		static ReflectionService()
 		{
-			objectArrayIndex = typeof(IList).GetTypeInfo().GetDeclaredProperty("Item");
+			_objectArrayIndex = typeof(IList).GetTypeInfo().GetDeclaredProperty("Item");
 
 			foreach (ConstructorInfo declaredConstructor in typeof(Exception).GetTypeInfo().DeclaredConstructors)
 			{
 				if (declaredConstructor.GetParameters().Count() == 1 &&
 					 declaredConstructor.GetParameters().FirstOrDefault().ParameterType == typeof(string))
 				{
-					exceptionConstructor = declaredConstructor;
+					_exceptionConstructor = declaredConstructor;
 				}
 			}
-		}
+
+            _dictionaryAdd = typeof(Dictionary<string, object>).GetTypeInfo().GetDeclaredMethod("Add");
+        }
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public ReflectionService()
 		{
-			getPropertyAccessors =
+			_getPropertyAccessors =
 				new SafeDictionary<string, GetPropertyDelegate>();
 
-			setPropertyAccessors =
+			_setPropertyAccessors =
 				new SafeDictionary<string, SetPropertyDelegate>();
 
-			callAccessors =
+			_callAccessors =
 				new SafeDictionary<string, CallMethodDelegate>();
+
+            _propertyDictionaryAccessors =
+                new SafeDictionary<Guid, PropertyDictionaryDelegate>();
 		}
 
 		/// <summary>
@@ -184,7 +191,7 @@ namespace Grace.Data
 				searchMethodName += "|" + parameters.Length;
 			}
 
-			if (!callAccessors.TryGetValue(searchMethodName, out callMethod))
+			if (!_callAccessors.TryGetValue(searchMethodName, out callMethod))
 			{
 				ParameterExpression valueObjectParameter = Expression.Parameter(typeof(object), "valueObject");
 				ParameterExpression callParameters = Expression.Parameter(typeof(object[]), "callParameters");
@@ -243,7 +250,7 @@ namespace Grace.Data
 															  Expression callParameter =
 																  Expression.Convert(
 																	  Expression.Property(callParameters,
-																								 objectArrayIndex,
+																								 _objectArrayIndex,
 																								 Expression.Constant(parmeterIndex)),
 																	  parameterInfo.ParameterType);
 
@@ -285,7 +292,7 @@ namespace Grace.Data
 					delegatebod, valueObjectParameter, throwParameter, callParameters).
 												Compile();
 
-				callAccessors[searchMethodName] = callMethod;
+				_callAccessors[searchMethodName] = callMethod;
 			}
 
 			return callMethod(target, throwIfPathMissing, parameters);
@@ -307,7 +314,7 @@ namespace Grace.Data
 				methodName += "|" + indexType.FullName;
 			}
 
-			if (!getPropertyAccessors.TryGetValue(methodName, out getAction))
+			if (!_getPropertyAccessors.TryGetValue(methodName, out getAction))
 			{
 				ParameterExpression valueObjectParameter = Expression.Parameter(typeof(object), "valueObject");
 				ParameterExpression indexParameter = Expression.Parameter(typeof(object), "index");
@@ -373,7 +380,7 @@ namespace Grace.Data
 					returnBlock, valueObjectParameter, indexParameter, throwParameter).
 											  Compile();
 
-				getPropertyAccessors[methodName] = getAction;
+				_getPropertyAccessors[methodName] = getAction;
 			}
 
 			return getAction;
@@ -406,7 +413,7 @@ namespace Grace.Data
 				methodName += "|" + indexType.FullName;
 			}
 
-			if (!setPropertyAccessors.TryGetValue(methodName, out setAction))
+			if (!_setPropertyAccessors.TryGetValue(methodName, out setAction))
 			{
 				ParameterExpression valueObjectParameter = Expression.Parameter(typeof(object), "valueObject");
 				ParameterExpression newValueParameter = Expression.Parameter(typeof(object), "newValueParameter");
@@ -467,7 +474,7 @@ namespace Grace.Data
 					delegatebod, valueObjectParameter, newValueParameter, indexParameter, createParameter).
 											  Compile();
 
-				setPropertyAccessors[methodName] = setAction;
+				_setPropertyAccessors[methodName] = setAction;
 			}
 
 			return setAction;
@@ -609,7 +616,7 @@ namespace Grace.Data
 						Expression.IfThen(Expression.IsTrue(throwParameter),
 												Expression.Throw(
 													Expression.New(
-														exceptionConstructor,
+														_exceptionConstructor,
 														Expression.Constant(
 															String.Format("Could not find property {1} on type {0}",
 																			  objectType.FullName,
@@ -779,5 +786,72 @@ namespace Grace.Data
 	            builder.Append(currentType.Name);
 	        }
 	    }
-	}
+
+        public IDictionary<string, object> GetPropertiesFromObject(object annonymousObject)
+        {
+            if(annonymousObject == null)
+            {
+                return new Dictionary<string, object>();
+            }
+
+            PropertyDictionaryDelegate propertyDelegate;
+            var objectType = annonymousObject.GetType();
+
+            if(!_propertyDictionaryAccessors.TryGetValue(objectType.GetTypeInfo().GUID,out propertyDelegate))
+            {
+                propertyDelegate = CreateDelegateForType(objectType);
+
+                _propertyDictionaryAccessors[objectType.GetTypeInfo().GUID] = propertyDelegate;
+            }
+
+            return propertyDelegate(annonymousObject);
+        }
+
+        private PropertyDictionaryDelegate CreateDelegateForType(Type objectType)
+        {
+            // the parameter to call the method on
+            ParameterExpression inputObject = Expression.Parameter(typeof(object), "inputObject");
+
+            // loval variable of type declaringType
+            ParameterExpression tVariable = Expression.Variable(objectType);
+
+
+            // cast the input object to be declaring type
+            Expression castExpression = Expression.Convert(inputObject, objectType);
+
+            // assign the cast value to the tVaraible variable
+            Expression assignmentExpression = Expression.Assign(tVariable, castExpression);
+
+            ParameterExpression dictionary = Expression.Variable(typeof(Dictionary<string, object>));
+
+            // keep a list of the variable we declare for use when we define the body
+            List<ParameterExpression> variableList = new List<ParameterExpression> { tVariable, dictionary };
+
+            List<Expression> bodyExpressions = new List<Expression> { assignmentExpression };
+            
+            Expression dictionaryAssignment = Expression.Assign(dictionary,  Expression.New(typeof(Dictionary<string, object>)));
+
+            bodyExpressions.Add(dictionaryAssignment);
+
+            foreach (var property in objectType.GetTypeInfo().DeclaredProperties)
+            {                
+                if(property.CanRead && !property.GetMethod.IsStatic && property.GetMethod.IsPublic)
+                {
+                    var propertyAccess = Expression.Property(tVariable, property.GetMethod);
+
+                    var propertyCast = Expression.Convert(propertyAccess, typeof(object));
+
+                    var addExpression = Expression.Call(dictionary, _dictionaryAdd, Expression.Constant(property.Name), propertyCast);
+
+                    bodyExpressions.Add(addExpression);
+                }
+            }
+
+            bodyExpressions.Add(dictionary);
+
+            BlockExpression body = Expression.Block(variableList, bodyExpressions);
+
+            return Expression.Lambda<PropertyDictionaryDelegate>(body, inputObject).Compile();
+        }
+    }
 }
