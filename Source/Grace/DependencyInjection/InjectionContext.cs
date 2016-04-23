@@ -16,6 +16,9 @@ namespace Grace.DependencyInjection
         private ImmutableHashTree<string, object> _extraData;
         private int _resolveDepth;
         private CurrentInjectionInfo[] _currentInjectionInfo;
+        private IDisposalScope _disposalScope;
+        private IInjectionScope _requestingScope;
+        private IInjectionTargetInfo _targetInfo;
 
         /// <summary>
         /// Constructor that uses requesting scope as disposal scope
@@ -37,9 +40,9 @@ namespace Grace.DependencyInjection
             _currentInjectionInfo = new CurrentInjectionInfo[4];
             MaxResolveDepth = 50;
 
-            DisposalScope = disposalScope ?? requestingScope;
+            _disposalScope = disposalScope ?? requestingScope;
 
-            RequestingScope = requestingScope;
+            _requestingScope = requestingScope;
         }
 
         /// <summary>
@@ -77,10 +80,10 @@ namespace Grace.DependencyInjection
                                                     _exportsByName = _exportsByName,
                                                     _exportsByType = _exportsByType,
                                                     _extraData = _extraData,
-                                                    TargetInfo = TargetInfo,
+                                                    _targetInfo = _targetInfo,
                                                     _resolveDepth = _resolveDepth,
-                                                    RequestingScope = RequestingScope,
-                                                    DisposalScope = DisposalScope,
+                                                    _requestingScope = _requestingScope,
+                                                    _disposalScope = _disposalScope,
                                                     _currentInjectionInfo = new CurrentInjectionInfo[_currentInjectionInfo.Length]
                                                 };
 
@@ -92,17 +95,29 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Disposal scope for the injection context
         /// </summary>
-        public IDisposalScope DisposalScope { get; set; }
+        public IDisposalScope DisposalScope
+        {
+            get { return _disposalScope; }
+            set { _disposalScope = value; }
+        }
 
         /// <summary>
         /// The scope that the request originated in
         /// </summary>
-        public IInjectionScope RequestingScope { get; set; }
+        public IInjectionScope RequestingScope
+        {
+            get { return _requestingScope; }
+            set { _requestingScope = value; }
+        }
 
         /// <summary>
         /// The target information for the current injection
         /// </summary>
-        public IInjectionTargetInfo TargetInfo { get; set; }
+        public IInjectionTargetInfo TargetInfo
+        {
+            get { return _targetInfo; }
+            set { _targetInfo = value; }
+        }
 
         /// <summary>
         /// When importing a property after construction this will contain the instance that is being injected
@@ -254,9 +269,9 @@ namespace Grace.DependencyInjection
         {
             if (_resolveDepth > MaxResolveDepth)
             {
-                if (TargetInfo != null)
+                if (_targetInfo != null)
                 {
-                    throw new CircularDependencyDetectedException(TargetInfo.LocateName, TargetInfo.LocateType, this);
+                    throw new CircularDependencyDetectedException(_targetInfo.LocateName, _targetInfo.LocateType, this);
                 }
 
                 throw new CircularDependencyDetectedException(null, (Type)null, this);

@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	{
 		private readonly object lockObject = new object();
 		private bool disposed;
-		private volatile object instance;
+		private object instance;
 
 		/// <summary>
 		/// Dispose of the container
