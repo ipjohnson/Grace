@@ -789,5 +789,33 @@ namespace Grace.DependencyInjection.Impl
         {
             throw new NotImplementedException();
         }
+
+        public IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => { applyAction((T)instance); return instance; });
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<T, T> enrichWithDelegate)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => enrichWithDelegate((T)instance));
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> Apply(Action<IInjectionScope, IInjectionContext, T> applyAction)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => { applyAction(scope, context, (T)instance); return instance; });
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => enrichWithDelegate(scope, context, (T)instance));
+
+            return this;
+        }
     }
 }

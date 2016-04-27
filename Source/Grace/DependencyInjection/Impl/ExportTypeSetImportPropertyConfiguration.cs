@@ -145,6 +145,16 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        IExportTypeSetImportPropertyConfiguration IExportTypeSetImportPropertyConfiguration.UsingValue(object value)
+        {
+            if (importPropertiesList.Count > 0)
+            {
+                importPropertiesList[importPropertiesList.Count - 1].ValueProvider = new ExportActivationValueProvider((scope,context) => value);
+            }
+
+            return this;
+        }
+
         /// <summary>
         /// Use value provider
         /// </summary>

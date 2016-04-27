@@ -40,13 +40,19 @@ namespace Grace.DependencyInjection
 		/// <param name="valueFunc">property func</param>
 		/// <returns>configuration value</returns>
 		IFluentImportPropertyConfiguration UsingValue(Func<object> valueFunc);
+        /// <summary>
+        /// Specify a value to use when importing the property
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        IFluentImportPropertyConfiguration UsingValue(object value);
 
-		/// <summary>
-		/// Value provider for property
-		/// </summary>
-		/// <param name="provider">value provider</param>
-		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
+        /// <summary>
+        /// Value provider for property
+        /// </summary>
+        /// <param name="provider">value provider</param>
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration UsingValueProvider(IExportValueProvider provider);
 
 	}
 
@@ -84,12 +90,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey);
 
-		/// <summary>
-		/// Provide value for import property
-		/// </summary>
-		/// <param name="valueFunc">value func</param>
-		/// <returns>configuration object</returns>
-		IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<TProp> valueFunc);
+        /// <summary>
+        /// Provide value for import
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        IFluentImportPropertyConfiguration<T, TProp> UsingValue(TProp value);
+
+        /// <summary>
+        /// Provide value for import property
+        /// </summary>
+        /// <param name="valueFunc">value func</param>
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<TProp> valueFunc);
 
 		/// <summary>
 		/// Provide value for import property

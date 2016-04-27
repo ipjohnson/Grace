@@ -27,12 +27,28 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetConfiguration AndCondition(Func<Type, IExportCondition> conditionFunc);
 
-		/// <summary>
-		/// Export all types based on speficied type by Type
-		/// </summary>
-		/// <param name="baseType">base type to export</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetConfiguration BasedOn(Type baseType);
+        /// <summary>
+        /// Apply an action to specific types
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration Apply<T>(Action<T> action);
+
+        /// <summary>
+        /// Apply an action to specific types
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration Apply<T>(Action<IInjectionScope,IInjectionContext, T> action);
+
+        /// <summary>
+        /// Export all types based on speficied type by Type
+        /// </summary>
+        /// <param name="baseType">base type to export</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration BasedOn(Type baseType);
 
 		/// <summary>
 		/// Export all types based on speficied type by Type
@@ -102,12 +118,28 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IExportTypeSetConfiguration EnrichWith(Func<Type, IEnumerable<EnrichWithDelegate>> enrichWithDelegates);
 
-		/// <summary>
-		/// Enrich all with linq expressions
-		/// </summary>
-		/// <param name="provider"></param>
-		/// <returns></returns>
-		IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+        /// <summary>
+        /// Enrich all of a particular type with an enrichment method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration EnrichWithTyped<T>(Func<T, T> enrichWithDelegate);
+
+        /// <summary>
+        /// Enrich all of a particular type with an enrichment method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration EnrichWithTyped<T>(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate);
+
+        /// <summary>
+        /// Enrich all with linq expressions
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
 
 		/// <summary>
 		/// Enrich all with linq expressions
@@ -295,12 +327,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider);
 
-		/// <summary>
-		/// Using Value provider
-		/// </summary>
-		/// <param name="activationDelegate"></param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate);
+        /// <summary>
+        /// Use value when importing property
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        IExportTypeSetImportPropertyConfiguration UsingValue(object value);
+
+        /// <summary>
+        /// Using Value provider
+        /// </summary>
+        /// <param name="activationDelegate"></param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetImportPropertyConfiguration UsingValue(ExportActivationDelegate activationDelegate);
 
 		/// <summary>
 		/// Use value provider

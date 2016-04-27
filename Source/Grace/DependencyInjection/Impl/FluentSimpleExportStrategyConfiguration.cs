@@ -46,12 +46,28 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
-		/// Export as a particular type
-		/// </summary>
-		/// <param name="exportType">type to export as</param>
-		/// <returns>configuration object</returns>
-		public IFluentSimpleExportStrategyConfiguration As(Type exportType)
+
+        public IFluentSimpleExportStrategyConfiguration Apply<T>(Action<T> applyAction)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => { applyAction((T)instance); return instance; });
+
+            return this;
+        }
+
+        public IFluentSimpleExportStrategyConfiguration Apply<T>(Action<IInjectionScope, IInjectionContext, T> applyAction)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => { applyAction(scope, context, (T)instance); return instance; });
+
+            return this;
+        }
+
+
+        /// <summary>
+        /// Export as a particular type
+        /// </summary>
+        /// <param name="exportType">type to export as</param>
+        /// <returns>configuration object</returns>
+        public IFluentSimpleExportStrategyConfiguration As(Type exportType)
 		{
 			exportStrategy.AddExportType(exportType);
 
@@ -205,13 +221,27 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
-		/// Provide a list of strategies
-		/// </summary>
-		/// <returns></returns>
-		public IEnumerable<IExportStrategy> ProvideStrategies()
+        public IFluentSimpleExportStrategyConfiguration EnrichWithTyped<T>(Func<T, T> enrichWithDelegate)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => enrichWithDelegate((T)instance));
+
+            return this;
+        }
+
+        public IFluentSimpleExportStrategyConfiguration EnrichWithTyped<T>(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate)
+        {
+            exportStrategy.EnrichWithDelegate((scope, context, instance) => enrichWithDelegate(scope, context, (T)instance));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Provide a list of strategies
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IExportStrategy> ProvideStrategies()
 		{
 			yield return exportStrategy;
 		}
-	}
+    }
 }

@@ -83,5 +83,107 @@ namespace Grace.UnitTests.DependencyInjection
 
 			Assert.Equal(5, instance.IntProp);
 		}
-	}
+        
+        [Fact]
+        public void EnrichmentDelegateForTypedSetTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly()).
+                                                ByType().
+                                                Select(type => type.Name.EndsWith("LinqClass")).
+                                                EnrichWithTyped<IIntPropClass>(x => { x.IntProp = 5; return x; }));
+
+            EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Equal(5, instance.IntProp);
+        }
+
+        [Fact]
+        public void EnrichmentDelegateForTypedSetWithScopeAndContextTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly()).
+                                                ByType().
+                                                Select(type => type.Name.EndsWith("LinqClass")).
+                                                EnrichWithTyped<IIntPropClass>((scope, context, x) => { x.IntProp = 5; return x; }));
+
+            EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Equal(5, instance.IntProp);
+        }
+
+        [Fact]
+        public void EnrichWithTypeTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var basicService = new BasicService();
+
+            container.Configure(c => c.ExportAs<ImportPropertyService, IImportPropertyService>().
+                                       EnrichWithTyped(s => { s.BasicService = basicService; return s; }));
+
+            var propertyService = container.Locate<IImportPropertyService>();
+
+            Assert.NotNull(propertyService);
+            Assert.Same(basicService, propertyService.BasicService);
+        }
+
+
+        [Fact]
+        public void ApplyTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var basicService = new BasicService();
+
+            container.Configure(c => c.ExportAs<ImportPropertyService, IImportPropertyService>().
+                                       Apply(s =>  s.BasicService = basicService));
+
+            var propertyService = container.Locate<IImportPropertyService>();
+
+            Assert.NotNull(propertyService);
+            Assert.Same(basicService, propertyService.BasicService);
+        }
+
+        [Fact]
+        public void ApplySetTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly()).
+                                                ByType().
+                                                Select(type => type.Name.EndsWith("LinqClass")).
+                                                Apply<IIntPropClass>(x => x.IntProp = 5));
+
+            EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Equal(5, instance.IntProp);
+        }
+
+
+        [Fact]
+        public void ApplySetWithScopeAndContextTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly()).
+                                                ByType().
+                                                Select(type => type.Name.EndsWith("LinqClass")).
+                                                Apply<IIntPropClass>((scope,context,x) => x.IntProp = 5));
+
+            EnrichWithLinqClass instance = container.Locate<EnrichWithLinqClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Equal(5, instance.IntProp);
+        }
+    }
 }

@@ -275,12 +275,26 @@ namespace Grace.DependencyInjection
 		/// <param name="condition"></param>
 		IFluentExportStrategyConfiguration<T> AndCondition(IExportCondition condition);
 
-		/// <summary>
-		/// Export as a specific type (usually an interface)
-		/// </summary>
-		/// <typeparam name="TExportType"></typeparam>
-		/// <returns></returns>
-		IFluentExportStrategyConfiguration<T> As<TExportType>();
+        /// <summary>
+        /// Apply action to export before returning
+        /// </summary>
+        /// <param name="applyAction"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction);
+
+        /// <summary>
+        /// Apply action to export before returning
+        /// </summary>
+        /// <param name="applyAction">action that takes scope, context, instance</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> Apply(Action<IInjectionScope,IInjectionContext, T> applyAction);
+
+        /// <summary>
+        /// Export as a specific type (usually an interface)
+        /// </summary>
+        /// <typeparam name="TExportType"></typeparam>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> As<TExportType>();
 
 		/// <summary>
 		/// Export as a specific type (usually an interface)
@@ -340,12 +354,26 @@ namespace Grace.DependencyInjection
 		/// <returns></returns>
 		IFluentExportStrategyConfiguration<T> EnrichWith(EnrichWithDelegate enrichWithDelegate);
 
-		/// <summary>
-		/// USing this method you can add custom Linq Expressions to the expression tree 
-		/// </summary>
-		/// <param name="provider">provider class</param>
-		/// <returns></returns>
-		IFluentExportStrategyConfiguration<T> EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned
+        /// </summary>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<T,T> enrichWithDelegate);
+
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned
+        /// </summary>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<IInjectionScope,IInjectionContext, T, T> enrichWithDelegate);
+
+        /// <summary>
+        /// USing this method you can add custom Linq Expressions to the expression tree 
+        /// </summary>
+        /// <param name="provider">provider class</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> EnrichWithExpression(ICustomEnrichmentLinqExpressionProvider provider);
 
         /// <summary>
         /// Using this method you can provide custom construction

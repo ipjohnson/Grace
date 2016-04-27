@@ -162,6 +162,32 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Apply action to specific types
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration Apply<T>(Action<T> action)
+        {
+            enrichWithDelegates.Add(t => ApplyHelper(t, action));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Apply action to specific types
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration Apply<T>(Action<IInjectionScope,IInjectionContext, T> action)
+        {
+            enrichWithDelegates.Add(t => ApplyHelper(t, action));
+
+            return this;
+        }
+
+        /// <summary>
         /// Export all objects that implements the specified interface
         /// </summary>
         /// <param name="interfaceType">interface type</param>
@@ -547,7 +573,51 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IExportTypeSetConfiguration EnrichWithTyped<T>(Func<T,T> enrichDelegate)
+        {
+            enrichWithDelegates.Add(t => EnrichWithTypedHelper(t, enrichDelegate));
 
+            return this;
+        }
+
+        public IExportTypeSetConfiguration EnrichWithTyped<T>(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate)
+        {
+            enrichWithDelegates.Add(t => EnrichWithTypedHelper(t, enrichWithDelegate));
+
+            return this;
+        }
+
+        private IEnumerable<EnrichWithDelegate> ApplyHelper<T>(Type arg, Action<IInjectionScope, IInjectionContext, T> enrichWithDelegate)
+        {
+            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg,typeof(T)))
+            {
+                yield return new EnrichWithDelegate((scope, context, instance) => { enrichWithDelegate(scope, context, (T)instance); return instance; } );
+            }
+        }
+
+        private IEnumerable<EnrichWithDelegate> ApplyHelper<T>(Type arg, Action<T> enrichDelegate)
+        {
+            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
+            {
+                yield return new EnrichWithDelegate((scope, context, instance) => { enrichDelegate((T)instance); return instance; } );
+            }
+        }
+
+        private IEnumerable<EnrichWithDelegate> EnrichWithTypedHelper<T>(Type arg, Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate)
+        {
+            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
+            {
+                yield return new EnrichWithDelegate((scope, context, instance) => enrichWithDelegate(scope,context,(T)instance));
+            }
+        }
+
+        private IEnumerable<EnrichWithDelegate> EnrichWithTypedHelper<T>(Type arg, Func<T, T> enrichDelegate)
+        {
+            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
+            {
+                yield return new EnrichWithDelegate((scope, context, instance) => enrichDelegate((T)instance));
+            }
+        }
 
         private List<Type> FilterTypes()
         {

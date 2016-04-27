@@ -9,26 +9,20 @@ namespace Grace.DependencyInjection
 	/// </summary>
 	public interface IFluentSimpleExportStrategyConfiguration
 	{
-		/// <summary>
-		/// Defines the priority to export at
-		/// </summary>
-		/// <param name="priority">priority for export</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration WithPriority(int priority);
 
-		/// <summary>
-		/// Export under a particular key
-		/// </summary>
-		/// <param name="key">key to associate with export</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration WithKey(object key);
-
-		/// <summary>
-		/// Export as a particular type
-		/// </summary>
-		/// <param name="exportType">type to export as</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration As(Type exportType);
+        /// <summary>
+        /// Adds a condition to the export
+        /// </summary>
+        /// <param name="condition">condition for export</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration AndCondition(IExportCondition condition);
+        
+        /// <summary>
+        /// Export as a particular type
+        /// </summary>
+        /// <param name="exportType">type to export as</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration As(Type exportType);
 
 		/// <summary>
 		/// Export as a particular type
@@ -53,14 +47,7 @@ namespace Grace.DependencyInjection
         /// <param name="key">export key</param>
         /// <returns>configuration object</returns>
         IFluentSimpleExportStrategyConfiguration AsKeyed(Type exportType, object key);
-
-		/// <summary>
-		/// Defines which environment this export should be exported in
-		/// </summary>
-		/// <param name="environment"></param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration InEnvironment(ExportEnvironment environment);
-
+        
 		/// <summary>
 		/// Export this type as a particular name
 		/// </summary>
@@ -74,12 +61,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentSimpleExportStrategyConfiguration ExternallyOwned();
 
-		/// <summary>
-		/// Specify a custom Lifestyle container for export.
-		/// </summary>
-		/// <param name="lifestyle">Lifestyle container for the export</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle);
+        /// <summary>
+        /// Defines which environment this export should be exported in
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration InEnvironment(ExportEnvironment environment);
+
+        /// <summary>
+        /// Specify a custom Lifestyle container for export.
+        /// </summary>
+        /// <param name="lifestyle">Lifestyle container for the export</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration UsingLifestyle(ILifestyle lifestyle);
 
 		/// <summary>
 		/// Adds a condition to the export
@@ -88,20 +82,28 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentSimpleExportStrategyConfiguration When(ExportConditionDelegate conditionDelegate);
 
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="conditionDelegate">export condition delegate</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration Unless(ExportConditionDelegate conditionDelegate);
+        /// <summary>
+        /// Defines the priority to export at
+        /// </summary>
+        /// <param name="priority">priority for export</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration WithPriority(int priority);
 
-		/// <summary>
-		/// Adds a condition to the export
-		/// </summary>
-		/// <param name="condition">condition for export</param>
-		/// <returns>configuration object</returns>
-		IFluentSimpleExportStrategyConfiguration AndCondition(IExportCondition condition);
+        /// <summary>
+        /// Export under a particular key
+        /// </summary>
+        /// <param name="key">key to associate with export</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration WithKey(object key);
 
+        /// <summary>
+        /// Adds a condition to the export
+        /// </summary>
+        /// <param name="conditionDelegate">export condition delegate</param>
+        /// <returns>configuration object</returns>
+        IFluentSimpleExportStrategyConfiguration Unless(ExportConditionDelegate conditionDelegate);
+
+		
 		/// <summary>
 		/// Adds metadata to an export
 		/// </summary>
@@ -116,5 +118,37 @@ namespace Grace.DependencyInjection
 		/// <param name="enrichWithDelegate"></param>
 		/// <returns>configuration object</returns>
 		IFluentSimpleExportStrategyConfiguration EnrichWith(EnrichWithDelegate enrichWithDelegate);
-	}
+
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IFluentSimpleExportStrategyConfiguration EnrichWithTyped<T>(Func<T, T> enrichWithDelegate);
+
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enrichWithDelegate"></param>
+        /// <returns></returns>
+        IFluentSimpleExportStrategyConfiguration EnrichWithTyped<T>(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate);
+
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="applyAction"></param>
+        /// <returns></returns>
+        IFluentSimpleExportStrategyConfiguration Apply<T>(Action<T> applyAction);
+
+        /// <summary>
+        /// Allows you to add custom activation logic to process before the object is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="applyAction"></param>
+        /// <returns></returns>
+        IFluentSimpleExportStrategyConfiguration Apply<T>(Action<IInjectionScope, IInjectionContext, T> applyAction);
+    }
 }

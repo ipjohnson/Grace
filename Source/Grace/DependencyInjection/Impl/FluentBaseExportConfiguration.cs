@@ -762,5 +762,25 @@ namespace Grace.DependencyInjection.Impl
         {
             return strategy.EnrichWithExpression(provider);
         }
+
+        public IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction)
+        {
+            return strategy.Apply(applyAction);
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<T, T> enrichWithDelegate)
+        {
+            return strategy.EnrichWithTyped(enrichWithDelegate);
+        }
+
+        public IFluentExportStrategyConfiguration<T> Apply(Action<IInjectionScope, IInjectionContext, T> applyAction)
+        {
+            return strategy.Apply(applyAction);
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithTyped(Func<IInjectionScope, IInjectionContext, T, T> enrichWithDelegate)
+        {
+            return strategy.EnrichWithTyped(enrichWithDelegate);
+        }
     }
 }

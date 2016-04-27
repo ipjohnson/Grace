@@ -175,7 +175,19 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	}
+
+        /// <summary>
+        /// Import the property using this value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public IFluentImportPropertyConfiguration UsingValue(object value)
+        {
+            importPropertyInfo.ValueProvider = new FuncValueProvider<object>(() => value);
+
+            return this;
+        }
+    }
 
 	public partial class FluentExportStrategyConfiguration<T>
 	{
@@ -333,12 +345,24 @@ namespace Grace.DependencyInjection.Impl
 			return this;
 		}
 
-		/// <summary>
-		/// Provide value for import property
-		/// </summary>
-		/// <param name="valueFunc">value func</param>
-		/// <returns>configuration object</returns>
-		public IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<TProp> valueFunc)
+        /// <summary>
+        /// Provide value for import property
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public IFluentImportPropertyConfiguration<T, TProp> UsingValue(TProp value)
+        {
+            importPropertyInfo.ValueProvider = new FuncValueProvider<TProp>(() => value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Provide value for import property
+        /// </summary>
+        /// <param name="valueFunc">value func</param>
+        /// <returns>configuration object</returns>
+        public IFluentImportPropertyConfiguration<T, TProp> UsingValue(Func<TProp> valueFunc)
 		{
 			importPropertyInfo.ValueProvider = new FuncValueProvider<TProp>(valueFunc);
 
