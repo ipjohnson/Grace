@@ -23,10 +23,11 @@ namespace Grace.Data
 		private readonly SafeDictionary<string, GetPropertyDelegate> _getPropertyAccessors;
 		private readonly SafeDictionary<string, SetPropertyDelegate> _setPropertyAccessors;
 		private readonly SafeDictionary<string, CallMethodDelegate> _callAccessors;
-        private readonly SafeDictionary<Guid, PropertyDictionaryDelegate> _propertyDictionaryAccessors;
+        private static readonly SafeDictionary<Guid, PropertyDictionaryDelegate> _propertyDictionaryAccessors;
 
 		static ReflectionService()
 		{
+            _propertyDictionaryAccessors = new SafeDictionary<Guid, PropertyDictionaryDelegate>();
 			_objectArrayIndex = typeof(IList).GetTypeInfo().GetDeclaredProperty("Item");
 
 			foreach (ConstructorInfo declaredConstructor in typeof(Exception).GetTypeInfo().DeclaredConstructors)
@@ -54,9 +55,6 @@ namespace Grace.Data
 
 			_callAccessors =
 				new SafeDictionary<string, CallMethodDelegate>();
-
-            _propertyDictionaryAccessors =
-                new SafeDictionary<Guid, PropertyDictionaryDelegate>();
 		}
 
 		/// <summary>
@@ -787,11 +785,16 @@ namespace Grace.Data
 	        }
 	    }
 
-        public IDictionary<string, object> GetPropertiesFromObject(object annonymousObject)
+        public static IDictionary<string, object> GetPropertiesFromObject(object annonymousObject)
         {
             if(annonymousObject == null)
             {
                 return new Dictionary<string, object>();
+            }
+
+            if(annonymousObject.GetType() == typeof(IDictionary<string,object>))
+            {
+                return (IDictionary<string, object>)annonymousObject;
             }
 
             PropertyDictionaryDelegate propertyDelegate;
@@ -807,7 +810,7 @@ namespace Grace.Data
             return propertyDelegate(annonymousObject);
         }
 
-        private PropertyDictionaryDelegate CreateDelegateForType(Type objectType)
+        private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType)
         {
             // the parameter to call the method on
             ParameterExpression inputObject = Expression.Parameter(typeof(object), "inputObject");

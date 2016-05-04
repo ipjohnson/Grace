@@ -92,12 +92,6 @@ namespace Grace.Data
 		/// <param name="propertyName">property name (can be dotted form A.B.C)</param>
 		/// <returns>new property delegate</returns>
 		SetPropertyDelegate CreateSetPropertyDelegate(Type instanceType, string propertyName, Type indexType);
-
-        /// <summary>
-        /// Get all properties from an object
-        /// </summary>
-        /// <param name="annonymousObject">annonymous object</param>
-        /// <returns>Dictionary of properties</returns>
-        IDictionary<string, object> GetPropertiesFromObject(object annonymousObject);
+      
 	}
 }

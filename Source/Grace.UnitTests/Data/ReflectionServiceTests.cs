@@ -13,9 +13,7 @@ namespace Grace.UnitTests.Data
         [Fact]
         public void GetPropertiesFromObject()
         {
-            var reflectionService = new ReflectionService();
-            
-            var values = reflectionService.GetPropertiesFromObject(new { Test = "Property", Value = 4 });
+            var values = ReflectionService.GetPropertiesFromObject(new { Test = "Property", Value = 4 });
 
             Assert.Equal(2, values.Count);
             Assert.Equal("Property", values["Test"]);
