@@ -835,7 +835,10 @@ namespace Grace.Data
 
             foreach (var property in objectType.GetTypeInfo().DeclaredProperties)
             {                
-                if(property.CanRead && !property.GetMethod.IsStatic && property.GetMethod.IsPublic)
+                if(property.CanRead && 
+                  !property.GetMethod.IsStatic && 
+                   property.GetMethod.IsPublic && 
+                   property.GetMethod.GetParameters().Count() == 0)
                 {
                     var propertyAccess = Expression.Property(tVariable, property.GetMethod);
 
