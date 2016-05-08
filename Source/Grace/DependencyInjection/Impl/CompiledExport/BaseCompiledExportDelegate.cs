@@ -470,6 +470,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                                                                         importPropertyInfo.ImportName,
                                                                         importPropertyInfo.Property.Name + "Import",
                                                                         importPropertyInfo.IsRequired,
+                                                                        importPropertyInfo.DefaultValue,
                                                                         importPropertyInfo.ValueProvider,
                                                                         importPropertyInfo.ExportStrategyFilter,
                                                                         importPropertyInfo.LocateKey,
@@ -570,6 +571,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                                                             methodParamInfo.ImportName,
                                                             null,
                                                             methodParamInfo.IsRequired,
+                                                            methodParamInfo.DefaultValue,
                                                             methodParamInfo.ValueProvider,
                                                             methodParamInfo.Filter,
                                                             methodParamInfo.LocateKey,
@@ -596,13 +598,21 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                             importExpressionList = bodyExpressions;
                         }
 
+                        object defaultValue = null;
+
+                        if(parameter.HasDefaultValue)
+                        {
+                            defaultValue = parameter.DefaultValue;
+                        }
+
                         ParameterExpression importParameter =
                             CreateImportExpression(parameter.ParameterType,
                                                             injectionTargetInfo,
                                                             ExportStrategyDependencyType.MethodParameter,
                                                             null,
                                                             null,
-                                                            true,
+                                                            !parameter.IsOptional,
+                                                            defaultValue,
                                                             null,
                                                             null,
                                                             null,
@@ -773,6 +783,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         /// <param name="exportName"></param>
         /// <param name="variableName"></param>
         /// <param name="isRequired"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="valueProvider"></param>
         /// <param name="exportStrategyFilter"></param>
         /// <param name="locateKey"></param>
@@ -785,6 +796,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             string exportName,
             string variableName,
             bool isRequired,
+            object defaultValue,
             IExportValueProvider valueProvider,
             ExportStrategyFilter exportStrategyFilter,
             ILocateKeyValueProvider locateKey,
@@ -838,7 +850,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             {
                 if (exportStrategyFilter != null)
                 {
-                    ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter, locateKey, isRequired, expressionList);
+                    ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter, locateKey, isRequired, defaultValue, expressionList);
                 }
                 else
                 {
@@ -852,11 +864,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                          !typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo()) &&
                          !InjectionKernel.ImportTypeByName(importType))
                     {
-                        ImportForRootScope(importType, targetInfo, exportName, importVariable, locateKey, isRequired);
+                        ImportForRootScope(importType, targetInfo, exportName, importVariable, locateKey, isRequired, defaultValue);
                     }
                     else
                     {
-                        ImportFromRequestingScope(importType, targetInfo, exportName, importVariable, isRequired, locateKey, expressionList);
+                        ImportFromRequestingScope(importType, targetInfo, exportName, importVariable, isRequired, defaultValue, locateKey, expressionList);
                     }
                 }
             }
@@ -926,7 +938,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             string exportName,
             ParameterExpression importVariable,
             ILocateKeyValueProvider locateKey,
-            bool isRequired)
+            bool isRequired,
+            object defaultValue)
         {
             Expression importTypeExpression = Expression.Constant(new TypeWrapper(importType));
             Expression exportNameExpression = Expression.Constant(exportName);
@@ -1004,7 +1017,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 nonRootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
                 nonRootObjectImportExpressions.Add(tryCatchRequestExpression);
 
-                if (isRequired)
+                if(defaultValue != null)
+                {
+                    rootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    nonRootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                }
+                else if (isRequired)
                 {
                     rootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
                     nonRootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
@@ -1032,11 +1050,27 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
                 objectImportExpression.Add(tryCatchExpression);
 
-                if (isRequired)
+                if(defaultValue != null)
+                {
+                    objectImportExpression.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                }
+                else if (isRequired)
                 {
                     objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
             }
+        }
+
+        private Expression CreateDefaultValueStatements(Type importType, ParameterExpression importVariable, object defaultValue)
+        {
+            Expression assignExpression = Expression.Assign(importVariable,
+                Expression.Convert(Expression.Constant(defaultValue), typeof(object)));
+
+            Expression testExpression = Expression.Equal(importVariable, Expression.Constant(null));
+
+            var requiredStatement = Expression.IfThen(testExpression, assignExpression);
+
+            return requiredStatement;
         }
 
         private Expression CreateLocateWithKeyStatement(ILocateKeyValueProvider locateKey)
@@ -1131,6 +1165,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             string exportName,
             ParameterExpression importVariable,
             bool isRequired,
+            object defaultValue,
             ILocateKeyValueProvider locateKey,
             List<Expression> expressionList)
         {
@@ -1186,7 +1221,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
 
-                if (isRequired)
+                if(defaultValue != null)
+                {
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                }
+                else if (isRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1234,8 +1273,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
-
-                if (isRequired)
+                
+                if (defaultValue != null)
+                {
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                }
+                else if (isRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1249,6 +1292,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             ExportStrategyFilter exportStrategyFilter,
             ILocateKeyValueProvider locateKey,
             bool isRequired,
+            object defaultValue,
             List<Expression> expressionList)
         {
             if (exportDelegateInfo.IsTransient)
@@ -1295,7 +1339,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
 
-                if (isRequired)
+
+                if (defaultValue != null)
+                {
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                }
+                else if (isRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }

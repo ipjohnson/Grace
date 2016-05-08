@@ -288,6 +288,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// </summary>
 		public bool IsRequired { get; set; }
 
+        /// <summary>
+        /// Default value for the parameter
+        /// </summary>
+        public object DefaultValue { get; set; }
+
 		/// <summary>
 		/// Import name 
 		/// </summary>
@@ -332,6 +337,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Property to import
 		/// </summary>
 		public PropertyInfo Property { get; set; }
+
+        /// <summary>
+        /// Default Value for the import
+        /// </summary>
+        public object DefaultValue { get; set; }
 
 		/// <summary>
 		/// Value provider for the import
@@ -391,6 +401,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 		/// Is the import required
 		/// </summary>
 		public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// Default value
+        /// </summary>
+        public object DefaultValue { get; set; }
 
 		/// <summary>
 		/// The value provider

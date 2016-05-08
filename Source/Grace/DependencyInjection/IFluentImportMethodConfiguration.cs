@@ -28,6 +28,13 @@ namespace Grace.DependencyInjection
 	/// <typeparam name="TParam"></typeparam>
 	public interface IFluentMethodParameterConfiguration<TParam> : IFluentImportMethodConfiguration
 	{
+        /// <summary>
+        /// Default value to be used
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        /// <returns></returns>
+        IFluentImportMethodConfiguration<TParam> DefaultValue(TParam defaultValue);
+
 		/// <summary>
 		/// Import the parameter after construction
 		/// </summary>
@@ -78,13 +85,18 @@ namespace Grace.DependencyInjection
 	/// <typeparam name="TParam">parameter type being exported</typeparam>
 	public interface IFluentMethodParameterConfiguration<T, in TParam> : IFluentImportMethodConfiguration<T>
 	{
-
-		/// <summary>
-		/// Name to use when importing parameter
-		/// </summary>
-		/// <param name="importName">import name</param>
-		/// <returns>configuration object</returns>
-		IFluentMethodParameterConfiguration<T, TParam> ImportName(string importName);
+        /// <summary>
+        /// Default value if one cannot be found
+        /// </summary>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        IFluentMethodParameterConfiguration<T, TParam> DefaultValue(TParam defaultValue);
+        /// <summary>
+        /// Name to use when importing parameter
+        /// </summary>
+        /// <param name="importName">import name</param>
+        /// <returns>configuration object</returns>
+        IFluentMethodParameterConfiguration<T, TParam> ImportName(string importName);
 
 		/// <summary>
 		/// Import parameter after construction

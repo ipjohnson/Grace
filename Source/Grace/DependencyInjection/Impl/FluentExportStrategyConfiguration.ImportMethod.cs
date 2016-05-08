@@ -122,7 +122,12 @@ namespace Grace.DependencyInjection.Impl
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public IFluentImportMethodConfiguration<TParam> DefaultValue(TParam defaultValue)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 	#endregion
 
@@ -306,7 +311,14 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	}
+
+        public IFluentMethodParameterConfiguration<T, TProp> DefaultValue(TProp defaultValue)
+        {
+            methodInfo.DefaultValue = defaultValue;
+
+            return this;
+        }
+    }
 
 	#endregion
 }

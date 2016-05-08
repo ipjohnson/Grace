@@ -17,6 +17,8 @@ namespace Grace.DependencyInjection.Impl
 
             public bool IsRequired { get; set; }
 
+            public object DefaultValue { get; set; }
+
             public bool AfterConstruction { get; set; }
 
             public Func<PropertyInfo, bool> PropertyFilter { get; set; }
@@ -106,6 +108,22 @@ namespace Grace.DependencyInjection.Impl
             if (importPropertiesList.Count > 0)
             {
                 importPropertiesList[importPropertiesList.Count - 1].IsRequired = value;
+            }
+
+            return this;
+        }
+
+
+        /// <summary>
+        /// Default Value if one can't be located
+        /// </summary>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        IExportTypeSetImportPropertyConfiguration IExportTypeSetImportPropertyConfiguration.DefaultValue(object defaultValue)
+        {
+            if (importPropertiesList.Count > 0)
+            {
+                importPropertiesList[importPropertiesList.Count - 1].DefaultValue = defaultValue;
             }
 
             return this;

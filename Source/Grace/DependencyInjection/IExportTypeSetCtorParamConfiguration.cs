@@ -21,6 +21,13 @@ namespace Grace.DependencyInjection
         IExportTypeSetCtorParamConfiguration Consider([NotNull]Func<Type, ExportStrategyFilter> filterFunc);
 
         /// <summary>
+        /// Default value if one cannot be located
+        /// </summary>
+        /// <param name="defaultValueFunc">default value</param>
+        /// <returns></returns>
+        IExportTypeSetCtorParamConfiguration DefaultValue([NotNull] Func<Type, object> defaultValueFunc);
+
+        /// <summary>
         /// Name to use when resolving parameter
         /// </summary>
         /// <param name="importNameFunc"></param>

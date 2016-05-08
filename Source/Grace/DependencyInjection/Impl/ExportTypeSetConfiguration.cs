@@ -1091,8 +1091,13 @@ namespace Grace.DependencyInjection.Impl
                 ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
                                                             {
                                                                 ParameterType = withCtorParamInfo.ParameterType,
-                                                                ValueProvider = withCtorParamInfo.ValueProvider
+                                                                ValueProvider = withCtorParamInfo.ValueProvider,
                                                             };
+
+                if(withCtorParamInfo.DefaultValue != null)
+                {
+                    constructorParamInfo.DefaultValue = withCtorParamInfo.DefaultValue(exportedType);
+                }
 
                 if (withCtorParamInfo.NamedFunc != null)
                 {

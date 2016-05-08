@@ -124,6 +124,7 @@
     <Compile Include="Classes\Simple\NewContextClasses.cs" />
     <Compile Include="Classes\Simple\OpenGenericNonInterfaceExportClasses.cs" />
     <Compile Include="Classes\Simple\OpenGenericPartiallyClosedInterface.cs" />
+    <Compile Include="Classes\Simple\OptionalConstructorClass.cs" />
     <Compile Include="Classes\Simple\OtherBasicService.cs" />
     <Compile Include="Classes\Simple\PartialOpenGenericClasses.cs" />
     <Compile Include="Classes\Simple\PersonClass.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="DependencyInjection\Attributes\SingletonPerScopeAttributeTests.cs" />
     <Compile Include="DependencyInjection\Attributes\WeakSingletonAttributeTests.cs" />
     <Compile Include="DependencyInjection\BasicContainerTests.cs" />
+    <Compile Include="DependencyInjection\DefaultValueTests.cs" />
     <Compile Include="DependencyInjection\DelegateFactoryTests.cs" />
     <Compile Include="DependencyInjection\EnrichmentWithTests.cs" />
     <Compile Include="DependencyInjection\ExceptionTests.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="DependencyInjection\Lifestyle\WeakReferenceContainerTests.cs" />
     <Compile Include="DependencyInjection\MetaTests.cs" />
     <Compile Include="DependencyInjection\OpenGenericContainerTests.cs" />
+    <Compile Include="DependencyInjection\OptionalConstructorParametersTests.cs" />
     <Compile Include="DependencyInjection\OwnedTests.cs" />
     <Compile Include="DependencyInjection\SecondaryDependencyResolverTests.cs" />
     <Compile Include="DependencyInjection\TypesThatTests.cs" />

@@ -16,12 +16,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentWithCtorConfiguration Consider([NotNull] ExportStrategyFilter filter);
 
-		/// <summary>
-		/// Name to use when resolving parameter
-		/// </summary>
-		/// <param name="importName"></param>
-		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration ImportName([NotNull] string importName);
+        /// <summary>
+        /// Assign a default value if no better option is found
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration DefaultValue(object defaultValue);
+
+        /// <summary>
+        /// Name to use when resolving parameter
+        /// </summary>
+        /// <param name="importName"></param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration ImportName([NotNull] string importName);
 
 		/// <summary>
 		/// Is the parameter required when resolving the type
@@ -65,7 +72,7 @@ namespace Grace.DependencyInjection
 		/// <param name="valueProvider">value provider for parameter</param>
 		/// <returns>configuration object</returns>
 		IFluentWithCtorConfiguration UsingValueProvider([NotNull] IExportValueProvider valueProvider);
-	}
+    }
 
 	/// <summary>
 	/// Interface to configure a constructor parameter
@@ -81,12 +88,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentWithCtorConfiguration<T> Consider([NotNull] ExportStrategyFilter filter);
 
-		/// <summary>
-		/// Name to use when resolving parameter
-		/// </summary>
-		/// <param name="importName">name to use when resolving parameter</param>
-		/// <returns>configuration object</returns>
-		IFluentWithCtorConfiguration<T> ImportName([NotNull] string importName);
+        /// <summary>
+        /// Provide default value if one cannot be found
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T> DefaultValue(object defaultValue);
+
+        /// <summary>
+        /// Name to use when resolving parameter
+        /// </summary>
+        /// <param name="importName">name to use when resolving parameter</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T> ImportName([NotNull] string importName);
 
 		/// <summary>
 		/// Is the parameter required to resolve T

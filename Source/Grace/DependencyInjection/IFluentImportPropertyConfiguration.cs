@@ -20,6 +20,13 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration Consider(ExportStrategyFilter consider);
 
+        /// <summary>
+        /// Default value if no other can be found
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration DefaultValue(object defaultValue);
+
 		/// <summary>
 		/// Is the property required
 		/// </summary>
@@ -75,6 +82,13 @@ namespace Grace.DependencyInjection
 		/// <param name="consider">filter delegate</param>
 		/// <returns>configuration object</returns>
 		IFluentImportPropertyConfiguration<T, TProp> Consider(ExportStrategyFilter consider);
+
+        /// <summary>
+        /// Default value if one can not be found
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration<T, TProp> DefaultValue(TProp defaultValue);
 
 		/// <summary>
 		/// Is the property required

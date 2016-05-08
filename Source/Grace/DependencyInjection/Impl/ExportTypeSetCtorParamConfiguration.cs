@@ -12,6 +12,8 @@ namespace Grace.DependencyInjection.Impl
         {
             public Type ParameterType { get; set; }
 
+            public Func<Type,object> DefaultValue { get; set; }
+
             public IExportValueProvider ValueProvider { get; set; }
 
             public Func<Type, ExportStrategyFilter> ConsiderFunc { get; set; }
@@ -240,6 +242,23 @@ namespace Grace.DependencyInjection.Impl
             if (index >= 0)
             {
                 withCtorParams[index].ValueProviderFunc = valueProviderFunc;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Default value if one cannot be located
+        /// </summary>
+        /// <param name="defaultValueFunc">default value</param>
+        /// <returns></returns>
+        public IExportTypeSetCtorParamConfiguration DefaultValue(Func<Type,object> defaultValueFunc)
+        {
+            int index = withCtorParams.Count - 1;
+
+            if (index >= 0)
+            {
+                withCtorParams[index].DefaultValue = defaultValueFunc;            
             }
 
             return this;

@@ -288,7 +288,14 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	}
+
+        public IFluentWithCtorConfiguration DefaultValue(object defaultValue)
+        {
+            currenConstructorParamInfo.DefaultValue = defaultValue;
+
+            return this;
+        }
+    }
 
 	public class FluentWithCtorConfiguration<T> : FluentBaseExportConfiguration<T>,
 		IFluentWithCtorConfiguration<T>
@@ -357,5 +364,12 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	}
+
+        public IFluentWithCtorConfiguration<T> DefaultValue(object defaultValue)
+        {
+            constructorParamInfo.DefaultValue = defaultValue;
+
+            return this;
+        }
+    }
 }

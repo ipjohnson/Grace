@@ -140,6 +140,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     string importName = null;
                     object comparerObject = null;
                     ILocateKeyValueProvider locateKey = null;
+                    object defaultValue = null;
 
                     if (exportDelegateInfo.ConstructorParams != null)
                     {
@@ -154,6 +155,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                                 valueProvider = constructorParamInfo.ValueProvider;
                                 comparerObject = constructorParamInfo.ComparerObject;
                                 locateKey = constructorParamInfo.LocateKeyProvider;
+                                defaultValue = constructorParamInfo.DefaultValue;
                                 break;
                             }
                         }
@@ -171,6 +173,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                                     valueProvider = constructorParamInfo.ValueProvider;
                                     comparerObject = constructorParamInfo.ComparerObject;
                                     locateKey = constructorParamInfo.LocateKeyProvider;
+                                    defaultValue = constructorParamInfo.DefaultValue;
                                     break;
                                 }
                             }
@@ -209,6 +212,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                             null,
                             parameterInfo.ParameterType);
                     }
+                                        
+                    if(defaultValue == null &&
+                       parameterInfo.HasDefaultValue)
+                    {
+                        defaultValue = parameterInfo.DefaultValue;
+                    }
 
                     ParameterExpression parameterExpression =
                             _instanceCompiledExport.CreateImportExpression(parameterInfo.ParameterType,
@@ -216,7 +225,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                             ExportStrategyDependencyType.ConstructorParameter,
                             importName,
                             parameterInfo.Name + "CVar",
-                            true,
+                            !parameterInfo.IsOptional,
+                            defaultValue,
                             valueProvider,
                             exportStrategyFilter,
                             locateKey,

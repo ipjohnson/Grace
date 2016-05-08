@@ -187,6 +187,13 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        public IFluentImportPropertyConfiguration DefaultValue(object defaultValue)
+        {
+            importPropertyInfo.DefaultValue = defaultValue;
+
+            return this;
+        }
     }
 
 	public partial class FluentExportStrategyConfiguration<T>
@@ -403,5 +410,12 @@ namespace Grace.DependencyInjection.Impl
 
 			return this;
 		}
-	}
+
+        public IFluentImportPropertyConfiguration<T, TProp> DefaultValue(TProp defaultValue)
+        {
+            importPropertyInfo.DefaultValue = defaultValue;
+
+            return this;
+        }
+    }
 }

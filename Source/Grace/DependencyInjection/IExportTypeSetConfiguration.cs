@@ -320,12 +320,19 @@ namespace Grace.DependencyInjection
 		/// <returns>configuration object</returns>
 		IExportTypeSetImportPropertyConfiguration IsRequired(bool value);
 
-		/// <summary>
-		/// Apply delegate to choose export
-		/// </summary>
-		/// <param name="consider">consider filter</param>
-		/// <returns>configuration object</returns>
-		IExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider);
+        /// <summary>
+        /// Default Value if one can't be located
+        /// </summary>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        IExportTypeSetImportPropertyConfiguration DefaultValue(object defaultValue);
+
+        /// <summary>
+        /// Apply delegate to choose export
+        /// </summary>
+        /// <param name="consider">consider filter</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetImportPropertyConfiguration Consider(ExportStrategyFilter consider);
 
         /// <summary>
         /// Use value when importing property
