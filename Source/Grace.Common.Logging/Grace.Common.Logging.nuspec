@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Grace.Common.Logging</id>
@@ -7,7 +7,7 @@
     <description>Grace.Common.Logging provides integration class between Common.Logging and Grace (Dependency Injection Container)</description>
     <licenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</licenseUrl>
     <projectUrl>https://github.com/ipjohnson/Grace</projectUrl>
-    <version>$version$</version>
+    <version>$version$-Alpha</version>
     <authors>Ian Johnson</authors>
     <owners>Ian Johnson</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

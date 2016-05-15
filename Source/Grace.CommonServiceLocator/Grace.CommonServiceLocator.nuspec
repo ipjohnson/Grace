@@ -10,13 +10,13 @@
     <title>Grace.CommonServiceLocator</title>
     <summary>Grace.CommonServiceLocator is a companion library for Grace and CommonServiceLocator</summary>
     <description>Grace.CommonServiceLocator provides integration classes between the Microsoft CommonServiceLocator Pattern and Grace (Dependency Injection Container)</description>
-    <releaseNotes>$ReleaseNotes$</releaseNotes>
+    <releaseNotes>$ReleaseNotes$-Alpha</releaseNotes>
     <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
     <tags>IoC Dependency Injection Container CommonServiceLocator</tags>
     <dependencies>
-      <dependency id="Grace" version="$version$"/>
+      <dependency id="Grace" version="$version$-Alpha"/>
       <dependency id="CommonServiceLocator" version="1.3"/>
     </dependencies>
   </metadata>

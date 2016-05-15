@@ -1,0 +1,18 @@
+version: 4.0.0.{build}
+branches:
+  only:
+  - 4.0
+configuration: Release
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+before_build:
+- cmd: nuget restore Source/Grace.sln
+build:
+  project: Source/Grace.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
