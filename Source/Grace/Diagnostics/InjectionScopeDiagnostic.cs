@@ -25,15 +25,7 @@ namespace Grace.Diagnostics
 		{
 			this.injectionScope = injectionScope;
 		}
-
-		/// <summary>
-		/// Environment for the scope
-		/// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return injectionScope.Environment; }
-		}
-
+        
 		/// <summary>
 		/// Parent scope for injection scope
 		/// </summary>

@@ -68,11 +68,6 @@ namespace Grace.DependencyInjection
         [NotNull]
         IEnumerable<Tuple<Type, object>> KeyedExportTypes { get; }
             
-        /// <summary>
-		/// What environement is this strategy being exported under.
-		/// </summary>
-		ExportEnvironment Environment { get; }
-
 		/// <summary>
 		/// What export priority is this being exported as
 		/// </summary>

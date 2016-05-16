@@ -13,7 +13,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void BasicGenericTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -32,7 +32,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void ImportGenericTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -58,7 +58,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void SingletonGenericTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -81,7 +81,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void ImportGenericList()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -111,7 +111,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void RecursiveGenericTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,

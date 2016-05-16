@@ -229,15 +229,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
 			return ParentScope.LocateAll(exportType, injectionContext, consider, withKey, comparer);
 		}
-
-		/// <summary>
-		/// The environment for this scope (always inherited from the root scope)
-		/// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return ParentScope.Environment; }
-		}
-
+        
 		public IEnumerable<IExportStrategy> GetAllStrategies(ExportStrategyFilter exportFilter = null)
 		{
 			return ParentScope.GetAllStrategies(exportFilter);

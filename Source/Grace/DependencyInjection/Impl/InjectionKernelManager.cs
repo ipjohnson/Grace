@@ -10,7 +10,6 @@ namespace Grace.DependencyInjection.Impl
 		"CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
 	public class InjectionKernelManager
 	{
-		private readonly BlackList blackList;
 		private readonly ExportStrategyComparer comparer;
 		private readonly object kernelsLock = new object();
 		private Dictionary<string, InjectionKernel> kernels = new Dictionary<string, InjectionKernel>();
@@ -23,23 +22,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="comparer">used to compare to export strategies for which one should be used</param>
 		/// <param name="blackList">export strategy black list</param>
 		public InjectionKernelManager(DependencyInjectionContainer container,
-			ExportStrategyComparer comparer,
-			BlackList blackList)
+			ExportStrategyComparer comparer)
 		{
 			Container = container;
 
 			this.comparer = comparer;
-			this.blackList = blackList;
 		}
-
-		/// <summary>
-		/// Black list associated with this kernel manager
-		/// </summary>
-		public BlackList BlackList
-		{
-			get { return blackList; }
-		}
-
+        
 		/// <summary>
 		/// Container this kernel manager is associated with
 		/// </summary>

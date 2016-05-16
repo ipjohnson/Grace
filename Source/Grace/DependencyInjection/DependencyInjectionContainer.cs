@@ -18,7 +18,6 @@ namespace Grace.DependencyInjection
     [DebuggerTypeProxy(typeof(DependencyInjectionContainerDiagnostic))]
     public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler, IEnumerable<IExportStrategy>
     {
-        private readonly BlackList _blackList = new BlackList();
         private readonly InjectionKernelManager _injectionKernelManager;
         protected bool _disposed;
         protected ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders =
@@ -27,33 +26,19 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Default Constructor
         /// </summary>
-        /// <param name="environment">Environment that you want this container to operate in (RunTime, DesignTime, Or UnitTest</param>
         /// <param name="comparer">delegate that can be used to sort exports, if null is provided CompareExportStrategies will be used</param>
         /// <param name="disposalScopeProvider">allows you to provide a custom disposal scope provider</param>
-        public DependencyInjectionContainer(ExportEnvironment environment = ExportEnvironment.RunTime,
-            ExportStrategyComparer comparer = null,
+        public DependencyInjectionContainer(ExportStrategyComparer comparer = null,
             IDisposalScopeProvider disposalScopeProvider = null)
         {
-            if (environment != ExportEnvironment.RunTime &&
-                 environment != ExportEnvironment.DesignTime &&
-                 environment != ExportEnvironment.UnitTest)
-            {
-                throw new ArgumentException(
-                    "Environment must be one of RunTime, DesignTime, or UnitTest, all others are invalid for this purpose",
-                    "environment");
-            }
-
             ExportStrategyComparer localComparer = comparer ?? CompareExportStrategies;
 
-            _injectionKernelManager = new InjectionKernelManager(this, localComparer, _blackList);
+            _injectionKernelManager = new InjectionKernelManager(this, localComparer);
 
             AutoRegisterUnknown = true;
             ThrowExceptions = true;
 
-            RootScope = new InjectionKernel(_injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer)
-                            {
-                                Environment = environment
-                            };
+            RootScope = new InjectionKernel(_injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer);
         }
 
         /// <summary>
@@ -73,25 +58,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         [NotNull]
         public IInjectionScope RootScope { get; private set; }
-
-        /// <summary>
-        /// Black lists a particular export (Fullname)
-        /// </summary>
-        /// <param name="exportType">full name of the type to black list</param>
-        public void BlackListExport(string exportType)
-        {
-            _blackList.Add(exportType);
-        }
-
-        /// <summary>
-        /// Black list a particular export by Type
-        /// </summary>
-        /// <param name="exportType">type to black list</param>
-        public void BlackListExportType(Type exportType)
-        {
-            _blackList.Add(exportType.FullName);
-        }
-
+        
         /// <summary>
         /// Name of scope
         /// </summary>
@@ -341,15 +308,7 @@ namespace Grace.DependencyInjection
         {
             return RootScope.LocateAll(exportType, injectionContext, consider, withKey, comparer);
         }
-
-        /// <summary>
-        /// The environment for this scope (always inherited from the root scope)
-        /// </summary>
-        public ExportEnvironment Environment
-        {
-            get { return RootScope.Environment; }
-        }
-
+        
         /// <summary>
         /// Returns a list of all known strategies.
         /// </summary>
@@ -507,8 +466,8 @@ namespace Grace.DependencyInjection
 
                 }
 
-                IExportStrategy strategy = exportType != null ? 
-                                           RootScope.GetStrategy(exportType, context, consider, locateKey) : 
+                IExportStrategy strategy = exportType != null ?
+                                           RootScope.GetStrategy(exportType, context, consider, locateKey) :
                                            RootScope.GetStrategy(exportName, context, consider, locateKey);
 
                 if (strategy != null)
@@ -542,9 +501,8 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="x">x compare object</param>
         /// <param name="y">y compare object</param>
-        /// <param name="environment">environment to compare the strategies in</param>
         /// <returns>compare value</returns>
-        public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
+        public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y)
         {
             return string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
         }
@@ -556,78 +514,33 @@ namespace Grace.DependencyInjection
         /// <param name="y">y compare object</param>
         /// <param name="environment">environment to compare the strategies in</param>
         /// <returns>compare value</returns>
-        public static int CompareExportStrategies(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
+        public static int CompareExportStrategies(IExportStrategy x, IExportStrategy y)
         {
             int returnValue = 0;
-
-            if (x.Environment != y.Environment)
+            
+            if (x.Priority > y.Priority)
             {
-                switch (environment)
-                {
-                    case ExportEnvironment.RunTime:
-                        returnValue = CompareValues(x, y, ExportEnvironment.RunTime, ExportEnvironment.RunTimeOnly);
-                        break;
-
-                    case ExportEnvironment.UnitTest:
-                        returnValue = CompareValues(x, y, ExportEnvironment.UnitTest, ExportEnvironment.UnitTestOnly);
-                        break;
-
-                    case ExportEnvironment.DesignTime:
-                        returnValue = CompareValues(x, y, ExportEnvironment.DesignTime, ExportEnvironment.DesignTimeOnly);
-                        break;
-                }
+                returnValue = 1;
             }
-
-            if (returnValue == 0)
+            else if (x.Priority < y.Priority)
             {
-                if (x.Priority > y.Priority)
-                {
-                    returnValue = 1;
-                }
-                else if (x.Priority < y.Priority)
-                {
-                    returnValue = -1;
-                }
-                else if (x.ActivationType != null &&
-                            y.ActivationType != null)
-                {
-                    // all things being equal sort alphabetically by class name
-                    returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
-                }
+                returnValue = -1;
+            }
+            else if (x.ActivationType != null &&
+                        y.ActivationType != null)
+            {
+                // all things being equal sort alphabetically by class name
+                returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
             }
 
             return returnValue;
         }
 
         private static int CompareValues(IExportStrategy x,
-            IExportStrategy y,
-            ExportEnvironment exportEnvironment,
-            ExportEnvironment exportEnvironmentOnly)
+            IExportStrategy y)
         {
             int returnValue = 0;
-
-            if (x.Environment == exportEnvironment || x.Environment == exportEnvironmentOnly)
-            {
-                returnValue++;
-            }
-
-            if (y.Environment == exportEnvironment || y.Environment == exportEnvironmentOnly)
-            {
-                returnValue--;
-            }
-
-            if (returnValue == 0)
-            {
-                if (x.Environment == ExportEnvironment.Any)
-                {
-                    returnValue++;
-                }
-
-                if (y.Environment == ExportEnvironment.Any)
-                {
-                    returnValue--;
-                }
-            }
+            // TODO: figure out what should go here
 
             return returnValue;
         }

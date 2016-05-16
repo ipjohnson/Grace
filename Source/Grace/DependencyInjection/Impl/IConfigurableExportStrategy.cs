@@ -38,13 +38,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportType">export type</param>
         /// <param name="key">export key</param>
         IConfigurableExportStrategy AddKeyedExportType(Type exportType, object key);
-
-		/// <summary>
-		/// Set the export environment for the strategy
-		/// </summary>
-		/// <param name="environment">environment this export should be exported in</param>
-        IConfigurableExportStrategy SetEnvironment(ExportEnvironment environment);
-
+        
 		/// <summary>
 		/// Set the priority for the strategy
 		/// </summary>

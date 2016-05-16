@@ -116,7 +116,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl.CompiledExport
 														 };
 
 			InjectionKernelManager manager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionScope =
 				new InjectionKernel(manager, null, null, "Root", DependencyInjectionContainer.CompareExportStrategies);
 

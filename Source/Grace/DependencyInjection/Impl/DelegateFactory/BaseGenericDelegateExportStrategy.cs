@@ -85,15 +85,7 @@ namespace Grace.DependencyInjection.Impl.DelegateFactory
         {
             get { return ImmutableArray<Tuple<Type, object>>.Empty; }
         }
-
-	    /// <summary>
-		/// Export as any
-		/// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return ExportEnvironment.Any; }
-		}
-
+        
 		/// <summary>
 		/// Priority of zero
 		/// </summary>

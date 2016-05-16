@@ -133,15 +133,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get { return ImmutableArray<Tuple<Type, object>>.Empty; }
         }
-
-	    /// <summary>
-		/// Export environment for strategy
-		/// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return ExportEnvironment.Any; }
-		}
-
+        
 		/// <summary>
 		/// Priority for strategy
 		/// </summary>

@@ -181,11 +181,6 @@ namespace Grace.DependencyInjection.Impl
             _missingExportStrategyProviders = _missingExportStrategyProviders.Add(exportStrategyProvider);
         }
 
-        /// <summary>
-        /// The environment for this scope (always inherited from the root scope)
-        /// </summary>
-        public ExportEnvironment Environment { get; internal set; }
-
         #endregion
 
         #region Scope Methods
@@ -295,7 +290,6 @@ namespace Grace.DependencyInjection.Impl
             InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, newProvider, ScopeName, comparer)
                                                     {
                                                         ParentScope = parentScope,
-                                                        Environment = Environment,
                                                         exportsByName = exportsByName,
                                                         exportsByType = exportsByType
                                                     };
@@ -322,10 +316,7 @@ namespace Grace.DependencyInjection.Impl
 
             foreach (IExportStrategy exportStrategy in exportStrategies)
             {
-                if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                {
-                    continue;
-                }
+                // TODO: filter
 
                 ApplyInspectors(exportStrategy);
 
@@ -359,10 +350,7 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (IExportStrategy exportStrategy in exportStrategyList)
                 {
-                    if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                    {
-                        continue;
-                    }
+                    // TODO add filter
 
                     IEnumerable<string> exportNames = exportStrategy.ExportNames;
 
@@ -375,7 +363,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByName.TryGetValue(lowerName, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this,comparer); 
 
                                 newExportsByName[lowerName] = currentCollection;
                             }
@@ -390,10 +378,7 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (IExportStrategy exportStrategy in exportStrategyList)
                 {
-                    if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                    {
-                        continue;
-                    }
+                    // TODO: Add filter
 
                     IEnumerable<Type> exportTypes = exportStrategy.ExportTypes;
 
@@ -405,7 +390,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByType.TryGetValue(exportType, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this, comparer);
 
                                 newExportsByType[exportType] = currentCollection;
                             }
@@ -424,7 +409,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByType.TryGetValue(keyedExportType.Item1, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this, comparer);
 
                                 newExportsByType[keyedExportType.Item1] = currentCollection;
                             }
@@ -1339,7 +1324,7 @@ namespace Grace.DependencyInjection.Impl
                     Dictionary<Type, ExportStrategyCollection> newExports =
                         new Dictionary<Type, ExportStrategyCollection>(exportsByType);
 
-                    returnValue = new ExportStrategyCollection(this, Environment, comparer);
+                    returnValue = new ExportStrategyCollection(this, comparer);
 
                     newExports[exportType] = returnValue;
 
@@ -1369,7 +1354,7 @@ namespace Grace.DependencyInjection.Impl
                     Dictionary<string, ExportStrategyCollection> newExports =
                         new Dictionary<string, ExportStrategyCollection>(exportsByName);
 
-                    returnValue = new ExportStrategyCollection(this, Environment, comparer);
+                    returnValue = new ExportStrategyCollection(this, comparer);
 
                     newExports[exportName] = returnValue;
 

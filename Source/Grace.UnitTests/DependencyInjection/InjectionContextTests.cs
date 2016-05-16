@@ -138,8 +138,7 @@ namespace Grace.UnitTests.DependencyInjection
 		public void ConstructorTargetInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
 				null,
@@ -181,8 +180,7 @@ namespace Grace.UnitTests.DependencyInjection
 		public void ScopeContextInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
 				null,
@@ -215,8 +213,7 @@ namespace Grace.UnitTests.DependencyInjection
 		public void CloneScopeInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				new FauxInjectionScope(),
 				null,

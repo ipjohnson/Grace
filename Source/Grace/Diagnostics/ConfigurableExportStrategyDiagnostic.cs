@@ -59,12 +59,7 @@ namespace Grace.Diagnostics
 		{
 			get { return strategy.DependsOn; }
 		}
-
-		public ExportEnvironment Environment
-		{
-			get { return strategy.Environment; }
-		}
-
+        
 		public int Priority
 		{
 			get { return strategy.Priority; }

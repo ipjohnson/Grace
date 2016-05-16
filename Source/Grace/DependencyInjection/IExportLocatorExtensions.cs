@@ -72,9 +72,7 @@ namespace Grace.DependencyInjection
 				{
 					builder.AppendLine("Key: null");
 				}
-
-				builder.AppendLine("Environement: " + exportStrategy.Environment);
-
+                
 				builder.AppendLine("Priority: " + exportStrategy.Priority);
 
 				builder.AppendLine("Externally Owned: " + exportStrategy.ExternallyOwned);

@@ -346,18 +346,7 @@ namespace Grace.DependencyInjection.Impl
 
 					continue;
 				}
-
-				IExportEnvironmentAttribute exportEnvironmentAttribute = classAttribute as IExportEnvironmentAttribute;
-
-				if (exportEnvironmentAttribute != null)
-				{
-					IExportEnvironmentAttribute environmentAttribute = exportEnvironmentAttribute;
-
-					SetEnvironment(environmentAttribute.ProvideEnvironment(_exportType));
-
-					continue;
-				}
-
+                
 				IExportPriorityAttribute exportPriorityAttribute = classAttribute as IExportPriorityAttribute;
 
 				if (exportPriorityAttribute != null)

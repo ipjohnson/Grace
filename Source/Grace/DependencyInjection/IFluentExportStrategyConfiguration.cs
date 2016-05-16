@@ -151,14 +151,7 @@ namespace Grace.DependencyInjection
 	    /// Mark a property for import and specify if its required
 	    /// </summary>
 	    IFluentImportPropertyConfiguration ImportProperty(string propertyName);
-
-		/// <summary>
-		/// Defines which environment this export should be exported in
-		/// </summary>
-		/// <param name="environment"></param>
-		/// <returns>configuration object</returns>
-		IFluentExportStrategyConfiguration InEnvironment(ExportEnvironment environment);
-
+        
 		/// <summary>
 		/// Export in a new context
 		/// </summary>
@@ -438,13 +431,6 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
 		
-		/// <summary>
-		/// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
-		/// </summary>
-		/// <param name="environment"></param>
-		/// <returns></returns>
-		IFluentExportStrategyConfiguration<T> InEnvironment(ExportEnvironment environment);
-
 		/// <summary>
 		/// Create a new injection context for this export and it's children
 		/// </summary>

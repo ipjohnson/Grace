@@ -258,11 +258,6 @@ namespace Grace.DependencyInjection.Impl
 			{
 				foreach (IExportStrategy provideStrategy in exportStrategyProvider.ProvideStrategies())
 				{
-					if (FilterOutBasedOnEnvironment(provideStrategy.Environment))
-					{
-						continue;
-					}
-
 					if (Log.IsInfoEnabled)
 					{
 						string exportNames = null;
@@ -289,45 +284,6 @@ namespace Grace.DependencyInjection.Impl
 	        {
 	            exportStrategyInspector.Inspect(provideStrategy);
 	        }
-	    }
-
-	    /// <summary>
-		/// Filter out strategies that are exported for particular environments
-		/// </summary>
-		/// <param name="strategyEnvironment"></param>
-		/// <returns></returns>
-		private bool FilterOutBasedOnEnvironment(ExportEnvironment strategyEnvironment)
-		{
-			bool returnValue = false;
-			bool runTimeOnly = (strategyEnvironment & ExportEnvironment.RunTimeOnly) == ExportEnvironment.RunTimeOnly;
-			bool unitTestOnly = (strategyEnvironment & ExportEnvironment.UnitTestOnly) == ExportEnvironment.UnitTestOnly;
-			bool designTimeOnly = (strategyEnvironment & ExportEnvironment.DesignTimeOnly) == ExportEnvironment.DesignTimeOnly;
-
-			switch (owningScope.Environment)
-			{
-				case ExportEnvironment.RunTime:
-					if (!runTimeOnly && (unitTestOnly || designTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-
-				case ExportEnvironment.UnitTest:
-					if (!unitTestOnly && (runTimeOnly || designTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-
-				case ExportEnvironment.DesignTime:
-					if (!designTimeOnly && (unitTestOnly || runTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-			}
-
-			return returnValue;
-		}
+	    }        
 	}
 }

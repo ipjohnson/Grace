@@ -39,7 +39,6 @@ namespace Grace.DependencyInjection.Impl
         private Func<Type, IEnumerable<Tuple<Type, object>>> exportKeyedTypeFunc;
         private bool exportByName;
         private Func<Type, string> exportByNameFunc;
-        private ExportEnvironment exportEnvironment;
         private bool externallyOwned;
         private Func<Type, int> _priorityFunc;
         private Func<Type, ILifestyle> _lifestyleFunc;
@@ -180,7 +179,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <returns></returns>
-        public IExportTypeSetConfiguration Apply<T>(Action<IInjectionScope,IInjectionContext, T> action)
+        public IExportTypeSetConfiguration Apply<T>(Action<IInjectionScope, IInjectionContext, T> action)
         {
             enrichWithDelegates.Add(t => ApplyHelper(t, action));
 
@@ -361,18 +360,6 @@ namespace Grace.DependencyInjection.Impl
         public IExportTypeSetConfiguration WithPriorityAttribute<T>() where T : Attribute, IExportPriorityAttribute
         {
             inspectors.Add(new PriorityAttributeInspector<T>());
-
-            return this;
-        }
-
-        /// <summary>
-        /// Export in the specified Environment
-        /// </summary>
-        /// <param name="environment">environment to export in</param>
-        /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment)
-        {
-            exportEnvironment = environment;
 
             return this;
         }
@@ -573,7 +560,7 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        public IExportTypeSetConfiguration EnrichWithTyped<T>(Func<T,T> enrichDelegate)
+        public IExportTypeSetConfiguration EnrichWithTyped<T>(Func<T, T> enrichDelegate)
         {
             enrichWithDelegates.Add(t => EnrichWithTypedHelper(t, enrichDelegate));
 
@@ -589,9 +576,9 @@ namespace Grace.DependencyInjection.Impl
 
         private IEnumerable<EnrichWithDelegate> ApplyHelper<T>(Type arg, Action<IInjectionScope, IInjectionContext, T> enrichWithDelegate)
         {
-            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg,typeof(T)))
+            if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
             {
-                yield return new EnrichWithDelegate((scope, context, instance) => { enrichWithDelegate(scope, context, (T)instance); return instance; } );
+                yield return new EnrichWithDelegate((scope, context, instance) => { enrichWithDelegate(scope, context, (T)instance); return instance; });
             }
         }
 
@@ -599,7 +586,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
             {
-                yield return new EnrichWithDelegate((scope, context, instance) => { enrichDelegate((T)instance); return instance; } );
+                yield return new EnrichWithDelegate((scope, context, instance) => { enrichDelegate((T)instance); return instance; });
             }
         }
 
@@ -607,7 +594,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (ReflectionService.CheckTypeIsBasedOnAnotherType(arg, typeof(T)))
             {
-                yield return new EnrichWithDelegate((scope, context, instance) => enrichWithDelegate(scope,context,(T)instance));
+                yield return new EnrichWithDelegate((scope, context, instance) => enrichWithDelegate(scope, context, (T)instance));
             }
         }
 
@@ -928,7 +915,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                exportStrategy = new AttributeExportStrategy(exportedType, exportedType.GetTypeInfo().GetCustomAttributes(true));
+                exportStrategy = new CompiledInstanceExportStrategy(exportedType);
             }
 
             if (exportStrategy.Lifestyle == null)
@@ -942,7 +929,6 @@ namespace Grace.DependencyInjection.Impl
             }
 
             exportStrategy.SetPriority(_priorityFunc(exportedType));
-            exportStrategy.SetEnvironment(exportEnvironment);
 
             if (exportTypes != null)
             {
@@ -979,12 +965,12 @@ namespace Grace.DependencyInjection.Impl
                 ProcessImportProperties(exportedType, exportStrategy);
             }
 
-            if(importMembersList.Count > 0)
+            if (importMembersList.Count > 0)
             {
                 ProccessImportMembers(exportedType, exportStrategy);
             }
 
-            if(_importAttributedMembers)
+            if (_importAttributedMembers)
             {
                 ProcessImportAttributedMembers(exportedType, exportStrategy);
             }
@@ -1009,15 +995,15 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var methodInfo in exportedType.GetRuntimeMethods())
             {
-                if(methodInfo.IsStatic || 
+                if (methodInfo.IsStatic ||
                   !methodInfo.IsPublic)
                 {
                     continue;
                 }
 
-                foreach(var filter in importMembersList)
+                foreach (var filter in importMembersList)
                 {
-                    if(filter(methodInfo))
+                    if (filter(methodInfo))
                     {
                         exportStrategy.ImportMethod(new ImportMethodInfo { MethodToImport = methodInfo });
                         break;
@@ -1031,21 +1017,23 @@ namespace Grace.DependencyInjection.Impl
                     propertyInfo.SetMethod.IsStatic ||
                    !propertyInfo.SetMethod.IsPublic)
                 {
-                    foreach (var filter in importMembersList)
-                    {
-                        if (filter(propertyInfo))
-                        {
-                            exportStrategy.ImportProperty(new ImportPropertyInfo
-                            {
-                                Property = propertyInfo,
-                                IsRequired = true,
-                            });
+                    continue;
+                }
 
-                            break;
-                        }
+                foreach (var filter in importMembersList)
+                {
+                    if (filter(propertyInfo))
+                    {
+                        exportStrategy.ImportProperty(new ImportPropertyInfo
+                        {
+                            Property = propertyInfo,
+                            IsRequired = true,
+                        });
+
+                        break;
                     }
-                }                        
-            }            
+                }
+            }
         }
 
         private void ProcessImportProperties(Type exportedType, ICompiledExportStrategy exportStrategy)
@@ -1072,13 +1060,13 @@ namespace Grace.DependencyInjection.Impl
                         }
 
                         exportStrategy.ImportProperty(new ImportPropertyInfo
-                                                      {
-                                                          Property = runtimeProperty,
-                                                          IsRequired = importProperty.IsRequired,
-                                                          ValueProvider = importProperty.ValueProvider,
-                                                          ExportStrategyFilter = importProperty.Consider,
-                                                          AfterConstruction = importProperty.AfterConstruction
-                                                      });
+                        {
+                            Property = runtimeProperty,
+                            IsRequired = importProperty.IsRequired,
+                            ValueProvider = importProperty.ValueProvider,
+                            ExportStrategyFilter = importProperty.Consider,
+                            AfterConstruction = importProperty.AfterConstruction
+                        });
                     }
                 }
             }
@@ -1089,12 +1077,12 @@ namespace Grace.DependencyInjection.Impl
             foreach (WithCtorParamInfo withCtorParamInfo in withCtorParams)
             {
                 ConstructorParamInfo constructorParamInfo = new ConstructorParamInfo
-                                                            {
-                                                                ParameterType = withCtorParamInfo.ParameterType,
-                                                                ValueProvider = withCtorParamInfo.ValueProvider,
-                                                            };
+                {
+                    ParameterType = withCtorParamInfo.ParameterType,
+                    ValueProvider = withCtorParamInfo.ValueProvider,
+                };
 
-                if(withCtorParamInfo.DefaultValue != null)
+                if (withCtorParamInfo.DefaultValue != null)
                 {
                     constructorParamInfo.DefaultValue = withCtorParamInfo.DefaultValue(exportedType);
                 }
@@ -1139,7 +1127,7 @@ namespace Grace.DependencyInjection.Impl
 
         private bool CheckPropertyTypesMatch(Type exportedType, Type importType, ImportGlobalPropertyInfo importProperty)
         {
-            if(importProperty.PropertyType == null)
+            if (importProperty.PropertyType == null)
             {
                 return true;
             }

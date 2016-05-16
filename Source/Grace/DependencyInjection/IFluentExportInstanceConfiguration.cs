@@ -63,13 +63,6 @@ namespace Grace.DependencyInjection
         IFluentExportInstanceConfiguration<T> DisposalCleanupDelegate(BeforeDisposalCleanupDelegate disposalCleanupDelegate);
         
         /// <summary>
-        /// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
-        IFluentExportInstanceConfiguration<T> InEnvironment(ExportEnvironment environment);
-
-        /// <summary>
         /// Configure the export lifestyle
         /// </summary>
         InstanceLifestyleConfiguration<T> Lifestyle { get; }

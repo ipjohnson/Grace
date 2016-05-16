@@ -54,9 +54,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
         {
             return new IInjectionScope[0];
         }
-
-        public ExportEnvironment Environment { get; set; }
-
+        
         public IInjectionScope CreateChildScope(ExportRegistrationDelegate registrationDelegate = null,
             string scopeName = null,
             IDisposalScopeProvider disposalScopeProvider = null)
@@ -136,7 +134,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
                 Dictionary<Type, IExportStrategyCollection> newExports =
                     new Dictionary<Type, IExportStrategyCollection>(exports);
 
-                returnValue = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
+                returnValue = new ExportStrategyCollection(this, DependencyInjectionContainer.CompareExportStrategies);
 
                 newExports[exportType] = returnValue;
 
@@ -159,7 +157,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
             {
                 if (!exports.TryGetValue(exportType, out collection))
                 {
-                    collection = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
+                    collection = new ExportStrategyCollection(this, DependencyInjectionContainer.CompareExportStrategies);
 
                     exports[exportType] = collection;
                 }

@@ -158,12 +158,7 @@ namespace Grace.DependencyInjection
 		/// <returns>list of object, this will return an empty list if no exports are found</returns>
 		[NotNull]
 		List<object> LocateAll(Type exportType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null, IComparer<object> comparer = null);
-
-		/// <summary>
-		/// The environment for this scope (always inherited from the root scope)
-		/// </summary>
-		ExportEnvironment Environment { get; }
-
+        
 		/// <summary>
 		/// Returns a list of all known strategies.
 		/// </summary>

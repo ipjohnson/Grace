@@ -16,7 +16,6 @@ namespace Grace.DependencyInjection.Impl
     {
         private static readonly IExportStrategy[] emptyStrategies = new IExportStrategy[0];
         private readonly ExportStrategyComparer comparer;
-        private readonly ExportEnvironment environment;
         private readonly object exportStrategiesLock = new object();
         private readonly IInjectionScope injectionKernel;
         private readonly ILog log = Logger.GetLogger<ExportStrategyCollection>();
@@ -32,10 +31,8 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="environment"></param>
         /// <param name="comparer"></param>
         public ExportStrategyCollection(IInjectionScope injectionKernel,
-            ExportEnvironment environment,
             ExportStrategyComparer comparer)
         {
-            this.environment = environment;
             this.comparer = comparer;
             this.injectionKernel = injectionKernel;
 
@@ -443,7 +440,7 @@ namespace Grace.DependencyInjection.Impl
 
                         List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
 
-                        newList.Sort((x, y) => comparer(x, y, environment));
+                        newList.Sort((x, y) => comparer(x, y));
 
                         // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
                         newList.Reverse();
@@ -568,7 +565,7 @@ namespace Grace.DependencyInjection.Impl
         public ExportStrategyCollection Clone(InjectionKernel injectionKernel)
         {
             return
-                new ExportStrategyCollection(injectionKernel, environment, comparer)
+                new ExportStrategyCollection(injectionKernel, comparer)
                 {
                     exportStrategies = exportStrategies,
                     keyedStrategies = keyedStrategies

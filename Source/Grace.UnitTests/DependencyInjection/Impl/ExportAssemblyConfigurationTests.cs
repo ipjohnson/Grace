@@ -14,7 +14,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void SingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -37,7 +37,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void WeakSingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
 					null,
@@ -55,20 +55,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			Assert.True(ReferenceEquals(simpleObject, injectionKernel.Locate<ISimpleObject>()));
 		}
-
-		[Fact]
-		public void InEnvironment()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.UnitTest);
-
-			container.Configure(c => c.ExportAssembly(GetType().Assembly).InEnvironment(ExportEnvironment.RunTimeOnly));
-
-			IEnumerable<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
-
-			Assert.NotNull(simpleObjects);
-			Assert.Equal(0, simpleObjects.Count());
-		}
-
+        
 		[Fact]
 		public void SelectTypes()
 		{

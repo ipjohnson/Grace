@@ -14,7 +14,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			collection.AddExport(new FauxExportStrategy(() => 5), null);
@@ -27,7 +26,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			collection.AddExport(new FauxExportStrategy(() => 5), null);
@@ -42,7 +40,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			FauxExportStrategy tenExport = new FauxExportStrategy(() => 10) { Priority = 10 };
@@ -64,7 +61,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
@@ -73,99 +69,12 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			Assert.Equal(10, collection.Activate(null, null, new FauxInjectionContext(), null, null));
 		}
-
-		[Fact]
-		public void RunTimeSortTest()
-		{
-			ExportStrategyCollection collection =
-				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
-					DependencyInjectionContainer.CompareExportStrategies);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
-			                     {
-			                         Environment = ExportEnvironment.RunTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
-			                     {
-			                         Environment =ExportEnvironment.DesignTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest)
-			                     {
-			                         Environment = ExportEnvironment.UnitTest
-                                 }, null);
-
-			Assert.Equal(ExportEnvironment.RunTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
-
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
-		}
-
-		[Fact]
-		public void DesignTimeSortTest()
-		{
-			ExportStrategyCollection collection =
-				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.DesignTime,
-					DependencyInjectionContainer.CompareExportStrategies);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
-			                     {
-			                         Environment = ExportEnvironment.RunTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
-			                     {
-			                         Environment = ExportEnvironment.DesignTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest)
-			                     {
-			                         Environment = ExportEnvironment.UnitTest
-                                 }, null);
-
-			Assert.Equal(ExportEnvironment.DesignTime, collection.Activate(null, null, new FauxInjectionContext(), null, null));
-
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
-		}
-
-		[Fact]
-		public void UnitTestSortTest()
-		{
-			ExportStrategyCollection collection =
-				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.UnitTest,
-					DependencyInjectionContainer.CompareExportStrategies);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.RunTime)
-			                     {
-			                         Environment = ExportEnvironment.RunTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.DesignTime)
-			                     {
-			                         Environment =
-			                             ExportEnvironment.DesignTime
-                                 }, null);
-
-			collection.AddExport(new FauxExportStrategy(() => ExportEnvironment.UnitTest) 
-			                     {
-			                         Environment =
-			                             ExportEnvironment.UnitTest
-                                 }, null);
-
-			Assert.Equal(ExportEnvironment.UnitTest, collection.Activate(null, null, new FauxInjectionContext(), null, null));
-
-			Assert.Equal(3, collection.ActivateAll<ExportEnvironment>(new FauxInjectionContext(), null, null).Count());
-		}
-
+        
 		[Fact]
 		public void ActivateAll()
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
@@ -185,7 +94,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
@@ -206,7 +114,6 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					ExportEnvironment.RunTime,
 					DependencyInjectionContainer.CompareExportStrategies);
 
 			object activated = collection.Activate(null, null, new FauxInjectionContext(), null, null);
