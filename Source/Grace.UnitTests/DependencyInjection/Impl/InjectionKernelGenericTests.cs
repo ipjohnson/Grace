@@ -16,12 +16,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)));
+            injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)));
 
 			IGenericService<int> service = injectionKernel.Locate<IGenericService<int>>();
 
@@ -35,12 +34,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>));
 				                          c.Export(typeof(GenericTransient<>)).As(typeof(IGenericTransient<>));
@@ -61,12 +59,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)).Lifestyle.Singleton());
+            injectionKernel.Configure(c => c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>)).Lifestyle.Singleton());
 
 			IGenericService<int> serviceA = injectionKernel.Locate<IGenericService<int>>();
 			IGenericService<int> serviceB = injectionKernel.Locate<IGenericService<int>>();
@@ -84,12 +81,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export(typeof(GenericService<>)).As(typeof(IGenericService<>));
 				                          c.Export(typeof(ConstrainedService<>)).As(typeof(IGenericService<>));
@@ -114,12 +110,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export(typeof(GenericEntityServuce<>)).As(typeof(IGenericEntityService<>)));
+            injectionKernel.Configure(c => c.Export(typeof(GenericEntityServuce<>)).As(typeof(IGenericEntityService<>)));
 
 			IGenericEntityService<GenericEntity> service =
 				injectionKernel.Locate<IGenericEntityService<GenericEntity>>();

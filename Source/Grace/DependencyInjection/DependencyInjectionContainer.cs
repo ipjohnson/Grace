@@ -26,19 +26,19 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Default Constructor
         /// </summary>
-        /// <param name="comparer">delegate that can be used to sort exports, if null is provided CompareExportStrategies will be used</param>
-        /// <param name="disposalScopeProvider">allows you to provide a custom disposal scope provider</param>
-        public DependencyInjectionContainer(ExportStrategyComparer comparer = null,
-            IDisposalScopeProvider disposalScopeProvider = null)
+        public DependencyInjectionContainer(IKernelConfiguration configuration = null)
         {
-            ExportStrategyComparer localComparer = comparer ?? CompareExportStrategies;
+            if(configuration == null)
+            {
+                configuration = new KernelConfiguration();
+            }
 
-            _injectionKernelManager = new InjectionKernelManager(this, localComparer);
+            _injectionKernelManager = new InjectionKernelManager(this, configuration.Comparer);
 
             AutoRegisterUnknown = true;
             ThrowExceptions = true;
 
-            RootScope = new InjectionKernel(_injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer);
+            RootScope = new InjectionKernel(_injectionKernelManager, null, "RootScope", configuration);
         }
 
         /// <summary>
@@ -512,7 +512,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="x">x compare object</param>
         /// <param name="y">y compare object</param>
-        /// <param name="environment">environment to compare the strategies in</param>
         /// <returns>compare value</returns>
         public static int CompareExportStrategies(IExportStrategy x, IExportStrategy y)
         {
@@ -532,15 +531,6 @@ namespace Grace.DependencyInjection
                 // all things being equal sort alphabetically by class name
                 returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
             }
-
-            return returnValue;
-        }
-
-        private static int CompareValues(IExportStrategy x,
-            IExportStrategy y)
-        {
-            int returnValue = 0;
-            // TODO: figure out what should go here
 
             return returnValue;
         }

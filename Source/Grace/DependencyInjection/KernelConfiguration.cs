@@ -5,26 +5,109 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.CompiledExport;
 
 namespace Grace.DependencyInjection
 {
     public class KernelConfiguration : IKernelConfiguration
     {
+        private ExportStrategyComparer _comparer;
+        private Func<IInjectionScope, Type, ConstructorInfo> _constructorPicker;
+        private Func<IDisposalScope, IInjectionScope, IInjectionContext> _contextCreation;
+        private Func<IInjectionScope, Type, ICompiledExportStrategy> _exportStrategyProvider;
+        private Func<IInjectionScope, IExportRegistrationBlockStrategyProvider> _registrationBlockCreation;
+        private Func<IInjectionScope, Type, ICompiledExportStrategy> _closedGenericProvider;
+
         public bool AutoRegisterUnknown { get; set; }
 
         public Func<Type, bool> BlackListFilter { get; set; }
 
-        public ExportStrategyComparer Comparer { get; set; }
+        public Func<IInjectionScope, Type, ICompiledExportStrategy> ClosedGenericExportStrategyProvider
+        {
+            get
+            {
+                if(_closedGenericProvider == null)
+                {
+                    _closedGenericProvider = GenericExportStrategy.CreateClosedGenericExportStrategy;
+                }
 
-        public Func<IInjectionScope, Type, ConstructorInfo> ConstructorPicker { get; set; }
+                return _closedGenericProvider;
+            }
+            set { _closedGenericProvider = value; }
+        }
 
-        public Func<IInjectionScope, Type, IInjectionContext> ContextCreation { get; set; }
+        public ExportStrategyComparer Comparer
+        {
+            get
+            {
+                if(_comparer == null)
+                {
+                    _comparer = DependencyInjectionContainer.CompareExportStrategies;
+                }
+
+                return _comparer;
+            }
+            set { _comparer = value; }
+        }
+
+        public Func<IInjectionScope, Type, ConstructorInfo> ConstructorPicker
+        {
+            get
+            {
+                if(_constructorPicker == null)
+                {
+                    _constructorPicker = InstanceCompiledExportDelegate.DefaultConstructorPicker;
+                }
+
+                return _constructorPicker;
+            }
+            set { _constructorPicker = value; }
+        }
+
+        public Func<IDisposalScope, IInjectionScope, IInjectionContext> ContextCreation
+        {
+            get
+            {
+                if(_contextCreation == null)
+                {
+                    _contextCreation = InjectionContext.DefaultCreateContext;
+                }
+
+                return _contextCreation;
+            }
+            set { _contextCreation = value; }
+        }
 
         public IDisposalScopeProvider DisposalScopeProvider { get; set; }
 
-        public Func<IInjectionScope, Type, ICompiledExportStrategy> ExportStrategyProvider { get; set; }
+        public Func<IInjectionScope, Type, ICompiledExportStrategy> ExportStrategyProvider
+        {
+            get
+            {
+                if(_exportStrategyProvider == null)
+                {
+                    _exportStrategyProvider = ExportRegistrationBlock.DefaultExportStrategyProvider;
+                }
 
-        public Func<IInjectionScope, IExportRegistrationBlock> RegistrationBlockCreation { get; set; }
+                return _exportStrategyProvider;
+            }
+            set { _exportStrategyProvider = value; }
+                
+        }
+
+        public Func<IInjectionScope, IExportRegistrationBlockStrategyProvider> RegistrationBlockCreation
+        {
+            get
+            {
+                if(_registrationBlockCreation == null)
+                {
+                    _registrationBlockCreation = ExportRegistrationBlock.DefaultRegistrationBlockCreation;
+                }
+
+                return _registrationBlockCreation;
+            }
+            set { _registrationBlockCreation = value; }
+        }
 
         public virtual IKernelConfiguration Clone()
         {

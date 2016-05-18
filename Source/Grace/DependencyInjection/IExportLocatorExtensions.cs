@@ -334,7 +334,7 @@ namespace Grace.DependencyInjection
 				throw new Exception("BeginLifetimeScope can only be used on an injection scope and dependency injection container");
 			}
 
-			return new LifetimeScope(injectionScope, scopeName);
+			return new LifetimeScope(injectionScope, injectionScope.Configuration.Clone(), scopeName);
 		}
 	}
 }

@@ -15,6 +15,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	/// </summary>
 	public sealed class LifetimeScope : IInjectionScope
 	{
+        private readonly IKernelConfiguration _configuration;
 		private readonly IDisposalScope _disposalScope;
 		private readonly object _extraDataLock = new object();
 		private volatile Dictionary<string, object> _extraData;
@@ -23,13 +24,19 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// Default lifetime scope
 		/// </summary>
 		/// <param name="parentLocator"></param>
+        /// <param name="configuration"></param>
 		/// <param name="scopeName"></param>
-		public LifetimeScope([NotNull] IInjectionScope parentLocator, string scopeName = null)
+		public LifetimeScope([NotNull] IInjectionScope parentLocator, IKernelConfiguration configuration, string scopeName = null)
 		{
 			if (parentLocator == null)
 			{
 				throw new ArgumentNullException("parentLocator");
 			}
+
+            if(configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
 
 			_disposalScope = new DisposalScope();
 			ScopeName = scopeName ?? string.Empty;
@@ -46,6 +53,11 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// The scopes name
 		/// </summary>
 		public string ScopeName { get; private set; }
+
+        /// <summary>
+        /// Configuration
+        /// </summary>
+        public IKernelConfiguration Configuration {  get { return _configuration; } }
 
 		/// <summary>
 		/// List of Export Locators
@@ -71,7 +83,7 @@ namespace Grace.DependencyInjection.Lifestyle
 				throw new ArgumentException("registration delegate must be null");
 			}
 
-			return new LifetimeScope(this, scopeName);
+			return new LifetimeScope(this, _configuration, scopeName);
 		}
 
 		/// <summary>
@@ -90,7 +102,7 @@ namespace Grace.DependencyInjection.Lifestyle
 				throw new ArgumentException("configuration Module must be null");
 			}
 
-			return new LifetimeScope(this, scopeName);
+			return new LifetimeScope(this, _configuration, scopeName);
 		}
 
 		/// <summary>

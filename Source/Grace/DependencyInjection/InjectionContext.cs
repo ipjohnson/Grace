@@ -346,5 +346,16 @@ namespace Grace.DependencyInjection
         {
             Export(name.ToLowerInvariant(), activationDelegate);
         }
+
+        /// <summary>
+        /// Creates a new context, both disposal scope and scope must be provided
+        /// </summary>
+        /// <param name="disposalScope"></param>
+        /// <param name="scope"></param>
+        /// <returns></returns>
+        public static IInjectionContext DefaultCreateContext(IDisposalScope disposalScope, IInjectionScope scope)
+        {    
+            return new InjectionContext(disposalScope, scope);
+        }
     }
 }

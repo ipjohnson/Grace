@@ -8,6 +8,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 {
     public class FauxInjectionScope : IInjectionScope
     {
+        private readonly IKernelConfiguration _configuration = new KernelConfiguration();
         private readonly DisposalScope disposalScope = new DisposalScope();
         private readonly Dictionary<string, object> extraData = new Dictionary<string, object>();
         private Dictionary<Type, IExportStrategyCollection> exports = new Dictionary<Type, IExportStrategyCollection>();
@@ -34,6 +35,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
         public string ScopeName { get; set; }
 
         public IInjectionScope ParentScope { get; set; }
+
+        public IKernelConfiguration Configuration { get { return _configuration; } }
 
         public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
         {

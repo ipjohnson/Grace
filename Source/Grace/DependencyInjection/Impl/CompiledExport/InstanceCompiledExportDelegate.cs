@@ -49,6 +49,76 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             }
         }
 
+        private struct MatchInfo
+        {
+            public int Matched;
+            public int Missing;
+            public ConstructorInfo ConstructorInfo;
+        }
+
+        /// <summary>
+        /// Default constructor picker. If multiple public constructors exist it will look for a constructor 
+        /// that has no missing dependencies, if none are found then the one with the most matching with least missing (ie matching - missing)
+        /// If it gets to that point I highly suggest you suggest a constructor or better yet don't have multiple constructors
+        /// </summary>
+        /// <param name="injectionScope"></param>
+        /// <param name="activationType"></param>
+        /// <returns></returns>
+        public static ConstructorInfo DefaultConstructorPicker(IInjectionScope injectionScope, Type activationType)
+        {
+            var typeInfo = activationType.GetTypeInfo();
+
+            List<ConstructorInfo> constructors = 
+                new List<ConstructorInfo>(typeInfo.DeclaredConstructors.
+                                                   Where(x => x.IsPublic && !x.IsStatic).
+                                                   OrderByDescending(x => x.GetParameters().Count()));
+
+            if(constructors.Count <= 1)
+            {
+                return constructors.FirstOrDefault();
+            }
+
+            ConstructorInfo returnConstructor = null;
+            List<MatchInfo> matchInfos = new List<MatchInfo>();
+
+            foreach(var constructor in constructors)
+            {
+                MatchInfo matchInfo = new MatchInfo { ConstructorInfo = constructor };
+
+                foreach (var parameter in constructor.GetParameters())
+                {
+                    if(injectionScope != null && 
+                       injectionScope.GetStrategy(parameter.ParameterType) != null)
+                    {
+                        matchInfo.Matched++;
+                    }
+                    else
+                    {
+                        matchInfo.Missing++;
+                    }
+                }
+
+                if(matchInfo.Missing == 0)
+                {
+                    returnConstructor = constructor;
+                    break;
+                }
+
+                matchInfos.Add(matchInfo);
+            }
+
+            if(returnConstructor == null)
+            {
+                var comparer = Comparer<int>.Default;
+
+                matchInfos.Sort((x, y) => comparer.Compare(x.Matched - x.Missing, y.Matched - y.Missing));
+
+                returnConstructor = matchInfos.Last().ConstructorInfo;
+            }
+
+            return returnConstructor;
+       }
+
 
         /// <summary>
         /// Picks the specific constructor to use for exporting
@@ -57,10 +127,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         /// <returns></returns>
         protected virtual ConstructorInfo PickConstructor(Type activationType)
         {
-            return activationType.GetTypeInfo().DeclaredConstructors.
-                                                            Where(x => x.IsPublic && !x.IsStatic).
-                                                            OrderByDescending(x => x.GetParameters().Count()).
-                                                            FirstOrDefault();
+            if (owningScope != null)
+            {
+                return owningScope.Configuration.ConstructorPicker(owningScope, activationType);
+            }
+
+            return DefaultConstructorPicker(null, activationType);
         }
 
         private class CustomConstructorEnrichmentLinqExpressionContext : ICustomConstructorEnrichmentLinqExpressionContext

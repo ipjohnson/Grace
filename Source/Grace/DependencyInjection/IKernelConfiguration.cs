@@ -16,11 +16,13 @@ namespace Grace.DependencyInjection
 
         Func<IInjectionScope, Type, ICompiledExportStrategy> ExportStrategyProvider { get; set; }
 
+        Func<IInjectionScope, Type, ICompiledExportStrategy> ClosedGenericExportStrategyProvider { get; set; }
+
         ExportStrategyComparer Comparer { get; set; }
 
-        Func<IInjectionScope, Type, IInjectionContext> ContextCreation { get; set; }
+        Func<IDisposalScope, IInjectionScope, IInjectionContext> ContextCreation { get; set; }
 
-        Func<IInjectionScope, IExportRegistrationBlock> RegistrationBlockCreation { get; set; }
+        Func<IInjectionScope, IExportRegistrationBlockStrategyProvider> RegistrationBlockCreation { get; set; }
 
         IDisposalScopeProvider DisposalScopeProvider { get; set; } 
         

@@ -907,16 +907,8 @@ namespace Grace.DependencyInjection.Impl
 
         private ICompiledExportStrategy CreateCompiledExportStrategy(Type exportedType, bool generic, IEnumerable<Type> exportTypes, List<Tuple<Type, object>> keyedExportType, IEnumerable<string> exportNames)
         {
-            ICompiledExportStrategy exportStrategy;
-
-            if (generic)
-            {
-                exportStrategy = new GenericExportStrategy(exportedType);
-            }
-            else
-            {
-                exportStrategy = new CompiledInstanceExportStrategy(exportedType);
-            }
+            ICompiledExportStrategy exportStrategy =
+                injectionScope.Configuration.ExportStrategyProvider(injectionScope, exportedType);
 
             if (exportStrategy.Lifestyle == null)
             {

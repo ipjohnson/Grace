@@ -18,12 +18,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>());
+            injectionKernel.Configure(c => c.Export<BasicService>());
 
 			BasicService basicService = injectionKernel.Locate<BasicService>();
 
@@ -37,12 +36,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>());
+            injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -56,12 +54,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>());
+            injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -75,12 +72,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().AsName("IBasicService").As<IBasicService>());
+            injectionKernel.Configure(c => c.Export<BasicService>().AsName("IBasicService").As<IBasicService>());
 
 			IBasicService basicService = injectionKernel.Locate("IBasicService") as IBasicService;
 
@@ -98,12 +94,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(
+            injectionKernel.Configure(
 				c => c.Export<BasicService>().AsName("IBasicService").As<IBasicService>().Lifestyle.Singleton());
 
 			IBasicService basicService = injectionKernel.Locate("IBasicService") as IBasicService;
@@ -124,12 +119,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportConstructorService>().As<IImportConstructorService>();
@@ -147,12 +141,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportPropertyService>()
@@ -173,12 +166,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.ExportAssembly(GetType().Assembly).ByInterface(typeof(ISimpleObject));
 				                          c.Export<ImportPropertySimpleObject>().
@@ -199,12 +191,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<ImportPropertyService>()
+            injectionKernel.Configure(c => c.Export<ImportPropertyService>()
 				.As<IImportPropertyService>()
 				.ImportProperty(o => o.BasicService).UsingValue(() => new BasicService()));
 
@@ -221,12 +212,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportMethodWithArgs>().
@@ -250,12 +240,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<ImportPropertyCollection>().ImportCollectionProperty(p => p.SimpleObjects));
+            injectionKernel.Configure(c => c.Export<ImportPropertyCollection>().ImportCollectionProperty(p => p.SimpleObjects));
 		}
 
 		[Fact]
@@ -265,12 +254,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportMethodWithArgs>()
@@ -294,12 +282,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<ImportPropertyService>()
+            injectionKernel.Configure(c => c.Export<ImportPropertyService>()
 				.As<IImportPropertyService>()
 				.ImportProperty(o => o.BasicService).UsingValueProvider(
 					new FuncValueProvider<BasicService>(() => new BasicService())));
@@ -317,12 +304,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportConstructorService>().As<IImportConstructorService>();
@@ -354,12 +340,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<ActivateService>()
+            injectionKernel.Configure(c => c.Export<ActivateService>()
 				.As<IActiveService>()
 				.ActivationMethod(o => o.SimpleActivate())
 				.ActivationMethod(o => o.InjectionContextActivate(null)));
@@ -378,12 +363,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportMethodService>()
@@ -404,12 +388,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<ImportConstructorService>().As<IImportConstructorService>();
@@ -435,12 +418,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<SimpleObjectA>().As<ISimpleObject>();
 				                          c.Export<SimpleObjectB>().As<ISimpleObject>();
@@ -462,12 +444,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
+            injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -491,12 +472,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.WeakSingleton());
+            injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.WeakSingleton());
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
 
@@ -520,12 +500,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().
+            injectionKernel.Configure(c => c.Export<BasicService>().As<IBasicService>().
 				EnrichWith(
 					(scope, context, enrichObject) =>
 						new BasicServiceWrapper(enrichObject as IBasicService)));
@@ -546,14 +525,14 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			InjectionKernelManager injectionKernelManager =
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
-			InjectionKernel injectionKernel =
-				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+            InjectionKernel injectionKernel =
+                new InjectionKernel(injectionKernelManager,
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<FauxBasicService>().As<IBasicService>().WithPriority(1);
@@ -572,12 +551,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(
+            injectionKernel.Configure(
 				c => c.Export<BasicService>().As<IBasicService>().UsingLifestyle(new SingletonLifestyle()));
 
 			IBasicService basicService = injectionKernel.Locate<IBasicService>();
@@ -594,12 +572,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<ImportPropertyService>()
 					                          .As<IImportPropertyService>()
@@ -642,12 +619,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<ImportPropertyService>()
 					                          .As<IImportPropertyService>()
@@ -686,12 +662,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<ImportPropertyService>()
 					                          .As<IImportPropertyService>()
@@ -730,12 +705,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<SimpleObjectA>().As<ISimpleObject>();
 				                          c.Export<SimpleObjectA>().As<ISimpleObject>();
@@ -764,12 +738,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<SimpleObjectA>().As<ISimpleObject>();
 				                          c.Export<SimpleObjectA>().As<ISimpleObject>();
@@ -803,12 +776,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<SimpleObjectA>()
 					                          .AsName("ISimpleObject")
@@ -847,12 +819,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<WithCtorParamClass>().
@@ -876,12 +847,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<WithCtorParamClass>()
@@ -905,12 +875,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.ExportAssembly(GetType().Assembly).ByInterface(typeof(ISimpleObject));
 				                          c.Export<ImportIEnumerableService>()
@@ -931,12 +900,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<WithCtorParamClass>().WithCtorParam(() => "Hello").WithCtorParam(() => 5);
@@ -958,12 +926,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<WithCtorParamClass>()
@@ -987,12 +954,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
+            injectionKernel.Configure(c => c.Export(Types.FromThisAssembly()).ByInterface(typeof(ISimpleObject)));
 			injectionKernel.Configure(c =>
 				c.Export<ImportListService>()
 					.WithCtorCollectionParam<List<ISimpleObject>, ISimpleObject>().
@@ -1016,12 +982,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			injectionKernel.Configure(c =>
+            injectionKernel.Configure(c =>
 			                          {
 				                          c.Export<BasicService>().As<IBasicService>();
 				                          c.Export<MultipleConstructorImport>()

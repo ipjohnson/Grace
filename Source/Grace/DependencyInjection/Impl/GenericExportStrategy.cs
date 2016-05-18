@@ -32,6 +32,17 @@ namespace Grace.DependencyInjection.Impl
 			throw new Exception("You can't activate a generic type. The type must be closed into an compiled instance export.");
 		}
 
+        /// <summary>
+        /// Creates a new export strategy for a closed generic
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="closedType"></param>
+        /// <returns></returns>
+        public static ICompiledExportStrategy CreateClosedGenericExportStrategy(IInjectionScope scope,Type closedType)
+        {
+            return new ClosedGenericExportStrategy(closedType);
+        }
+
 		/// <summary>
 		/// Creates a new closed export strategy that can be activated
 		/// </summary>
@@ -44,7 +55,8 @@ namespace Grace.DependencyInjection.Impl
 			if (closedType != null)
 			{
 				TypeInfo closedTypeInfo = closedType.GetTypeInfo();
-				ClosedGenericExportStrategy newExportStrategy = new ClosedGenericExportStrategy(closedType);
+                ICompiledExportStrategy newExportStrategy = 
+                    OwningScope.Configuration.ClosedGenericExportStrategyProvider(OwningScope, closedType); 
 
 				if (delegateInfo.ImportProperties != null)
 				{

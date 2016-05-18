@@ -17,12 +17,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                                    null,
+                                    "RootScope",
+                                    new KernelConfiguration());
 
-			Assembly assembly = GetType().Assembly;
+            Assembly assembly = GetType().Assembly;
 
 			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.Singleton());
 
@@ -40,12 +39,11 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			Assembly assembly = GetType().Assembly;
+            Assembly assembly = GetType().Assembly;
 
 			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.WeakSingleton());
 

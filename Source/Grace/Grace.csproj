@@ -129,6 +129,7 @@
     <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />
     <Compile Include="DependencyInjection\GenericFilterGroup.cs" />
     <Compile Include="DependencyInjection\Impl\IEnumerableExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\IExportRegistrationBlockStrategyProvider.cs" />
     <Compile Include="DependencyInjection\Impl\IInjectionScopeExtensions.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceLifestyleConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\LazyListExportStrategy.cs" />
