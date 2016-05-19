@@ -468,7 +468,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
         {
-            return (T)Locate(typeof(T), injectionContext, consider, locateKey);
+            return (T)InternalLocate(typeof(T), injectionContext, consider, locateKey, true);
         }
 
         /// <summary>
@@ -480,6 +480,38 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateKey"></param>
         /// <returns></returns>
         public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
+        {
+            return InternalLocate(objectType, injectionContext, consider, locateKey, true);
+        }
+
+        /// <summary>
+        /// Try to locate an export
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            object locatedValue = InternalLocate(typeof(T), injectionContext, consider, withKey, false);
+
+            if(locatedValue != null)
+            {
+                value = (T)locatedValue;
+
+                return true;
+            }
+            else
+            {
+                value = default(T);
+
+                return false;
+            }            
+        }
+
+        protected object InternalLocate(Type objectType, IInjectionContext injectionContext, ExportStrategyFilter consider, object locateKey, bool required)
         {
             if (objectType == null)
             {
@@ -587,7 +619,7 @@ namespace Grace.DependencyInjection.Impl
                 exp.AddLocationInformationEntry(
                     new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
 
-                if (kernelManager.Container != null &&
+                if (kernelManager.Container == null ||
                      kernelManager.Container.ThrowExceptions)
                 {
                     throw;
@@ -607,7 +639,7 @@ namespace Grace.DependencyInjection.Impl
                 generalLocateException.AddLocationInformationEntry(
                     new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
 
-                if (kernelManager.Container != null &&
+                if (kernelManager.Container == null ||
                      kernelManager.Container.ThrowExceptions)
                 {
                     throw generalLocateException;
@@ -619,6 +651,15 @@ namespace Grace.DependencyInjection.Impl
                         ScopeName,
                         ScopeId),
                     exp);
+            }
+
+            if(returnValue == null && 
+               ParentScope == null && 
+               required &&
+               (kernelManager.Container == null ||
+                kernelManager.Container.ThrowExceptions))
+            {
+                throw new CannotLocateExportException(objectType.Name, objectType, injectionContext);
             }
 
             return returnValue;
@@ -2045,6 +2086,7 @@ namespace Grace.DependencyInjection.Impl
                 returnList.AddRange(collection.ActivateAllMeta<TMeta, T>(injectionContext, exportFilter, locateKey));
             }
         }
+
 
         private string DebugDisplayString
         {

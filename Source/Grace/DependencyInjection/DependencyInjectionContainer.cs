@@ -567,5 +567,10 @@ namespace Grace.DependencyInjection
         {
             return GetEnumerator();
         }
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            return RootScope.TryLocate(out value, injectionContext, consider, withKey);
+        }
     }
 }

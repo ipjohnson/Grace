@@ -267,5 +267,10 @@ namespace Grace.UnitTests.Classes.FauxClasses
         {
             throw new NotImplementedException();
         }
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -103,6 +103,7 @@
     <Compile Include="DependencyInjection\Delegates.cs" />
     <Compile Include="DependencyInjection\DisposableInjectionContext.cs" />
     <Compile Include="DependencyInjection\Enumerations.cs" />
+    <Compile Include="DependencyInjection\Exceptions\CannotLocateExportException.cs" />
     <Compile Include="DependencyInjection\Exceptions\CircularDependencyDetectedException.cs" />
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\InjectionScopeCouldNotBeFoundException.cs" />

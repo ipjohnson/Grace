@@ -38,6 +38,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 throw new ArgumentNullException("configuration");
             }
 
+            _configuration = configuration;
 			_disposalScope = new DisposalScope();
 			ScopeName = scopeName ?? string.Empty;
 			ScopeId = Guid.NewGuid();
@@ -110,9 +111,16 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		/// <returns>new injection context</returns>
 		public IInjectionContext CreateContext(IDisposalScope disposalScope = null)
-		{
-			return new InjectionContext(disposalScope, this);
-		}
+        {
+            if (disposalScope == null)
+            {
+                disposalScope = _configuration.DisposalScopeProvider == null ?
+                                    this :
+                                    _configuration.DisposalScopeProvider.ProvideDisposalScope(this);
+            }
+
+            return _configuration.ContextCreation(disposalScope, this);
+        }
 
 		/// <summary>
 		/// Locate an export by type
@@ -123,13 +131,13 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>export T if found, other wise default(T)</returns>
 		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
-		{
-			if (injectionContext == null)
-			{
-				injectionContext = CreateContext();
-			}
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
 
-			return ParentScope.Locate<T>(injectionContext, consider, withKey);
+            return ParentScope.Locate<T>(injectionContext, consider, withKey);
 		}
 
 		/// <summary>
@@ -145,12 +153,12 @@ namespace Grace.DependencyInjection.Lifestyle
 			ExportStrategyFilter consider = null,
 			object withKey = null)
 		{
-			if (injectionContext == null)
-			{
-				injectionContext = CreateContext();
-			}
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
 
-			return ParentScope.Locate(objectType, injectionContext, consider, withKey);
+            return ParentScope.Locate(objectType, injectionContext, consider, withKey);
 		}
 
 		/// <summary>
@@ -522,5 +530,15 @@ namespace Grace.DependencyInjection.Lifestyle
 	    {
             throw new NotSupportedException();
 	    }
-	}
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
+
+            return ParentScope.TryLocate(out value, injectionContext, consider, withKey);
+        }
+    }
 }

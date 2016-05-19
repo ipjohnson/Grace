@@ -103,15 +103,26 @@ namespace Grace.DependencyInjection
 						  ExportStrategyFilter consider = null,
 						  object withKey = null);
 
-		/// <summary>
-		/// Locate an export by name
-		/// </summary>
-		/// <param name="exportName">name of export to locate</param>
-		/// <param name="injectionContext">injection context to use while locating</param>
-		/// <param name="consider">filter to use while locating</param>
-		/// <param name="withKey"></param>
-		/// <returns>export object if found, other wise null</returns>
-		object Locate([NotNull] string exportName,
+        /// <summary>
+        /// Try to locate an export by type
+        /// </summary>
+        /// <typeparam name="T">locate type</typeparam>
+        /// <param name="value">out value</param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null);
+
+        /// <summary>
+        /// Locate an export by name
+        /// </summary>
+        /// <param name="exportName">name of export to locate</param>
+        /// <param name="injectionContext">injection context to use while locating</param>
+        /// <param name="consider">filter to use while locating</param>
+        /// <param name="withKey"></param>
+        /// <returns>export object if found, other wise null</returns>
+        object Locate([NotNull] string exportName,
 						  IInjectionContext injectionContext = null,
 						  ExportStrategyFilter consider = null,
 						  object withKey = null);

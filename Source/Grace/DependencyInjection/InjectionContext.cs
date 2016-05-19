@@ -260,6 +260,7 @@ namespace Grace.DependencyInjection
         /// Max resolve depth allowed
         /// </summary>
         public int MaxResolveDepth { get; set; }
+        
 
         /// <summary>
         /// Push a current export strategy onto the stack

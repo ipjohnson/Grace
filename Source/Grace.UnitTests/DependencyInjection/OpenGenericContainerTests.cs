@@ -40,8 +40,9 @@ namespace Grace.UnitTests.DependencyInjection
 												c.Export<BasicService>().ByInterfaces();
 											});
 
-			var multipleOut =
-				container.Locate<IMultipleOutOfOrderOpenGeneric<DateTime, bool, string, IBasicService>>();
+            IMultipleOutOfOrderOpenGeneric<DateTime, bool, string, IBasicService> multipleOut;
+
+            container.TryLocate(out multipleOut);
 
 			Assert.Null(multipleOut);
 

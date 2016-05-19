@@ -21,6 +21,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         protected static readonly MethodInfo ActivateValueProviderMethod;
         protected static readonly MethodInfo LocateByNameMethod;
         protected static readonly MethodInfo LocateByTypeMethod;
+        protected static readonly MethodInfo TryLocateByTypeMethod;
         protected static readonly MethodInfo InjectionScopeLocateAllMethod;
         protected static readonly MethodInfo CollectionActivateMethod;
         protected static readonly MethodInfo AddToDisposalScopeMethod;
@@ -100,6 +101,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 					typeof(ExportStrategyFilter),
 					typeof(object)
 				});
+
+
+            TryLocateByTypeMethod = typeof(IExportLocator).GetRuntimeMethods().First(m => m.Name == "TryLocate");
 
             LocateByNameMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
                 new[]
@@ -952,7 +956,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             IExportStrategyCollection collection =
                 owningScope.GetStrategyCollection(importType);
 
-            if (exportDelegateInfo.IsTransient)
+            if (exportDelegateInfo.IsTransient || !isRequired)
             {
                 Expression rootIfExpression = Expression.IfThen(
                     Expression.Equal(importVariable, Expression.Constant(null)),
@@ -969,17 +973,44 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                 if (string.IsNullOrEmpty(exportName))
                 {
-                    MethodInfo closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+                    MethodInfo closedLocate = null;
+                    Expression assignStatement;
 
-                    requestScopeIfExpression
-                        = Expression.IfThen(
-                            Expression.Equal(importVariable, Expression.Constant(null)),
-                            Expression.Assign(importVariable,
+                    if (isRequired)
+                    {
+                        closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+
+                        assignStatement = Expression.Assign(importVariable,
                                 Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
                                     closedLocate,
                                     injectionContextParameter,
                                     Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)),
-                                    CreateLocateWithKeyStatement(locateKey))));
+                                    CreateLocateWithKeyStatement(locateKey)));
+                    }
+                    else
+                    {
+                        closedLocate = TryLocateByTypeMethod.MakeGenericMethod(importType);
+
+                        var typedVariable = Expression.Variable(importType);
+
+                        var callTryMethod = 
+                            Expression.Call(
+                                    Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+                                    closedLocate,
+                                    typedVariable,
+                                    injectionContextParameter,
+                                    Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)),
+                                    CreateLocateWithKeyStatement(locateKey));
+
+                        var assignToImportVariable = Expression.Assign(importVariable, Expression.Convert(typedVariable, typeof(object)));
+
+                        assignStatement = Expression.Block(new[] { typedVariable }, callTryMethod, assignToImportVariable);
+                    }
+
+                    requestScopeIfExpression
+                        = Expression.IfThen(
+                            Expression.Equal(importVariable, Expression.Constant(null)),
+                            assignStatement );
                 }
                 else
                 {
@@ -1177,23 +1208,48 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 exportName = targetInfo.InjectionTargetName.ToLowerInvariant();
             }
 
-            if (exportDelegateInfo.IsTransient)
+            if (exportDelegateInfo.IsTransient || !isRequired)
             {
                 Expression requestScopeIfExpression;
 
                 if (string.IsNullOrEmpty(exportName))
                 {
-                    MethodInfo closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+                    MethodInfo closedLocate = null;
+                    Expression assignExpression;
 
-                    requestScopeIfExpression
-                        = Expression.IfThen(
-                            Expression.Equal(importVariable, Expression.Constant(null)),
-                            Expression.Assign(importVariable,
+                    if (isRequired)
+                    {
+                        closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+
+                        assignExpression = Expression.Assign(importVariable,
                                 Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
                                     closedLocate,
                                     injectionContextParameter,
                                     Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)),
-                                    CreateLocateWithKeyStatement(locateKey))));
+                                    CreateLocateWithKeyStatement(locateKey)));
+                    }
+                    else
+                    {
+                        closedLocate = TryLocateByTypeMethod.MakeGenericMethod(importType);
+                        
+                        var typedVariable = Expression.Variable(importType);
+
+                        var callTryMethod = Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+                                    closedLocate,
+                                    typedVariable,
+                                    injectionContextParameter,
+                                    Expression.Convert(Expression.Constant(null), typeof(ExportStrategyFilter)),
+                                    CreateLocateWithKeyStatement(locateKey));
+
+                        var assignToImportVariable = Expression.Assign(importVariable, Expression.Convert(typedVariable, typeof(object)));
+
+                        assignExpression = Expression.Block(new[] { typedVariable }, callTryMethod, assignToImportVariable);
+                    }
+
+                    requestScopeIfExpression
+                        = Expression.IfThen(
+                            Expression.Equal(importVariable, Expression.Constant(null)),
+                            assignExpression);
                 }
                 else
                 {
@@ -1295,23 +1351,50 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             object defaultValue,
             List<Expression> expressionList)
         {
-            if (exportDelegateInfo.IsTransient)
+            if (exportDelegateInfo.IsTransient || !isRequired)
             {
                 Expression requestScopeIfExpression;
 
                 if (string.IsNullOrEmpty(exportName))
                 {
-                    MethodInfo closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+                    MethodInfo closedLocate = null;
+                    Expression assignStatement;
 
-                    requestScopeIfExpression
-                        = Expression.IfThen(
-                            Expression.Equal(importVariable, Expression.Constant(null)),
-                            Expression.Assign(importVariable,
+                    if (isRequired)
+                    {
+                        closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
+
+                        assignStatement = Expression.Assign(importVariable,
                                 Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
                                     closedLocate,
                                     injectionContextParameter,
                                     Expression.Constant(exportStrategyFilter),
-                                    CreateLocateWithKeyStatement(locateKey))));
+                                    CreateLocateWithKeyStatement(locateKey)));
+                    }
+                    else
+                    {
+                        closedLocate = TryLocateByTypeMethod.MakeGenericMethod(importType);
+
+                        var typedVariable = Expression.Variable(importType);
+
+                        var callTryMethod =
+                                Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
+                                    closedLocate,
+                                    typedVariable,
+                                    injectionContextParameter,
+                                    Expression.Constant(exportStrategyFilter),
+                                    CreateLocateWithKeyStatement(locateKey));
+
+                        var assignToImportVariable = Expression.Assign(importVariable, Expression.Convert(typedVariable, typeof(object)));
+
+                        assignStatement = Expression.Block(new[] { typedVariable }, callTryMethod, assignToImportVariable);
+
+                    }
+
+                    requestScopeIfExpression
+                        = Expression.IfThen(
+                            Expression.Equal(importVariable, Expression.Constant(null)),
+                            assignStatement);
                 }
                 else
                 {

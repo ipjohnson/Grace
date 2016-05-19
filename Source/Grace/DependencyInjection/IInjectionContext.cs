@@ -105,5 +105,6 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns></returns>
 		ImmutableArray<CurrentInjectionInfo> GetInjectionStack();
+
 	}
 }
