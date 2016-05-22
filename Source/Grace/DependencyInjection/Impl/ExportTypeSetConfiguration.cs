@@ -729,7 +729,12 @@ namespace Grace.DependencyInjection.Impl
 
                 if (exportByNameFunc != null)
                 {
-                    exportNames.Add(exportByNameFunc(filteredType));
+                    var exportName = exportByNameFunc(filteredType);
+
+                    if (!string.IsNullOrEmpty(exportName))
+                    {
+                        exportNames.Add(exportName);
+                    }
                 }
 
                 exportTypes.AddRange(ScanTypeForExportedInterfaces(filteredType));
