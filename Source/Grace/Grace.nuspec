@@ -10,7 +10,7 @@
     <title>Grace</title>
     <description>Grace is a portable class library that contains a feature rich Dependency Injection Container</description>
     <summary>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</summary>
-    <releaseNotes>$ReleaseNotes$</releaseNotes>
+    <releaseNotes>4.0 is breaking change release affecting code bases that implement internal features like custom lifestyles</releaseNotes>
     <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
