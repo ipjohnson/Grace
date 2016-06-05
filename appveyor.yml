@@ -1,4 +1,4 @@
-version: 4.0.0-Alpha{build}
+version: 4.0.0-Beta{build}
 branches:
   only:
   - 4.0
