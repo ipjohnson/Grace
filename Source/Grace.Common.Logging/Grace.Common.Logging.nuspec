@@ -7,7 +7,7 @@
     <description>Grace.Common.Logging provides integration class between Common.Logging and Grace (Dependency Injection Container)</description>
     <licenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</licenseUrl>
     <projectUrl>https://github.com/ipjohnson/Grace</projectUrl>
-    <version>$version$-Alpha</version>
+    <version>$version$</version>
     <authors>Ian Johnson</authors>
     <owners>Ian Johnson</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
