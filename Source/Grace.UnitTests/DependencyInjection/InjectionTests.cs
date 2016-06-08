@@ -20,5 +20,16 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(service.BasicService);
 			Assert.IsType(typeof(AttributeBasicService), service.BasicService);
 		}
+
+        [Fact]
+        public void TryLocateString()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            object value;
+            container.TryLocate(typeof(string), out value);
+
+            Assert.Null(value);
+        }
 	}
 }

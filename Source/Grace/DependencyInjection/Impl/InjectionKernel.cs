@@ -1695,6 +1695,7 @@ namespace Grace.DependencyInjection.Impl
                      kernelManager.Container.AutoRegisterUnknown &&
                      resolveType != null &&
                      string.IsNullOrEmpty(resolveName) &&
+                     resolveType != typeof(string) &&
                      !resolveType.GetTypeInfo().IsAbstract &&
                      !resolveType.GetTypeInfo().IsGenericTypeDefinition)
                 {

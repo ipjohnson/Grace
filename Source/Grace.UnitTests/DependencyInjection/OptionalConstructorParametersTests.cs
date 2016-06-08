@@ -34,6 +34,22 @@ namespace Grace.UnitTests.DependencyInjection
 
             var instance = container.Locate<IOptionalIntServiceConstructor>();
             Assert.NotNull(instance);
+            Assert.Equal(5, instance.Value);
         }
+
+        [Fact]
+        public void OptionalConstructorStringTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.ExportAs<OptionalStringConstructor, IOptionalStringConstructor>());
+
+            var instance = container.Locate<IOptionalStringConstructor>();
+
+            Assert.NotNull(instance);
+            Assert.Equal("Blah", instance.Value);
+        }
+
+       
     }
 }
