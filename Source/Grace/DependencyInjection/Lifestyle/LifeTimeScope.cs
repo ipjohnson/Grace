@@ -540,5 +540,15 @@ namespace Grace.DependencyInjection.Lifestyle
 
             return ParentScope.TryLocate(out value, injectionContext, consider, withKey);
         }
+
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
+
+            return ParentScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
     }
 }

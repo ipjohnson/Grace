@@ -572,5 +572,10 @@ namespace Grace.DependencyInjection
         {
             return RootScope.TryLocate(out value, injectionContext, consider, withKey);
         }
+
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            return RootScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
     }
 }

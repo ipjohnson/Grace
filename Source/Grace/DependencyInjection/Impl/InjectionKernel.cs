@@ -511,6 +511,29 @@ namespace Grace.DependencyInjection.Impl
             }            
         }
 
+        /// <summary>
+        /// try to locate
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            value = InternalLocate(type, injectionContext, consider, withKey, false);
+
+            if (value != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         protected object InternalLocate(Type objectType, IInjectionContext injectionContext, ExportStrategyFilter consider, object locateKey, bool required)
         {
             if (objectType == null)

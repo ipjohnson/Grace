@@ -115,6 +115,18 @@ namespace Grace.DependencyInjection
         bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null);
 
         /// <summary>
+        /// try to locate a specific type
+        /// </summary>
+        /// <param name="type">type to locate</param>
+        /// <param name="value">located value</param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null);
+
+
+        /// <summary>
         /// Locate an export by name
         /// </summary>
         /// <param name="exportName">name of export to locate</param>
