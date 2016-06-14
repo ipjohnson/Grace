@@ -433,19 +433,56 @@ namespace Grace.DependencyInjection.Impl
                     }
                     else
                     {
-                        if (exportStrategies.Any(exportStrategy.Equals))
+                        for(int i = 0; i < exportStrategies.Length; i++)
                         {
-                            return;
+                            if(exportStrategy.Equals(exportStrategies[i]))
+                            {
+                                return;
+                            }
                         }
 
-                        List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+                        if (comparer == null)
+                        {
+                            var newArray = new IExportStrategy[exportStrategies.Length + 1];
 
-                        newList.Sort((x, y) => comparer(x, y));
+                            int currentIndex = 0;
+                            int priority = exportStrategy.Priority;
+                            bool added = false;
 
-                        // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
-                        newList.Reverse();
+                            for(int i = 0; i < exportStrategies.Length; )
+                            {
+                                if(!added && exportStrategies[i].Priority < priority)
+                                {
+                                    newArray[currentIndex] = exportStrategy;
+                                    added = true;
+                                }
+                                else
+                                {
+                                    newArray[currentIndex] = exportStrategies[i];
+                                    i++;
+                                }
 
-                        Interlocked.Exchange(ref exportStrategies, newList.ToArray());                        
+                                currentIndex++;
+                            }
+
+                            if(!added)
+                            {
+                                newArray[exportStrategies.Length] = exportStrategy;
+                            }
+
+                            Interlocked.Exchange(ref exportStrategies, newArray);
+                        }
+                        else
+                        {
+                            List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+
+                            newList.Sort((x, y) => comparer(x, y));
+
+                            // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
+                            newList.Reverse();
+
+                            Interlocked.Exchange(ref exportStrategies, newList.ToArray());
+                        }                       
                     }
 
                     if (!exportStrategies[0].HasConditions)

@@ -137,7 +137,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
                 Dictionary<Type, IExportStrategyCollection> newExports =
                     new Dictionary<Type, IExportStrategyCollection>(exports);
 
-                returnValue = new ExportStrategyCollection(this, DependencyInjectionContainer.CompareExportStrategies);
+                returnValue = new ExportStrategyCollection(this, null);
 
                 newExports[exportType] = returnValue;
 
@@ -160,7 +160,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
             {
                 if (!exports.TryGetValue(exportType, out collection))
                 {
-                    collection = new ExportStrategyCollection(this, DependencyInjectionContainer.CompareExportStrategies);
+                    collection = new ExportStrategyCollection(this, null);
 
                     exports[exportType] = collection;
                 }

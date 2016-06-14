@@ -14,7 +14,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void SingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+				new InjectionKernelManager(null, null);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
                                     null,
@@ -36,7 +36,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void WeakSingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+				new InjectionKernelManager(null, null);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
                     null,

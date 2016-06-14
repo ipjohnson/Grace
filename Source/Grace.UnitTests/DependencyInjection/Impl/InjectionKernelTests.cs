@@ -24,7 +24,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ExtraDataTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 null,
@@ -46,7 +46,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void RootCloneExceptionTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 null,
@@ -68,7 +68,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void CloneTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 new FauxInjectionScope(),
@@ -99,7 +99,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void AddExportTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 null,
@@ -123,7 +123,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void RemoveExportTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 null,
@@ -158,7 +158,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ChildScopeTest()
         {
             InjectionKernelManager kernelManager =
-                new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies);
+                new InjectionKernelManager(null, null);
 
             InjectionKernel injectionKernel = new InjectionKernel(kernelManager,
                 null,
@@ -189,7 +189,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void BasicInstanceExportTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 string.Empty,
@@ -216,7 +216,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void DisposeInjectionKernel()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 string.Empty,
@@ -245,7 +245,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void DisposeInjectionKernelWithParent()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 string.Empty,
@@ -270,7 +270,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void DisposeInjectionKernelAndLifestyle()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 string.Empty,
@@ -295,7 +295,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
             DisposalScope disposalScope = new DisposalScope();
 
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
 
             InjectionKernel injectionKernel =
                 new InjectionKernel(manager,
@@ -326,7 +326,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateByNameInParent()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 null,
@@ -345,7 +345,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateByNameWithContextInParent()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -364,7 +364,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -389,7 +389,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllWithFilterTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -421,7 +421,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllGenericTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -446,7 +446,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllGenericFromParentTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -473,7 +473,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateWithKeyTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -495,7 +495,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateObservableCollection()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -522,7 +522,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllGenericFromParentCombinedTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -552,7 +552,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LocateAllGenericWithFilterTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -579,7 +579,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ConstrainedTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -607,7 +607,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void MultipleImportConstructor()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -631,7 +631,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void MultipleImportMissingConstructorBestMatch()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -654,7 +654,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportIEnumerable()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -680,7 +680,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportIReadOnlyCollection()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -705,7 +705,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportObservableCollection()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -732,7 +732,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportOwnedTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -749,7 +749,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportLazyTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
 
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
@@ -775,7 +775,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportDisposalScope()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -794,7 +794,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportFunc()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -823,7 +823,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void GetAllStrategiesByType()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -849,7 +849,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void GetAllStrategiesByName()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -875,7 +875,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void GetAllStrategiesByTypeFiltered()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -904,7 +904,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void GetAllStrategiesByNameFiltered()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -937,7 +937,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ConfigurationModuleTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -954,7 +954,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void AddExportStrategy()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -981,7 +981,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void OwnedResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1007,7 +1007,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void FuncResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1028,7 +1028,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void GenericFuncImport()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1054,7 +1054,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void OwnedFuncResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1090,7 +1090,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void FuncOwnedResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1133,7 +1133,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void LazyResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1152,7 +1152,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ReadOnlyCollectionResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1178,7 +1178,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void IReadOnlyCollectionResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1204,7 +1204,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void IReadOnlyListResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1230,7 +1230,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ArrayResolve()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1255,7 +1255,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void DisposalScopeImportTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1274,7 +1274,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void InjectionContextImportTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1293,7 +1293,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void TransientInjectionContextImportTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1314,7 +1314,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void NonTransientInjectionContextImportTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1335,7 +1335,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void ImportFuncType()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1357,7 +1357,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void CreateFuncType()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -1379,7 +1379,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void AssemblyExportInterfaceTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",

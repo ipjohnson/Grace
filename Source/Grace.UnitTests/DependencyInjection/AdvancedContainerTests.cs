@@ -543,5 +543,53 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.NotNull(constructor);
         }
         #endregion
+
+        #region Registration Order Test
+        [Fact]
+        public void ContainerKeepRegistrationOrder()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(
+                c => 
+                {
+                    c.ExportAs<SimpleObjectA, ISimpleObject>();
+                    c.ExportAs<SimpleObjectB, ISimpleObject>();
+                    c.ExportAs<SimpleObjectC, ISimpleObject>();
+                    c.ExportAs<SimpleObjectD, ISimpleObject>();
+                    c.ExportAs<SimpleObjectE, ISimpleObject>();
+                });
+
+            var exports = container.Locate<ISimpleObject[]>();
+
+            Assert.Equal(5, exports.Length);
+            Assert.IsType<SimpleObjectA>(exports[0]);
+            Assert.IsType<SimpleObjectB>(exports[1]);
+            Assert.IsType<SimpleObjectC>(exports[2]);
+            Assert.IsType<SimpleObjectD>(exports[3]);
+            Assert.IsType<SimpleObjectE>(exports[4]);
+
+            var container2 = new DependencyInjectionContainer();
+
+            container2.Configure(
+                c =>
+                {
+                    c.ExportAs<SimpleObjectE, ISimpleObject>();
+                    c.ExportAs<SimpleObjectD, ISimpleObject>();
+                    c.ExportAs<SimpleObjectC, ISimpleObject>();
+                    c.ExportAs<SimpleObjectB, ISimpleObject>();
+                    c.ExportAs<SimpleObjectA, ISimpleObject>();
+                });
+
+            exports = container2.Locate<ISimpleObject[]>();
+
+            Assert.Equal(5, exports.Length);
+            Assert.IsType<SimpleObjectE>(exports[0]);
+            Assert.IsType<SimpleObjectD>(exports[1]);
+            Assert.IsType<SimpleObjectC>(exports[2]);
+            Assert.IsType<SimpleObjectB>(exports[3]);
+            Assert.IsType<SimpleObjectA>(exports[4]);
+        }
+        #endregion
     }
 }

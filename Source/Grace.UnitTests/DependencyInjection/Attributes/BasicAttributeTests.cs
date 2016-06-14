@@ -11,7 +11,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void BasicServiceTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
 				"RootScope",
@@ -29,7 +29,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportCostructorTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
 				"RootScope",
@@ -47,7 +47,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportPropertyTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -65,7 +65,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportMethodTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -84,7 +84,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ActivationMethodTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",
@@ -104,7 +104,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ComplexTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
                 "RootScope",

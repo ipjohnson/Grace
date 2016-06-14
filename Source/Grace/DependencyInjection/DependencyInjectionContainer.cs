@@ -508,34 +508,6 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// This method compares 2 export strategies in a particular environment using ExportEnvironment attributes and ExportPriority attributes
-        /// </summary>
-        /// <param name="x">x compare object</param>
-        /// <param name="y">y compare object</param>
-        /// <returns>compare value</returns>
-        public static int CompareExportStrategies(IExportStrategy x, IExportStrategy y)
-        {
-            int returnValue = 0;
-            
-            if (x.Priority > y.Priority)
-            {
-                returnValue = 1;
-            }
-            else if (x.Priority < y.Priority)
-            {
-                returnValue = -1;
-            }
-            else if (x.ActivationType != null &&
-                        y.ActivationType != null)
-            {
-                // all things being equal sort alphabetically by class name
-                returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
-            }
-
-            return returnValue;
-        }
-
-        /// <summary>
         /// dispose implementation
         /// </summary>
         /// <param name="dispose"></param>

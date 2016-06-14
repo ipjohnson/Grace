@@ -11,7 +11,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void NamedCloneTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel kernel = new InjectionKernel(manager,
                     null,
                     "RootScope",
@@ -32,7 +32,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void NamedCloneWithRegistrationTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel kernel = new InjectionKernel(manager,
                     null,
                     "RootScope",
@@ -59,7 +59,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void NonNamedCloneTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel kernel = new InjectionKernel(manager,
                     null,
                     "RootScope",
@@ -78,7 +78,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
         public void NonNamedCloneWithRegistrationTest()
         {
             InjectionKernelManager manager = new InjectionKernelManager(null,
-                DependencyInjectionContainer.CompareExportStrategies);
+                null);
             InjectionKernel kernel = new InjectionKernel(manager,
                 null,
                 "RootScope",

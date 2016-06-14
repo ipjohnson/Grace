@@ -11,7 +11,6 @@ namespace Grace.DependencyInjection
 {
     public class KernelConfiguration : IKernelConfiguration
     {
-        private ExportStrategyComparer _comparer;
         private Func<IInjectionScope, Type, ConstructorInfo> _constructorPicker;
         private Func<IDisposalScope, IInjectionScope, IInjectionContext> _contextCreation;
         private Func<IInjectionScope, Type, ICompiledExportStrategy> _exportStrategyProvider;
@@ -36,19 +35,7 @@ namespace Grace.DependencyInjection
             set { _closedGenericProvider = value; }
         }
 
-        public ExportStrategyComparer Comparer
-        {
-            get
-            {
-                if(_comparer == null)
-                {
-                    _comparer = DependencyInjectionContainer.CompareExportStrategies;
-                }
-
-                return _comparer;
-            }
-            set { _comparer = value; }
-        }
+        public ExportStrategyComparer Comparer { get; set; }
 
         public Func<IInjectionScope, Type, ConstructorInfo> ConstructorPicker
         {

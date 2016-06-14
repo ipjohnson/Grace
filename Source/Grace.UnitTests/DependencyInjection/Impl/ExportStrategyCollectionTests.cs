@@ -14,7 +14,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
 			collection.AddExport(new FauxExportStrategy(() => 5), null);
 
@@ -26,7 +26,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
 			collection.AddExport(new FauxExportStrategy(() => 5), null);
 
@@ -40,7 +40,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
 			FauxExportStrategy tenExport = new FauxExportStrategy(() => 10) { Priority = 10 };
 
@@ -61,7 +61,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
             collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
@@ -75,7 +75,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
             collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
@@ -94,7 +94,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
             collection.AddExport(new FauxExportStrategy(() => 5) { Priority = 5 }, null);
             collection.AddExport(new FauxExportStrategy(() => 10) { Priority = 10 }, null);
@@ -114,7 +114,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		{
 			ExportStrategyCollection collection =
 				new ExportStrategyCollection(new FauxInjectionScope(),
-					DependencyInjectionContainer.CompareExportStrategies);
+					null);
 
 			object activated = collection.Activate(null, null, new FauxInjectionContext(), null, null);
 

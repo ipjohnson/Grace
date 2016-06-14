@@ -11,7 +11,7 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void AttributedOpenGenericTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies);
+				null);
 
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
                 null,
