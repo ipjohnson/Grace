@@ -430,46 +430,80 @@ namespace Grace.DependencyInjection.Impl
                         IExportStrategy[] newArray = new IExportStrategy[] { exportStrategy };
 
                         Interlocked.Exchange(ref exportStrategies, newArray);
+
+                        if(!exportStrategy.HasConditions)
+                        {                            
+                            Interlocked.Exchange(ref primaryStrategy, null);
+                        }
                     }
                     else
                     {
-                        for(int i = 0; i < exportStrategies.Length; i++)
-                        {
-                            if(exportStrategy.Equals(exportStrategies[i]))
-                            {
-                                return;
-                            }
-                        }
-
                         if (comparer == null)
-                        {
+                        { 
+                            int priority = exportStrategy.Priority;
+                            bool hasPriority = priority != 0;
+
+                            for (int i = 0; i < exportStrategies.Length; i++)
+                            {
+                                var strategy = exportStrategies[i];
+
+                                if (exportStrategy.Equals(strategy))
+                                {
+                                    return;
+                                }
+                                else if (strategy.Priority > 0)
+                                {
+                                    hasPriority = true;
+                                }
+                            }
+
                             var newArray = new IExportStrategy[exportStrategies.Length + 1];
 
-                            int currentIndex = 0;
-                            int priority = exportStrategy.Priority;
-                            bool added = false;
+                            IExportStrategy primary = null;
 
-                            for(int i = 0; i < exportStrategies.Length; )
+                            if (priority == 0 && !hasPriority)
                             {
-                                if(!added && exportStrategies[i].Priority < priority)
-                                {
-                                    newArray[currentIndex] = exportStrategy;
-                                    added = true;
-                                }
-                                else
-                                {
-                                    newArray[currentIndex] = exportStrategies[i];
-                                    i++;
-                                }
-
-                                currentIndex++;
-                            }
-
-                            if(!added)
-                            {
+                                Array.Copy(exportStrategies, newArray, exportStrategies.Length);
                                 newArray[exportStrategies.Length] = exportStrategy;
-                            }
 
+                                if(!exportStrategy.HasConditions)
+                                {
+                                    primary = exportStrategy;
+                                }
+                            }
+                            else
+                            {
+                                bool added = false;
+                                int currentIndex = 0;
+
+                                for (int i = 0; i < exportStrategies.Length;)
+                                {
+                                    if (!added && exportStrategies[i].Priority < priority)
+                                    {
+                                        newArray[currentIndex] = exportStrategy;
+                                        added = true;
+                                    }
+                                    else
+                                    {
+                                        newArray[currentIndex] = exportStrategies[i];
+                                        i++;
+                                    }
+
+                                    currentIndex++;
+                                }
+
+                                if (!added)
+                                {
+                                    newArray[exportStrategies.Length] = exportStrategy;
+                                }
+
+                                if(!newArray[0].HasConditions)
+                                {
+                                    primary = newArray[0];
+                                }
+                            }
+                                                        
+                            Interlocked.Exchange(ref primaryStrategy, primary);
                             Interlocked.Exchange(ref exportStrategies, newArray);
                         }
                         else
@@ -478,21 +512,21 @@ namespace Grace.DependencyInjection.Impl
 
                             newList.Sort((x, y) => comparer(x, y));
 
-                            // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
+                            // Reverse so it returns highest priority
                             newList.Reverse();
 
                             Interlocked.Exchange(ref exportStrategies, newList.ToArray());
-                        }                       
-                    }
 
-                    if (!exportStrategies[0].HasConditions)
-                    {
-                        Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
-                    }
-                    else
-                    {
-                        Interlocked.Exchange(ref primaryStrategy, null);
-                    }
+                            if (!exportStrategies[0].HasConditions)
+                            {
+                                Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
+                            }
+                            else
+                            {
+                                Interlocked.Exchange(ref primaryStrategy, null);
+                            }
+                        }                        
+                    }                    
                 }
                 else
                 {
@@ -531,7 +565,6 @@ namespace Grace.DependencyInjection.Impl
                         if (exportStrategies.Length > 0 && !exportStrategies[0].HasConditions)
                         {
                             Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
-
                         }
                         else
                         {
