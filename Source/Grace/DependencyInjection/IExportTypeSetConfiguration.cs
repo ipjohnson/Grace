@@ -199,6 +199,12 @@ namespace Grace.DependencyInjection
         /// </summary>
         LifestyleBulkConfiguration Lifestyle { get; }
 
+        /// <summary>
+        /// Process dpendency injection attributes on type
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ProcessAttributes();
+
 		/// <summary>
 		/// Allows you to filter out types based on the provided where clause
 		/// </summary>

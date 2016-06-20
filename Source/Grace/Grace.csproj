@@ -114,6 +114,7 @@
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
     <Compile Include="DependencyInjection\IKernelConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\AttributeProcesing.cs" />
     <Compile Include="DependencyInjection\Impl\FuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionProvider.cs" />

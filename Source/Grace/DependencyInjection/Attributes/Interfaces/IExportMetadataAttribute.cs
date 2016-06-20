@@ -13,6 +13,6 @@ namespace Grace.DependencyInjection.Attributes.Interfaces
 		/// </summary>
 		/// <param name="attributedType">attributed type</param>
 		/// <returns>a named piece of metadata</returns>
-		KeyValuePair<string, object> ProvideMetadata(Type attributedType);
+		IEnumerable<KeyValuePair<string, object>> ProvideMetadata(Type attributedType);
 	}
 }

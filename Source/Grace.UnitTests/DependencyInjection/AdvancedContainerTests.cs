@@ -544,6 +544,41 @@ namespace Grace.UnitTests.DependencyInjection
         }
         #endregion
 
+        #region ProcessAttributes tests
+        [Fact]
+        public void ExportByInterfacesProcessAttributes()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespaceAs<IAttributeBasicService>()))
+                                        .ByInterfaces().ProcessAttributes());
+
+            var instance = container.Locate<IAttributedImportMethodService>();
+
+
+            Assert.NotNull(instance);
+            Assert.IsType<AttributeBasicService>(instance.BasicService);
+        }
+
+        [Fact]
+        public void ExportByInterfacesProcessAttributesPriority()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespaceAs<IAttributeBasicService>()))
+                                        .ByInterfaces().ProcessAttributes());
+
+            var instances = container.Locate<IPriorityAttributeService[]>();
+
+            Assert.Equal(5, instances.Length);
+            Assert.IsType<PriorityAttributeServiceE>(instances[0]);
+            Assert.IsType<PriorityAttributeServiceD>(instances[1]);
+            Assert.IsType<PriorityAttributeServiceC>(instances[2]);
+            Assert.IsType<PriorityAttributeServiceB>(instances[3]);
+            Assert.IsType<PriorityAttributeServiceA>(instances[4]);
+        }
+        #endregion
+
         #region Registration Order Test
         [Fact]
         public void ContainerKeepRegistrationOrder()

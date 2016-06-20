@@ -42,14 +42,14 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// If a concrete type is requested and it is not registered an export strategy will be created.
+        /// If a concrete type is requested and it is not registered, an export strategy will be created.
         /// Note: It will be scanned for attributes
         /// </summary>
         public bool AutoRegisterUnknown { get; set; }
 
         /// <summary>
         /// If true exception will be thrown if a type can't be located, otherwise it will be caught and errors logged
-        /// False by default
+        /// True by default
         /// </summary>
         public bool ThrowExceptions { get; set; }
 
@@ -146,8 +146,7 @@ namespace Grace.DependencyInjection
         {
             RootScope.AddMissingExportStrategyProvider(exportStrategyProvider);
         }
-
-
+        
         /// <summary>
         /// Add an object for disposal 
         /// </summary>

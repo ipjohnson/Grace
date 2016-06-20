@@ -44,6 +44,7 @@ namespace Grace.DependencyInjection.Impl
         private Func<Type, ILifestyle> _lifestyleFunc;
         private Func<Type, object> _withKeyFunc;
         private bool _importAttributedMembers;
+        private bool _processAttributes;
 
         /// <summary>
         /// Default Constructor
@@ -496,6 +497,18 @@ namespace Grace.DependencyInjection.Impl
         public IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude)
         {
             _excludeClauses.Add(exclude);
+
+            return this;
+        }
+
+
+        /// <summary>
+        /// Process all attributes on type
+        /// </summary>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ProcessAttributes()
+        {
+            _processAttributes = true;
 
             return this;
         }
@@ -972,8 +985,15 @@ namespace Grace.DependencyInjection.Impl
                 ProcessImportAttributedMembers(exportedType, exportStrategy);
             }
 
+            if(_processAttributes)
+            {
+                exportStrategy.ProcessClassAttributes();
+                exportStrategy.ProcessMemeberAttributes();
+            }
+
             return exportStrategy;
         }
+        
 
         private void ProcessImportAttributedMembers(Type exportedType, ICompiledExportStrategy exportStrategy)
         {
