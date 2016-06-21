@@ -626,5 +626,23 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.IsType<SimpleObjectA>(exports[4]);
         }
         #endregion
+        
+        
+        #region Lifetime resolve IEnumerable Test
+
+        [Fact]
+        public void BeginLifeTimeScopeRequestIEnumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IEnumerable<ISimpleObject> objects;
+
+                Assert.True(scope.TryLocate(out objects));
+            }
+        }
+
+        #endregion
     }
 }
