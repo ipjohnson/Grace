@@ -602,7 +602,7 @@ namespace Grace.DependencyInjection.Impl
                     returnValue = ParentScope.Locate(objectType, injectionContext, consider, locateKey);
                 }
 
-                if (returnValue != null || injectionContext.RequestingScope != this)
+                if (returnValue != null ||  (injectionContext.RequestingScope != this && this.ParentScope != null))
                 {
                     return returnValue;
                 }
