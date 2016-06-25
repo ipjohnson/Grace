@@ -200,7 +200,7 @@ namespace Grace.DependencyInjection
         LifestyleBulkConfiguration Lifestyle { get; }
 
         /// <summary>
-        /// Process dpendency injection attributes on type
+        /// Process dependency injection attributes on type
         /// </summary>
         /// <returns></returns>
         IExportTypeSetConfiguration ProcessAttributes();

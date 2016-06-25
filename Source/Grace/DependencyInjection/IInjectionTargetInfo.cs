@@ -27,10 +27,15 @@ namespace Grace.DependencyInjection
 		[NotNull]
 		object InjectionTarget { get; }
 
-		/// <summary>
-		/// This is the property or parameter name being injected
-		/// </summary>
-		[NotNull]
+        /// <summary>
+        /// Type of injection being done, constructor, property, or method
+        /// </summary>
+        ExportStrategyDependencyType InjectionDependencyType { get; }
+
+            /// <summary>
+            /// This is the property or parameter name being injected
+            /// </summary>
+            [NotNull]
 		string InjectionTargetName { get; }
 
 		/// <summary>
@@ -60,5 +65,15 @@ namespace Grace.DependencyInjection
 		/// Locate type being used
 		/// </summary>
 		Type LocateType { get; }
+
+        /// <summary>
+        /// Is the injection required
+        /// </summary>
+        bool IsRequired { get; }
+
+        /// <summary>
+        /// Default value for injection
+        /// </summary>
+        object DefaultValue { get; }
 	}
 }

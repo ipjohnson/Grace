@@ -83,36 +83,36 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         {
             CollectionActivateMethod = typeof(IExportStrategyCollection).GetRuntimeMethod("Activate",
                 new[]
-				{
-					typeof(string),
-					typeof(TypeWrapper),
-					typeof(IInjectionContext),
-					typeof(ExportStrategyFilter),
-					typeof(object)
-				});
+                {
+                    typeof(string),
+                    typeof(TypeWrapper),
+                    typeof(IInjectionContext),
+                    typeof(ExportStrategyFilter),
+                    typeof(object)
+                });
 
 
             CreateContextMethod = typeof(IExportLocator).GetRuntimeMethod("CreateContext", new[] { typeof(IDisposalScope) });
 
             LocateByTypeMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
                 new[]
-				{
-					typeof(IInjectionContext),
-					typeof(ExportStrategyFilter),
-					typeof(object)
-				});
+                {
+                    typeof(IInjectionContext),
+                    typeof(ExportStrategyFilter),
+                    typeof(object)
+                });
 
 
             TryLocateByTypeMethod = typeof(IExportLocator).GetRuntimeMethods().First(m => m.Name == "TryLocate");
 
             LocateByNameMethod = typeof(IExportLocator).GetRuntimeMethod("Locate",
                 new[]
-				{
-					typeof(string),
-					typeof(IInjectionContext),
-					typeof(ExportStrategyFilter),
-					typeof(object)
-				});
+                {
+                    typeof(string),
+                    typeof(IInjectionContext),
+                    typeof(ExportStrategyFilter),
+                    typeof(object)
+                });
 
             InjectionScopeLocateAllMethod =
                 typeof(IExportLocator).GetRuntimeMethods()
@@ -123,23 +123,23 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             InjectionContextLocateByNameMethod = typeof(IInjectionContext).GetRuntimeMethod("Locate", new[] { typeof(string) });
 
             CloneInjectionContextMethod = typeof(IInjectionContext).GetRuntimeMethod("Clone", new Type[0]);
-            
+
             PushCurrentInjectionInfo = typeof(IInjectionContext).GetRuntimeMethod("PushCurrentInjectionInfo",
                                                                                                             new[]
-																											{
-																												typeof(IExportStrategy)
-																											});
+                                                                                                            {
+                                                                                                                typeof(IExportStrategy)
+                                                                                                            });
 
             PopCurrentInjectionInfo = typeof(IInjectionContext).GetRuntimeMethod("PopCurrentInjectionInfo", new Type[0]);
 
             ActivateValueProviderMethod = typeof(IExportValueProvider).GetRuntimeMethod("Activate",
                 new[]
-				{
-					typeof(IInjectionScope),
-					typeof(IInjectionContext),
-					typeof(ExportStrategyFilter),
-					typeof(object)
-				});
+                {
+                    typeof(IInjectionScope),
+                    typeof(IInjectionContext),
+                    typeof(ExportStrategyFilter),
+                    typeof(object)
+                });
 
             MissingDependencyExceptionConstructor =
                 typeof(MissingDependencyException).GetTypeInfo().DeclaredConstructors.First(
@@ -159,39 +159,39 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
             AddToDisposalScopeMethod = typeof(IDisposalScope).GetRuntimeMethod("AddDisposable",
                 new[]
-				{
-					typeof(IDisposable),
-					typeof(BeforeDisposalCleanupDelegate)
-				});
+                {
+                    typeof(IDisposable),
+                    typeof(BeforeDisposalCleanupDelegate)
+                });
 
             ExecuteEnrichWithDelegateMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("ExecuteEnrichWithDelegate",
                 new[]
-				{
-					typeof(EnrichWithDelegate),
-					typeof(IInjectionScope),
-					typeof(IInjectionContext),
-					typeof(object)
-				});
+                {
+                    typeof(EnrichWithDelegate),
+                    typeof(IInjectionScope),
+                    typeof(IInjectionContext),
+                    typeof(object)
+                });
 
             ConvertNamedExportToPropertyTypeMethod =
                 typeof(BaseCompiledExportDelegate).GetRuntimeMethod("ConvertNamedExportToPropertyType",
                     new[]
-					{
-						typeof(object), 
-						typeof(TypeWrapper)
-					});
+                    {
+                        typeof(object),
+                        typeof(TypeWrapper)
+                    });
 
             AddLocationInformationEntryMethod = typeof(LocateException).GetRuntimeMethod("AddLocationInformationEntry",
                 new[]
-				{
-					typeof(LocationInformationEntry)
-				});
-
-            LocateKeyValueProviderMethod = typeof(ILocateKeyValueProvider).GetRuntimeMethod("ProvideValue", 
-                new []
                 {
-                    typeof(IInjectionScope), 
-                    typeof(IInjectionContext), 
+                    typeof(LocationInformationEntry)
+                });
+
+            LocateKeyValueProviderMethod = typeof(ILocateKeyValueProvider).GetRuntimeMethod("ProvideValue",
+                new[]
+                {
+                    typeof(IInjectionScope),
+                    typeof(IInjectionContext),
                     typeof(Type)
                 });
         }
@@ -427,32 +427,41 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             if (importPropertyInfo.ImportName != null)
             {
                 targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
-                                                                    activationTypeAttributes,
-                                                                    importPropertyInfo.Property,
-                                                                    attributes,
-                                                                    attributes,
-                                                                    importPropertyInfo.ImportName,
-                                                                    null);
+                                                     activationTypeAttributes,
+                                                     importPropertyInfo.Property,
+                                                     ExportStrategyDependencyType.Property,
+                                                     attributes,
+                                                     attributes,
+                                                     importPropertyInfo.ImportName,
+                                                     null,
+                                                     importPropertyInfo.IsRequired,
+                                                     importPropertyInfo.DefaultValue);
             }
             else if (InjectionKernel.ImportTypeByName(importPropertyInfo.Property.PropertyType))
             {
                 targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
-                                                                    activationTypeAttributes,
-                                                                    importPropertyInfo.Property,
-                                                                    attributes,
-                                                                    attributes,
-                                                                    importPropertyInfo.Property.Name,
-                                                                    null);
+                                                     activationTypeAttributes,
+                                                     importPropertyInfo.Property,
+                                                     ExportStrategyDependencyType.Property,
+                                                     attributes,
+                                                     attributes,
+                                                     importPropertyInfo.Property.Name,
+                                                     null,
+                                                     importPropertyInfo.IsRequired,
+                                                     importPropertyInfo.DefaultValue);
             }
             else
             {
                 targetInfo = new InjectionTargetInfo(exportDelegateInfo.ActivationType,
-                                                                        activationTypeAttributes,
-                                                                        importPropertyInfo.Property,
-                                                                        attributes,
-                                                                        attributes,
-                                                                        null,
-                                                                        importPropertyInfo.Property.PropertyType);
+                                                     activationTypeAttributes,
+                                                     importPropertyInfo.Property,
+                                                     ExportStrategyDependencyType.Property,
+                                                     attributes,
+                                                     attributes,
+                                                     null,
+                                                     importPropertyInfo.Property.PropertyType,
+                                                     importPropertyInfo.IsRequired,
+                                                     importPropertyInfo.DefaultValue);
             }
 
             ParameterExpression importVariable = null;
@@ -470,11 +479,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
             importVariable = CreateImportExpression(importPropertyInfo.Property.PropertyType,
                                                                         targetInfo,
-                                                                        ExportStrategyDependencyType.Property,
                                                                         importPropertyInfo.ImportName,
                                                                         importPropertyInfo.Property.Name + "Import",
-                                                                        importPropertyInfo.IsRequired,
-                                                                        importPropertyInfo.DefaultValue,
                                                                         importPropertyInfo.ValueProvider,
                                                                         importPropertyInfo.ExportStrategyFilter,
                                                                         importPropertyInfo.LocateKey,
@@ -547,14 +553,17 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                     if (methodParamInfo != null)
                     {
-                        InjectionTargetInfo injectionTargetInfo = new InjectionTargetInfo
-                                                                                        (exportDelegateInfo.ActivationType,
-                                                                                            activationTypeAttributes,
-                                                                                            parameter,
-                                                                                            parameterAttributes,
-                                                                                            methodAttributes,
-                                                                                            methodParamInfo.ImportName,
-                                                                                            parameter.ParameterType);
+                        InjectionTargetInfo injectionTargetInfo =
+                            new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+                                                    activationTypeAttributes,
+                                                    parameter,
+                                                    ExportStrategyDependencyType.MethodParameter,
+                                                    parameterAttributes,
+                                                    methodAttributes,
+                                                    methodParamInfo.ImportName,
+                                                    parameter.ParameterType,
+                                                    methodParamInfo.IsRequired,
+                                                    methodParamInfo.DefaultValue);
 
                         if (methodParamInfo.AfterConstruction.HasValue)
                         {
@@ -571,11 +580,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                         ParameterExpression importParameter =
                             CreateImportExpression(parameter.ParameterType,
                                                             injectionTargetInfo,
-                                                            ExportStrategyDependencyType.MethodParameter,
                                                             methodParamInfo.ImportName,
                                                             null,
-                                                            methodParamInfo.IsRequired,
-                                                            methodParamInfo.DefaultValue,
                                                             methodParamInfo.ValueProvider,
                                                             methodParamInfo.Filter,
                                                             methodParamInfo.LocateKey,
@@ -586,14 +592,24 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     }
                     else
                     {
-                        InjectionTargetInfo injectionTargetInfo = new InjectionTargetInfo
-                                                                                        (exportDelegateInfo.ActivationType,
-                                                                                            activationTypeAttributes,
-                                                                                            parameter,
-                                                                                            parameterAttributes,
-                                                                                            methodAttributes,
-                                                                                            null,
-                                                                                            parameter.ParameterType);
+                        object defaultValue = null;
+
+                        if (parameter.HasDefaultValue)
+                        {
+                            defaultValue = parameter.DefaultValue;
+                        }
+
+                        InjectionTargetInfo injectionTargetInfo =
+                            new InjectionTargetInfo(exportDelegateInfo.ActivationType,
+                                                    activationTypeAttributes,
+                                                    parameter,
+                                                    ExportStrategyDependencyType.MethodParameter,
+                                                    parameterAttributes,
+                                                    methodAttributes,
+                                                    null,
+                                                    parameter.ParameterType,
+                                                    !parameter.IsOptional,
+                                                    defaultValue);
 
                         List<Expression> importExpressionList = null;
 
@@ -601,22 +617,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                         {
                             importExpressionList = bodyExpressions;
                         }
-
-                        object defaultValue = null;
-
-                        if(parameter.HasDefaultValue)
-                        {
-                            defaultValue = parameter.DefaultValue;
-                        }
-
+                        
                         ParameterExpression importParameter =
                             CreateImportExpression(parameter.ParameterType,
                                                             injectionTargetInfo,
-                                                            ExportStrategyDependencyType.MethodParameter,
                                                             null,
                                                             null,
-                                                            !parameter.IsOptional,
-                                                            defaultValue,
                                                             null,
                                                             null,
                                                             null,
@@ -783,7 +789,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         /// </summary>
         /// <param name="importType"></param>
         /// <param name="targetInfo"></param>
-        /// <param name="dependencyType"></param>
         /// <param name="exportName"></param>
         /// <param name="variableName"></param>
         /// <param name="isRequired"></param>
@@ -796,11 +801,8 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         /// <returns></returns>
         protected virtual ParameterExpression CreateImportExpression(Type importType,
             IInjectionTargetInfo targetInfo,
-            ExportStrategyDependencyType dependencyType,
             string exportName,
             string variableName,
-            bool isRequired,
-            object defaultValue,
             IExportValueProvider valueProvider,
             ExportStrategyFilter exportStrategyFilter,
             ILocateKeyValueProvider locateKey,
@@ -835,7 +837,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
             dependencies.Add(new ExportStrategyDependency
             {
-                DependencyType = dependencyType,
+                DependencyType = targetInfo.InjectionDependencyType,
                 HasValueProvider = valueProvider != null,
                 ImportName = dependencyName,
                 ImportType = importType,
@@ -854,7 +856,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             {
                 if (exportStrategyFilter != null)
                 {
-                    ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter, locateKey, isRequired, defaultValue, expressionList);
+                    ImportFromRequestingScopeWithFilter(importType, targetInfo, exportName, importVariable, exportStrategyFilter, locateKey, expressionList);
                 }
                 else
                 {
@@ -868,11 +870,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                          !typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(importType.GetTypeInfo()) &&
                          !InjectionKernel.ImportTypeByName(importType))
                     {
-                        ImportForRootScope(importType, targetInfo, exportName, importVariable, locateKey, isRequired, defaultValue);
+                        ImportForRootScope(importType, targetInfo, exportName, importVariable, locateKey);
                     }
                     else
                     {
-                        ImportFromRequestingScope(importType, targetInfo, exportName, importVariable, isRequired, defaultValue, locateKey, expressionList);
+                        ImportFromRequestingScope(importType, targetInfo, exportName, importVariable, locateKey, expressionList);
                     }
                 }
             }
@@ -941,9 +943,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             IInjectionTargetInfo targetInfo,
             string exportName,
             ParameterExpression importVariable,
-            ILocateKeyValueProvider locateKey,
-            bool isRequired,
-            object defaultValue)
+            ILocateKeyValueProvider locateKey)
         {
             Expression importTypeExpression = Expression.Constant(new TypeWrapper(importType));
             Expression exportNameExpression = Expression.Constant(exportName);
@@ -956,7 +956,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             IExportStrategyCollection collection =
                 owningScope.GetStrategyCollection(importType);
 
-            if (exportDelegateInfo.IsTransient || !isRequired)
+            if (exportDelegateInfo.IsTransient || !targetInfo.IsRequired)
             {
                 Expression rootIfExpression = Expression.IfThen(
                     Expression.Equal(importVariable, Expression.Constant(null)),
@@ -976,7 +976,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     MethodInfo closedLocate = null;
                     Expression assignStatement;
 
-                    if (isRequired)
+                    if (targetInfo.IsRequired)
                     {
                         closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
 
@@ -993,7 +993,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                         var typedVariable = Expression.Variable(importType);
 
-                        var callTryMethod = 
+                        var callTryMethod =
                             Expression.Call(
                                     Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
                                     closedLocate,
@@ -1010,7 +1010,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     requestScopeIfExpression
                         = Expression.IfThen(
                             Expression.Equal(importVariable, Expression.Constant(null)),
-                            assignStatement );
+                            assignStatement);
                 }
                 else
                 {
@@ -1048,12 +1048,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 nonRootObjectImportExpressions.Add(AddInjectionTargetInfo(targetInfo));
                 nonRootObjectImportExpressions.Add(tryCatchRequestExpression);
 
-                if(defaultValue != null)
+                if (targetInfo.DefaultValue != null)
                 {
-                    rootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
-                    nonRootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    rootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
+                    nonRootObjectImportExpressions.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
                 }
-                else if (isRequired)
+                else if (targetInfo.IsRequired)
                 {
                     rootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
                     nonRootObjectImportExpressions.Add(CreateRequiredStatement(importType, exportName, importVariable));
@@ -1081,11 +1081,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 objectImportExpression.Add(AddInjectionTargetInfo(targetInfo));
                 objectImportExpression.Add(tryCatchExpression);
 
-                if(defaultValue != null)
+                if (targetInfo.DefaultValue != null)
                 {
-                    objectImportExpression.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    objectImportExpression.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
                 }
-                else if (isRequired)
+                else if (targetInfo.IsRequired)
                 {
                     objectImportExpression.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1195,8 +1195,6 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             IInjectionTargetInfo targetInfo,
             string exportName,
             ParameterExpression importVariable,
-            bool isRequired,
-            object defaultValue,
             ILocateKeyValueProvider locateKey,
             List<Expression> expressionList)
         {
@@ -1208,7 +1206,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 exportName = targetInfo.InjectionTargetName.ToLowerInvariant();
             }
 
-            if (exportDelegateInfo.IsTransient || !isRequired)
+            if (exportDelegateInfo.IsTransient || !targetInfo.IsRequired)
             {
                 Expression requestScopeIfExpression;
 
@@ -1217,7 +1215,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     MethodInfo closedLocate = null;
                     Expression assignExpression;
 
-                    if (isRequired)
+                    if (targetInfo.IsRequired)
                     {
                         closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
 
@@ -1231,7 +1229,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     else
                     {
                         closedLocate = TryLocateByTypeMethod.MakeGenericMethod(importType);
-                        
+
                         var typedVariable = Expression.Variable(importType);
 
                         var callTryMethod = Expression.Call(Expression.PropertyOrField(injectionContextParameter, "RequestingScope"),
@@ -1277,11 +1275,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
 
-                if(defaultValue != null)
+                if (targetInfo.DefaultValue != null)
                 {
-                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
                 }
-                else if (isRequired)
+                else if (targetInfo.IsRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1329,12 +1327,12 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
-                
-                if (defaultValue != null)
+
+                if (targetInfo.DefaultValue != null)
                 {
-                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
                 }
-                else if (isRequired)
+                else if (targetInfo.IsRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1347,11 +1345,9 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             ParameterExpression importVariable,
             ExportStrategyFilter exportStrategyFilter,
             ILocateKeyValueProvider locateKey,
-            bool isRequired,
-            object defaultValue,
             List<Expression> expressionList)
         {
-            if (exportDelegateInfo.IsTransient || !isRequired)
+            if (exportDelegateInfo.IsTransient || !targetInfo.IsRequired)
             {
                 Expression requestScopeIfExpression;
 
@@ -1360,7 +1356,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     MethodInfo closedLocate = null;
                     Expression assignStatement;
 
-                    if (isRequired)
+                    if (targetInfo.IsRequired)
                     {
                         closedLocate = LocateByTypeMethod.MakeGenericMethod(importType);
 
@@ -1423,11 +1419,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 expressionList.Add(tryCatchExpression);
 
 
-                if (defaultValue != null)
+                if (targetInfo.DefaultValue != null)
                 {
-                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, defaultValue));
+                    expressionList.Add(CreateDefaultValueStatements(importType, importVariable, targetInfo.DefaultValue));
                 }
-                else if (isRequired)
+                else if (targetInfo.IsRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1476,7 +1472,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 expressionList.Add(AddInjectionTargetInfo(targetInfo));
                 expressionList.Add(tryCatchExpression);
 
-                if (isRequired)
+                if (targetInfo.IsRequired)
                 {
                     expressionList.Add(CreateRequiredStatement(importType, exportName, importVariable));
                 }
@@ -1530,7 +1526,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
             {
                 expressionList.Add(
                     Expression.Assign(importVariable,
-                                      Expression.Call(injectionContextParameter,CloneInjectionContextMethod)));
+                                      Expression.Call(injectionContextParameter, CloneInjectionContextMethod)));
 
                 returnValue = true;
             }
@@ -1559,11 +1555,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 {
                     MethodInfo createFuncMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateFunc",
                         new[]
-						{
-							typeof(IInjectionContext),
-							typeof(ExportStrategyFilter),
-							typeof(object)
-						});
+                        {
+                            typeof(IInjectionContext),
+                            typeof(ExportStrategyFilter),
+                            typeof(object)
+                        });
 
                     MethodInfo closedMethod = createFuncMethod.MakeGenericMethod(importType.GenericTypeArguments);
 
@@ -1582,11 +1578,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 {
                     MethodInfo createFuncMethod = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateFuncWithContext",
                         new[]
-						{
-							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter),
-							typeof(object)
-						});
+                        {
+                            typeof(IInjectionScope),
+                            typeof(ExportStrategyFilter),
+                            typeof(object)
+                        });
 
                     MethodInfo closedMethod = createFuncMethod.MakeGenericMethod(importType.GenericTypeArguments);
 
@@ -1605,11 +1601,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 {
                     MethodInfo funcMethodInfo = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateFuncType",
                         new[]
-						{
-							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter),
-							typeof(object)
-						});
+                        {
+                            typeof(IInjectionScope),
+                            typeof(ExportStrategyFilter),
+                            typeof(object)
+                        });
 
                     Expression assign = Expression.Assign(importVariable,
                         Expression.Call(funcMethodInfo,
@@ -1626,11 +1622,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 {
                     MethodInfo funcMethodInfo = typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateFuncTypeWithContext",
                         new[]
-						{
-							typeof(IInjectionScope),
-							typeof(ExportStrategyFilter),
-							typeof(object)
-						});
+                        {
+                            typeof(IInjectionScope),
+                            typeof(ExportStrategyFilter),
+                            typeof(object)
+                        });
 
                     Expression assign = Expression.Assign(importVariable,
                         Expression.Call(funcMethodInfo,
@@ -1646,7 +1642,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 else if ((genericType == typeof(IEnumerable<>) ||
                           genericType == typeof(ICollection<>) ||
                           genericType == typeof(IList<>) ||
-                          genericType == typeof(List<>)) && 
+                          genericType == typeof(List<>)) &&
                          comparerObject != null)
                 {
                     MethodInfo closeMethod = InjectionScopeLocateAllMethod.MakeGenericMethod(importType.GenericTypeArguments);
@@ -1667,7 +1663,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 }
                 else if ((genericType == typeof(ReadOnlyCollection<>) ||
                           genericType == typeof(IReadOnlyCollection<>) ||
-                          genericType == typeof(IReadOnlyList<>)) && 
+                          genericType == typeof(IReadOnlyList<>)) &&
                          comparerObject != null)
                 {
                     Type closedType = typeof(ReadOnlyCollection<>).MakeGenericType(importType.GenericTypeArguments);
@@ -1695,11 +1691,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     MethodInfo methodInfo =
                         typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateLazy",
                             new[]
-							{
-								typeof(IInjectionContext),
-								typeof(ExportStrategyFilter),
-								typeof(object)
-							});
+                            {
+                                typeof(IInjectionContext),
+                                typeof(ExportStrategyFilter),
+                                typeof(object)
+                            });
 
                     MethodInfo closedMethod = methodInfo.MakeGenericMethod(importType.GenericTypeArguments);
 
@@ -1719,11 +1715,11 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                     MethodInfo methodInfo =
                         typeof(BaseCompiledExportDelegate).GetRuntimeMethod("CreateOwned",
                             new[]
-							{
-								typeof(IInjectionContext),
-								typeof(ExportStrategyFilter),
-								typeof(object)
-							});
+                            {
+                                typeof(IInjectionContext),
+                                typeof(ExportStrategyFilter),
+                                typeof(object)
+                            });
 
                     MethodInfo closedMethod = methodInfo.MakeGenericMethod(importType.GenericTypeArguments);
 
