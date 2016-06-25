@@ -287,7 +287,7 @@ namespace Grace.DependencyInjection
                 _currentInjectionInfo = temp;
             }
 
-            _currentInjectionInfo[_resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
+            _currentInjectionInfo[_resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy, _targetInfo);
 
             _resolveDepth++;
         }

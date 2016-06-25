@@ -252,7 +252,7 @@
     <Compile Include="DependencyInjection\Impl\ICompiledExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IConfigurableExportStrategy.cs" />
     <Compile Include="DependencyInjection\IExportStrategyProvider.cs" />
-    <Compile Include="DependencyInjection\Impl\InjectionTargetInfo.cs" />
+    <Compile Include="DependencyInjection\InjectionTargetInfo.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceStrategy.cs" />
     <Compile Include="DependencyInjection\Exceptions\RootScopeCloneException.cs" />
     <Compile Include="DependencyInjection\Impl\LazyExportStrategy.cs" />

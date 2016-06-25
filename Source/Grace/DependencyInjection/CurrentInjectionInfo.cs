@@ -12,35 +12,34 @@ namespace Grace.DependencyInjection
 	public class CurrentInjectionInfo
 	{
 		private Guid? uniqueId;
-        private Type _activationType;
-        private IExportStrategy _currentExportStrategy;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		/// <param name="activationType">type being exported</param>
 		/// <param name="currentExportStrategy">strategy being injected</param>
-		public CurrentInjectionInfo(Type activationType, IExportStrategy currentExportStrategy)
+        /// <param name="targetInfo">injection target info</param>
+		public CurrentInjectionInfo(Type activationType, IExportStrategy currentExportStrategy, IInjectionTargetInfo targetInfo)
 		{
-			_activationType = activationType;
-			_currentExportStrategy = currentExportStrategy;
+			ActivationType = activationType;
+			CurrentExportStrategy = currentExportStrategy;
+            TargetInfo = targetInfo;
 		}
 
 		/// <summary>
 		/// Type being activated
 		/// </summary>
-		public Type ActivationType
-        {
-            get { return _activationType; }
-        }
+		public Type ActivationType { get; private set; }
 
 		/// <summary>
 		/// Current injection strategy
 		/// </summary>
-		public IExportStrategy CurrentExportStrategy
-        {
-            get { return _currentExportStrategy; }
-        }
+		public IExportStrategy CurrentExportStrategy { get; private set; }
+
+        /// <summary>
+        /// Injection information for the target being injected, can be null
+        /// </summary>
+        public IInjectionTargetInfo TargetInfo { get; private set; }
 
 		/// <summary>
 		/// Provides a unique id for this instance

@@ -57,7 +57,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
         {
             return new IInjectionScope[0];
         }
-        
+
         public IInjectionScope CreateChildScope(ExportRegistrationDelegate registrationDelegate = null,
             string scopeName = null,
             IDisposalScopeProvider disposalScopeProvider = null)
@@ -81,9 +81,17 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
         public IEnumerable<ISecondaryExportLocator> SecondaryExportLocators { get; private set; }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return ImmutableArray<IInjectionValueProviderInspector>.Empty;
+            }
+        }
+
         public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Configure(ExportRegistrationDelegate registrationDelegate)
@@ -274,6 +282,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
         }
 
         public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInjectionValueProviderInspector(IInjectionValueProviderInspector inspector)
         {
             throw new NotImplementedException();
         }

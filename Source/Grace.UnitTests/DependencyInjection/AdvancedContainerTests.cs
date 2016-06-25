@@ -10,6 +10,7 @@ using Grace.UnitTests.Classes.Simple;
 using Xunit;
 using Grace.UnitTests.Classes.Attributed;
 using Grace.DependencyInjection.Attributes;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.UnitTests.DependencyInjection
 {
@@ -643,6 +644,71 @@ namespace Grace.UnitTests.DependencyInjection
             }
         }
 
+        #endregion
+
+        #region injection context information correct
+
+        [Fact]
+        public void InjectionContextInformationIsCorrect()
+        {
+            var container = new DependencyInjectionContainer();
+
+            IInjectionTargetInfo targetInfo = null;
+
+            container.Configure(c => 
+            {
+                c.ExportInstance<IBasicService>((scope, context) =>
+                {
+                    targetInfo = context.TargetInfo;
+
+                    var stack = context.GetInjectionStack();
+
+                    Assert.Same(targetInfo, stack.Last().TargetInfo);
+
+                    return new BasicService();
+                });
+
+                c.Export<ImportConstructorService>().As<IImportConstructorService>();
+            });
+
+            var service = container.Locate<IImportConstructorService>();
+
+            Assert.NotNull(targetInfo);
+            Assert.Equal(targetInfo.InjectionTargetType, typeof(IBasicService));
+            Assert.Equal(targetInfo.InjectionType, typeof(ImportConstructorService));
+        }
+
+        #endregion
+
+        #region Injection Value Provider
+        [Fact]
+        public void InjectionValueProviderInspectorTest()
+        {
+            var container = new DependencyInjectionContainer
+            {
+                c => c.Export<ImportConstructorService>().ByInterfaces()
+            };
+
+            container.AddInjectionValueProviderInspector(new BasicServiceInjectionInspector());
+
+            var service = container.Locate<IImportConstructorService>();
+
+            Assert.NotNull(service);
+            Assert.Equal(10, service.BasicService.Count);
+        }
+
+        public class BasicServiceInjectionInspector : IInjectionValueProviderInspector
+        {
+            public IExportValueProvider GetValueProvider(IInjectionScope scope, IInjectionTargetInfo targetInfo, IExportValueProvider valueProvider, ExportStrategyFilter exportStrategyFilter, ILocateKeyValueProvider locateKey)
+            {
+                if(targetInfo.InjectionTargetType == typeof(IBasicService))
+                {
+                    return new FuncValueProvider<IBasicService>(() => new BasicService { Count = 10});
+                }
+
+                return null;
+            }
+        }
         #endregion
     }
 }

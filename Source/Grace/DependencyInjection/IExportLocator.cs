@@ -37,6 +37,12 @@ namespace Grace.DependencyInjection
 		/// <param name="inspector">strategy inspector</param>
         void AddStrategyInspector([NotNull] IExportStrategyInspector inspector);
 
+        /// <summary>
+        /// Add inspector that can provide an IExportValueProvider that will be called during injection.
+        /// </summary>
+        /// <param name="inspector"></param>
+        void AddInjectionValueProviderInspector([NotNull]IInjectionValueProviderInspector inspector);
+
 		/// <summary>
 		/// Creates a child scope from this scope
 		/// </summary>
@@ -273,10 +279,15 @@ namespace Grace.DependencyInjection
 
 
         /// <summary>
-        /// List of Injection Inspectors for the scope
+        /// List of export strategy Inspectors for the scope
         /// </summary>
         [NotNull]
         IEnumerable<IExportStrategyInspector> Inspectors { get; }
+
+        /// <summary>
+        /// List of injection inspectors for the scope
+        /// </summary>
+        IEnumerable<IInjectionValueProviderInspector> InjectionInspectors { get; }
         
         /// <summary>
         /// Missing export strategy providers can provide a set of exports that can be used to resolve a satisfy an import

@@ -525,8 +525,15 @@ namespace Grace.DependencyInjection.Lifestyle
             get { return ImmutableArray<IExportStrategyInspector>.Empty; }
 	    }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return ImmutableArray<IInjectionValueProviderInspector>.Empty;
+            }
+        }
 
-	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
+        public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
 	    {
             throw new NotSupportedException();
 	    }
@@ -549,6 +556,11 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             return ParentScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
+
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            throw new NotSupportedException("Not supported by lifetime scope");
         }
     }
 }

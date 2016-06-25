@@ -12,6 +12,7 @@ using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
 using Grace.Logging;
+using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -90,8 +91,9 @@ namespace Grace.DependencyInjection.Impl
         private Dictionary<Type, IInjectionStrategy> injections;
         private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
         private ImmutableArray<IExportStrategyInspector> _strategyInspectors = ImmutableArray<IExportStrategyInspector>.Empty;
+        private ImmutableArray<IInjectionValueProviderInspector> _injectionInspectors = ImmutableArray<IInjectionValueProviderInspector>.Empty;
         private ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableArray<IMissingExportStrategyProvider>.Empty;
-        private readonly object _strategyInspectorsLock = new object();
+        private readonly object _inspectorsLock = new object();
 
         #endregion
 
@@ -165,13 +167,23 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// List of Injection Inspectors for the scope
+        /// List of export Inspectors for the scope
         /// </summary>
         public IEnumerable<IExportStrategyInspector> Inspectors
         {
             get { return _strategyInspectors; }
         }
 
+        /// <summary>
+        /// List of injection inspectors
+        /// </summary>
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return _injectionInspectors;
+            }
+        }
 
         /// <summary>
         /// Adds a missing export strategy provider to the scope
@@ -265,9 +277,21 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="inspector">strategy inspector</param>
         public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
-            lock (_strategyInspectorsLock)
+            lock (_inspectorsLock)
             {
                 _strategyInspectors = _strategyInspectors.Add(inspector);
+            }
+        }
+
+        /// <summary>
+        /// add injection value provider inspector
+        /// </summary>
+        /// <param name="inspector"></param>
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            lock(_inspectorsLock)
+            {
+                _injectionInspectors = _injectionInspectors.Add(inspector);
             }
         }
 
@@ -2116,6 +2140,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get { return "Exports: " + GetAllStrategies(null).Count(); }
         }
+
 
         #endregion
     }

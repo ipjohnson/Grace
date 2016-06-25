@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.DependencyInjection
 {
 	/// <summary>
 	/// Represents the information about injecting a particular object into another

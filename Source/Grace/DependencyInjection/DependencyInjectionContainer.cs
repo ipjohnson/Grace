@@ -529,6 +529,14 @@ namespace Grace.DependencyInjection
             get { return "Exports: " + GetAllStrategies().Count(); }
         }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return RootScope.InjectionInspectors;
+            }
+        }
+
         public IEnumerator<IExportStrategy> GetEnumerator()
         {
             return new List<IExportStrategy>(GetAllStrategies()).GetEnumerator();
@@ -547,6 +555,11 @@ namespace Grace.DependencyInjection
         public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
         {
             return RootScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
+
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            RootScope.AddInjectionValueProviderInspector(inspector);
         }
     }
 }

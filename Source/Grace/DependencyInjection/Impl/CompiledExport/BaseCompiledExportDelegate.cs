@@ -835,6 +835,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
                 dependencyName = null;
             }
 
+            var currentScope = owningScope;
+
+            while(currentScope != null)
+            {
+                foreach(var inspector in currentScope.InjectionInspectors)
+                {
+                    valueProvider = inspector.GetValueProvider(currentScope, targetInfo, valueProvider, exportStrategyFilter, locateKey);
+                }
+
+                currentScope = currentScope.ParentScope;
+            }
+
             dependencies.Add(new ExportStrategyDependency
             {
                 DependencyType = targetInfo.InjectionDependencyType,

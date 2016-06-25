@@ -54,9 +54,9 @@ namespace Grace.Data.Immutable
 
         internal static T[] CloneArray<T>(T[] array, int length)
         {
-            T[] returnValue = new T[array.Length];
+            T[] returnValue = new T[length];
 
-            Array.Copy(array, 0, returnValue, 0, array.Length);
+            Array.Copy(array, 0, returnValue, 0, length);
 
             return returnValue;
         }
