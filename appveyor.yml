@@ -1,4 +1,4 @@
-version: 4.0.0-rc7-{build}
+version: 4.0.0-{build}
 branches:
   only:
   - 4.0
@@ -6,9 +6,9 @@ configuration: Release
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  assembly_version: '4.0.0'
+  assembly_file_version: '4.0.0'
+  assembly_informational_version: '4.0.0'
 before_build:
 - cmd: nuget restore Source/Grace.sln
 build:
