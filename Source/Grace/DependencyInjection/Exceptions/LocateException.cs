@@ -362,10 +362,53 @@ namespace Grace.DependencyInjection.Exceptions
 			get { return locationInformation; }
 		}
 
-		/// <summary>
-		/// Display string to be used for error messages
-		/// </summary>
-		protected string LocateDisplayString
+        /// <summary>
+        /// Exception message
+        /// </summary>
+        public override string Message
+        {
+            get
+            {
+                StringBuilder outputString = new StringBuilder();
+
+                string dependencyType = null;
+
+                if (InjectionContext.TargetInfo != null)
+                {
+
+                    if (InjectionContext.TargetInfo.InjectionTarget is ParameterInfo)
+                    {
+                        dependencyType = "parameter";
+                    }
+                    else
+                    {
+                        dependencyType = "property";
+                    }
+
+                    outputString.AppendFormat("Could not locate {0} for {1} {2} on {3}{4}{4}",
+                        LocateDisplayString,
+                        dependencyType,
+                        InjectionContext.TargetInfo.InjectionTargetName,
+                        ReflectionService.GetFriendlyNameForType(InjectionContext.TargetInfo.InjectionType),
+                        Environment.NewLine);
+                }
+                else
+                {
+                    var displayName = LocateName ?? ReflectionService.GetFriendlyNameForType(LocatingType);
+
+                    outputString.AppendFormat("Could not locate {0}", displayName);
+                }
+
+                CreateMessageFromLocationInformation(outputString);
+
+                return outputString.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Display string to be used for error messages
+        /// </summary>
+        protected string LocateDisplayString
 		{
 			get
 			{

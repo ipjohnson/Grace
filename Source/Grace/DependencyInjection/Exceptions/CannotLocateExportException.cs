@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Grace.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Exceptions
 {
     /// <summary>
-    /// Cannot locate export 
+    /// Exception is thrown when an export can't be found
     /// </summary>
     public class CannotLocateExportException : LocateException
     {
@@ -15,6 +17,6 @@ namespace Grace.DependencyInjection.Exceptions
             base(locateName, locatingType, currentContext)
         {
             AddLocationInformationEntry(new LocationInformationEntry(locateName, locatingType, currentContext.TargetInfo));
-        }
+        }        
     }
 }
