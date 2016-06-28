@@ -1,4 +1,7 @@
-version: 4.0.0-{build}
+environment:
+	build_version: 4.0.1
+	nuget_version: $(build_version)-beta{build}
+version: $(build_version)-{build}
 branches:
   only:
   - 4.0
@@ -6,9 +9,9 @@ configuration: Release
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
-  assembly_version: '4.0.0'
-  assembly_file_version: '4.0.0'
-  assembly_informational_version: '4.0.0'
+  assembly_version: '$(build_version).0'
+  assembly_file_version: '$(build_version).{build}'
+  assembly_informational_version: '$(nuget_version)'
 before_build:
 - cmd: nuget restore Source/Grace.sln
 build:
