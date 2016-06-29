@@ -706,7 +706,8 @@ namespace Grace.DependencyInjection.Impl
                (kernelManager.Container == null ||
                 kernelManager.Container.ThrowExceptions))
             {
-                throw new CannotLocateExportException(objectType.Name, objectType, injectionContext);
+
+                throw new CannotLocateExportException(null, objectType, injectionContext);
             }
 
             return returnValue;

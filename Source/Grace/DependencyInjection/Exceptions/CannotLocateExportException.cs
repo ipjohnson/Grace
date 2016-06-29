@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Exceptions
         public CannotLocateExportException(string locateName, Type locatingType, IInjectionContext currentContext) :
             base(locateName, locatingType, currentContext)
         {
-            AddLocationInformationEntry(new LocationInformationEntry(locateName, locatingType, currentContext.TargetInfo));
+
         }        
     }
 }
