@@ -7,7 +7,7 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '$(build_version).0'
   assembly_file_version: '$(build_version).{build}'
-  assembly_informational_version: '$(build_version)-beta{build}'
+  assembly_informational_version: '$(build_version)'
 before_build:
 - cmd: nuget restore Source/Grace.sln
 build:
