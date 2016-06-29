@@ -2,9 +2,6 @@ environment:
   build_version: 4.0.1
   nuget_version: $(build_version)-beta{build}
 version: $(build_version)-{build}
-branches:
-  only:
-  - 4.0
 configuration: Release
 assembly_info:
   patch: true
