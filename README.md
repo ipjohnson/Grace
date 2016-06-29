@@ -50,11 +50,11 @@ Features in Grace
 Builds of Grace
 =======
 
-Grace has public builds at [CodeBetter](http://teamcity.codebetter.com/project.html?projectId=project416)
+Grace has public builds at AppVeyor
 
-Nightly Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=Grace_GraceNightly"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:Grace_GraceNightly/statusIcon"/></a>
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace)
 
-CI Build: <a href="http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1137"><img src="http://teamcity.codebetter.com/app/rest/builds/buildType:bt1137/statusIcon"/></a>
+
 
 Metrics by Ohloh:
 
