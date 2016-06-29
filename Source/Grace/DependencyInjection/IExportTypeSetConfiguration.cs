@@ -195,16 +195,15 @@ namespace Grace.DependencyInjection
 		IExportTypeSetImportPropertyConfiguration ImportProperty(Type propertyType = null);
 
         /// <summary>
-        /// Export in the specified Environment
-        /// </summary>
-        /// <param name="environment">environment to export in</param>
-        /// <returns>configuration object</returns>
-        IExportTypeSetConfiguration InEnvironment(ExportEnvironment environment);
-
-        /// <summary>
         /// Assign a lifestyle to all exports
         /// </summary>
         LifestyleBulkConfiguration Lifestyle { get; }
+
+        /// <summary>
+        /// Process dependency injection attributes on type
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ProcessAttributes();
 
 		/// <summary>
 		/// Allows you to filter out types based on the provided where clause

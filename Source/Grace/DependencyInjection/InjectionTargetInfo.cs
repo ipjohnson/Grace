@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.DependencyInjection
 {
 	/// <summary>
 	/// Represents the information about injecting a particular object into another
@@ -15,17 +15,23 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="injectionType">the type that is being injected into</param>
 		/// <param name="injectionTypeAttributes">attributes on the type being injected</param>
 		/// <param name="injectionTarget">the ParameterInfo or PropertyInfo being injected into</param>
+        /// <param name="injectionDependencyType">injection dependency type</param>
 		/// <param name="injectionTargetAttributes">attributes on the ParameterInfo or PropertyInfo</param>
 		/// <param name="injectionMemberAttributes">attribute on the Method,Constructor, or Property</param>
 		/// <param name="locateName">name used when locating</param>
 		/// <param name="locateType">type used when locating</param>
+        /// <param name="isRequired">is this injection required</param>
+        /// <param name="defaultValue">default value for injection</param>
 		public InjectionTargetInfo(Type injectionType,
 			IEnumerable<Attribute> injectionTypeAttributes,
 			object injectionTarget,
-			IEnumerable<Attribute> injectionTargetAttributes,
+            ExportStrategyDependencyType injectionDependencyType,
+            IEnumerable<Attribute> injectionTargetAttributes,
 			IEnumerable<Attribute> injectionMemberAttributes,
 			string locateName,
-			Type locateType)
+			Type locateType,
+            bool isRequired,
+            object defaultValue)
 		{
 			if (injectionType == null)
 			{
@@ -62,8 +68,11 @@ namespace Grace.DependencyInjection.Impl
 			InjectionTarget = injectionTarget;
 			InjectionTargetAttributes = injectionTargetAttributes;
 			InjectionMemberAttributes = injectionMemberAttributes;
+            InjectionDependencyType = injectionDependencyType;
 			LocateName = locateName;
 			LocateType = locateType;
+            IsRequired = isRequired;
+            DefaultValue = defaultValue;
 		}
 
 		/// <summary>
@@ -81,10 +90,15 @@ namespace Grace.DependencyInjection.Impl
 		/// </summary>
 		public object InjectionTarget { get; private set; }
 
-		/// <summary>
-		/// This is the property or parameter name being injected
-		/// </summary>
-		public string InjectionTargetName
+        /// <summary>
+        /// Type of injection that is being done
+        /// </summary>
+        public ExportStrategyDependencyType InjectionDependencyType { get; private set; }
+
+        /// <summary>
+        /// This is the property or parameter name being injected
+        /// </summary>
+        public string InjectionTargetName
 		{
 			get
 			{
@@ -126,5 +140,15 @@ namespace Grace.DependencyInjection.Impl
 		/// Locate type being used
 		/// </summary>
 		public Type LocateType { get; private set; }
+
+        /// <summary>
+        /// Is this injection required
+        /// </summary>
+        public bool IsRequired { get; private set; }
+
+        /// <summary>
+        /// Default value for injection
+        /// </summary>
+        public object DefaultValue { get; private set; }
 	}
 }

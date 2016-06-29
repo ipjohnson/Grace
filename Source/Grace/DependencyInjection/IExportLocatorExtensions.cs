@@ -72,9 +72,7 @@ namespace Grace.DependencyInjection
 				{
 					builder.AppendLine("Key: null");
 				}
-
-				builder.AppendLine("Environement: " + exportStrategy.Environment);
-
+                
 				builder.AppendLine("Priority: " + exportStrategy.Priority);
 
 				builder.AppendLine("Externally Owned: " + exportStrategy.ExternallyOwned);
@@ -327,16 +325,19 @@ namespace Grace.DependencyInjection
 		{
 			IInjectionScope injectionScope = exportLocator as IInjectionScope;
 
-			if (injectionScope == null && exportLocator is IDependencyInjectionContainer)
+			if (injectionScope == null)
 			{
-				injectionScope = ((IDependencyInjectionContainer)exportLocator).RootScope;
-			}
-			else
-			{
-				throw new Exception("BeginLifetimeScope can only be used on an injection scope and dependency injection container");
+				if(exportLocator is IDependencyInjectionContainer)
+				{
+					injectionScope = ((IDependencyInjectionContainer)exportLocator).RootScope;
+				}
+				else
+				{
+					throw new Exception("BeginLifetimeScope can only be used on an injection scope and dependency injection container");	
+				}
 			}
 
-			return new LifetimeScope(injectionScope, scopeName);
+			return new LifetimeScope(injectionScope, injectionScope.Configuration.Clone(), scopeName);
 		}
 	}
 }

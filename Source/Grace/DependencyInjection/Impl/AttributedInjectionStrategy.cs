@@ -70,7 +70,6 @@ namespace Grace.DependencyInjection.Impl
 
         public static IEnumerable<ImportPropertyInfo> ProcessImportPropertiesOnType(Type type)
         {
-
             foreach (PropertyInfo runtimeProperty in type.GetRuntimeProperties())
             {
                 List<IExportCondition> exportConditions = new List<IExportCondition>();

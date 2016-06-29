@@ -260,6 +260,7 @@ namespace Grace.DependencyInjection
         /// Max resolve depth allowed
         /// </summary>
         public int MaxResolveDepth { get; set; }
+        
 
         /// <summary>
         /// Push a current export strategy onto the stack
@@ -286,7 +287,7 @@ namespace Grace.DependencyInjection
                 _currentInjectionInfo = temp;
             }
 
-            _currentInjectionInfo[_resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
+            _currentInjectionInfo[_resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy, _targetInfo);
 
             _resolveDepth++;
         }
@@ -345,6 +346,17 @@ namespace Grace.DependencyInjection
         public void Add(string name, ExportActivationDelegate activationDelegate)
         {
             Export(name.ToLowerInvariant(), activationDelegate);
+        }
+
+        /// <summary>
+        /// Creates a new context, both disposal scope and scope must be provided
+        /// </summary>
+        /// <param name="disposalScope"></param>
+        /// <param name="scope"></param>
+        /// <returns></returns>
+        public static IInjectionContext DefaultCreateContext(IDisposalScope disposalScope, IInjectionScope scope)
+        {    
+            return new InjectionContext(disposalScope, scope);
         }
     }
 }

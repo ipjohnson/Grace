@@ -25,7 +25,7 @@
 	/// <param name="y">y</param>
 	/// <param name="exportEnvironment">current environment</param>
 	/// <returns></returns>
-	public delegate int ExportStrategyComparer(IExportStrategy x, IExportStrategy y, ExportEnvironment exportEnvironment);
+	public delegate int ExportStrategyComparer(IExportStrategy x, IExportStrategy y);
 
 	/// <summary>
 	/// This delegate allows you to provide extra registration during scope creation

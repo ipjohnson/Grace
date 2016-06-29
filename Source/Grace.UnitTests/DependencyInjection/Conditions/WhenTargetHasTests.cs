@@ -19,10 +19,13 @@ namespace Grace.UnitTests.DependencyInjection.Conditions
 				new InjectionTargetInfo(typeof(ImportPropertyService),
 					new Attribute[0],
 					typeof(ImportPropertyService).GetProperty("BasicService"),
+                    ExportStrategyDependencyType.Property,
 					new Attribute[] { new SomeTestAttribute() },
 					new Attribute[0], 
 					null,
-					null);
+					null,
+                    true,
+                    null);
 
 			bool conditionMeet =
 				whenTargetHas.ConditionMeet(new FauxInjectionScope(),
@@ -41,10 +44,13 @@ namespace Grace.UnitTests.DependencyInjection.Conditions
 				new InjectionTargetInfo(typeof(ImportPropertyService),
 					new Attribute[0],
 					typeof(ImportPropertyService).GetProperty("BasicService"),
+                    ExportStrategyDependencyType.Property,
 					new Attribute[0],
 					new Attribute[0],
 					null,
-					null);
+					null,
+                    true,
+                    null);
 
 			bool conditionMeet =
 				whenTargetHas.ConditionMeet(new FauxInjectionScope(),

@@ -51,11 +51,9 @@
     <Compile Include="Data\ReflectionService.cs" />
     <Compile Include="DependencyInjection\Attributes\ActivationCompleteAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\AfterConstructionAttribute.cs" />
-    <Compile Include="DependencyInjection\Attributes\DesignTimeOnlyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByClassNameAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportByInterfacesAttribute.cs" />
-    <Compile Include="DependencyInjection\Attributes\ExportEnvironmentAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportKeyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportPriorityAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\ExportWhenClassHasAttribute.cs" />
@@ -68,7 +66,6 @@
     <Compile Include="DependencyInjection\Attributes\Interfaces\IEnrichWithAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportConditionAttribute.cs" />
-    <Compile Include="DependencyInjection\Attributes\Interfaces\IExportEnvironmentAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportKeyAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportMetadataAttribute.cs" />
     <Compile Include="DependencyInjection\Attributes\Interfaces\IExportPriorityAttribute.cs" />
@@ -106,6 +103,7 @@
     <Compile Include="DependencyInjection\Delegates.cs" />
     <Compile Include="DependencyInjection\DisposableInjectionContext.cs" />
     <Compile Include="DependencyInjection\Enumerations.cs" />
+    <Compile Include="DependencyInjection\Exceptions\CannotLocateExportException.cs" />
     <Compile Include="DependencyInjection\Exceptions\CircularDependencyDetectedException.cs" />
     <Compile Include="DependencyInjection\Exceptions\GeneralLocateException.cs" />
     <Compile Include="DependencyInjection\Exceptions\InjectionScopeCouldNotBeFoundException.cs" />
@@ -115,6 +113,9 @@
     <Compile Include="DependencyInjection\ExportsThat.cs" />
     <Compile Include="DependencyInjection\ExportStrategyDependency.cs" />
     <Compile Include="DependencyInjection\ExportStrategyFilterGroup.cs" />
+    <Compile Include="DependencyInjection\IInjectionValueProviderInspector.cs" />
+    <Compile Include="DependencyInjection\IKernelConfiguration.cs" />
+    <Compile Include="DependencyInjection\Impl\AttributeProcesing.cs" />
     <Compile Include="DependencyInjection\Impl\FuncExportStrategy.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionContext.cs" />
     <Compile Include="DependencyInjection\ICustomConstructorEnrichmentLinqExpressionProvider.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="DependencyInjection\Impl\FuncLocateKeyProvider.cs" />
     <Compile Include="DependencyInjection\GenericFilterGroup.cs" />
     <Compile Include="DependencyInjection\Impl\IEnumerableExportStrategy.cs" />
+    <Compile Include="DependencyInjection\Impl\IExportRegistrationBlockStrategyProvider.cs" />
     <Compile Include="DependencyInjection\Impl\IInjectionScopeExtensions.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceLifestyleConfiguration.cs" />
     <Compile Include="DependencyInjection\Impl\LazyListExportStrategy.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="DependencyInjection\Impl\OwnedListExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\PrioritizeTypesThatInspector.cs" />
     <Compile Include="DependencyInjection\Impl\PropertiesThatConfiguration.cs" />
+    <Compile Include="DependencyInjection\KernelConfiguration.cs" />
     <Compile Include="DependencyInjection\Lifestyle\SingletonPerNamedScopeLifestyle.cs" />
     <Compile Include="DependencyInjection\MembersThat.cs" />
     <Compile Include="DependencyInjection\PropertiesThat.cs" />
@@ -229,7 +232,6 @@
     <Compile Include="DependencyInjection\Impl\CompiledExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\CompiledExportDelegateInfo.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\BaseCompiledExportDelegate.cs" />
-    <Compile Include="DependencyInjection\Impl\BlackList.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\FuncCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledExport\InstanceCompiledExportDelegate.cs" />
     <Compile Include="DependencyInjection\Impl\CompiledFuncExportStrategy.cs" />
@@ -250,7 +252,7 @@
     <Compile Include="DependencyInjection\Impl\ICompiledExportStrategy.cs" />
     <Compile Include="DependencyInjection\Impl\IConfigurableExportStrategy.cs" />
     <Compile Include="DependencyInjection\IExportStrategyProvider.cs" />
-    <Compile Include="DependencyInjection\Impl\InjectionTargetInfo.cs" />
+    <Compile Include="DependencyInjection\InjectionTargetInfo.cs" />
     <Compile Include="DependencyInjection\Impl\InstanceStrategy.cs" />
     <Compile Include="DependencyInjection\Exceptions\RootScopeCloneException.cs" />
     <Compile Include="DependencyInjection\Impl\LazyExportStrategy.cs" />
@@ -315,6 +317,7 @@
     <None Include="Grace.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <!--
   <Import Project="..\..\BuildFiles\Microsoft.Portable.Core.props" Condition="$(teamcity_build_id) != ''" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" Condition="$(teamcity_build_id) != ''" />

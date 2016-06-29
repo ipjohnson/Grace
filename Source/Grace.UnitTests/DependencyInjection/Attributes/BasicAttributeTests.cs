@@ -11,13 +11,11 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void BasicServiceTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
-				null,
 				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                new KernelConfiguration());
 
 			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
@@ -31,13 +29,11 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportCostructorTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				null,
-				null,
 				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+				new KernelConfiguration());
 
 			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
@@ -51,15 +47,13 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportPropertyTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
+            injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
 			IAttributedImportPropertyService propertyService = injectionKernel.Locate<IAttributedImportPropertyService>();
 
@@ -71,15 +65,13 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ImportMethodTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
+            injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
 			IAttributedImportMethodService attributedImport =
 				injectionKernel.Locate<IAttributedImportMethodService>();
@@ -92,15 +84,13 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ActivationMethodTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
+            injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
 			IAttributedActivationService activationService =
 				injectionKernel.Locate<IAttributedActivationService>();
@@ -114,15 +104,13 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void ComplexTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
+            injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
 			IComplexService complexService =
 				injectionKernel.Locate<IComplexService>();

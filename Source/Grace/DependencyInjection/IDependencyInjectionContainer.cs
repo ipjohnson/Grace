@@ -30,19 +30,7 @@ namespace Grace.DependencyInjection
 		/// Handling this event allows you to add exports to the container when an export can't be located.
 		/// </summary>
 		event EventHandler<ResolveUnknownExportArgs> ResolveUnknownExports;
-
-		/// <summary>
-		/// Black lists a particular export (Fullname)
-		/// </summary>
-		/// <param name="exportType">full name of type to black list</param>
-		void BlackListExport([NotNull] string exportType);
-
-		/// <summary>
-		/// Black list a particular export by Type
-		/// </summary>
-		/// <param name="exportType">type to black list</param>
-		void BlackListExportType([NotNull] Type exportType);
-
+        
 		/// <summary>
 		/// This method can be used to configure a particular scope in the container
 		/// </summary>

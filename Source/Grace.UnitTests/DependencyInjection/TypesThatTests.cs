@@ -17,9 +17,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Func<Type, bool> sameNamespace = TypesThat.AreInTheSameNamespaceAs(typeof(DependencyInjectionContainer));
 
 			Assert.True(sameNamespace(typeof(TypesThat)));
-
-			Assert.False(sameNamespace(typeof(BlackList)));
-
+            
 			Assert.False(sameNamespace(GetType()));
 		}
 
@@ -29,9 +27,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Func<Type, bool> sameNamespace = TypesThat.AreInTheSameNamespaceAs(typeof(DependencyInjectionContainer), true);
 
 			Assert.True(sameNamespace(typeof(TypesThat)));
-
-			Assert.True(sameNamespace(typeof(BlackList)));
-
+            
 			Assert.False(sameNamespace(GetType()));
 		}
 
@@ -41,9 +37,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Func<Type, bool> sameNamespace = TypesThat.AreInTheSameNamespaceAs<DependencyInjectionContainer>();
 
 			Assert.True(sameNamespace(typeof(TypesThat)));
-
-			Assert.False(sameNamespace(typeof(BlackList)));
-
+            
 			Assert.False(sameNamespace(GetType()));
 		}
 
@@ -53,8 +47,6 @@ namespace Grace.UnitTests.DependencyInjection
 			Func<Type, bool> sameNamespace = TypesThat.AreInTheSameNamespaceAs<DependencyInjectionContainer>(true);
 
 			Assert.True(sameNamespace(typeof(TypesThat)));
-
-			Assert.True(sameNamespace(typeof(BlackList)));
 
 			Assert.False(sameNamespace(GetType()));
 		}

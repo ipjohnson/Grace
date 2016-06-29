@@ -136,19 +136,7 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
-
-        /// <summary>
-        /// Defines which environment this export should be exported in
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration InEnvironment(ExportEnvironment environment)
-        {
-            exportStrategy.SetEnvironment(environment);
-
-            return this;
-        }
-
+        
         /// <summary>
         /// Export in a new context
         /// </summary>
@@ -519,19 +507,7 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
-
-        /// <summary>
-        /// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> InEnvironment(ExportEnvironment environment)
-        {
-            exportStrategy.SetEnvironment(environment);
-
-            return this;
-        }
-
+        
         /// <summary>
         /// Create a new injection context for this export and it's children
         /// </summary>

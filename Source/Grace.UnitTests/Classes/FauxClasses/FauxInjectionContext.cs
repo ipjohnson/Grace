@@ -92,7 +92,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 				currentInjectionInfo = temp;
 			}
 
-			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy);
+			currentInjectionInfo[resolveDepth] = new CurrentInjectionInfo(typeof(T), exportStrategy, TargetInfo);
 
 			resolveDepth++;
 		}

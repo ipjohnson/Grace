@@ -8,57 +8,63 @@ using Xunit;
 
 namespace Grace.UnitTests.DependencyInjection.Conditions
 {
-	public class WhenMemberHasTests
-	{
-		[Fact]
-		public void ConditionMeetTest()
-		{
-			WhenMemberHas whenMemberHas = new WhenMemberHas(typeof(SomeTestAttribute));
+    public class WhenMemberHasTests
+    {
+        [Fact]
+        public void ConditionMeetTest()
+        {
+            WhenMemberHas whenMemberHas = new WhenMemberHas(typeof(SomeTestAttribute));
 
-			InjectionTargetInfo targetInfo =
-				new InjectionTargetInfo(typeof(ImportPropertyService),
-					new Attribute[0],
-					typeof(ImportPropertyService).GetProperty("BasicService"),
-					new Attribute[0],
-					new Attribute[] { new SomeTestAttribute() },
-					null,
-					null);
+            InjectionTargetInfo targetInfo =
+                new InjectionTargetInfo(typeof(ImportPropertyService),
+                    new Attribute[0],
+                    typeof(ImportPropertyService).GetProperty("BasicService"),
+                    ExportStrategyDependencyType.Property,
+                    new Attribute[0],
+                    new Attribute[] { new SomeTestAttribute() },
+                    null,
+                    null,
+                    true,
+                    null);
 
-			bool conditionMeet =
-				whenMemberHas.ConditionMeet(new FauxInjectionScope(),
-					new InjectionContext(null, new FauxInjectionScope()) { TargetInfo = targetInfo },
-					new FauxExportStrategy(() => new ImportPropertyService()));
+            bool conditionMeet =
+                whenMemberHas.ConditionMeet(new FauxInjectionScope(),
+                    new InjectionContext(null, new FauxInjectionScope()) { TargetInfo = targetInfo },
+                    new FauxExportStrategy(() => new ImportPropertyService()));
 
-			Assert.True(conditionMeet);
-		}
+            Assert.True(conditionMeet);
+        }
 
-		[Fact]
-		public void ConditionNotMeetTest()
-		{
-			WhenClassHas whenMemberHas = new WhenClassHas(typeof(SomeTestAttribute));
+        [Fact]
+        public void ConditionNotMeetTest()
+        {
+            WhenClassHas whenMemberHas = new WhenClassHas(typeof(SomeTestAttribute));
 
-			InjectionTargetInfo targetInfo =
-				new InjectionTargetInfo(typeof(ImportPropertyService),
-												new Attribute[0],
-												typeof(ImportPropertyService).GetProperty("BasicService"),
-												new Attribute[0],
-												new Attribute[0],
-												null,
-												null);
+            InjectionTargetInfo targetInfo =
+                new InjectionTargetInfo(typeof(ImportPropertyService),
+                                                new Attribute[0],
+                                                typeof(ImportPropertyService).GetProperty("BasicService"),
+                                                ExportStrategyDependencyType.Property,
+                                                new Attribute[0],
+                                                new Attribute[0],
+                                                null,
+                                                null,
+                                                true,
+                                                null);
 
-			bool conditionMeet =
-				whenMemberHas.ConditionMeet(new FauxInjectionScope(),
-					new InjectionContext(null, new FauxInjectionScope()),
-					new FauxExportStrategy(() => new ImportPropertyService()));
+            bool conditionMeet =
+                whenMemberHas.ConditionMeet(new FauxInjectionScope(),
+                    new InjectionContext(null, new FauxInjectionScope()),
+                    new FauxExportStrategy(() => new ImportPropertyService()));
 
-			Assert.False(conditionMeet);
+            Assert.False(conditionMeet);
 
-			conditionMeet =
-				whenMemberHas.ConditionMeet(new FauxInjectionScope(),
-					new InjectionContext(null, new FauxInjectionScope()) { TargetInfo = targetInfo },
-					new FauxExportStrategy(() => new ImportPropertyService()));
+            conditionMeet =
+                whenMemberHas.ConditionMeet(new FauxInjectionScope(),
+                    new InjectionContext(null, new FauxInjectionScope()) { TargetInfo = targetInfo },
+                    new FauxExportStrategy(() => new ImportPropertyService()));
 
-			Assert.False(conditionMeet);
-		}
-	}
+            Assert.False(conditionMeet);
+        }
+    }
 }

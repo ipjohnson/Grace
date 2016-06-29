@@ -10,6 +10,7 @@ using Grace.UnitTests.Classes.Simple;
 using Xunit;
 using Grace.UnitTests.Classes.Attributed;
 using Grace.DependencyInjection.Attributes;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.UnitTests.DependencyInjection
 {
@@ -541,6 +542,172 @@ namespace Grace.UnitTests.DependencyInjection
             var constructor = container.Locate<IAttributeImportConstructorService>();
 
             Assert.NotNull(constructor);
+        }
+        #endregion
+
+        #region ProcessAttributes tests
+        [Fact]
+        public void ExportByInterfacesProcessAttributes()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespaceAs<IAttributeBasicService>()))
+                                        .ByInterfaces().ProcessAttributes());
+
+            var instance = container.Locate<IAttributedImportMethodService>();
+
+
+            Assert.NotNull(instance);
+            Assert.IsType<AttributeBasicService>(instance.BasicService);
+        }
+
+        [Fact]
+        public void ExportByInterfacesProcessAttributesPriority()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(Types.FromThisAssembly(TypesThat.AreInTheSameNamespaceAs<IAttributeBasicService>()))
+                                        .ByInterfaces().ProcessAttributes());
+
+            var instances = container.Locate<IPriorityAttributeService[]>();
+
+            Assert.Equal(5, instances.Length);
+            Assert.IsType<PriorityAttributeServiceE>(instances[0]);
+            Assert.IsType<PriorityAttributeServiceD>(instances[1]);
+            Assert.IsType<PriorityAttributeServiceC>(instances[2]);
+            Assert.IsType<PriorityAttributeServiceB>(instances[3]);
+            Assert.IsType<PriorityAttributeServiceA>(instances[4]);
+        }
+        #endregion
+
+        #region Registration Order Test
+        [Fact]
+        public void ContainerKeepRegistrationOrder()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(
+                c => 
+                {
+                    c.ExportAs<SimpleObjectA, ISimpleObject>();
+                    c.ExportAs<SimpleObjectB, ISimpleObject>();
+                    c.ExportAs<SimpleObjectC, ISimpleObject>();
+                    c.ExportAs<SimpleObjectD, ISimpleObject>();
+                    c.ExportAs<SimpleObjectE, ISimpleObject>();
+                });
+
+            var exports = container.Locate<ISimpleObject[]>();
+
+            Assert.Equal(5, exports.Length);
+            Assert.IsType<SimpleObjectA>(exports[0]);
+            Assert.IsType<SimpleObjectB>(exports[1]);
+            Assert.IsType<SimpleObjectC>(exports[2]);
+            Assert.IsType<SimpleObjectD>(exports[3]);
+            Assert.IsType<SimpleObjectE>(exports[4]);
+
+            var container2 = new DependencyInjectionContainer();
+
+            container2.Configure(
+                c =>
+                {
+                    c.ExportAs<SimpleObjectE, ISimpleObject>();
+                    c.ExportAs<SimpleObjectD, ISimpleObject>();
+                    c.ExportAs<SimpleObjectC, ISimpleObject>();
+                    c.ExportAs<SimpleObjectB, ISimpleObject>();
+                    c.ExportAs<SimpleObjectA, ISimpleObject>();
+                });
+
+            exports = container2.Locate<ISimpleObject[]>();
+
+            Assert.Equal(5, exports.Length);
+            Assert.IsType<SimpleObjectE>(exports[0]);
+            Assert.IsType<SimpleObjectD>(exports[1]);
+            Assert.IsType<SimpleObjectC>(exports[2]);
+            Assert.IsType<SimpleObjectB>(exports[3]);
+            Assert.IsType<SimpleObjectA>(exports[4]);
+        }
+        #endregion
+        
+        
+        #region Lifetime resolve IEnumerable Test
+
+        [Fact]
+        public void BeginLifeTimeScopeRequestIEnumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IEnumerable<ISimpleObject> objects;
+
+                Assert.True(scope.TryLocate(out objects));
+            }
+        }
+
+        #endregion
+
+        #region injection context information correct
+
+        [Fact]
+        public void InjectionContextInformationIsCorrect()
+        {
+            var container = new DependencyInjectionContainer();
+
+            IInjectionTargetInfo targetInfo = null;
+
+            container.Configure(c => 
+            {
+                c.ExportInstance<IBasicService>((scope, context) =>
+                {
+                    targetInfo = context.TargetInfo;
+
+                    var stack = context.GetInjectionStack();
+
+                    Assert.Same(targetInfo, stack.Last().TargetInfo);
+
+                    return new BasicService();
+                });
+
+                c.Export<ImportConstructorService>().As<IImportConstructorService>();
+            });
+
+            var service = container.Locate<IImportConstructorService>();
+
+            Assert.NotNull(targetInfo);
+            Assert.Equal(targetInfo.InjectionTargetType, typeof(IBasicService));
+            Assert.Equal(targetInfo.InjectionType, typeof(ImportConstructorService));
+        }
+
+        #endregion
+
+        #region Injection Value Provider
+        [Fact]
+        public void InjectionValueProviderInspectorTest()
+        {
+            var container = new DependencyInjectionContainer
+            {
+                c => c.Export<ImportConstructorService>().ByInterfaces()
+            };
+
+            container.AddInjectionValueProviderInspector(new BasicServiceInjectionInspector());
+
+            var service = container.Locate<IImportConstructorService>();
+
+            Assert.NotNull(service);
+            Assert.Equal(10, service.BasicService.Count);
+        }
+
+        public class BasicServiceInjectionInspector : IInjectionValueProviderInspector
+        {
+            public IExportValueProvider GetValueProvider(IInjectionScope scope, IInjectionTargetInfo targetInfo, IExportValueProvider valueProvider, ExportStrategyFilter exportStrategyFilter, ILocateKeyValueProvider locateKey)
+            {
+                if(targetInfo.InjectionTargetType == typeof(IBasicService))
+                {
+                    return new FuncValueProvider<IBasicService>(() => new BasicService { Count = 10});
+                }
+
+                return null;
+            }
         }
         #endregion
     }

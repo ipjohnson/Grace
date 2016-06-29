@@ -4,6 +4,7 @@ using Grace.DependencyInjection.Impl;
 using Grace.UnitTests.Classes.FauxClasses;
 using Grace.UnitTests.Classes.Simple;
 using Xunit;
+using Grace.DependencyInjection;
 
 namespace Grace.UnitTests.DependencyInjection.Conditions
 {
@@ -22,10 +23,13 @@ namespace Grace.UnitTests.DependencyInjection.Conditions
 							new InjectionTargetInfo(typeof(ImportPropertyService),
 							new Attribute[0],
 							typeof(ImportPropertyService).GetProperty("BasicService"),
+                            ExportStrategyDependencyType.Property,                            
 							new Attribute[0],
 							new Attribute[0],
 							null,
-							null)
+							null,
+                            true,
+                            null)
 					},
 					new FauxExportStrategy(() => new object()));
 

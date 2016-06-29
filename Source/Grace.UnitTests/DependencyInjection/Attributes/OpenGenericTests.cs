@@ -11,16 +11,14 @@ namespace Grace.UnitTests.DependencyInjection.Attributes
 		public void AttributedOpenGenericTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				"RootScope",
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
+            injectionKernel.Configure(c => c.ExportAssembly(GetType().Assembly));
 
 			IAttributedOpenGenericTransient<int> transient =
 				injectionKernel.Locate<IAttributedOpenGenericTransient<int>>();

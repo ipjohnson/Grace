@@ -18,7 +18,6 @@ namespace Grace.DependencyInjection
     [DebuggerTypeProxy(typeof(DependencyInjectionContainerDiagnostic))]
     public class DependencyInjectionContainer : IDependencyInjectionContainer, IMissingExportHandler, IEnumerable<IExportStrategy>
     {
-        private readonly BlackList _blackList = new BlackList();
         private readonly InjectionKernelManager _injectionKernelManager;
         protected bool _disposed;
         protected ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders =
@@ -27,44 +26,30 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Default Constructor
         /// </summary>
-        /// <param name="environment">Environment that you want this container to operate in (RunTime, DesignTime, Or UnitTest</param>
-        /// <param name="comparer">delegate that can be used to sort exports, if null is provided CompareExportStrategies will be used</param>
-        /// <param name="disposalScopeProvider">allows you to provide a custom disposal scope provider</param>
-        public DependencyInjectionContainer(ExportEnvironment environment = ExportEnvironment.RunTime,
-            ExportStrategyComparer comparer = null,
-            IDisposalScopeProvider disposalScopeProvider = null)
+        public DependencyInjectionContainer(IKernelConfiguration configuration = null)
         {
-            if (environment != ExportEnvironment.RunTime &&
-                 environment != ExportEnvironment.DesignTime &&
-                 environment != ExportEnvironment.UnitTest)
+            if(configuration == null)
             {
-                throw new ArgumentException(
-                    "Environment must be one of RunTime, DesignTime, or UnitTest, all others are invalid for this purpose",
-                    "environment");
+                configuration = new KernelConfiguration();
             }
 
-            ExportStrategyComparer localComparer = comparer ?? CompareExportStrategies;
-
-            _injectionKernelManager = new InjectionKernelManager(this, localComparer, _blackList);
+            _injectionKernelManager = new InjectionKernelManager(this, configuration.Comparer);
 
             AutoRegisterUnknown = true;
             ThrowExceptions = true;
 
-            RootScope = new InjectionKernel(_injectionKernelManager, null, disposalScopeProvider, "RootScope", localComparer)
-                            {
-                                Environment = environment
-                            };
+            RootScope = new InjectionKernel(_injectionKernelManager, null, "RootScope", configuration);
         }
 
         /// <summary>
-        /// If a concrete type is requested and it is not registered an export strategy will be created.
+        /// If a concrete type is requested and it is not registered, an export strategy will be created.
         /// Note: It will be scanned for attributes
         /// </summary>
         public bool AutoRegisterUnknown { get; set; }
 
         /// <summary>
         /// If true exception will be thrown if a type can't be located, otherwise it will be caught and errors logged
-        /// False by default
+        /// True by default
         /// </summary>
         public bool ThrowExceptions { get; set; }
 
@@ -73,25 +58,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         [NotNull]
         public IInjectionScope RootScope { get; private set; }
-
-        /// <summary>
-        /// Black lists a particular export (Fullname)
-        /// </summary>
-        /// <param name="exportType">full name of the type to black list</param>
-        public void BlackListExport(string exportType)
-        {
-            _blackList.Add(exportType);
-        }
-
-        /// <summary>
-        /// Black list a particular export by Type
-        /// </summary>
-        /// <param name="exportType">type to black list</param>
-        public void BlackListExportType(Type exportType)
-        {
-            _blackList.Add(exportType.FullName);
-        }
-
+        
         /// <summary>
         /// Name of scope
         /// </summary>
@@ -179,8 +146,7 @@ namespace Grace.DependencyInjection
         {
             RootScope.AddMissingExportStrategyProvider(exportStrategyProvider);
         }
-
-
+        
         /// <summary>
         /// Add an object for disposal 
         /// </summary>
@@ -341,15 +307,7 @@ namespace Grace.DependencyInjection
         {
             return RootScope.LocateAll(exportType, injectionContext, consider, withKey, comparer);
         }
-
-        /// <summary>
-        /// The environment for this scope (always inherited from the root scope)
-        /// </summary>
-        public ExportEnvironment Environment
-        {
-            get { return RootScope.Environment; }
-        }
-
+        
         /// <summary>
         /// Returns a list of all known strategies.
         /// </summary>
@@ -507,8 +465,8 @@ namespace Grace.DependencyInjection
 
                 }
 
-                IExportStrategy strategy = exportType != null ? 
-                                           RootScope.GetStrategy(exportType, context, consider, locateKey) : 
+                IExportStrategy strategy = exportType != null ?
+                                           RootScope.GetStrategy(exportType, context, consider, locateKey) :
                                            RootScope.GetStrategy(exportName, context, consider, locateKey);
 
                 if (strategy != null)
@@ -542,94 +500,10 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="x">x compare object</param>
         /// <param name="y">y compare object</param>
-        /// <param name="environment">environment to compare the strategies in</param>
         /// <returns>compare value</returns>
-        public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
+        public static int CompareExportStrategiesByName(IExportStrategy x, IExportStrategy y)
         {
             return string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
-        }
-
-        /// <summary>
-        /// This method compares 2 export strategies in a particular environment using ExportEnvironment attributes and ExportPriority attributes
-        /// </summary>
-        /// <param name="x">x compare object</param>
-        /// <param name="y">y compare object</param>
-        /// <param name="environment">environment to compare the strategies in</param>
-        /// <returns>compare value</returns>
-        public static int CompareExportStrategies(IExportStrategy x, IExportStrategy y, ExportEnvironment environment)
-        {
-            int returnValue = 0;
-
-            if (x.Environment != y.Environment)
-            {
-                switch (environment)
-                {
-                    case ExportEnvironment.RunTime:
-                        returnValue = CompareValues(x, y, ExportEnvironment.RunTime, ExportEnvironment.RunTimeOnly);
-                        break;
-
-                    case ExportEnvironment.UnitTest:
-                        returnValue = CompareValues(x, y, ExportEnvironment.UnitTest, ExportEnvironment.UnitTestOnly);
-                        break;
-
-                    case ExportEnvironment.DesignTime:
-                        returnValue = CompareValues(x, y, ExportEnvironment.DesignTime, ExportEnvironment.DesignTimeOnly);
-                        break;
-                }
-            }
-
-            if (returnValue == 0)
-            {
-                if (x.Priority > y.Priority)
-                {
-                    returnValue = 1;
-                }
-                else if (x.Priority < y.Priority)
-                {
-                    returnValue = -1;
-                }
-                else if (x.ActivationType != null &&
-                            y.ActivationType != null)
-                {
-                    // all things being equal sort alphabetically by class name
-                    returnValue = string.Compare(x.ActivationType.Name, y.ActivationType.Name, StringComparison.CurrentCulture);
-                }
-            }
-
-            return returnValue;
-        }
-
-        private static int CompareValues(IExportStrategy x,
-            IExportStrategy y,
-            ExportEnvironment exportEnvironment,
-            ExportEnvironment exportEnvironmentOnly)
-        {
-            int returnValue = 0;
-
-            if (x.Environment == exportEnvironment || x.Environment == exportEnvironmentOnly)
-            {
-                returnValue++;
-            }
-
-            if (y.Environment == exportEnvironment || y.Environment == exportEnvironmentOnly)
-            {
-                returnValue--;
-            }
-
-            if (returnValue == 0)
-            {
-                if (x.Environment == ExportEnvironment.Any)
-                {
-                    returnValue++;
-                }
-
-                if (y.Environment == ExportEnvironment.Any)
-                {
-                    returnValue--;
-                }
-            }
-
-            return returnValue;
         }
 
         /// <summary>
@@ -655,6 +529,14 @@ namespace Grace.DependencyInjection
             get { return "Exports: " + GetAllStrategies().Count(); }
         }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return RootScope.InjectionInspectors;
+            }
+        }
+
         public IEnumerator<IExportStrategy> GetEnumerator()
         {
             return new List<IExportStrategy>(GetAllStrategies()).GetEnumerator();
@@ -663,6 +545,21 @@ namespace Grace.DependencyInjection
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            return RootScope.TryLocate(out value, injectionContext, consider, withKey);
+        }
+
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            return RootScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
+
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            RootScope.AddInjectionValueProviderInspector(inspector);
         }
     }
 }

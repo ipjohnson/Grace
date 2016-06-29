@@ -24,15 +24,7 @@ namespace Grace.Diagnostics
 		{
 			this.container = container;
 		}
-
-        /// <summary>
-        /// Environment for the container
-        /// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return container.Environment; }
-		}
-
+        
         /// <summary>
         /// Auto register unknown concrete types
         /// </summary>

@@ -14,15 +14,14 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void SingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, null);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                                    null,
+                                    "RootScope",
+                                    new KernelConfiguration());
 
-			Assembly assembly = GetType().Assembly;
+            Assembly assembly = GetType().Assembly;
 
 			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.Singleton());
 
@@ -37,15 +36,14 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 		public void WeakSingletonTest()
 		{
 			InjectionKernelManager injectionKernelManager =
-				new InjectionKernelManager(null, DependencyInjectionContainer.CompareExportStrategies, new BlackList());
+				new InjectionKernelManager(null, null);
 			InjectionKernel injectionKernel =
 				new InjectionKernel(injectionKernelManager,
-					null,
-					null,
-					"RootScope",
-					DependencyInjectionContainer.CompareExportStrategies);
+                    null,
+                    "RootScope",
+                    new KernelConfiguration());
 
-			Assembly assembly = GetType().Assembly;
+            Assembly assembly = GetType().Assembly;
 
 			injectionKernel.Configure(c => c.ExportAssembly(assembly).ByInterface(typeof(ISimpleObject)).Lifestyle.WeakSingleton());
 
@@ -55,20 +53,7 @@ namespace Grace.UnitTests.DependencyInjection.Impl
 
 			Assert.True(ReferenceEquals(simpleObject, injectionKernel.Locate<ISimpleObject>()));
 		}
-
-		[Fact]
-		public void InEnvironment()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.UnitTest);
-
-			container.Configure(c => c.ExportAssembly(GetType().Assembly).InEnvironment(ExportEnvironment.RunTimeOnly));
-
-			IEnumerable<ISimpleObject> simpleObjects = container.LocateAll<ISimpleObject>();
-
-			Assert.NotNull(simpleObjects);
-			Assert.Equal(0, simpleObjects.Count());
-		}
-
+        
 		[Fact]
 		public void SelectTypes()
 		{

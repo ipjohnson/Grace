@@ -15,6 +15,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	/// </summary>
 	public sealed class LifetimeScope : IInjectionScope
 	{
+        private readonly IKernelConfiguration _configuration;
 		private readonly IDisposalScope _disposalScope;
 		private readonly object _extraDataLock = new object();
 		private volatile Dictionary<string, object> _extraData;
@@ -23,14 +24,21 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// Default lifetime scope
 		/// </summary>
 		/// <param name="parentLocator"></param>
+        /// <param name="configuration"></param>
 		/// <param name="scopeName"></param>
-		public LifetimeScope([NotNull] IInjectionScope parentLocator, string scopeName = null)
+		public LifetimeScope([NotNull] IInjectionScope parentLocator, IKernelConfiguration configuration, string scopeName = null)
 		{
 			if (parentLocator == null)
 			{
 				throw new ArgumentNullException("parentLocator");
 			}
 
+            if(configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
+            _configuration = configuration;
 			_disposalScope = new DisposalScope();
 			ScopeName = scopeName ?? string.Empty;
 			ScopeId = Guid.NewGuid();
@@ -46,6 +54,11 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// The scopes name
 		/// </summary>
 		public string ScopeName { get; private set; }
+
+        /// <summary>
+        /// Configuration
+        /// </summary>
+        public IKernelConfiguration Configuration {  get { return _configuration; } }
 
 		/// <summary>
 		/// List of Export Locators
@@ -71,7 +84,7 @@ namespace Grace.DependencyInjection.Lifestyle
 				throw new ArgumentException("registration delegate must be null");
 			}
 
-			return new LifetimeScope(this, scopeName);
+			return new LifetimeScope(this, _configuration, scopeName);
 		}
 
 		/// <summary>
@@ -90,7 +103,7 @@ namespace Grace.DependencyInjection.Lifestyle
 				throw new ArgumentException("configuration Module must be null");
 			}
 
-			return new LifetimeScope(this, scopeName);
+			return new LifetimeScope(this, _configuration, scopeName);
 		}
 
 		/// <summary>
@@ -98,9 +111,16 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// </summary>
 		/// <returns>new injection context</returns>
 		public IInjectionContext CreateContext(IDisposalScope disposalScope = null)
-		{
-			return new InjectionContext(disposalScope, this);
-		}
+        {
+            if (disposalScope == null)
+            {
+                disposalScope = _configuration.DisposalScopeProvider == null ?
+                                    this :
+                                    _configuration.DisposalScopeProvider.ProvideDisposalScope(this);
+            }
+
+            return _configuration.ContextCreation(disposalScope, this);
+        }
 
 		/// <summary>
 		/// Locate an export by type
@@ -111,13 +131,13 @@ namespace Grace.DependencyInjection.Lifestyle
 		/// <typeparam name="T">type to locate</typeparam>
 		/// <returns>export T if found, other wise default(T)</returns>
 		public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
-		{
-			if (injectionContext == null)
-			{
-				injectionContext = CreateContext();
-			}
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
 
-			return ParentScope.Locate<T>(injectionContext, consider, withKey);
+            return ParentScope.Locate<T>(injectionContext, consider, withKey);
 		}
 
 		/// <summary>
@@ -133,12 +153,12 @@ namespace Grace.DependencyInjection.Lifestyle
 			ExportStrategyFilter consider = null,
 			object withKey = null)
 		{
-			if (injectionContext == null)
-			{
-				injectionContext = CreateContext();
-			}
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
 
-			return ParentScope.Locate(objectType, injectionContext, consider, withKey);
+            return ParentScope.Locate(objectType, injectionContext, consider, withKey);
 		}
 
 		/// <summary>
@@ -229,15 +249,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
 			return ParentScope.LocateAll(exportType, injectionContext, consider, withKey, comparer);
 		}
-
-		/// <summary>
-		/// The environment for this scope (always inherited from the root scope)
-		/// </summary>
-		public ExportEnvironment Environment
-		{
-			get { return ParentScope.Environment; }
-		}
-
+        
 		public IEnumerable<IExportStrategy> GetAllStrategies(ExportStrategyFilter exportFilter = null)
 		{
 			return ParentScope.GetAllStrategies(exportFilter);
@@ -513,10 +525,42 @@ namespace Grace.DependencyInjection.Lifestyle
             get { return ImmutableArray<IExportStrategyInspector>.Empty; }
 	    }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return ImmutableArray<IInjectionValueProviderInspector>.Empty;
+            }
+        }
 
-	    public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
+        public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider exportStrategyProvider)
 	    {
             throw new NotSupportedException();
 	    }
-	}
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
+
+            return ParentScope.TryLocate(out value, injectionContext, consider, withKey);
+        }
+
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            if (injectionContext == null)
+            {
+                injectionContext = CreateContext();
+            }
+
+            return ParentScope.TryLocate(type, out value, injectionContext, consider, withKey);
+        }
+
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            throw new NotSupportedException("Not supported by lifetime scope");
+        }
+    }
 }

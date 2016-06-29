@@ -12,6 +12,7 @@ using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.DelegateFactory;
 using Grace.Diagnostics;
 using Grace.Logging;
+using JetBrains.Annotations;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -78,8 +79,7 @@ namespace Grace.DependencyInjection.Impl
 
         #region Private Fields
 
-        private readonly ExportStrategyComparer comparer;
-        private readonly IDisposalScopeProvider disposalScopeProvider;
+        private readonly IKernelConfiguration _configuration;
         private readonly object exportsLock = new object();
         private readonly object extraDataLock = new object();
         private readonly InjectionKernelManager kernelManager;
@@ -91,8 +91,9 @@ namespace Grace.DependencyInjection.Impl
         private Dictionary<Type, IInjectionStrategy> injections;
         private volatile ReadOnlyCollection<ISecondaryExportLocator> secondaryResolvers;
         private ImmutableArray<IExportStrategyInspector> _strategyInspectors = ImmutableArray<IExportStrategyInspector>.Empty;
+        private ImmutableArray<IInjectionValueProviderInspector> _injectionInspectors = ImmutableArray<IInjectionValueProviderInspector>.Empty;
         private ImmutableArray<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableArray<IMissingExportStrategyProvider>.Empty;
-        private readonly object _strategyInspectorsLock = new object();
+        private readonly object _inspectorsLock = new object();
 
         #endregion
 
@@ -103,14 +104,12 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="kernelManager">kernel manager for this kernel</param>
         /// <param name="parentScope"></param>
-        /// <param name="scopeProvider">passing a null for scope provider is ok</param>
         /// <param name="scopeName"></param>
-        /// <param name="comparer"></param>	
+        /// <param name="configuration"></param>
         public InjectionKernel(InjectionKernelManager kernelManager,
             IInjectionScope parentScope,
-            IDisposalScopeProvider scopeProvider,
             string scopeName,
-            ExportStrategyComparer comparer)
+            IKernelConfiguration configuration)
         {
             ScopeId = Guid.NewGuid();
 
@@ -119,8 +118,7 @@ namespace Grace.DependencyInjection.Impl
             injections = _emptyInjectionStrategies;
 
             this.kernelManager = kernelManager;
-            this.comparer = comparer;
-            disposalScopeProvider = scopeProvider;
+            _configuration = configuration;
             ScopeName = scopeName ?? string.Empty;
             ParentScope = parentScope;
         }
@@ -153,6 +151,11 @@ namespace Grace.DependencyInjection.Impl
         public IInjectionScope ParentScope { get; internal set; }
 
         /// <summary>
+        /// Configuration
+        /// </summary>
+        public IKernelConfiguration Configuration {  get { return _configuration; } }
+
+        /// <summary>
         /// List of missing exports providers
         /// </summary>
         public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
@@ -164,13 +167,23 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// List of Injection Inspectors for the scope
+        /// List of export Inspectors for the scope
         /// </summary>
         public IEnumerable<IExportStrategyInspector> Inspectors
         {
             get { return _strategyInspectors; }
         }
 
+        /// <summary>
+        /// List of injection inspectors
+        /// </summary>
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return _injectionInspectors;
+            }
+        }
 
         /// <summary>
         /// Adds a missing export strategy provider to the scope
@@ -180,11 +193,6 @@ namespace Grace.DependencyInjection.Impl
         {
             _missingExportStrategyProviders = _missingExportStrategyProviders.Add(exportStrategyProvider);
         }
-
-        /// <summary>
-        /// The environment for this scope (always inherited from the root scope)
-        /// </summary>
-        public ExportEnvironment Environment { get; internal set; }
 
         #endregion
 
@@ -205,8 +213,9 @@ namespace Grace.DependencyInjection.Impl
                 kernelManager.CreateNewKernel(this,
                     scopeName,
                     registrationDelegate,
-                    this.disposalScopeProvider,
-                    disposalScopeProvider);
+                    _configuration.DisposalScopeProvider,
+                    disposalScopeProvider,
+                    _configuration.Clone());
 
             return returnValue;
         }
@@ -268,9 +277,21 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="inspector">strategy inspector</param>
         public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
-            lock (_strategyInspectorsLock)
+            lock (_inspectorsLock)
             {
                 _strategyInspectors = _strategyInspectors.Add(inspector);
+            }
+        }
+
+        /// <summary>
+        /// add injection value provider inspector
+        /// </summary>
+        /// <param name="inspector"></param>
+        public void AddInjectionValueProviderInspector([NotNull] IInjectionValueProviderInspector inspector)
+        {
+            lock(_inspectorsLock)
+            {
+                _injectionInspectors = _injectionInspectors.Add(inspector);
             }
         }
 
@@ -290,15 +311,14 @@ namespace Grace.DependencyInjection.Impl
                 throw new RootScopeCloneException(ScopeName, ScopeId);
             }
 
-            IDisposalScopeProvider newProvider = (scopeProvider ?? disposalScopeProvider) ?? parentScopeProvider;
+            IDisposalScopeProvider newProvider = (scopeProvider ?? _configuration.DisposalScopeProvider) ?? parentScopeProvider;
 
-            InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, newProvider, ScopeName, comparer)
-                                                    {
-                                                        ParentScope = parentScope,
-                                                        Environment = Environment,
-                                                        exportsByName = exportsByName,
-                                                        exportsByType = exportsByType
-                                                    };
+            InjectionKernel returnValue = new InjectionKernel(kernelManager, parentScope, ScopeName, _configuration.Clone())
+            {
+                ParentScope = parentScope,
+                exportsByName = exportsByName,
+                exportsByType = exportsByType
+            };
 
             return returnValue;
         }
@@ -313,20 +333,15 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="registrationDelegate"></param>
         public void Configure(ExportRegistrationDelegate registrationDelegate)
         {
-            ExportRegistrationBlock registrationBlock = new ExportRegistrationBlock(this);
+            IExportRegistrationBlockStrategyProvider registrationBlock = _configuration.RegistrationBlockCreation(this);
 
             registrationDelegate(registrationBlock);
 
             List<IExportStrategy> exportStrategyList = new List<IExportStrategy>();
-            IExportStrategy[] exportStrategies = registrationBlock.GetExportStrategies().ToArray();
+            IExportStrategy[] exportStrategies = registrationBlock.ProvideStrategies().ToArray();
 
             foreach (IExportStrategy exportStrategy in exportStrategies)
             {
-                if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                {
-                    continue;
-                }
-
                 ApplyInspectors(exportStrategy);
 
                 exportStrategy.OwningScope = this;
@@ -352,6 +367,11 @@ namespace Grace.DependencyInjection.Impl
 
         private void AddExportStrategies(List<IExportStrategy> exportStrategyList)
         {
+            if (_configuration.BlackListFilter != null)
+            {
+                exportStrategyList.RemoveAll(e => _configuration.BlackListFilter(e.ActivationType));
+            }
+
             lock (exportsLock)
             {
                 Dictionary<string, ExportStrategyCollection> newExportsByName =
@@ -359,11 +379,6 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (IExportStrategy exportStrategy in exportStrategyList)
                 {
-                    if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                    {
-                        continue;
-                    }
-
                     IEnumerable<string> exportNames = exportStrategy.ExportNames;
 
                     if (exportNames != null)
@@ -375,7 +390,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByName.TryGetValue(lowerName, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this, _configuration.Comparer);
 
                                 newExportsByName[lowerName] = currentCollection;
                             }
@@ -390,11 +405,6 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (IExportStrategy exportStrategy in exportStrategyList)
                 {
-                    if (kernelManager.BlackList.IsExportStrategyBlackedOut(exportStrategy))
-                    {
-                        continue;
-                    }
-
                     IEnumerable<Type> exportTypes = exportStrategy.ExportTypes;
 
                     if (exportTypes != null)
@@ -405,7 +415,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByType.TryGetValue(exportType, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this, _configuration.Comparer);
 
                                 newExportsByType[exportType] = currentCollection;
                             }
@@ -424,7 +434,7 @@ namespace Grace.DependencyInjection.Impl
 
                             if (!newExportsByType.TryGetValue(keyedExportType.Item1, out currentCollection))
                             {
-                                currentCollection = new ExportStrategyCollection(this, Environment, comparer);
+                                currentCollection = new ExportStrategyCollection(this, _configuration.Comparer);
 
                                 newExportsByType[keyedExportType.Item1] = currentCollection;
                             }
@@ -460,12 +470,12 @@ namespace Grace.DependencyInjection.Impl
         {
             if (disposalScope == null)
             {
-                return disposalScopeProvider == null
-                    ? new InjectionContext(this, this)
-                    : new InjectionContext(disposalScopeProvider.ProvideDisposalScope(this), this);
+                disposalScope = _configuration.DisposalScopeProvider == null ?
+                                    this :
+                                    _configuration.DisposalScopeProvider.ProvideDisposalScope(this);
             }
 
-            return new InjectionContext(disposalScope, this);
+            return _configuration.ContextCreation(disposalScope, this);
         }
 
         #endregion
@@ -482,7 +492,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public T Locate<T>(IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
         {
-            return (T)Locate(typeof(T), injectionContext, consider, locateKey);
+            return (T)InternalLocate(typeof(T), injectionContext, consider, locateKey, true);
         }
 
         /// <summary>
@@ -494,6 +504,61 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateKey"></param>
         /// <returns></returns>
         public object Locate(Type objectType, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object locateKey = null)
+        {
+            return InternalLocate(objectType, injectionContext, consider, locateKey, true);
+        }
+
+        /// <summary>
+        /// Try to locate an export
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            object locatedValue = InternalLocate(typeof(T), injectionContext, consider, withKey, false);
+
+            if(locatedValue != null)
+            {
+                value = (T)locatedValue;
+
+                return true;
+            }
+            else
+            {
+                value = default(T);
+
+                return false;
+            }            
+        }
+
+        /// <summary>
+        /// try to locate
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            value = InternalLocate(type, injectionContext, consider, withKey, false);
+
+            if (value != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected object InternalLocate(Type objectType, IInjectionContext injectionContext, ExportStrategyFilter consider, object locateKey, bool required)
         {
             if (objectType == null)
             {
@@ -561,7 +626,7 @@ namespace Grace.DependencyInjection.Impl
                     returnValue = ParentScope.Locate(objectType, injectionContext, consider, locateKey);
                 }
 
-                if (returnValue != null || injectionContext.RequestingScope != this)
+                if (returnValue != null ||  (injectionContext.RequestingScope != this && this.ParentScope != null))
                 {
                     return returnValue;
                 }
@@ -601,7 +666,7 @@ namespace Grace.DependencyInjection.Impl
                 exp.AddLocationInformationEntry(
                     new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
 
-                if (kernelManager.Container != null &&
+                if (kernelManager.Container == null ||
                      kernelManager.Container.ThrowExceptions)
                 {
                     throw;
@@ -621,7 +686,7 @@ namespace Grace.DependencyInjection.Impl
                 generalLocateException.AddLocationInformationEntry(
                     new InjectionScopeLocateEntry(null, objectType, ScopeName, consider != null, false));
 
-                if (kernelManager.Container != null &&
+                if (kernelManager.Container == null ||
                      kernelManager.Container.ThrowExceptions)
                 {
                     throw generalLocateException;
@@ -633,6 +698,15 @@ namespace Grace.DependencyInjection.Impl
                         ScopeName,
                         ScopeId),
                     exp);
+            }
+
+            if(returnValue == null && 
+               ParentScope == null && 
+               required &&
+               (kernelManager.Container == null ||
+                kernelManager.Container.ThrowExceptions))
+            {
+                throw new CannotLocateExportException(objectType.Name, objectType, injectionContext);
             }
 
             return returnValue;
@@ -1339,7 +1413,7 @@ namespace Grace.DependencyInjection.Impl
                     Dictionary<Type, ExportStrategyCollection> newExports =
                         new Dictionary<Type, ExportStrategyCollection>(exportsByType);
 
-                    returnValue = new ExportStrategyCollection(this, Environment, comparer);
+                    returnValue = new ExportStrategyCollection(this, _configuration.Comparer);
 
                     newExports[exportType] = returnValue;
 
@@ -1369,7 +1443,7 @@ namespace Grace.DependencyInjection.Impl
                     Dictionary<string, ExportStrategyCollection> newExports =
                         new Dictionary<string, ExportStrategyCollection>(exportsByName);
 
-                    returnValue = new ExportStrategyCollection(this, Environment, comparer);
+                    returnValue = new ExportStrategyCollection(this, _configuration.Comparer);
 
                     newExports[exportName] = returnValue;
 
@@ -1537,7 +1611,7 @@ namespace Grace.DependencyInjection.Impl
 
             List<object> exports;
 
-            CheckMissingExportStrategyProviders(this, context, exportName, exportType, consider, locateKey,out exports);
+            CheckMissingExportStrategyProviders(this, context, exportName, exportType, consider, locateKey, out exports);
 
             if (exports != null && exports.Count > 0)
             {
@@ -1645,6 +1719,7 @@ namespace Grace.DependencyInjection.Impl
                      kernelManager.Container.AutoRegisterUnknown &&
                      resolveType != null &&
                      string.IsNullOrEmpty(resolveName) &&
+                     resolveType != typeof(string) &&
                      !resolveType.GetTypeInfo().IsAbstract &&
                      !resolveType.GetTypeInfo().IsGenericTypeDefinition)
                 {
@@ -1710,7 +1785,7 @@ namespace Grace.DependencyInjection.Impl
             }
             return returnValue;
         }
-        
+
         private void ApplyInspectors(IExportStrategy addStrategy)
         {
             IInjectionScope currentScope = this;
@@ -1826,10 +1901,10 @@ namespace Grace.DependencyInjection.Impl
                 if (openType != null)
                 {
                     List<Type> closeList = new List<Type>
-					                       {
-						                       objectType,
-						                       invokeInfo.ReturnType
-					                       };
+                                           {
+                                               objectType,
+                                               invokeInfo.ReturnType
+                                           };
 
                     closeList.AddRange(parameterInfos.Select(x => x.ParameterType));
 
@@ -1884,7 +1959,7 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
-        private void CheckMissingExportStrategyProviders<T>(IInjectionScope scope, IInjectionContext injectionContext, string name, Type locateType, ExportStrategyFilter exportFilter, object locateKey,out List<T> returnValue)
+        private void CheckMissingExportStrategyProviders<T>(IInjectionScope scope, IInjectionContext injectionContext, string name, Type locateType, ExportStrategyFilter exportFilter, object locateKey, out List<T> returnValue)
         {
             bool foundStrategy = false;
 
@@ -1920,14 +1995,14 @@ namespace Grace.DependencyInjection.Impl
                 if (scope.ParentScope != null)
                 {
                     List<T> outList;
-                    
-                   CheckMissingExportStrategyProviders(scope.ParentScope,
-                        injectionContext,
-                        name,
-                        locateType,
-                        exportFilter,
-                        locateKey,
-                        out outList);
+
+                    CheckMissingExportStrategyProviders(scope.ParentScope,
+                         injectionContext,
+                         name,
+                         locateType,
+                         exportFilter,
+                         locateKey,
+                         out outList);
 
                     if (outList != null)
                     {
@@ -2060,10 +2135,12 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
+
         private string DebugDisplayString
         {
             get { return "Exports: " + GetAllStrategies(null).Count(); }
         }
+
 
         #endregion
     }

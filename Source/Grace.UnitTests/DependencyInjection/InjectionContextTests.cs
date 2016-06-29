@@ -92,13 +92,13 @@ namespace Grace.UnitTests.DependencyInjection
         //public void PropertyTargetInfoTest()
         //{
         //    InjectionKernelManager manager = new InjectionKernelManager(null,
-        //        DependencyInjectionContainer.CompareExportStrategies,
+        //        null,
         //        new BlackList());
         //    InjectionKernel injectionKernel = new InjectionKernel(manager,
         //        null,
         //        null,
         //        null,
-        //        DependencyInjectionContainer.CompareExportStrategies);
+        //        null);
 
         //    injectionKernel.Configure(
         //        ioc =>
@@ -138,15 +138,13 @@ namespace Grace.UnitTests.DependencyInjection
 		public void ConstructorTargetInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				null,
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			injectionKernel.Configure(
+            injectionKernel.Configure(
 				ioc =>
 				{
 					ioc.ExportInstance((scope, context) =>
@@ -181,15 +179,13 @@ namespace Grace.UnitTests.DependencyInjection
 		public void ScopeContextInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
-				null,
-				null,
-				null,
-				DependencyInjectionContainer.CompareExportStrategies);
+                null,
+                "RootScope",
+                new KernelConfiguration());
 
-			IInjectionScope requestScope = injectionKernel.CreateChildScope();
+            IInjectionScope requestScope = injectionKernel.CreateChildScope();
 
 			injectionKernel.Configure(
 				ioc =>
@@ -215,13 +211,11 @@ namespace Grace.UnitTests.DependencyInjection
 		public void CloneScopeInfoTest()
 		{
 			InjectionKernelManager manager = new InjectionKernelManager(null,
-				DependencyInjectionContainer.CompareExportStrategies,
-				new BlackList());
+				null);
 			InjectionKernel injectionKernel = new InjectionKernel(manager,
 				new FauxInjectionScope(),
 				null,
-				null,
-				DependencyInjectionContainer.CompareExportStrategies);
+                new KernelConfiguration());
 
 			IInjectionScope cloneScope = null;
 			IInjectionScope requestScope = null;

@@ -8,6 +8,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 {
     public class FauxInjectionScope : IInjectionScope
     {
+        private readonly IKernelConfiguration _configuration = new KernelConfiguration();
         private readonly DisposalScope disposalScope = new DisposalScope();
         private readonly Dictionary<string, object> extraData = new Dictionary<string, object>();
         private Dictionary<Type, IExportStrategyCollection> exports = new Dictionary<Type, IExportStrategyCollection>();
@@ -35,6 +36,8 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
         public IInjectionScope ParentScope { get; set; }
 
+        public IKernelConfiguration Configuration { get { return _configuration; } }
+
         public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
         {
             get { yield break; }
@@ -54,8 +57,6 @@ namespace Grace.UnitTests.Classes.FauxClasses
         {
             return new IInjectionScope[0];
         }
-
-        public ExportEnvironment Environment { get; set; }
 
         public IInjectionScope CreateChildScope(ExportRegistrationDelegate registrationDelegate = null,
             string scopeName = null,
@@ -80,9 +81,17 @@ namespace Grace.UnitTests.Classes.FauxClasses
 
         public IEnumerable<ISecondaryExportLocator> SecondaryExportLocators { get; private set; }
 
+        public IEnumerable<IInjectionValueProviderInspector> InjectionInspectors
+        {
+            get
+            {
+                return ImmutableArray<IInjectionValueProviderInspector>.Empty;
+            }
+        }
+
         public void AddStrategyInspector(IExportStrategyInspector inspector)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Configure(ExportRegistrationDelegate registrationDelegate)
@@ -136,7 +145,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
                 Dictionary<Type, IExportStrategyCollection> newExports =
                     new Dictionary<Type, IExportStrategyCollection>(exports);
 
-                returnValue = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
+                returnValue = new ExportStrategyCollection(this, null);
 
                 newExports[exportType] = returnValue;
 
@@ -159,7 +168,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
             {
                 if (!exports.TryGetValue(exportType, out collection))
                 {
-                    collection = new ExportStrategyCollection(this, Environment, DependencyInjectionContainer.CompareExportStrategies);
+                    collection = new ExportStrategyCollection(this, null);
 
                     exports[exportType] = collection;
                 }
@@ -263,6 +272,21 @@ namespace Grace.UnitTests.Classes.FauxClasses
         }
 
         public void Inject(object injectionObject, IInjectionContext injectionContext = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryLocate<T>(out T value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryLocate(Type type, out object value, IInjectionContext injectionContext = null, ExportStrategyFilter consider = null, object withKey = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInjectionValueProviderInspector(IInjectionValueProviderInspector inspector)
         {
             throw new NotImplementedException();
         }

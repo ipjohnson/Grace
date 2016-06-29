@@ -16,7 +16,6 @@ namespace Grace.DependencyInjection.Impl
     {
         private static readonly IExportStrategy[] emptyStrategies = new IExportStrategy[0];
         private readonly ExportStrategyComparer comparer;
-        private readonly ExportEnvironment environment;
         private readonly object exportStrategiesLock = new object();
         private readonly IInjectionScope injectionKernel;
         private readonly ILog log = Logger.GetLogger<ExportStrategyCollection>();
@@ -32,10 +31,8 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="environment"></param>
         /// <param name="comparer"></param>
         public ExportStrategyCollection(IInjectionScope injectionKernel,
-            ExportEnvironment environment,
             ExportStrategyComparer comparer)
         {
-            this.environment = environment;
             this.comparer = comparer;
             this.injectionKernel = injectionKernel;
 
@@ -433,32 +430,103 @@ namespace Grace.DependencyInjection.Impl
                         IExportStrategy[] newArray = new IExportStrategy[] { exportStrategy };
 
                         Interlocked.Exchange(ref exportStrategies, newArray);
-                    }
-                    else
-                    {
-                        if (exportStrategies.Any(exportStrategy.Equals))
-                        {
-                            return;
+
+                        if(!exportStrategy.HasConditions)
+                        {                            
+                            Interlocked.Exchange(ref primaryStrategy, null);
                         }
-
-                        List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
-
-                        newList.Sort((x, y) => comparer(x, y, environment));
-
-                        // I reverse the list because the sort goes from lowest to highest and it needs to be reversed
-                        newList.Reverse();
-
-                        Interlocked.Exchange(ref exportStrategies, newList.ToArray());                        
-                    }
-
-                    if (!exportStrategies[0].HasConditions)
-                    {
-                        Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
                     }
                     else
                     {
-                        Interlocked.Exchange(ref primaryStrategy, null);
-                    }
+                        if (comparer == null)
+                        { 
+                            int priority = exportStrategy.Priority;
+                            bool hasPriority = priority != 0;
+
+                            for (int i = 0; i < exportStrategies.Length; i++)
+                            {
+                                var strategy = exportStrategies[i];
+
+                                if (exportStrategy.Equals(strategy))
+                                {
+                                    return;
+                                }
+                                else if (strategy.Priority > 0)
+                                {
+                                    hasPriority = true;
+                                }
+                            }
+
+                            var newArray = new IExportStrategy[exportStrategies.Length + 1];
+
+                            IExportStrategy primary = null;
+
+                            if (priority == 0 && !hasPriority)
+                            {
+                                Array.Copy(exportStrategies, newArray, exportStrategies.Length);
+                                newArray[exportStrategies.Length] = exportStrategy;
+
+                                if(!exportStrategy.HasConditions)
+                                {
+                                    primary = exportStrategy;
+                                }
+                            }
+                            else
+                            {
+                                bool added = false;
+                                int currentIndex = 0;
+
+                                for (int i = 0; i < exportStrategies.Length;)
+                                {
+                                    if (!added && exportStrategies[i].Priority < priority)
+                                    {
+                                        newArray[currentIndex] = exportStrategy;
+                                        added = true;
+                                    }
+                                    else
+                                    {
+                                        newArray[currentIndex] = exportStrategies[i];
+                                        i++;
+                                    }
+
+                                    currentIndex++;
+                                }
+
+                                if (!added)
+                                {
+                                    newArray[exportStrategies.Length] = exportStrategy;
+                                }
+
+                                if(!newArray[0].HasConditions)
+                                {
+                                    primary = newArray[0];
+                                }
+                            }
+                                                        
+                            Interlocked.Exchange(ref primaryStrategy, primary);
+                            Interlocked.Exchange(ref exportStrategies, newArray);
+                        }
+                        else
+                        {
+                            List<IExportStrategy> newList = new List<IExportStrategy>(exportStrategies) { exportStrategy };
+
+                            newList.Sort((x, y) => comparer(x, y));
+
+                            // Reverse so it returns highest priority
+                            newList.Reverse();
+
+                            Interlocked.Exchange(ref exportStrategies, newList.ToArray());
+
+                            if (!exportStrategies[0].HasConditions)
+                            {
+                                Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
+                            }
+                            else
+                            {
+                                Interlocked.Exchange(ref primaryStrategy, null);
+                            }
+                        }                        
+                    }                    
                 }
                 else
                 {
@@ -497,7 +565,6 @@ namespace Grace.DependencyInjection.Impl
                         if (exportStrategies.Length > 0 && !exportStrategies[0].HasConditions)
                         {
                             Interlocked.Exchange(ref primaryStrategy, exportStrategies[0]);
-
                         }
                         else
                         {
@@ -568,7 +635,7 @@ namespace Grace.DependencyInjection.Impl
         public ExportStrategyCollection Clone(InjectionKernel injectionKernel)
         {
             return
-                new ExportStrategyCollection(injectionKernel, environment, comparer)
+                new ExportStrategyCollection(injectionKernel, comparer)
                 {
                     exportStrategies = exportStrategies,
                     keyedStrategies = keyedStrategies

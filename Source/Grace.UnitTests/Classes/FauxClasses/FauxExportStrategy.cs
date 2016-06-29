@@ -51,9 +51,7 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		public IEnumerable<Type> ExportTypes { get; set; }
 
 	    public IEnumerable<Tuple<Type, object>> KeyedExportTypes { get; private set; }
-
-	    public ExportEnvironment Environment { get; set; }
-
+        
 		public int Priority { get; set; }
 
 		public ILifestyle Lifestyle { get; set; }

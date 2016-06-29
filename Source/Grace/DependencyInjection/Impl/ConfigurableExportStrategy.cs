@@ -48,8 +48,6 @@ namespace Grace.DependencyInjection.Impl
             _enrichWithDelegates = ImmutableArray<EnrichWithDelegate>.Empty;
             _secondaryExports = ImmutableArray<IExportStrategy>.Empty;
             _conditions = ImmutableArray<IExportCondition>.Empty;
-            
-            Environment = ExportEnvironment.Any;
         }
 
         /// <summary>
@@ -198,20 +196,7 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
-
-        public virtual ExportEnvironment Environment { get; private set; }
-
-        /// <summary>
-        /// Set the export environment for the strategy
-        /// </summary>
-        /// <param name="environment"></param>
-        public virtual IConfigurableExportStrategy SetEnvironment(ExportEnvironment environment)
-        {
-            Environment = environment;
-
-            return this;
-        }
-
+        
         /// <summary>
         /// What export priority is this being exported as
         /// </summary>

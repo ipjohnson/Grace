@@ -23,5 +23,11 @@ namespace Grace.UnitTests.Classes.FauxClasses
 		public string LocateName { get; private set; }
 
 		public Type LocateType { get; private set; }
-	}
+
+        public ExportStrategyDependencyType InjectionDependencyType { get; set; }
+
+        public bool IsRequired { get; set; }
+
+        public object DefaultValue { get; set; }
+    }
 }

@@ -92,19 +92,7 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
-
-        /// <summary>
-        /// Export type in this Environment (ExportEnvironement is a flag so it can be or'd)
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
-        public IFluentExportInstanceConfiguration<T> InEnvironment(ExportEnvironment environment)
-        {
-            exportStrategy.SetEnvironment(environment);
-
-            return this;
-        }
-
+        
         /// <summary>
         /// Export the type under the specified name
         /// </summary>

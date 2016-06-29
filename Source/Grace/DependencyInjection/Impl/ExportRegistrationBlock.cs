@@ -12,8 +12,8 @@ namespace Grace.DependencyInjection.Impl
 	/// Note: this class is not thread safe. You can call configure from multiple threads on the same scope
 	/// but you can not call from multiple threads to the same instance of a registration block
 	/// </summary>
-	public class ExportRegistrationBlock : IExportRegistrationBlock
-	{
+	public class ExportRegistrationBlock : IExportRegistrationBlockStrategyProvider
+    {
 		private ILog log;
 		private readonly IInjectionScope owningScope;
 		private readonly List<IExportStrategyProvider> strategyProviders = new List<IExportStrategyProvider>();
@@ -49,17 +49,9 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IFluentExportStrategyConfiguration Export(Type type)
 		{
-			ICompiledExportStrategy compiledExportStrategy;
-
-			if (type.GetTypeInfo().IsGenericTypeDefinition)
-			{
-				compiledExportStrategy = new GenericExportStrategy(type);
-			}
-			else
-			{
-				compiledExportStrategy = new CompiledInstanceExportStrategy(type);
-			}
-
+            ICompiledExportStrategy compiledExportStrategy = 
+                owningScope.Configuration.ExportStrategyProvider(owningScope, type);
+                
 			FluentExportStrategyConfiguration exportStrategy =
 				new FluentExportStrategyConfiguration(type, compiledExportStrategy);
 
@@ -75,9 +67,10 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public IFluentExportStrategyConfiguration<T> Export<T>()
 		{
-			CompiledInstanceExportStrategy strategy = new CompiledInstanceExportStrategy(typeof(T));
+			ICompiledExportStrategy strategy =
+                owningScope.Configuration.ExportStrategyProvider(owningScope, typeof(T));
 
-			FluentExportStrategyConfiguration<T> exportStrategy =
+            FluentExportStrategyConfiguration<T> exportStrategy =
 				new FluentExportStrategyConfiguration<T>(strategy);
 
 			strategyProviders.Add(exportStrategy);
@@ -252,17 +245,12 @@ namespace Grace.DependencyInjection.Impl
 		/// Get all exports for the registration block
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerable<IExportStrategy> GetExportStrategies()
+		public IEnumerable<IExportStrategy> ProvideStrategies()
 		{
 			foreach (IExportStrategyProvider exportStrategyProvider in strategyProviders)
 			{
 				foreach (IExportStrategy provideStrategy in exportStrategyProvider.ProvideStrategies())
 				{
-					if (FilterOutBasedOnEnvironment(provideStrategy.Environment))
-					{
-						continue;
-					}
-
 					if (Log.IsInfoEnabled)
 					{
 						string exportNames = null;
@@ -283,51 +271,42 @@ namespace Grace.DependencyInjection.Impl
 			}
 		}
 
-	    private void ApplyInspectors(IExportStrategy provideStrategy)
+        /// <summary>
+        /// Creates a default registration block
+        /// </summary>
+        /// <param name="injectionScope"></param>
+        /// <returns></returns>
+        public static IExportRegistrationBlockStrategyProvider DefaultRegistrationBlockCreation(IInjectionScope injectionScope)
+        {
+            return new ExportRegistrationBlock(injectionScope);
+        }
+
+        /// <summary>
+        /// Create an export strategy based on type
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static ICompiledExportStrategy DefaultExportStrategyProvider(IInjectionScope scope, Type type)
+        {
+            bool generic = type.GetTypeInfo().IsGenericTypeDefinition;
+
+            if (generic)
+            {
+                return new GenericExportStrategy(type);
+            }
+            else
+            {
+                return new CompiledInstanceExportStrategy(type);
+            }
+        }
+        
+        private void ApplyInspectors(IExportStrategy provideStrategy)
 	    {
 	        foreach (IExportStrategyInspector exportStrategyInspector in inspectors)
 	        {
 	            exportStrategyInspector.Inspect(provideStrategy);
 	        }
-	    }
-
-	    /// <summary>
-		/// Filter out strategies that are exported for particular environments
-		/// </summary>
-		/// <param name="strategyEnvironment"></param>
-		/// <returns></returns>
-		private bool FilterOutBasedOnEnvironment(ExportEnvironment strategyEnvironment)
-		{
-			bool returnValue = false;
-			bool runTimeOnly = (strategyEnvironment & ExportEnvironment.RunTimeOnly) == ExportEnvironment.RunTimeOnly;
-			bool unitTestOnly = (strategyEnvironment & ExportEnvironment.UnitTestOnly) == ExportEnvironment.UnitTestOnly;
-			bool designTimeOnly = (strategyEnvironment & ExportEnvironment.DesignTimeOnly) == ExportEnvironment.DesignTimeOnly;
-
-			switch (owningScope.Environment)
-			{
-				case ExportEnvironment.RunTime:
-					if (!runTimeOnly && (unitTestOnly || designTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-
-				case ExportEnvironment.UnitTest:
-					if (!unitTestOnly && (runTimeOnly || designTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-
-				case ExportEnvironment.DesignTime:
-					if (!designTimeOnly && (unitTestOnly || runTimeOnly))
-					{
-						returnValue = true;
-					}
-					break;
-			}
-
-			return returnValue;
-		}
+	    }        
 	}
 }

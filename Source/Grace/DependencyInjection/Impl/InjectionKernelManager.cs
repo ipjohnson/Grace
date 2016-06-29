@@ -10,7 +10,6 @@ namespace Grace.DependencyInjection.Impl
 		"CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
 	public class InjectionKernelManager
 	{
-		private readonly BlackList blackList;
 		private readonly ExportStrategyComparer comparer;
 		private readonly object kernelsLock = new object();
 		private Dictionary<string, InjectionKernel> kernels = new Dictionary<string, InjectionKernel>();
@@ -23,23 +22,13 @@ namespace Grace.DependencyInjection.Impl
 		/// <param name="comparer">used to compare to export strategies for which one should be used</param>
 		/// <param name="blackList">export strategy black list</param>
 		public InjectionKernelManager(DependencyInjectionContainer container,
-			ExportStrategyComparer comparer,
-			BlackList blackList)
+			ExportStrategyComparer comparer)
 		{
 			Container = container;
 
 			this.comparer = comparer;
-			this.blackList = blackList;
 		}
-
-		/// <summary>
-		/// Black list associated with this kernel manager
-		/// </summary>
-		public BlackList BlackList
-		{
-			get { return blackList; }
-		}
-
+        
 		/// <summary>
 		/// Container this kernel manager is associated with
 		/// </summary>
@@ -70,7 +59,7 @@ namespace Grace.DependencyInjection.Impl
 					throw new Exception("SetRootScope must be called before configuring any named kernels");
 				}
 
-				kernel = new InjectionKernel(this, rootScope, null, kernelName, comparer);
+                kernel = new InjectionKernel(this, rootScope, kernelName, new KernelConfiguration());
 
 				lock (kernelsLock)
 				{
@@ -96,17 +85,16 @@ namespace Grace.DependencyInjection.Impl
 		/// <returns></returns>
 		public InjectionKernel CreateNewKernel(InjectionKernel parentKernel,
 			string kernelName,
-			ExportRegistrationDelegate registrationDelegate,
-			IDisposalScopeProvider parentScopeProvider,
-			IDisposalScopeProvider scopeProvider)
+			ExportRegistrationDelegate registrationDelegate, 
+            IDisposalScopeProvider parentScopeProvider,
+            IDisposalScopeProvider scopeProvider,
+            IKernelConfiguration configuration)
 		{
 			InjectionKernel newKernel;
 
 			if (string.IsNullOrEmpty(kernelName))
 			{
-				IDisposalScopeProvider newScopeProvider = scopeProvider ?? parentScopeProvider;
-
-				newKernel = new InjectionKernel(this, parentKernel, newScopeProvider, kernelName, comparer);
+				newKernel = new InjectionKernel(this, parentKernel, kernelName, configuration);
 			}
 			else
 			{
@@ -114,13 +102,11 @@ namespace Grace.DependencyInjection.Impl
 
 				if (kernels.TryGetValue(kernelName, out foundKernel))
 				{
-					newKernel = foundKernel.Clone(parentKernel, parentScopeProvider, scopeProvider);
-				}
+                   newKernel = foundKernel.Clone(parentKernel, parentScopeProvider, scopeProvider);
+                }
 				else
 				{
-                    IDisposalScopeProvider newScopeProvider = scopeProvider ?? parentScopeProvider;
-
-                    newKernel = new InjectionKernel(this, parentKernel, newScopeProvider, kernelName, comparer);
+                    newKernel = new InjectionKernel(this, parentKernel, kernelName, configuration);
 				}
 			}
 

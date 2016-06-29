@@ -30,7 +30,7 @@ namespace Grace.UnitTests.Classes.Simple
 
     public class OptionalIntServiceConstructor : IOptionalIntServiceConstructor
     {
-        public OptionalIntServiceConstructor(ISimpleObject simpleObject, int value = 0)
+        public OptionalIntServiceConstructor(ISimpleObject simpleObject, int value = 5)
         {
             Value = value;
             SimpleObject = simpleObject;
@@ -39,5 +39,20 @@ namespace Grace.UnitTests.Classes.Simple
         public ISimpleObject SimpleObject { get; private set; }
 
         public int Value { get; private set; }
+    }
+
+    public interface IOptionalStringConstructor
+    {
+        string Value { get; }
+    }
+
+    public class OptionalStringConstructor : IOptionalStringConstructor
+    {
+        public OptionalStringConstructor(string someString = "Blah")
+        {
+            Value = someString;
+        }
+
+        public string Value { get; private set; }
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="Classes\Attributed\AttributeImportConstructorService.cs" />
     <Compile Include="Classes\Attributed\ComplexService.cs" />
     <Compile Include="Classes\Attributed\IAttributedSimpleObject.cs" />
+    <Compile Include="Classes\Attributed\PriorityAttributeServices.cs" />
     <Compile Include="Classes\FauxClasses\FauxDisposalScopeProvider.cs" />
     <Compile Include="Classes\FauxClasses\FauxExportStrategyCollection.cs" />
     <Compile Include="Classes\FauxClasses\FauxInjectionScope.cs" />
@@ -162,7 +163,6 @@
     <Compile Include="DependencyInjection\Conditions\WhenMemberHasTests.cs" />
     <Compile Include="DependencyInjection\Conditions\WhenTargetHasTests.cs" />
     <Compile Include="DependencyInjection\ExportsThatTests.cs" />
-    <Compile Include="DependencyInjection\Impl\BlackListTests.cs" />
     <Compile Include="DependencyInjection\Impl\ExportAssemblyConfigurationTests.cs" />
     <Compile Include="DependencyInjection\Impl\FluentExportTests.cs" />
     <Compile Include="DependencyInjection\Impl\FluentGenericExportTests.cs" />

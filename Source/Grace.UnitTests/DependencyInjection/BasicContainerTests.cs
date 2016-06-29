@@ -20,37 +20,7 @@ namespace Grace.UnitTests.DependencyInjection
 
 			var diag = container.Locate<InjectionScopeDiagnostic>();
 		}
-
-		[Fact]
-		public void BlackOutListTest()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer();
-
-			container.BlackListExportType(typeof(BasicService));
-
-			container.Configure(
-				ioc => ioc.Export<BasicService>().As<IBasicService>());
-
-			IBasicService basicService = container.Locate<IBasicService>();
-
-			Assert.Null(basicService);
-		}
-
-		[Fact]
-		public void BlackOutListByNameTest()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer();
-
-			container.BlackListExport(typeof(BasicService).FullName);
-
-			container.Configure(
-				ioc => ioc.Export<BasicService>().As<IBasicService>());
-
-			IBasicService basicService = container.Locate<IBasicService>();
-
-			Assert.Null(basicService);
-		}
-
+        
 		[Fact]
 		public void SimpleRegistrationTest()
 		{
@@ -80,67 +50,7 @@ namespace Grace.UnitTests.DependencyInjection
 			Assert.NotNull(transient);
 			Assert.NotNull(transient.BasicService);
 		}
-
-		[Fact]
-		public void FilterRunTime()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.RunTime);
-
-			container.Configure(c =>
-									  {
-										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-									  });
-
-			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
-
-			Assert.NotNull(simpleObject);
-			Assert.IsType(typeof(SimpleObjectA), simpleObject);
-
-			Assert.Equal(1, container.RootScope.GetStrategies(typeof(ISimpleObject)).Count());
-		}
-
-		[Fact]
-		public void FilterUnitTest()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.UnitTest);
-
-			container.Configure(c =>
-									  {
-										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-									  });
-
-			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
-
-			Assert.NotNull(simpleObject);
-			Assert.IsType(typeof(SimpleObjectB), simpleObject);
-
-			Assert.Equal(1, container.RootScope.GetStrategies(typeof(ISimpleObject)).Count());
-		}
-
-		[Fact]
-		public void FilterDesignTime()
-		{
-			DependencyInjectionContainer container = new DependencyInjectionContainer(ExportEnvironment.DesignTime);
-
-			container.Configure(c =>
-									  {
-										  c.Export<SimpleObjectA>().As<ISimpleObject>().InEnvironment(ExportEnvironment.RunTimeOnly);
-										  c.Export<SimpleObjectB>().As<ISimpleObject>().InEnvironment(ExportEnvironment.UnitTestOnly);
-										  c.Export<SimpleObjectC>().As<ISimpleObject>().InEnvironment(ExportEnvironment.DesignTimeOnly);
-									  });
-
-			ISimpleObject simpleObject = container.Locate<ISimpleObject>();
-
-			Assert.NotNull(simpleObject);
-			Assert.IsType(typeof(SimpleObjectC), simpleObject);
-
-			Assert.Equal(1, container.RootScope.GetStrategies(typeof(ISimpleObject)).Count());
-		}
-
+        
 		[Fact]
 		public void MissingExportTest()
 		{

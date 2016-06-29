@@ -40,15 +40,6 @@ namespace Grace.DependencyInjection.Configuration
 		}
 
 		/// <summary>
-		/// Environment to export in
-		/// </summary>
-		[ConfigurationProperty("environment", IsRequired = false, DefaultValue = ExportEnvironment.Any)]
-		public ExportEnvironment Environment
-		{
-			get { return PropertyValue<ExportEnvironment>(); }
-		}
-
-		/// <summary>
 		/// Autowire the objects properties
 		/// </summary>
 		[ConfigurationProperty("autoWireProperties", IsRequired = false, DefaultValue = false)]

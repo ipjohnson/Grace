@@ -29,5 +29,10 @@ namespace Grace.DependencyInjection
         [NotNull]
         IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders { get; } 
 
+        /// <summary>
+        /// Configuration
+        /// </summary>
+        IKernelConfiguration Configuration { get; }
+
 	}
 }

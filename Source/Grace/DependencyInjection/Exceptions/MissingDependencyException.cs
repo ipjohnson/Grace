@@ -10,7 +10,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Exceptions
 {
 	/// <summary>
-	/// Exception thrown when there is a missing dependency for an export
+	/// Exception thrown when a null is found when a value is required.
 	/// </summary>
 	public class MissingDependencyException : LocateException
 	{
@@ -36,40 +36,6 @@ namespace Grace.DependencyInjection.Exceptions
 			base(locateName, locatingType, currentContext)
 		{
 			AddLocationInformationEntry(new LocationInformationEntry(locateName, locatingType, currentContext.TargetInfo));
-		}
-
-
-		/// <summary>
-		/// Exception message
-		/// </summary>
-		public override string Message
-		{
-			get
-			{
-				StringBuilder outputString = new StringBuilder();
-
-				string dependencyType = null;
-
-				if (InjectionContext.TargetInfo.InjectionTarget is ParameterInfo)
-				{
-					dependencyType = "parameter";
-				}
-				else
-				{
-					dependencyType = "property";
-				}
-					
-				outputString.AppendFormat("Could not locate {0} for {1} {2} on {3}{4}{4}",
-					LocateDisplayString,
-					dependencyType,
-					InjectionContext.TargetInfo.InjectionTargetName,
-					ReflectionService.GetFriendlyNameForType(InjectionContext.TargetInfo.InjectionType),
-					Environment.NewLine);
-
-				CreateMessageFromLocationInformation(outputString);
-
-				return outputString.ToString();
-			}
-		}
+		}        
 	}
 }

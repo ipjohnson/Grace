@@ -151,9 +151,7 @@ namespace Grace.DependencyInjection.Configuration
 				{
 					config = config.ExternallyOwned();
 				}
-
-				config.InEnvironment(exportElement.Environment);
-
+               
 				if (exportElement.AutoWireProperties)
 				{
 					config.AutoWireProperties();

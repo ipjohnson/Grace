@@ -60,14 +60,7 @@ namespace Grace.DependencyInjection
 		/// </summary>
 		/// <returns>configuration object</returns>
 		IFluentSimpleExportStrategyConfiguration ExternallyOwned();
-
-        /// <summary>
-        /// Defines which environment this export should be exported in
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns>configuration object</returns>
-        IFluentSimpleExportStrategyConfiguration InEnvironment(ExportEnvironment environment);
-
+       
         /// <summary>
         /// Specify a custom Lifestyle container for export.
         /// </summary>
