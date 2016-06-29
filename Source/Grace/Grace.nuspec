@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
+    <version>$version$</version>
     <authors>Ian Johnson</authors>
     <owners>Ian Johnson</owners>
     <licenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</licenseUrl>
