@@ -343,7 +343,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	    /// <returns>can be null if nothing is registered by that name</returns>
 	    public IExportStrategyCollection GetStrategyCollection(Type exportType, bool createIfDoesntExist = true)
 		{
-			return ParentScope.GetStrategyCollection(exportType, createIfDoesntExist);
+			return null;
 		}
 
 	    /// <summary>
@@ -354,7 +354,7 @@ namespace Grace.DependencyInjection.Lifestyle
 	    /// <returns></returns>
 	    public IExportStrategyCollection GetStrategyCollection(string exportName, bool createIfDoesntExist = true)
 	    {
-	        return ParentScope.GetStrategyCollection(exportName, createIfDoesntExist);
+	        return null;
 	    }
 
 	    #region Not implemented

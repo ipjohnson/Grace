@@ -125,6 +125,26 @@ namespace Grace.UnitTests.DependencyInjection
 
             Assert.True(called);
         }
+
+        [Fact]
+        public void BeginLifetimeScopeReturnsCorrectNumberForIEnumerable()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.SingletonPerScope());
+
+            bool called = false;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var allServices = scope.Locate<IEnumerable<IDisposableService>>();
+
+                Assert.Equal(1, allServices.Count());
+                allServices.First().Disposing += (sender, args) => called = true;
+            }
+
+            Assert.True(called);
+        }
         #endregion
 
         #region WithNamedCtorValue
