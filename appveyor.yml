@@ -1,5 +1,5 @@
 environment:
-  build_version: 4.0.2
+  build_version: 4.0.3
 version: $(build_version)-{build}
 configuration: Release
 assembly_info:
