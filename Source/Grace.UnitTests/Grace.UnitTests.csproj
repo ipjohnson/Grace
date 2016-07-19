@@ -101,6 +101,7 @@
     <Compile Include="Classes\Simple\ImportDateTimeByName.cs" />
     <Compile Include="Classes\Simple\ImportDisposableService.cs" />
     <Compile Include="Classes\Simple\ImportIEnumerableService.cs" />
+    <Compile Include="Classes\Simple\ImportInjectionScopeClass.cs" />
     <Compile Include="Classes\Simple\ImportKeyed.cs" />
     <Compile Include="Classes\Simple\ImportKeyedLocateDelegate.cs" />
     <Compile Include="Classes\Simple\ImportListService.cs" />

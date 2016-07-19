@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
         public static ConstructorInfo DefaultConstructorPicker(IInjectionScope injectionScope, Type activationType)
         {
             var typeInfo = activationType.GetTypeInfo();
-
+            
             List<ConstructorInfo> constructors =
                 new List<ConstructorInfo>(typeInfo.DeclaredConstructors.
                                                    Where(x => x.IsPublic && !x.IsStatic).
@@ -87,8 +87,18 @@ namespace Grace.DependencyInjection.Impl.CompiledExport
 
                 foreach (var parameter in constructor.GetParameters())
                 {
+                    var parameterType = parameter.ParameterType;
+
+                    if(parameterType == typeof(IExportLocator) || 
+                       parameterType == typeof(IInjectionScope) ||
+                       parameterType == typeof(IInjectionContext))
+                    {
+                        matchInfo.Matched++;
+                        continue;
+                    }
+
                     if (injectionScope != null &&
-                       injectionScope.GetStrategy(parameter.ParameterType) != null)
+                       injectionScope.GetStrategy(parameterType) != null)
                     {
                         matchInfo.Matched++;
                     }

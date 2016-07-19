@@ -646,8 +646,7 @@ namespace Grace.UnitTests.DependencyInjection
             Assert.IsType<SimpleObjectB>(exports[3]);
             Assert.IsType<SimpleObjectA>(exports[4]);
         }
-        #endregion
-        
+        #endregion        
         
         #region Lifetime resolve IEnumerable Test
 
@@ -729,6 +728,21 @@ namespace Grace.UnitTests.DependencyInjection
                 return null;
             }
         }
+        #endregion
+
+        #region Best cosntructor with injection scope
+
+        [Fact]
+        public void MultipleConstructorBestOption()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<ImportInjectionScopeClass>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Scope);
+        }
+
         #endregion
     }
 }
