@@ -11,6 +11,27 @@ using Grace.Utilities;
 
 namespace Grace.Data
 {
+    /// <summary>
+    /// Property name casing
+    /// </summary>
+    public enum PropertyNameCasing
+    {
+        /// <summary>
+        /// Original casing
+        /// </summary>
+        Original,
+
+        /// <summary>
+        /// Lower case
+        /// </summary>
+        Lowercase,
+
+        /// <summary>
+        /// Uppercase
+        /// </summary>
+        Uppercase
+    }
+
 	/// <summary>
 	/// Service creates delegates that can be used to access properties off objects at runtime
 	/// </summary>
@@ -19,15 +40,15 @@ namespace Grace.Data
 		private static readonly ConstructorInfo _exceptionConstructor = null;
 		private static readonly PropertyInfo _objectArrayIndex = null;
         private static readonly MethodInfo _dictionaryAdd = null;
-
+        
 		private readonly SafeDictionary<string, GetPropertyDelegate> _getPropertyAccessors;
 		private readonly SafeDictionary<string, SetPropertyDelegate> _setPropertyAccessors;
 		private readonly SafeDictionary<string, CallMethodDelegate> _callAccessors;
-        private static readonly SafeDictionary<Guid, PropertyDictionaryDelegate> _propertyDictionaryAccessors;
+        private static readonly SafeDictionary<string, PropertyDictionaryDelegate> _propertyDictionaryAccessors;
 
 		static ReflectionService()
 		{
-            _propertyDictionaryAccessors = new SafeDictionary<Guid, PropertyDictionaryDelegate>();
+            _propertyDictionaryAccessors = new SafeDictionary<string, PropertyDictionaryDelegate>();
 			_objectArrayIndex = typeof(IList).GetTypeInfo().GetDeclaredProperty("Item");
 
 			foreach (ConstructorInfo declaredConstructor in typeof(Exception).GetTypeInfo().DeclaredConstructors)
@@ -785,7 +806,7 @@ namespace Grace.Data
 	        }
 	    }
 
-        public static IDictionary<string, object> GetPropertiesFromObject(object annonymousObject)
+        public static IDictionary<string, object> GetPropertiesFromObject(object annonymousObject, PropertyNameCasing casing = PropertyNameCasing.Original)
         {
             if(annonymousObject == null)
             {
@@ -800,17 +821,19 @@ namespace Grace.Data
             PropertyDictionaryDelegate propertyDelegate;
             var objectType = annonymousObject.GetType();
 
-            if(!_propertyDictionaryAccessors.TryGetValue(objectType.GetTypeInfo().GUID,out propertyDelegate))
-            {
-                propertyDelegate = CreateDelegateForType(objectType);
+            string key = objectType.GetTypeInfo().GUID.ToString() + casing.ToString();
 
-                _propertyDictionaryAccessors[objectType.GetTypeInfo().GUID] = propertyDelegate;
+            if (!_propertyDictionaryAccessors.TryGetValue(key, out propertyDelegate))
+            {
+                propertyDelegate = CreateDelegateForType(objectType, casing);
+
+                _propertyDictionaryAccessors[key] = propertyDelegate;
             }
 
             return propertyDelegate(annonymousObject);
         }
 
-        private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType)
+        private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType, PropertyNameCasing casing)
         {
             // the parameter to call the method on
             ParameterExpression inputObject = Expression.Parameter(typeof(object), "inputObject");
@@ -847,7 +870,19 @@ namespace Grace.Data
 
                     var propertyCast = Expression.Convert(propertyAccess, typeof(object));
 
-                    var addExpression = Expression.Call(dictionary, _dictionaryAdd, Expression.Constant(property.Name), propertyCast);
+                    string propertyName = property.Name;
+
+                    switch(casing)
+                    {
+                        case PropertyNameCasing.Lowercase:
+                            propertyName = propertyName.ToLower();
+                            break;
+                        case PropertyNameCasing.Uppercase:
+                            propertyName = propertyName.ToUpper();
+                            break;
+                    }
+
+                    var addExpression = Expression.Call(dictionary, _dictionaryAdd, Expression.Constant(propertyName), propertyCast);
 
                     bodyExpressions.Add(addExpression);
                 }
