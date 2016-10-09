@@ -1,0 +1,26 @@
+* Metadata key changed from string to object, to allow for use of typeof() as metadata key
+
+* Export Type Set changed Select to Where
+
+* IExportStrategy was replaced with ICompiledExportStrategy
+
+* ILifestyle was replaced with ICompiledLifestyle
+
+* InjectionContext broken into two different types, StaticInjectionContext (information known at configuration time) and InjectionContext per object graph context object
+
+* IExportLocator -> IExportLocatorScope taking over more functionality from IInjectionScope
+
+* ILocatorService was inroduced it defines all Locate methods without the complexity of IExportLocatorScope, it's recommend you inject this instead of IExportLocatorScope
+
+* BeingLifetimeScope -> IExportLocatorScope instead of IInjectionScope
+
+* IInjectionScope won't inject by default, more than likely want IExportLocatorScope
+
+* Removed Named - this will be an add on after the fact rather than part of the core functionality. 
+
+* Conditions are tested once at resolution time rather than every time an export is located, runtime conditions can be implemented as ExportFactory
+
+* Decorators are now supported
+
+* Custom Wrappers are supported 
+

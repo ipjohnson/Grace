@@ -1,0 +1,25 @@
+Lifestyle  
+ - per ancestor
+ - per object graph
+ 
+Collection Parameter configuration
+
+-------- Checkin ----------
+Conditional
+
+Dynamic
+
+Child Container
+
+Obsolete Instance infavor of Factory<>
+
+Secondary Strategy
+
+Generic Decorator support
+--------- beta ----------
+
+Export Property
+
+Export Method
+
+Tests, Tests, Tests
