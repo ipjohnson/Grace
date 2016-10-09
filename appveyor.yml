@@ -9,7 +9,7 @@ assembly_info:
   assembly_file_version: '$(build_version).{build}'
   assembly_informational_version: '$(build_version)-alpha{build}'
 before_build:
- - cmd: c:\Projects\Grace\nuget\nuget.exe restore Source/Grace.sln
+ - cmd: c:\Projects\Grace\nuget\nuget.exe restore Grace.sln
 build:
   project: Grace.sln
   publish_nuget: true
