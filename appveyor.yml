@@ -19,3 +19,6 @@ after_build:
 - cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/project.json -Prop Configuration=Release -version %build_version%-alpha%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
+artifacts:
+- path: Grace*.nupkg
+  name: Grace
