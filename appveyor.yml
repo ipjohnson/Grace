@@ -1,5 +1,5 @@
 environment:
-  build_version: 4.0.2
+  build_version: 5.0.0
 version: $(build_version)-{build}
 configuration: Release
 assembly_info:
@@ -7,11 +7,11 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '$(build_version).0'
   assembly_file_version: '$(build_version).{build}'
-  assembly_informational_version: '$(build_version)'
+  assembly_informational_version: '$(build_version)-alpha{build}'
 before_build:
-- cmd: nuget restore Source/Grace.sln
+- cmd: nuget/nuget.exe restore Source/Grace.sln
 build:
-  project: Source/Grace.sln
+  project: Grace.sln
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
