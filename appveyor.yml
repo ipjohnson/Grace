@@ -16,6 +16,6 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/Grace.nuspec -Prop Configuration=Release -version $(build_version)-alpha{build}
+- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/Grace.nuspec -Prop Configuration=Release -version 5.0.0-alpha1
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
