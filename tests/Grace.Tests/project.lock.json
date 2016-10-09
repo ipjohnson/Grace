@@ -2581,7 +2581,7 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "Grace/1.0.0": {
+      "Grace/5.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
@@ -7623,7 +7623,7 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "Grace/1.0.0": {
+    "Grace/5.0.0": {
       "type": "project",
       "path": "../../src/Grace/project.json",
       "msbuildProject": "../../src/Grace/Grace.xproj"
@@ -7631,7 +7631,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Grace >= 1.0.0-*",
+      "Grace >= 5.0.0-*",
       "NETStandard.Library >= 1.6.0",
       "SimpleFixture >= 1.5.0",
       "dotnet-test-xunit >= 2.2.0-preview2-build1029",
