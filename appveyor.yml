@@ -15,4 +15,5 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
-test: off
+test_script:
+- cmd: dotnet test tests\Grace.Tests -c Release
