@@ -1,6 +1,5 @@
 environment:
-  build_version: 5.0.0
-  nuget_version: 5.0.0-alpha{build}  
+  build_version: 5.0.0 
 version: $(build_version)-{build}
 configuration: Release
 assembly_info:
@@ -17,6 +16,6 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/project.json -Prop Configuration=Release -version %nuget_version%
+- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/project.json -Prop Configuration=Release -version %build_version%-alpha%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
