@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -46,6 +47,15 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration.Lifestyle = lifestyle;
 
             return this;
+        }
+
+        public IWhenConditionConfiguration<IFluentExportInstanceConfiguration<T>> When
+        {
+            get
+            {
+                return new WhenConditionConfiguration<IFluentExportInstanceConfiguration<T>>(
+                    condition => _exportConfiguration.AddCondition(condition), this);
+            }
         }
 
         public ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle

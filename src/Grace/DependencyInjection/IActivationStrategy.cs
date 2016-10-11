@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Conditions for this activation strategy to be used
         /// </summary>
-        IEnumerable<ICondition> Conditions { get; }
+        IEnumerable<ICompiledCondition> Conditions { get; }
 
         /// <summary>
         /// Are the object produced by this export externally owned

@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection
 
         void AddExportAsKeyed(Type exportType, object key);
 
-        void AddCondition(ICondition condition);
+        void AddCondition(ICompiledCondition condition);
 
         void MemberInjectionSelector(IMemeberInjectionSelector selector);
 

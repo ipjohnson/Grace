@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         private IActivationStrategyMetadata _metadataObject;
         private ImmutableLinkedList<Type> _exportAs = ImmutableLinkedList<Type>.Empty;
         private ImmutableLinkedList<KeyValuePair<Type, object>> _exportAsKeyed = ImmutableLinkedList<KeyValuePair<Type, object>>.Empty;
-        private ImmutableArray<ICondition> _conditions = ImmutableArray<ICondition>.Empty;
+        private ImmutableArray<ICompiledCondition> _conditions = ImmutableArray<ICompiledCondition>.Empty;
         private ImmutableHashTree<object, object> _metadata = ImmutableHashTree<object, object>.Empty;
 
         protected ConfigurableActivationStrategy(Type activationType, IInjectionScope injectionScope)
@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
         public bool HasConditions => _conditions.Length > 0;
 
-        public IEnumerable<ICondition> Conditions => _conditions;
+        public IEnumerable<ICompiledCondition> Conditions => _conditions;
 
         public ICompiledLifestyle Lifestyle
         {
@@ -84,7 +84,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             _exportAsKeyed = _exportAsKeyed.Add(new KeyValuePair<Type, object>(exportType, key));
         }
 
-        public void AddCondition(ICondition condition)
+        public void AddCondition(ICompiledCondition condition)
         {
             _conditions = _conditions.Add(condition);
         }

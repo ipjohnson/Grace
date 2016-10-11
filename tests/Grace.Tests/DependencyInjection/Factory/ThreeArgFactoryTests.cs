@@ -33,5 +33,7 @@ namespace Grace.Tests.DependencyInjection.Factory
             Assert.IsType<SimpleObjectC>(array[2]);
 
         }
+
+        
     }
 }

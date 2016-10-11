@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
@@ -61,10 +63,41 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate);
 
         /// <summary>
+        /// Lifestyle for set
+        /// </summary>
+        ILifestylePicker<IExportTypeSetConfiguration> Lifestyle { get; }
+
+            /// <summary>
+        /// Set a particular life style
+        /// </summary>
+        /// <param name="container">lifestyle</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle container);
+
+        /// <summary>
+        /// Set a particular life style using a func
+        /// </summary>
+        /// <param name="lifestyleFunc">pick a lifestyle</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration UsingLifestyle(Func<Type, ICompiledLifestyle> lifestyleFunc);
+
+        /// <summary>
         /// Export only types that match the filter provided
         /// </summary>
         /// <param name="typeFilter"></param>
         /// <returns></returns>
         IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter);
+
+        /// <summary>
+        /// Add conditions for export
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
+
+        /// <summary>
+        /// Add condition to exports
+        /// </summary>
+        IWhenConditionConfiguration<IExportTypeSetConfiguration> When { get; }
     }
 }

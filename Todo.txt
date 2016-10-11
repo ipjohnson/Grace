@@ -13,8 +13,6 @@ Child Container
 
 Obsolete Instance infavor of Factory<>
 
-Secondary Strategy
-
 Generic Decorator support
 --------- beta ----------
 

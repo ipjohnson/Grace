@@ -35,7 +35,11 @@ namespace Grace.DependencyInjection
         /// <param name="key">key to export as</param>
         /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AsKeyed<TExportType, TKey>(TKey key);
-
+        
+        /// <summary>
+        /// Assign a lifestyle to this export
+        /// </summary>
+        ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle { get; }
 
         /// <summary>
         /// Export using a specific lifestyle
@@ -45,8 +49,8 @@ namespace Grace.DependencyInjection
         IFluentExportInstanceConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
-        /// Assign a lifestyle to this export
+        /// Use export under specific conditions
         /// </summary>
-        ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle { get; }
+        IWhenConditionConfiguration<IFluentExportInstanceConfiguration<T>> When { get; }
     }
 }

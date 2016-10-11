@@ -12,15 +12,24 @@ namespace Grace.DependencyInjection
 
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
 
-        IFluentExportStrategyConfiguration WithMetadata(object key, object value);
 
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
 
-        //IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When { get; }
+        IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When { get; }
+
+        IFluentExportStrategyConfiguration WithMetadata(object key, object value);
     }
 
     public interface IFluentExportStrategyConfiguration<T>
     {
+
+        /// <summary>
+        /// Apply an action to the export just after construction
+        /// </summary>
+        /// <param name="applyAction">action to apply to export upon construction</param>
+        /// <returns>configuration object</returns>
+        IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction);
+
         /// <summary>
         /// Export as a specific type
         /// </summary>
@@ -42,6 +51,24 @@ namespace Grace.DependencyInjection
         /// <param name="key">key to export under</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key);
+        
+        /// <summary>
+        /// Export the type by the interfaces it implements
+        /// </summary>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type,bool> filter = null);
+
+        /// <summary>
+        /// Mark specific members to be injected
+        /// </summary>
+        /// <param name="selector">select specific members, if null all public members will be injected</param>
+        /// <returns>configuration object</returns>
+        IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null);
+
+        /// <summary>
+        /// Assign a lifestyle to this export
+        /// </summary>
+        ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle { get; }
 
         /// <summary>
         /// Export using a specific lifestyle
@@ -51,28 +78,9 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
-        /// Assign a lifestyle to this export
-        /// </summary>
-        ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle { get; }
-
-        /// <summary>
-        /// Apply an action to the export just after construction
-        /// </summary>
-        /// <param name="applyAction">action to apply to export upon construction</param>
-        /// <returns>configuration object</returns>
-        IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction);
-        
-            /// <summary>
-        /// Mark specific members to be injected
-        /// </summary>
-        /// <param name="selector">select specific members, if null all public members will be injected</param>
-        /// <returns>configuration object</returns>
-        IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null);
-
-        /// <summary>
         /// Add a condition to when this export can be used
         /// </summary>
-        //IWhenConditionConfiguration<IFluentExportStrategyConfiguration<T>> When { get; }
+        IWhenConditionConfiguration<IFluentExportStrategyConfiguration<T>> When { get; }
 
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor

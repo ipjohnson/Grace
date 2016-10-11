@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Grace.Data.Immutable;
 using System.Reflection;
 using Grace.Data;
+using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -19,6 +21,8 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<Func<Type, bool>> _byInterfaces = ImmutableLinkedList<Func<Type, bool>>.Empty;
         private ImmutableLinkedList<Func<Type, IEnumerable<Type>>> _byTypes = ImmutableLinkedList<Func<Type, IEnumerable<Type>>>.Empty;
         private ImmutableLinkedList<Func<Type, IEnumerable<Tuple<Type, object>>>> _byKeyedType = ImmutableLinkedList<Func<Type, IEnumerable<Tuple<Type, object>>>>.Empty;
+        private ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>> _conditions = ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>>.Empty;
+        private Func<Type, ICompiledLifestyle> _lifestyleFunc;
 
         public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport)
         {
@@ -92,6 +96,25 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public ILifestylePicker<IExportTypeSetConfiguration> Lifestyle
+        {
+            get { return new LifestylePicker<IExportTypeSetConfiguration>(this, lifestyle => UsingLifestyle(lifestyle)); }
+        }
+
+        public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
+        {
+            return UsingLifestyle(type => lifestyle.Clone());
+        }
+
+        public IExportTypeSetConfiguration UsingLifestyle(Func<Type, ICompiledLifestyle> lifestyleFunc)
+        {
+            if (lifestyleFunc == null) throw new ArgumentNullException(nameof(lifestyleFunc));
+
+            _lifestyleFunc = lifestyleFunc;
+
+            return this;
+        }
+
         public IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter)
         {
             if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
@@ -99,6 +122,24 @@ namespace Grace.DependencyInjection.Impl
             _whereFilter.Add(typeFilter);
 
             return this;
+        }
+
+        public IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
+        {
+            if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
+
+            _conditions = _conditions.Add(conditionFunc);
+
+            return this;
+        }
+
+        public IWhenConditionConfiguration<IExportTypeSetConfiguration> When
+        {
+            get
+            {
+                return new WhenConditionConfiguration<IExportTypeSetConfiguration>(
+                    condition => _conditions = _conditions.Add(t => new[] {condition}), this);
+            }
         }
 
         public IEnumerable<ICompiledExportStrategy> ProvideExportStrategies()
@@ -109,7 +150,6 @@ namespace Grace.DependencyInjection.Impl
             }
 
             var types = _typesToExport.Where(_whereFilter).ToArray();
-
 
             return CreateExportStrategiesForTypes(types);
         }
@@ -155,6 +195,8 @@ namespace Grace.DependencyInjection.Impl
             {
                 strategy.AddExportAsKeyed(keyedExport.Item1, keyedExport.Item2);
             }
+
+            strategy.Lifestyle = _lifestyleFunc?.Invoke(type);
 
             return strategy;
         }
