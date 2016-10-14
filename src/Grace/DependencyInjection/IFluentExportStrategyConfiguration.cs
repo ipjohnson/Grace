@@ -7,13 +7,12 @@ namespace Grace.DependencyInjection
     public interface IFluentExportStrategyConfiguration
     {
         IFluentExportStrategyConfiguration As(Type type);
-
-        IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
-
+        
+        IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
+        
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
 
-
-        IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
+        IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
 
         IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When { get; }
 
@@ -51,12 +50,20 @@ namespace Grace.DependencyInjection
         /// <param name="key">key to export under</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key);
-        
+
         /// <summary>
         /// Export the type by the interfaces it implements
         /// </summary>
         /// <returns></returns>
-        IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type,bool> filter = null);
+        IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null);
+
+
+        /// <summary>
+        /// You can provide a cleanup method to be called 
+        /// </summary>
+        /// <param name="disposalCleanupDelegate"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate);
 
         /// <summary>
         /// Mark specific members to be injected
@@ -64,7 +71,7 @@ namespace Grace.DependencyInjection
         /// <param name="selector">select specific members, if null all public members will be injected</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null);
-
+        
         /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>
@@ -89,7 +96,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
-        
+
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>
@@ -97,7 +104,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> paramValue);
-        
+
         /// <summary>
         /// Adds metadata to an export
         /// </summary>

@@ -4,7 +4,12 @@ Lifestyle
  
 Collection Parameter configuration
 
--------- Checkin ----------
+Export Initialize
+
+Activation Method
+
+ExternallyOwned - make sure it works
+
 Conditional
 
 Dynamic
@@ -15,6 +20,14 @@ Obsolete Instance infavor of Factory<>
 
 Generic Decorator support
 --------- beta ----------
+
+ImportProperty<TProp>
+
+IExportTypeSetConfiguration Exclude
+
+IExportTypeSetConfiguration ExportAttributedTypes
+
+IExportTypeSetConfiguration WithInspector
 
 Export Property
 

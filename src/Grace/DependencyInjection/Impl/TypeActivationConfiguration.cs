@@ -26,6 +26,8 @@ namespace Grace.DependencyInjection.Impl
 
         public bool SupportsDecorators { get; set; }
 
+        public object DisposalDelegate { get; set; }
+
         public IEnumerable<ConstructorParameterInfo> ConstructorParameters => ConstructorParametersList;
 
         public void ConstructorParameter(ConstructorParameterInfo info)

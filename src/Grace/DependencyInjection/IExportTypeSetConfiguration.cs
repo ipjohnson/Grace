@@ -10,6 +10,13 @@ namespace Grace.DependencyInjection
     public interface IExportTypeSetConfiguration
     {
         /// <summary>
+        /// Add conditions for export
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
+
+        /// <summary>
         /// Export all types based on speficied type by Type
         /// </summary>
         /// <param name="baseType">base type to export</param>
@@ -82,22 +89,16 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration UsingLifestyle(Func<Type, ICompiledLifestyle> lifestyleFunc);
 
         /// <summary>
+        /// Add condition to exports
+        /// </summary>
+        IWhenConditionConfiguration<IExportTypeSetConfiguration> When { get; }
+
+        /// <summary>
         /// Export only types that match the filter provided
         /// </summary>
         /// <param name="typeFilter"></param>
         /// <returns></returns>
         IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter);
-
-        /// <summary>
-        /// Add conditions for export
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <returns></returns>
-        IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
-
-        /// <summary>
-        /// Add condition to exports
-        /// </summary>
-        IWhenConditionConfiguration<IExportTypeSetConfiguration> When { get; }
+        
     }
 }

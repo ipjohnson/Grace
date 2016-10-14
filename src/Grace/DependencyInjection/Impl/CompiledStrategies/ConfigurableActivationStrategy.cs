@@ -44,6 +44,12 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             set { ActivationConfiguration.Lifestyle = value; }
         }
 
+        public object DisposalDelegate
+        {
+            get { return ActivationConfiguration.DisposalDelegate; }
+            set { ActivationConfiguration.DisposalDelegate = value; }
+        }
+
         public bool ExternallyOwned { get; set; }
 
         public void SetMetadata(object key, object value)
@@ -88,7 +94,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             _conditions = _conditions.Add(condition);
         }
-
+        
         public void MemberInjectionSelector(IMemeberInjectionSelector selector)
         {
             ActivationConfiguration.MemberInjectionSelector(selector);

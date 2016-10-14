@@ -20,8 +20,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var closedActionType = typeof(Action<>).MakeGenericType(activationConfiguration.ActivationType);
 
+            object disposalDelegate = null;
+
+            if (closedActionType == activationConfiguration?.DisposalDelegate.GetType())
+            {
+                disposalDelegate = activationConfiguration.DisposalDelegate;
+            }
+
             var disposalCall = 
-                Expression.Call(request.DisposalScopeExpression, closedGeneric, result.Expression, Expression.Convert(Expression.Constant(null), closedActionType));
+                Expression.Call(request.DisposalScopeExpression, closedGeneric, result.Expression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType));
 
             return request.Services.Compiler.CreateNewResult(request, disposalCall);
         }

@@ -129,6 +129,13 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate)
+        {
+            _exportConfiguration.DisposalDelegate = disposalCleanupDelegate;
+
+            return this;
+        }
+
         public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null)
         {
             _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true)));

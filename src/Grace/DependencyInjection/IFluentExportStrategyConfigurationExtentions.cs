@@ -14,5 +14,12 @@ namespace Grace.DependencyInjection
 
             return configuration;
         }
+
+        public static IFluentExportStrategyConfiguration<T> AutoWireProperties<T>(this IFluentExportStrategyConfiguration<T> configuration, Func<PropertyInfo, bool> propertyFilter = null)
+        {
+            configuration.ImportMembers(MembersThat.AreProperty(propertyFilter));
+
+            return configuration;
+        }
     }
 }

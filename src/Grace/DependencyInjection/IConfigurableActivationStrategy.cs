@@ -11,11 +11,15 @@ namespace Grace.DependencyInjection
 
         new ICompiledLifestyle Lifestyle { get; set; }
 
+        object DisposalDelegate { get; set; }
+
         void AddExportAs(Type exportType);
 
         void AddExportAsKeyed(Type exportType, object key);
 
         void AddCondition(ICompiledCondition condition);
+
+        
 
         void MemberInjectionSelector(IMemeberInjectionSelector selector);
 
