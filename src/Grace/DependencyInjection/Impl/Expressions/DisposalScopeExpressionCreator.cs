@@ -22,7 +22,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             object disposalDelegate = null;
 
-            if (closedActionType == activationConfiguration?.DisposalDelegate.GetType())
+            if (closedActionType == activationConfiguration.DisposalDelegate?.GetType())
             {
                 disposalDelegate = activationConfiguration.DisposalDelegate;
             }
