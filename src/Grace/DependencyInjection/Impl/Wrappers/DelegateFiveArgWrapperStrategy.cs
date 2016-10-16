@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var closedMethod = closedClass.GetRuntimeMethod("CreateDelegate", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
-            var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator);
+            var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
             var callExpression =
                 Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
@@ -54,11 +54,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             private readonly ActivationStrategyDelegate _action;
             private readonly MethodInfo _funcMethodInfo;
 
-            public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request, IInjectionContextCreator injectionContextCreator)
+            public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request, IInjectionContextCreator injectionContextCreator, IActivationStrategy strategy)
             {
                 _injectionContextCreator = injectionContextCreator;
 
-                var newRequest = request.NewRequest(typeof(TResult), request.InjectedType, RequestType.Other, null, true);
+                var newRequest = request.NewRequest(typeof(TResult), strategy, typeof(TDelegate), RequestType.Other, null, true);
 
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T1), _arg1Id));
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T2), _arg2Id));

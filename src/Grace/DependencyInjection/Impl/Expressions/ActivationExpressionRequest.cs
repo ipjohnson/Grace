@@ -110,7 +110,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         public object LocateKey { get; set; }
 
-        public Type InjectedType { get; set; }
+        public Type InjectedType { get; private set; }
+
+        public IActivationStrategy RequestingStrategy { get; private set; }
 
         public RequestType RequestType { get; }
 
@@ -214,7 +216,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return pathNode?.Strategy as ICompiledExportStrategy;
         }
 
-        public IActivationExpressionRequest NewRequest(Type activationType, Type injectedType, RequestType requestType, object info, bool followPath = false)
+        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool followPath = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
             {
@@ -225,6 +227,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 Parent = this,
                 InjectedType = injectedType,
+                RequestingStrategy = requestingStrategy,
                 Info = info,
                 DisposalScopeExpression = DisposalScopeExpression,
                 KnownValueExpressions = KnownValueExpressions
@@ -250,10 +253,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
 
-            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, Info, RequestType, ActivationType, false, null, UniqueId));
+            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, RequestType, ActivationType, false, null, UniqueId));
         }
 
         public ImmutableLinkedList<IKnownValueExpression> KnownValueExpressions { get; private set; }
+
+        public bool IsDynamic { get; set; }
 
         public void AddKnownValueExpression(IKnownValueExpression knownValueExpression)
         {

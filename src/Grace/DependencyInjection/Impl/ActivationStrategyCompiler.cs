@@ -132,9 +132,12 @@ namespace Grace.DependencyInjection.Impl
                 {
                     return primary.GetActivationStrategyDelegate(scope, this, locateType);
                 }
-                else
+
+                var strategy = GetStrategyFromCollection(strategyCollection, scope, locateType);
+
+                if (strategy != null)
                 {
-                    throw new NotImplementedException();
+                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
                 }
             }
 
@@ -154,9 +157,12 @@ namespace Grace.DependencyInjection.Impl
                     {
                         return primary.GetActivationStrategyDelegate(scope, this, locateType);
                     }
-                    else
+
+                    var strategy = GetStrategyFromCollection(strategyCollection, scope, locateType);
+
+                    if (strategy != null)
                     {
-                        throw new NotImplementedException();
+                        return strategy.GetActivationStrategyDelegate(scope, this, locateType);
                     }
                 }
             }
@@ -171,9 +177,12 @@ namespace Grace.DependencyInjection.Impl
                 {
                     return primary.GetActivationStrategyDelegate(scope, this, locateType);
                 }
-                else
+
+                var strategy = GetStrategyFromCollection(strategyCollection, scope, locateType);
+
+                if (strategy != null)
                 {
-                    throw new NotImplementedException();
+                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
                 }
             }
 
@@ -191,14 +200,46 @@ namespace Grace.DependencyInjection.Impl
                     {
                         return primary.GetActivationStrategyDelegate(scope, this, locateType);
                     }
-                    else
+
+                    var strategy = GetStrategyFromCollection(strategyCollection, scope, locateType);
+
+                    if (strategy != null)
                     {
-                        throw new NotImplementedException();
+                        return strategy.GetActivationStrategyDelegate(scope, this, locateType);
                     }
                 }
             }
 
             return null;
+        }
+
+        private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, Type locateType) where T : IActivationStrategy
+        {
+            foreach (var strategy in strategyCollection.GetStrategies())
+            {
+                if (strategy.HasConditions)
+                {
+                    var pass = true;
+
+                    foreach (var condition in strategy.Conditions)
+                    {
+                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType)))
+                        {
+                            pass = false;
+                            break;
+                        }
+                    }
+
+                    if (!pass)
+                    {
+                        continue;
+                    }
+                }
+
+                return strategy;
+            }
+
+            return default(T);
         }
 
         protected virtual ActivationStrategyDelegate FindKeyedDelegate(IInjectionScope scope, Type locateType, object key)

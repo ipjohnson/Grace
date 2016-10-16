@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-
             var constructor = request.ActivationType.GetTypeInfo().DeclaredConstructors.First();
 
             var wrappedType = request.ActivationType.GenericTypeArguments[0];
@@ -36,7 +35,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var assign = Expression.Assign(ownedParameter, Expression.New(constructor));
 
-            var newRequest = request.NewRequest(wrappedType, request.InjectedType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(wrappedType, this, request.ActivationType, RequestType.Other, null, true);
 
             newRequest.DisposalScopeExpression = ownedParameter;
 

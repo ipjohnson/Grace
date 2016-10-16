@@ -14,13 +14,16 @@ namespace Grace.DependencyInjection.Impl
         protected ImmutableLinkedList<object> EncrichmentDelegateList = ImmutableLinkedList<object>.Empty;
         protected ImmutableLinkedList<IMemeberInjectionSelector> MemberInjectorList = ImmutableLinkedList<IMemeberInjectionSelector>.Empty;
 
-        public TypeActivationConfiguration(Type activationType)
+        public TypeActivationConfiguration(Type activationType, IActivationStrategy activationStrategy)
         {
             ActivationType = activationType;
+            ActivationStrategy = activationStrategy;
             SupportsDecorators = false;
         }
 
         public Type ActivationType { get; }
+
+        public IActivationStrategy ActivationStrategy { get; }
 
         public ICompiledLifestyle Lifestyle { get; set; }
 
@@ -51,7 +54,7 @@ namespace Grace.DependencyInjection.Impl
 
         public TypeActivationConfiguration CloneToType(Type activationType)
         {
-            return new TypeActivationConfiguration(activationType)
+            return new TypeActivationConfiguration(activationType, ActivationStrategy)
             {
                 EncrichmentDelegateList = EncrichmentDelegateList,
                 MemberInjectorList = MemberInjectorList,

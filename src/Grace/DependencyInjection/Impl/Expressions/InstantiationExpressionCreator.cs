@@ -191,7 +191,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return expressionResult;
             }
 
-            var newRequest = request.NewRequest(parameter.ParameterType, configuration.ActivationType, RequestType.ConstructorParameter, parameter, true);
+            var newRequest = request.NewRequest(parameter.ParameterType, configuration.ActivationStrategy, configuration.ActivationType, RequestType.ConstructorParameter, parameter, true);
 
             if (parameterInfo?.LocateWithKey != null)
             {

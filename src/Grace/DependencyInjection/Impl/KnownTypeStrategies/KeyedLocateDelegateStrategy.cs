@@ -18,6 +18,8 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         {
         }
 
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.FrameworkExportStrategy;
+
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {

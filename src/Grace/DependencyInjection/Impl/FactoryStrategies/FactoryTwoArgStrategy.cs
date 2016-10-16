@@ -21,11 +21,11 @@ namespace Grace.DependencyInjection.Impl.FactoryStrategies
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
-            var arg1Request = request.NewRequest(typeof(T1), typeof(TResult), RequestType.Other, null, true);
+            var arg1Request = request.NewRequest(typeof(T1), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg1Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
 
-            var arg2Request = request.NewRequest(typeof(T2), typeof(TResult), RequestType.Other, null, true);
+            var arg2Request = request.NewRequest(typeof(T2), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg2Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg2Request);
 

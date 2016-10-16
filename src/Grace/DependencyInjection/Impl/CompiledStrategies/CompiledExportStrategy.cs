@@ -16,7 +16,9 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             _builder = builder;
         }
-        
+
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
+
         public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType)
         {
             if (_delegate != null)

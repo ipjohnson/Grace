@@ -16,6 +16,8 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         {
         }
 
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.FrameworkExportStrategy;
+
         public abstract IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope,
             IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle);
@@ -41,9 +43,10 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         }
 
         public abstract IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
+
         public IEnumerable<ICompiledExportStrategy> SecondaryStrategies()
         {
-            throw new NotImplementedException();
+            return ImmutableLinkedList<ICompiledExportStrategy>.Empty;
         }
     }
 }

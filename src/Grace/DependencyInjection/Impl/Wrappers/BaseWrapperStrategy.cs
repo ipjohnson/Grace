@@ -14,7 +14,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
         public abstract Type GetWrappedType(Type type);
-        
+
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.WrapperStrategy;
 
         public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope,
                                                                         IActivationStrategyCompiler compiler,

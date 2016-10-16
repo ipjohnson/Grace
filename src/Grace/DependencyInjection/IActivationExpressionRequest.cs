@@ -67,7 +67,9 @@ namespace Grace.DependencyInjection
 
         object LocateKey { get; }
 
-        Type InjectedType { get; set; }
+        Type InjectedType { get; }
+
+        IActivationStrategy RequestingStrategy { get; }
 
         RequestType RequestType { get; }
 
@@ -93,7 +95,9 @@ namespace Grace.DependencyInjection
 
         IDefaultValueInformation DefaultValue { get; }
 
-        IActivationExpressionRequest NewRequest(Type activationType, Type injectedType, RequestType requestType, object info, bool maintainPaths = false);
+        bool IsDynamic { get; set; }
+
+        ImmutableLinkedList<IKnownValueExpression> KnownValueExpressions { get; }
 
         IActivationPathNode PopWrapperPathNode();
 
@@ -114,13 +118,13 @@ namespace Grace.DependencyInjection
         StaticInjectionContext GetStaticInjectionContext();
 
         ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo> targetInfos);
-
-        ImmutableLinkedList<IKnownValueExpression> KnownValueExpressions { get; }
-
+        
         void AddKnownValueExpression(IKnownValueExpression knownValueExpression);
 
         void RequireInjectionContext();
 
         bool InjectionContextRequired();
+
+        IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false);
     }
 }

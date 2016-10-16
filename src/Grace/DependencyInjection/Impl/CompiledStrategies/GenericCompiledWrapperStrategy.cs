@@ -19,6 +19,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             _builder = builder;
         }
 
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.WrapperStrategy;
 
         public override TypeActivationConfiguration GetActivationConfiguration(Type activationType)
         {

@@ -56,7 +56,7 @@ namespace Grace.DependencyInjection
         private IEnumerableCreator _enumerableCreator;
         private Func<Type, bool> _keyedTypeSelector = DefaultKeyedTypeSelector;
         private bool _allowInstanceAndFactoryToReturnNull;
-        private int _depth = 60;
+        private int _depth = 100;
 
         public void ConstructorSelection(ConstructorSelectionMethod selection)
         {

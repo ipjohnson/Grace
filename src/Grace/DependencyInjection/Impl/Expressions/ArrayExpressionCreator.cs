@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 foreach (var strategy in collection.GetStrategies())
                 {
-                    var newRequest = request.NewRequest(arrayElementType, request.InjectedType, request.RequestType,
+                    var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
                         request.Info, true);
 
                     expressions.Add(strategy.GetActivationExpression(scope, newRequest));
@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     foreach (var strategy in strategies.GetStrategies())
                     {
-                        var newRequest = request.NewRequest(arrayElementType, request.InjectedType, request.RequestType,
+                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
                             request.Info, true);
 
                         expressions.Add(strategy.GetActivationExpression(scope, newRequest));
@@ -129,8 +129,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                             if (expressions.Count == 0)
                             {
-                                var newRequest = request.NewRequest(arrayElementType, request.InjectedType,
-                                    RequestType.Other, null, true);
+                                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true);
 
                                 request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
 
@@ -140,7 +139,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                     else
                     {
-                        var newRequest = request.NewRequest(arrayElementType, request.InjectedType,
+                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType,
                                     RequestType.Other, null, true);
 
                         request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
@@ -185,24 +184,37 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 if (strategy.HasConditions)
                 {
-                    throw new NotImplementedException();
+                    var staticContext = request.GetStaticInjectionContext();
+                    var pass = true;
+
+                    foreach (var condition in strategy.Conditions)
+                    {
+                        if (!condition.MeetsCondition(strategy, staticContext))
+                        {
+                            pass = false;
+                            break;
+                        }                           
+                    }
+
+                    if (!pass)
+                    {
+                        continue;
+                    }
                 }
-                else
-                {
-                    var newRequest = request.NewRequest(arrayElementType, request.InjectedType,
-                        RequestType.Other, null, true);
 
-                    var newPath =
-                        ImmutableLinkedList<IActivationPathNode>.Empty.Add(
-                            new WrapperActivationPathNode(strategy,
-                                wrappedType, null)).AddRange(wrappers);
+                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType,
+                    RequestType.Other, null, true);
 
-                    newRequest.SetWrapperPath(newPath);
+                var newPath =
+                    ImmutableLinkedList<IActivationPathNode>.Empty.Add(
+                        new WrapperActivationPathNode(strategy,
+                            wrappedType, null)).AddRange(wrappers);
 
-                    var wrapper = newRequest.PopWrapperPathNode();
+                newRequest.SetWrapperPath(newPath);
 
-                    expressions.Add(wrapper.GetActivationExpression(scope, newRequest));
-                }
+                var wrapper = newRequest.PopWrapperPathNode();
+
+                expressions.Add(wrapper.GetActivationExpression(scope, newRequest));
             }
         }
     }

@@ -92,6 +92,8 @@ namespace Grace.DependencyInjection
                                                     f.Locate<IInjectionContextCreator>(),
                                                     f.Locate<IExpressionConstants>()));
 
+            DefaultImplementation.ExportInstance< ICanLocateTypeService>(f => new CanLocateTypeService());
+
             DefaultImplementation.ExportInstance<IExportRegistrationBlockValueProvider>(
                 f => new ExportRegistrationBlock(f.InjectionScope, f.Locate<IActivationStrategyCreator>()));
 

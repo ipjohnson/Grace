@@ -28,11 +28,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];
 
-            var newRequest = request.NewRequest(typeof(IList<>).MakeGenericType(elementType), request.InjectedType, RequestType.Other, null, true);
+            var closedType = typeof(ReadOnlyCollection<>).MakeGenericType(elementType);
+
+            var newRequest = request.NewRequest(typeof(IList<>).MakeGenericType(elementType), this,closedType , RequestType.Other, null, true);
 
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
-
-            var closedType = typeof(ReadOnlyCollection<>).MakeGenericType(elementType);
 
             var constructor = closedType.GetTypeInfo().DeclaredConstructors.First(c =>
             {

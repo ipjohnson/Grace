@@ -17,7 +17,9 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             _builder = builder;
         }
-        
+
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
+
         public override TypeActivationConfiguration GetActivationConfiguration(Type activationType)
         {
             var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);

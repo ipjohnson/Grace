@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="conditions"></param>
         /// <returns></returns>
-        IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
+        IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
 
         /// <summary>
         /// Export all types based on speficied type by Type
@@ -68,13 +68,20 @@ namespace Grace.DependencyInjection
         /// <param name="keyedDelegate">keyed types</param>
         /// <returns></returns>
         IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate);
+        
+        /// <summary>
+        /// Exclude a type from being used
+        /// </summary>
+        /// <param name="exclude">exclude delegate</param>
+        /// <returns>configuration object</returns>
+        IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude);
 
         /// <summary>
         /// Lifestyle for set
         /// </summary>
         ILifestylePicker<IExportTypeSetConfiguration> Lifestyle { get; }
 
-            /// <summary>
+        /// <summary>
         /// Set a particular life style
         /// </summary>
         /// <param name="container">lifestyle</param>
@@ -99,6 +106,12 @@ namespace Grace.DependencyInjection
         /// <param name="typeFilter"></param>
         /// <returns></returns>
         IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter);
-        
+
+        /// <summary>
+        /// Add inspector for type set
+        /// </summary>
+        /// <param name="inspector"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector);
     }
 }

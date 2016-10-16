@@ -6,6 +6,15 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
+    public enum ActivationStrategyType
+    {
+        ExportStrategy,
+        FrameworkExportStrategy,
+        WrapperStrategy,
+        DecoratorStrategy
+    }
+
+
     public interface IActivationStrategy
     {
         /// <summary>
@@ -22,6 +31,11 @@ namespace Grace.DependencyInjection
         /// Type being activated
         /// </summary>
         Type ActivationType { get; }
+
+        /// <summary>
+        /// Type of activation strategy
+        /// </summary>
+        ActivationStrategyType StrategyType { get; }
 
         /// <summary>
         /// Lifestyle for this activation stratgey

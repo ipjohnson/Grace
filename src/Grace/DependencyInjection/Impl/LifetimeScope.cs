@@ -5,23 +5,12 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {
-    public class LifetimeScope : DisposalScope, IExportLocatorScope
+    public class LifetimeScope : BaseExportLocatorScope, IExportLocatorScope
     {
-        private string _scopeIdString;
-        private Guid _scopeId = Guid.Empty;
-        private readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] _activationDelegates;
-        private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
-        private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
-        private readonly int _arrayLengthMinusOne;
         private readonly IInjectionScope _injectionScope;
 
-        public LifetimeScope(IExportLocatorScope parent, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
+        public LifetimeScope(IExportLocatorScope parent, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates) : base(parent,name,activationDelegates)
         {
-            Parent = parent;
-            Name = name ?? "";
-            _activationDelegates = activationDelegates;
-            _arrayLengthMinusOne = activationDelegates.Length - 1;
-
             var currentScope = parent;
 
             while (!(currentScope is IInjectionScope))
@@ -30,37 +19,6 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _injectionScope = currentScope as IInjectionScope;
-        }
-
-        public object GetExtraData(object key)
-        {
-            return _extraData.GetValueOrDefault(key);
-        }
-
-        public void SetExtraData(object key, object newValue, bool replaceIfExists = true)
-        {
-            ImmutableHashTree.ThreadSafeAdd(ref _extraData, key, newValue, true);
-        }
-
-        public IExportLocatorScope Parent { get; }
-
-        public string Name { get; }
-
-        public Guid ScopeId
-        {
-            get
-            {
-                if (_scopeId != Guid.Empty)
-                {
-                    return _scopeId;
-                }
-
-                Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
-
-                _scopeId = new Guid(_scopeIdString);
-
-                return _scopeId;
-            }
         }
 
         public bool CanLocate(Type type, object key = null)
@@ -72,26 +30,19 @@ namespace Grace.DependencyInjection.Impl
         {
             var hashCode = type.GetHashCode();
 
-            var func = _activationDelegates[hashCode & _arrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
             return func != null ? func(this, this, null) : LocateFromParent(type, null, null,true);
         }
-
-
-        public object Locate(Type type, object extraData = null, object key = null)
+        
+        public object Locate(Type type, object extraData = null, object key = null, bool isDynamic = false)
         {
             return LocateFromParent(type, extraData, key, true);
         }
-
-        public object GetLockObject(string lockName)
-        {
-            return _lockObjects.GetValueOrDefault(lockName) ??
-                   ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
-        }
-
+        
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return new LifetimeScope(this, scopeName, _activationDelegates);
+            return new LifetimeScope(this, scopeName, ActivationDelegates);
         }
 
         public T Locate<T>()
@@ -99,7 +50,7 @@ namespace Grace.DependencyInjection.Impl
             return (T)Locate(typeof(T));
         }
 
-        public T Locate<T>(object extraData = null, object withKey = null)
+        public T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false)
         {
             return (T)LocateFromParent(typeof(T), extraData, withKey, true);
         }

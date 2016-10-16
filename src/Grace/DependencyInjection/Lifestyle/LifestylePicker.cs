@@ -24,6 +24,7 @@ namespace Grace.DependencyInjection.Lifestyle
             return _returnValue;
         }
 
+
         /// <summary>
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
         /// </summary>
@@ -57,6 +58,18 @@ namespace Grace.DependencyInjection.Lifestyle
             _addLifestyle(new WeakSingletonLifestyle());
 
             return _returnValue;
+        }
+
+        public T SingletonPerAncestor(Type ancestorType, bool locking = false)
+        {
+            _addLifestyle(new SingletonPerAncestor(ancestorType, locking));
+
+            return _returnValue;
+        }
+
+        public T SingletonPerAncestor<TAncestor>(bool locking = false)
+        {
+            return SingletonPerAncestor(typeof(TAncestor), locking);
         }
     }
 }

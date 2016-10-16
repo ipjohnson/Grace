@@ -15,7 +15,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
         
         public bool ApplyAfterLifestyle { get; set; }
-        
+
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.DecoratorStrategy;
 
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {

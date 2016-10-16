@@ -33,8 +33,9 @@ namespace Grace.DependencyInjection
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data to be used during construction</param>
         /// <param name="withKey">key to use for locating type</param>
+        /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
-        object Locate(Type type, object extraData = null, object withKey = null);
+        object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// Locate specific type using extra data or key
@@ -42,8 +43,9 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to locate</typeparam>
         /// <param name="extraData">extra data</param>
         /// <param name="withKey">key to use during construction</param>
+        /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
-        T Locate<T>(object extraData = null, object withKey = null);
+        T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// Locate all instances of a specific type

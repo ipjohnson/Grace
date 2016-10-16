@@ -54,18 +54,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var activationExpressionForStrategy = GetValueFromRequest(scope, request, request.ActivationType, null);
+            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
 
-            if (activationExpressionForStrategy != null)
+            if (activationExpressionResult != null)
             {
-                return activationExpressionForStrategy;
+                return activationExpressionResult;
             }
 
-            activationExpressionForStrategy = GetActivationExpressionFromStrategies(scope, request);
+            activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
 
-            if (activationExpressionForStrategy != null)
+            if (activationExpressionResult != null)
             {
-                return activationExpressionForStrategy;
+                return activationExpressionResult;
             }
 
             if (request.ActivationType.IsArray)
@@ -88,11 +88,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             lock (scope.GetLockObject(RootInjectionScope.ActivationStrategyAddLockName))
             {
-                activationExpressionForStrategy = GetActivationExpressionFromStrategies(scope, request);
+                activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
 
-                if (activationExpressionForStrategy != null)
+                if (activationExpressionResult != null)
                 {
-                    return activationExpressionForStrategy;
+                    return activationExpressionResult;
                 }
 
                 wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
@@ -104,11 +104,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
 
-                activationExpressionForStrategy = GetActivationExpressionFromStrategies(scope, request);
+                activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
 
-                if (activationExpressionForStrategy != null)
+                if (activationExpressionResult != null)
                 {
-                    return activationExpressionForStrategy;
+                    return activationExpressionResult;
                 }
 
                 wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
@@ -175,6 +175,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return request.Services.Compiler.CreateNewResult(request, Expression.Constant(staticContext));
             }
 
+            if (request.IsDynamic)
+            {
+                if(request.ActivationType.IsArray || 
+                    (request.ActivationType.IsConstructedGenericType && 
+                     request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                {
+                    
+                }
+                
+                throw new NotImplementedException();
+            }
+
             return null;
         }
 
@@ -216,18 +228,50 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                     else
                     {
-                        var primary = collection.GetPrimary();
+                        var strategy = collection.GetPrimary();
 
-                        if (primary != null && request.Filter == null)
+                        if (strategy != null && request.Filter == null)
                         {
-                            return ActivationExpressionForStrategy(scope, request, primary);
+                            return ActivationExpressionForStrategy(scope, request, strategy);
                         }
-                        else
+
+                        strategy = SelectStrategyFromCollection(collection, scope, request);
+
+                        if (strategy != null)
                         {
-                            throw new NotImplementedException();
+                            return ActivationExpressionForStrategy(scope, request, strategy);
                         }
                     }
                 }
+            }
+
+            return null;
+        }
+
+        private ICompiledExportStrategy SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var filter = request.Filter;
+
+            foreach (var strategy in collection.GetStrategies())
+            {
+                if (filter != null && !filter(strategy))
+                {
+                    continue;
+                }
+
+                if (!strategy.HasConditions)
+                {
+                    return strategy;
+                }
+
+                var context = request.GetStaticInjectionContext();
+                    
+                if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
+                {
+                    continue;
+                }
+
+                return strategy;
             }
 
             return null;
@@ -250,18 +294,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
                 else
                 {
-                    var primary = collection.GetPrimary();
+                    var strategy = collection.GetPrimary();
 
-                    if (primary != null && request.Filter == null)
+                    if (strategy != null && request.Filter == null)
                     {
-                        return ActivationExpressionForStrategy(scope, request, primary);
+                        return ActivationExpressionForStrategy(scope, request, strategy);
                     }
-                    else
+
+                    strategy = SelectStrategyFromCollection(collection, scope, request);
+
+                    if (strategy != null)
                     {
-                        throw new NotImplementedException();
+                        return ActivationExpressionForStrategy(scope, request, strategy);
                     }
                 }
             }
+
             return null;
         }
 

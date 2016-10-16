@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         public MetaWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Meta<>), injectionScope)
         {
         }
-        
+
         public override Type GetWrappedType(Type wrappedType)
         {
             if (wrappedType.IsConstructedGenericType)
@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var constructor = request.ActivationType.GetTypeInfo().DeclaredConstructors.First();
 
-            var newRequest = request.NewRequest(requestType, request.InjectedType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(requestType, this, request.ActivationType, RequestType.Other, null, true);
 
             var strategy = request.GetWrappedExportStrategy();
 

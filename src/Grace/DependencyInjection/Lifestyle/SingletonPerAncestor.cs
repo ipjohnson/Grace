@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Lifestyle
             _guaranteeOnlyOne = guaranteeOnlyOne;
         }
 
-        public bool RootRequest { get; } = true;
+        public bool RootRequest { get; } = false;
 
         public ICompiledLifestyle Clone()
         {
@@ -69,6 +69,8 @@ namespace Grace.DependencyInjection.Lifestyle
             var expression = Expression.Call(closedMethod, request.Constants.ScopeParameter,
                 request.DisposalScopeExpression, request.Constants.InjectionContextParameter,
                 Expression.Constant(newDelegate), Expression.Constant(ancestorId));
+
+            request.RequireInjectionContext();
 
             return request.Services.Compiler.CreateNewResult(request, expression);
         }

@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var closedMethod = closedClass.GetRuntimeMethod("CreateFunc", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
-            var instance = Activator.CreateInstance(closedClass, scope, request);
+            var instance = Activator.CreateInstance(closedClass, scope, request, this);
 
             var callExpression =
                 Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
@@ -40,11 +40,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             private readonly ActivationStrategyDelegate _action;
 
-            public FuncExpression(IInjectionScope scope, IActivationExpressionRequest request)
+            public FuncExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy)
             {
                 var requestType = request.ActivationType.GenericTypeArguments[0];
 
-                var newRequest = request.NewRequest(requestType, request.InjectedType, RequestType.Other, null, true);
+                var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TResult>), RequestType.Other, null, true);
 
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 

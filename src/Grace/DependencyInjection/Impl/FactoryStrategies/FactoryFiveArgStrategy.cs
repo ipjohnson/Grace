@@ -21,23 +21,23 @@ namespace Grace.DependencyInjection.Impl.FactoryStrategies
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
-            var arg1Request = request.NewRequest(typeof(T1), typeof(TResult), RequestType.Other, null, true);
+            var arg1Request = request.NewRequest(typeof(T1), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg1Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
 
-            var arg2Request = request.NewRequest(typeof(T2), typeof(TResult), RequestType.Other, null, true);
+            var arg2Request = request.NewRequest(typeof(T2), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg2Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg2Request);
 
-            var arg3Request = request.NewRequest(typeof(T3), typeof(TResult), RequestType.Other, null, true);
+            var arg3Request = request.NewRequest(typeof(T3), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg3Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg3Request);
 
-            var arg4Request = request.NewRequest(typeof(T4), typeof(TResult), RequestType.Other, null, true);
+            var arg4Request = request.NewRequest(typeof(T4), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg4Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg4Request);
 
-            var arg5Request = request.NewRequest(typeof(T5), typeof(TResult), RequestType.Other, null, true);
+            var arg5Request = request.NewRequest(typeof(T5), this, typeof(TResult), RequestType.Other, null, true);
 
             var arg5Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg5Request);
 

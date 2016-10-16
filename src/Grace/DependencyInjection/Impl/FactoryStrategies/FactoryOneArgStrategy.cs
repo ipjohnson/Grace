@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection.Impl.FactoryStrategies
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
-            var newRequest = request.NewRequest(typeof(T1), typeof(TResult), RequestType.Other, null, true);
+            var newRequest = request.NewRequest(typeof(T1), this, typeof(TResult), RequestType.Other, null, true);
 
             var argResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

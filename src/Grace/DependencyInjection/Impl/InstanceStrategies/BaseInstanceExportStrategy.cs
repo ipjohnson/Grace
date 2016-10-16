@@ -53,6 +53,8 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             return CreateExpression(scope, request, lifestyle);
         }
 
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
+
         protected abstract IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle);
 
         public Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression)

@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var arrayType = enumerableType.MakeArrayType();
 
-                var newRequest = request.NewRequest(arrayType, request.InjectedType, request.RequestType, request.Info, true);
+                var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
 
                 var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 
@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var arrayType = enumerableType.MakeArrayType();
 
-                var newRequest = request.NewRequest(arrayType, request.InjectedType, request.RequestType, request.Info,
+                var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info,
                     true);
 
                 var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);

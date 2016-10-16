@@ -25,7 +25,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];
 
-            var newRequest = request.NewRequest(elementType.MakeArrayType(), request.InjectedType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(elementType.MakeArrayType(), this, request.ActivationType, RequestType.Other, null, true);
 
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

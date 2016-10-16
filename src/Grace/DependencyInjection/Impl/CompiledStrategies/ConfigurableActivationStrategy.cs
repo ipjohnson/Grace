@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
         protected ConfigurableActivationStrategy(Type activationType, IInjectionScope injectionScope)
         {
-            ActivationConfiguration = new TypeActivationConfiguration(activationType);
+            ActivationConfiguration = new TypeActivationConfiguration(activationType, this);
 
             InjectionScope = injectionScope;
         }
@@ -29,6 +29,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public int Priority { get; set; }
 
         public Type ActivationType => ActivationConfiguration.ActivationType;
+
+        public abstract ActivationStrategyType StrategyType { get; }
 
         public IEnumerable<Type> ExportAs => _exportAs;
 

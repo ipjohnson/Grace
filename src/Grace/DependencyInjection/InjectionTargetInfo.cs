@@ -12,6 +12,7 @@ namespace Grace.DependencyInjection
 
         public InjectionTargetInfo(IAttributeDiscoveryService attributeDiscoveryService,
                                    Type injectionType,
+                                   IActivationStrategy requestingStrategy,
                                    object injectionTarget,
                                    RequestType injectionDependencyType,
                                    Type locatedType,
@@ -21,6 +22,7 @@ namespace Grace.DependencyInjection
         {
             _attributeDiscoveryService = attributeDiscoveryService;
             InjectionType = injectionType;
+            RequestingStrategy = requestingStrategy;
             InjectionTarget = injectionTarget;
             InjectionDependencyType = injectionDependencyType;
             LocateType = locatedType;
@@ -33,6 +35,11 @@ namespace Grace.DependencyInjection
         /// This is the type that is being injected into 
         /// </summary>
         public Type InjectionType { get; }
+
+        /// <summary>
+        /// Requesting strategy
+        /// </summary>
+        public IActivationStrategy RequestingStrategy { get; set; }
 
         /// <summary>
         /// These are the attributes for the class that it's being injected into

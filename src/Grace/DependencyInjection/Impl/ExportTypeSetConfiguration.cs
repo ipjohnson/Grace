@@ -22,13 +22,15 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<Func<Type, IEnumerable<Type>>> _byTypes = ImmutableLinkedList<Func<Type, IEnumerable<Type>>>.Empty;
         private ImmutableLinkedList<Func<Type, IEnumerable<Tuple<Type, object>>>> _byKeyedType = ImmutableLinkedList<Func<Type, IEnumerable<Tuple<Type, object>>>>.Empty;
         private ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>> _conditions = ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>>.Empty;
+        private ImmutableLinkedList<Func<Type, bool>> _excludeFuncs = ImmutableLinkedList<Func<Type, bool>>.Empty;
+        private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
         private Func<Type, ICompiledLifestyle> _lifestyleFunc;
 
         public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport)
         {
             _strategyCreator = strategyCreator;
             _typesToExport = typesToExport;
-            _whereFilter = new GenericFilterGroup<Type>(ShouldSkipType);
+            _whereFilter = new GenericFilterGroup<Type>(ShouldSkipType, ExcludeTypesFilter);
         }
 
         public IExportTypeSetConfiguration BasedOn(Type baseType)
@@ -96,6 +98,15 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude)
+        {
+            if (exclude == null) throw new ArgumentNullException(nameof(exclude));
+
+            _excludeFuncs = _excludeFuncs.Add(exclude);
+
+            return this;
+        }
+
         public ILifestylePicker<IExportTypeSetConfiguration> Lifestyle
         {
             get { return new LifestylePicker<IExportTypeSetConfiguration>(this, lifestyle => UsingLifestyle(lifestyle)); }
@@ -124,7 +135,16 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        public IExportTypeSetConfiguration AddCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
+        public IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector)
+        {
+            if (inspector == null) throw new ArgumentNullException(nameof(inspector));
+
+            _inspectors = _inspectors.Add(inspector);
+
+            return this;
+        }
+
+        public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
         {
             if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
 
@@ -138,7 +158,7 @@ namespace Grace.DependencyInjection.Impl
             get
             {
                 return new WhenConditionConfiguration<IExportTypeSetConfiguration>(
-                    condition => _conditions = _conditions.Add(t => new[] {condition}), this);
+                    condition => _conditions = _conditions.Add(t => new[] { condition }), this);
             }
         }
 
@@ -197,6 +217,11 @@ namespace Grace.DependencyInjection.Impl
             }
 
             strategy.Lifestyle = _lifestyleFunc?.Invoke(type);
+
+            if (_inspectors != ImmutableLinkedList<IActivationStrategyInspector>.Empty)
+            {
+                _inspectors.Visit(i => i.Inspect(strategy), true);
+            }
 
             return strategy;
         }
@@ -267,6 +292,16 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return returnList;
+        }
+
+        private bool ExcludeTypesFilter(Type arg)
+        {
+            if (_excludeFuncs == ImmutableLinkedList<Func<Type, bool>>.Empty)
+            {
+                return true;
+            }
+
+            return !_excludeFuncs.Any(m => m(arg));
         }
 
         private static bool ShouldSkipType(Type exportedType)

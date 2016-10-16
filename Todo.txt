@@ -1,5 +1,4 @@
 Lifestyle  
- - per ancestor
  - per object graph
  
 Collection Parameter configuration
@@ -10,11 +9,11 @@ Activation Method
 
 ExternallyOwned - make sure it works
 
-Conditional
-
 Dynamic
 
 Child Container
+
+TryLocate
 
 Obsolete Instance infavor of Factory<>
 
@@ -23,11 +22,9 @@ Generic Decorator support
 
 ImportProperty<TProp>
 
-IExportTypeSetConfiguration Exclude
+Import Method
 
 IExportTypeSetConfiguration ExportAttributedTypes
-
-IExportTypeSetConfiguration WithInspector
 
 Export Property
 

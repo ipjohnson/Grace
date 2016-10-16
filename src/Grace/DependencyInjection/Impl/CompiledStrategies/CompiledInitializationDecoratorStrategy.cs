@@ -17,10 +17,12 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             _func = func;
         }
 
+        public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.DecoratorStrategy;
+
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
-            var newRequest = request.NewRequest(typeof(T), request.InjectedType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(typeof(T), this, ActivationType, RequestType.Other, null, true);
 
             var expression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

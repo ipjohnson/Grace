@@ -27,11 +27,12 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];
 
-            var newRequest = request.NewRequest(elementType.MakeArrayType(), request.InjectedType, RequestType.Other, null, true);
+            var closedType = typeof(List<>).MakeGenericType(elementType);
+
+            var newRequest = request.NewRequest(elementType.MakeArrayType(), this, closedType, RequestType.Other, null, true);
 
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
-            var closedType = typeof(List<>).MakeGenericType(elementType);
 
             var constructor = closedType.GetTypeInfo().DeclaredConstructors.First(c =>
             {

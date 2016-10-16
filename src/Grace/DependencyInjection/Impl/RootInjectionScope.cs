@@ -8,21 +8,16 @@ using Grace.DependencyInjection.Impl.Wrappers;
 
 namespace Grace.DependencyInjection.Impl
 {
-    public class RootInjectionScope : DisposalScope, IInjectionScope
+    public class RootInjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
-        private string _scopeIdString;
-        private Guid _scopeId = Guid.Empty;
-        private readonly int _arraySizeMinusOne;
-        private readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] _activationStrategyDelegates;
-        private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
-        private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
         private readonly ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
             ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> _wrappers;
         protected IActivationStrategyCompiler ActivationStrategyCompiler;
         protected ILifetimeScopeProvider LifetimeScopeProvider;
         protected IInjectionContextCreator InjectionContextCreator;
+        protected ICanLocateTypeService CanLocateTypeService;
 
         public const string ActivationStrategyAddLockName = "ActivationStrategyAddLock";
         #endregion
@@ -42,18 +37,16 @@ namespace Grace.DependencyInjection.Impl
         /// Configuration object constructor
         /// </summary>
         /// <param name="configuration"></param>
-        public RootInjectionScope(IInjectionScopeConfiguration configuration)
+        public RootInjectionScope(IInjectionScopeConfiguration configuration) :
+            base(null, "RootScope", new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize])
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-
-            Parent = null;
-            Name = "RootScope";
-
             configuration.SetInjectionScope(this);
 
             ScopeConfiguration = configuration;
 
             InjectionContextCreator = configuration.Implementation.Locate<IInjectionContextCreator>();
+
+            CanLocateTypeService = configuration.Implementation.Locate<ICanLocateTypeService>();
 
             ActivationStrategyCompiler = configuration.Implementation.Locate<IActivationStrategyCompiler>();
 
@@ -63,12 +56,9 @@ namespace Grace.DependencyInjection.Impl
             DecoratorCollectionContainer =
                 configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>();
 
-            _arraySizeMinusOne = configuration.CacheArraySize - 1;
-            _activationStrategyDelegates = new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize];
-
             for (var i = 0; i < configuration.CacheArraySize; i++)
             {
-                _activationStrategyDelegates[i] = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+                ActivationDelegates[i] = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
             }
 
             if (configuration.AutoRegisterUnknown)
@@ -91,65 +81,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public bool CanLocate(Type type, object key = null)
         {
-            if (key != null)
-            {
-                var collection = StrategyCollectionContainer.GetActivationStrategyCollection(type);
-
-                return collection.GetKeyedStrategy(key) != null;
-            }
-
-            if (StrategyCollectionContainer.GetActivationStrategyCollection(type) != null)
-            {
-                return true;
-            }
-
-            if (WrapperCollectionContainer.GetActivationStrategyCollection(type) != null)
-            {
-                return true;
-            }
-
-            if (type.IsArray)
-            {
-                return true;
-            }
-
-            if (type.IsConstructedGenericType)
-            {
-                var generic = type.GetGenericTypeDefinition();
-
-                if (StrategyCollectionContainer.GetActivationStrategyCollection(generic) != null)
-                {
-                    return true;
-                }
-
-                if (WrapperCollectionContainer.GetActivationStrategyCollection(generic) != null)
-                {
-                    return true;
-                }
-
-                if (generic == typeof(IEnumerable<>) ||
-                    generic == typeof(IList<>) ||
-                    generic == typeof(ICollection<>) ||
-                    generic == typeof(IReadOnlyList<>) ||
-                    generic == typeof(IReadOnlyCollection<>) ||
-                    generic == typeof(List<>) ||
-                    generic == typeof(ReadOnlyCollection<>) ||
-                    generic == typeof(ImmutableLinkedList<>) ||
-                    generic == typeof(ImmutableArray<>))
-                {
-                    return ScopeConfiguration.AutoRegisterUnknown;
-                }
-            }
-
-            if (!type.GetTypeInfo().IsInterface)
-            {
-                return ScopeConfiguration.AutoRegisterUnknown;
-            }
-
-            return type == typeof(ILocatorService) ||
-                   type == typeof(IExportLocatorScope) || 
-                   type == typeof(IInjectionContext) ||
-                   type == typeof(StaticInjectionContext);
+            return CanLocateTypeService.CanLocate(this, type, key);
         }
 
         /// <summary>
@@ -161,7 +93,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var hashCode = type.GetHashCode();
 
-            var func = _activationStrategyDelegates[hashCode & _arraySizeMinusOne].GetValueOrDefault(type, hashCode);
+            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
             return func != null ? func(this, this, null) : LocateObjectFactory(this, type, null, null, false);
         }
@@ -182,25 +114,27 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data to be used during construction</param>
         /// <param name="withKey">key to use for locating type</param>
+        /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
-        public object Locate(Type type, object extraData = null, object withKey = null)
+        public object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false)
         {
+            var context = CreateInjectionContextFromExtraData(type, extraData);
+
             if (withKey != null)
             {
-                IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
-
                 return LocateObjectFactory(this, type, withKey, context, false);
             }
-            else
+
+            if (!isDynamic)
             {
                 var hash = type.GetHashCode();
 
-                var func = _activationStrategyDelegates[hash & _arraySizeMinusOne].GetValueOrDefault(type, hash);
-
-                IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
+                var func = ActivationDelegates[hash & ArrayLengthMinusOne].GetValueOrDefault(type, hash);
 
                 return func != null ? func(this, this, context) : LocateObjectFactory(this, type, null, context, false);
             }
+
+            return LocateObjectFactory(this, type, null, context, false);
         }
 
         /// <summary>
@@ -209,22 +143,50 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type to locate</typeparam>
         /// <param name="extraData">extra data</param>
         /// <param name="withKey">key to use during construction</param>
+        /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
-        public T Locate<T>(object extraData = null, object withKey = null)
+        public T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false)
         {
-            return (T)Locate(typeof(T), extraData, withKey);
+            return (T)Locate(typeof(T), extraData, withKey, isDynamic);
         }
 
+        /// <summary>
+        /// Locate all instances of a type
+        /// </summary>
+        /// <param name="type">type to locate</param>
+        /// <param name="extraData">extra data </param>
+        /// <param name="filter">provide method to filter out exports</param>
+        /// <param name="withKey">key to use while locating</param>
+        /// <param name="comparer">comparer to use for sorting</param>
+        /// <returns>list of all type</returns>
         public List<object> LocateAll(Type type, object extraData = null, ExportStrategyFilter filter = null, object withKey = null, IComparer<object> comparer = null)
         {
             return InternalLocateAll(type, extraData, filter, withKey, comparer);
         }
 
+        /// <summary>
+        /// Locate all of a specific type
+        /// </summary>
+        /// <typeparam name="T">type to locate</typeparam>
+        /// <param name="extraData">extra data to use during construction</param>
+        /// <param name="filter">provide method to filter out exports</param>
+        /// <param name="withKey">key to use while locating</param>
+        /// <param name="comparer">comparer to use for sorting</param>
+        /// <returns>list of all located</returns>
         public List<T> LocateAll<T>(object extraData = null, ExportStrategyFilter filter = null, object withKey = null, IComparer<T> comparer = null)
         {
             return InternalLocateAll(typeof(T), extraData, filter, withKey, comparer);
         }
 
+        /// <summary>
+        /// Try to locate a specific type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">located value</param>
+        /// <param name="extraData">extra data to be used during construction</param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns></returns>
         public bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null)
         {
             IInjectionContext context = CreateInjectionContextFromExtraData(typeof(T), extraData);
@@ -236,7 +198,7 @@ namespace Grace.DependencyInjection.Impl
             if (newValue != null)
             {
                 returnValue = true;
-                value = (T) newValue;
+                value = (T)newValue;
             }
             else
             {
@@ -246,52 +208,23 @@ namespace Grace.DependencyInjection.Impl
             return returnValue;
         }
 
+        /// <summary>
+        /// Try to locate an export by type
+        /// </summary>
+        /// <param name="type">locate type</param>
+        /// <param name="value">out value</param>
+        /// <param name="extraData">extra data to use during locate</param>
+        /// <param name="consider"></param>
+        /// <param name="withKey"></param>
+        /// <returns>returns tue if export found</returns>
         public bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null,
             object withKey = null)
         {
-            throw new NotImplementedException();
-        }
+            IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
 
+            value = LocateObjectFactory(this, type, withKey, context, true);
 
-        /// <summary>
-        /// Parent scope
-        /// </summary>
-        public IExportLocatorScope Parent { get; }
-
-        /// <summary>
-        /// Unique id for each scope
-        /// </summary>
-        public Guid ScopeId
-        {
-            get
-            {
-                if (_scopeId != Guid.Empty)
-                {
-                    return _scopeId;
-                }
-
-                Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
-
-                _scopeId = new Guid(_scopeIdString);
-
-                return _scopeId;
-            }
-        }
-
-        /// <summary>
-        /// Name of the scope
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// Gets a named object that can be used for locking
-        /// </summary>
-        /// <param name="lockName">lock name</param>
-        /// <returns>lock</returns>
-        public object GetLockObject(string lockName)
-        {
-            return _lockObjects.GetValueOrDefault(lockName) ??
-                ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
+            return value != null;
         }
 
         /// <summary>
@@ -302,8 +235,8 @@ namespace Grace.DependencyInjection.Impl
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
             return LifetimeScopeProvider == null
-                ? new LifetimeScope(this, scopeName, _activationStrategyDelegates)
-                : LifetimeScopeProvider.CreateScope(this, scopeName, _activationStrategyDelegates);
+                ? new LifetimeScope(this, scopeName, ActivationDelegates)
+                : LifetimeScopeProvider.CreateScope(this, scopeName, ActivationDelegates);
         }
 
         /// <summary>
@@ -388,15 +321,6 @@ namespace Grace.DependencyInjection.Impl
             return LocateObjectFactory(childScope, type, key, null, allowNull);
         }
 
-        public object GetExtraData(object key)
-        {
-            return _extraData.GetValueOrDefault(key);
-        }
-
-        public void SetExtraData(object key, object newValue, bool replaceIfExists = true)
-        {
-            ImmutableHashTree.ThreadSafeAdd(ref _extraData, key, newValue, replaceIfExists);
-        }
         #endregion
 
         #region Non public members
@@ -447,7 +371,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var hashCode = type.GetHashCode();
 
-            return ImmutableHashTree.ThreadSafeAdd(ref _activationStrategyDelegates[hashCode & _arraySizeMinusOne],
+            return ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates[hashCode & ArrayLengthMinusOne],
                                                    type,
                                                    activationStrategyDelegate);
         }
@@ -503,7 +427,21 @@ namespace Grace.DependencyInjection.Impl
 
                     if (strategy.HasConditions)
                     {
-                        throw new NotImplementedException();
+                        bool pass = true;
+
+                        foreach (var condition in strategy.Conditions)
+                        {
+                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
+                            {
+                                pass = false;
+                                break;
+                            }
+                        }
+
+                        if (!pass)
+                        {
+                            continue;
+                        }
                     }
 
                     var activationDelegate = strategy.GetActivationStrategyDelegate(this, ActivationStrategyCompiler, type);
@@ -511,8 +449,7 @@ namespace Grace.DependencyInjection.Impl
                     if (activationDelegate != null)
                     {
                         returnList.Add(
-                            (T)
-                            activationDelegate(this, this,
+                            (T)activationDelegate(this, this,
                                 extraData != null ? CreateInjectionContextFromExtraData(type, extraData) : null));
                     }
                 }

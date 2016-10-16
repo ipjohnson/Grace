@@ -1,4 +1,6 @@
-﻿namespace Grace.DependencyInjection.Lifestyle
+﻿using System;
+
+namespace Grace.DependencyInjection.Lifestyle
 {
     public interface ILifestylePicker<T>
     {
@@ -9,11 +11,20 @@
         T Singleton();
 
         /// <summary>
-        /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
+        /// Create one instance per ancestor in the object graph
         /// </summary>
-        /// <param name="locking">false by default, set to true if you have multiple threads resolving from the smae scope </param>
+        /// <param name="ancestorType"></param>
+        /// <param name="locking"></param>
         /// <returns></returns>
-        T SingletonPerScope(bool locking = false);
+        T SingletonPerAncestor(Type ancestorType, bool locking = false);
+
+        /// <summary>
+        /// Create one instance per ancestor in the object graph
+        /// </summary>
+        /// <typeparam name="TAncestor"></typeparam>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        T SingletonPerAncestor<TAncestor>(bool locking = false);
 
         /// <summary>
         /// Create one instance per named scope, 
@@ -21,6 +32,13 @@
         /// <param name="scopeName">scope name</param>
         /// <returns></returns>
         T SingletonPerNamedScope(string scopeName);
+        
+        /// <summary>
+        /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
+        /// </summary>
+        /// <param name="locking">false by default, set to true if you have multiple threads resolving from the smae scope </param>
+        /// <returns></returns>
+        T SingletonPerScope(bool locking = false);
 
         /// <summary>
         /// Create one instance per container but don't hold a strong reference
