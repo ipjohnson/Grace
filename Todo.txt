@@ -15,8 +15,6 @@ Child Container
 
 TryLocate
 
-Obsolete Instance infavor of Factory<>
-
 Generic Decorator support
 --------- beta ----------
 

@@ -65,6 +65,11 @@ namespace Grace.DependencyInjection
         /// </summary>
         public bool ExportAsBase { get; set; }
 
+        /// <summary>
+        /// Use custom disposal scopes
+        /// </summary>
+        public IDisposalScopeProvider DisposalScopeProvider { get; set; }
+
         #region Default Configuration
 
         protected static readonly ImplementationFactory DefaultImplementation;

@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return expressions;
             }
 
-            lock (scope.GetLockObject(RootInjectionScope.ActivationStrategyAddLockName))
+            lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
                 expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, true);
 
@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     if (locked)
                     {
-                        lock (scope.GetLockObject(RootInjectionScope.ActivationStrategyAddLockName))
+                        lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                         {
                             GetExpressionsFromCollections(scope, arrayElementType, request, expressions, wrappedType, wrappers);
 

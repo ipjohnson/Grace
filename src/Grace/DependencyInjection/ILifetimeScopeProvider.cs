@@ -6,6 +6,6 @@ namespace Grace.DependencyInjection
 {
     public interface ILifetimeScopeProvider
     {
-        IExportLocatorScope CreateScope(RootInjectionScope rootInjectionScope, string scopeName, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationStrategyDelegates);
+        IExportLocatorScope CreateScope(InjectionScope rootInjectionScope, string scopeName, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationStrategyDelegates);
     }
 }

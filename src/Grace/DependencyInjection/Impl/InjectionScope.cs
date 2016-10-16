@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Root injection scope that is inherited by the Dependency injection container
     /// </summary>
-    public class RootInjectionScope : BaseExportLocatorScope, IInjectionScope
+    public class InjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
         private readonly ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
@@ -21,6 +21,8 @@ namespace Grace.DependencyInjection.Impl
         protected ILifetimeScopeProvider LifetimeScopeProvider;
         protected IInjectionContextCreator InjectionContextCreator;
         protected ICanLocateTypeService CanLocateTypeService;
+        protected IDisposalScopeProvider DisposalScopeProvider;
+        protected IDisposalScope DisposalScope;
 
         public const string ActivationStrategyAddLockName = "ActivationStrategyAddLock";
         #endregion
@@ -31,7 +33,12 @@ namespace Grace.DependencyInjection.Impl
         /// Constructor that takes configuration action
         /// </summary>
         /// <param name="configuration">configuration action</param>
-        public RootInjectionScope(Action<InjectionScopeConfiguration> configuration) : this(CreateConfiguration(configuration))
+        public InjectionScope(Action<InjectionScopeConfiguration> configuration) : this(CreateConfiguration(configuration), null, "RootScope")
+        {
+
+        }
+
+        public InjectionScope(IInjectionScopeConfiguration configuration) : this(configuration, null, "RootScope")
         {
 
         }
@@ -40,8 +47,10 @@ namespace Grace.DependencyInjection.Impl
         /// Configuration object constructor
         /// </summary>
         /// <param name="configuration"></param>
-        public RootInjectionScope(IInjectionScopeConfiguration configuration) :
-            base(null, "RootScope", new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize])
+        /// <param name="parent"></param>
+        /// <param name="name"></param>
+        public InjectionScope(IInjectionScopeConfiguration configuration, IInjectionScope parent, string name) :
+            base(parent, name, new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize])
         {
             configuration.SetInjectionScope(this);
 
@@ -70,6 +79,10 @@ namespace Grace.DependencyInjection.Impl
                     _missingExportStrategyProviders.Add(
                         configuration.Implementation.Locate<IMissingExportStrategyProvider>());
             }
+
+            DisposalScopeProvider = configuration.DisposalScopeProvider;
+
+            DisposalScope = DisposalScopeProvider == null ? this : null;
         }
 
         #endregion
@@ -98,7 +111,7 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? func(this, this, null) : LocateObjectFactory(this, type, null, null, false);
+            return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) : LocateObjectFactory(this, type, null, null, false);
         }
 
         /// <summary>
@@ -135,7 +148,7 @@ namespace Grace.DependencyInjection.Impl
 
                 var func = ActivationDelegates[hash & ArrayLengthMinusOne].GetValueOrDefault(type, hash);
 
-                return func != null ? func(this, this, context) : LocateObjectFactory(this, type, null, context, false);
+                return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), context) : LocateObjectFactory(this, type, null, context, false);
             }
 
             return LocateObjectFactory(this, type, null, context, false);
@@ -326,6 +339,25 @@ namespace Grace.DependencyInjection.Impl
             return LocateObjectFactory(childScope, type, key, null, allowNull);
         }
 
+        /// <summary>
+        /// Creates a new child scope
+        /// This is best used for long term usage, not per request scenario
+        /// </summary>
+        /// <param name="configure">configure scope</param>
+        /// <param name="scopeName">scope name </param>
+        /// <returns></returns>
+        public IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = null)
+        {
+            var newScope = new InjectionScope(ScopeConfiguration, this, scopeName);
+
+            if (configure != null)
+            {
+                newScope.Configure(configure);
+            }
+
+            return newScope;
+        }
+
         #endregion
 
         #region Non public members
@@ -343,8 +375,7 @@ namespace Grace.DependencyInjection.Impl
 
             return configurationObject;
         }
-
-
+        
         protected virtual IInjectionContext CreateInjectionContextFromExtraData(Type type, object extraData)
         {
             return InjectionContextCreator.CreateContext(type, extraData);
@@ -361,7 +392,7 @@ namespace Grace.DependencyInjection.Impl
                     compiledDelegate = AddObjectFactory(type, compiledDelegate);
                 }
 
-                return compiledDelegate(scope, scope, injectionContext);
+                return compiledDelegate(scope, DisposalScopeProvider == null ? scope : DisposalScopeProvider.ProvideDisposalScope(scope), injectionContext);
             }
 
             if (!allowNull)
@@ -454,7 +485,7 @@ namespace Grace.DependencyInjection.Impl
                     if (activationDelegate != null)
                     {
                         returnList.Add(
-                            (T)activationDelegate(this, this,
+                            (T)activationDelegate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this),
                                 extraData != null ? CreateInjectionContextFromExtraData(type, extraData) : null));
                     }
                 }

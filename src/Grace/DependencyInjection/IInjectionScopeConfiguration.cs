@@ -48,5 +48,10 @@ namespace Grace.DependencyInjection
         /// Export as type and base implementations, true by default
         /// </summary>
         bool ExportAsBase { get; }
+
+        /// <summary>
+        /// Override which disposal scope is used for tracking disposables, null by default
+        /// </summary>
+        IDisposalScopeProvider DisposalScopeProvider { get; }
     }
 }

@@ -70,7 +70,7 @@ namespace Grace.DependencyInjection.Impl
                 return activationDelegate;
             }
 
-            lock (scope.GetLockObject(RootInjectionScope.ActivationStrategyAddLockName))
+            lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
                 activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, key);
 

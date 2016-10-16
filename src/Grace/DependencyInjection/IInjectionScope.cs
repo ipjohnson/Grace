@@ -46,6 +46,14 @@ namespace Grace.DependencyInjection
         /// <param name="allowNull"></param>
         /// <returns>configuration object</returns>
         object LocateFromChildScope(IExportLocatorScope childScope, Type type, object extraData, object key, bool allowNull);
-        
+
+        /// <summary>
+        /// Creates a new child scope
+        /// This is best used for long term usage, not per request scenario
+        /// </summary>
+        /// <param name="configure">configure scope</param>
+        /// <param name="scopeName">scope name </param>
+        /// <returns></returns>
+        IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = null);
     }
 }

@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Dependancy injection container, this is the main class to instantiate 
     /// </summary>
-    public class DependencyInjectionContainer : RootInjectionScope, IEnumerable<object>
+    public class DependencyInjectionContainer : InjectionScope, IEnumerable<object>
     {
         /// <summary>
         /// Default constructor

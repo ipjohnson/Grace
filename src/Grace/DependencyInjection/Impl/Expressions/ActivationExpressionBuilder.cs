@@ -86,7 +86,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return wrapperResult;
             }
 
-            lock (scope.GetLockObject(RootInjectionScope.ActivationStrategyAddLockName))
+            lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
                 activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
 
