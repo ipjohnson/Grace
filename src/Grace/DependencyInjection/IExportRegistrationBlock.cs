@@ -4,6 +4,9 @@ using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Represents a block of exports that will be registered
+    /// </summary>
     public interface IExportRegistrationBlock
     {
         /// <summary>
@@ -14,19 +17,19 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Add your own custom activation strategy
         /// </summary>
-        /// <param name="activationStrategy"></param>
+        /// <param name="activationStrategy">activation strategy</param>
         void AddActivationStrategy(IActivationStrategy activationStrategy);
 
         /// <summary>
         /// Add your own strategy provider, usually used by 3rd party libraries to provide their own custom export types
         /// </summary>
-        /// <param name="strategyProvider"></param>
+        /// <param name="strategyProvider">strategy provider</param>
         void AddExportStrategyProvider(IExportStrategyProvider strategyProvider);
 
         /// <summary>
         /// Add injection inspector that will be called to inspect all exports, wrappers and decorators (apply cross cutting configuration with an inspector)
         /// </summary>
-        /// <param name="inspector"></param>
+        /// <param name="inspector">inspector</param>
         void AddInspector(IActivationStrategyInspector inspector);
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export a set of types
         /// </summary>
-        /// <param name="types"></param>
+        /// <param name="types">types to export</param>
         /// <returns></returns>
         IExportTypeSetConfiguration Export(IEnumerable<Type> types);
 
@@ -63,6 +66,14 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">decorator logic</param>
         void ExportDecorator<T>(Func<T, T> apply);
+
+        /// <summary>
+        /// Export a specific type
+        /// </summary>
+        /// <typeparam name="TResult">exported type</typeparam>
+        /// <param name="factory">export factory</param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<TResult> ExportFactory<TResult>(Func<TResult> factory);
 
         /// <summary>
         /// Export a specific type that requires some dependency
@@ -141,6 +152,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">function to create instance</param>
         /// <returns></returns>
+        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<T> instanceFunc);
 
         /// <summary>
@@ -149,6 +161,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">instance func</param>
         /// <returns></returns>
+        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, T> instanceFunc);
 
         /// <summary>
@@ -157,6 +170,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
+        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc);
 
         /// <summary>
@@ -165,6 +179,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
+        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc);
 
         /// <summary>

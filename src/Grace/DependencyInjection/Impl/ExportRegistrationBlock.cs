@@ -154,6 +154,17 @@ namespace Grace.DependencyInjection.Impl
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
 
+        public IFluentExportInstanceConfiguration<TResult> ExportFactory<TResult>(Func<TResult> factory)
+        {
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+
+            var strategy = _strategyCreator.GetFactoryStrategy(factory);
+
+            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+
+            return new FluentExportInstanceConfiguration<TResult>(strategy);
+        }
+
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<TIn, TResult>(Func<TIn, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));

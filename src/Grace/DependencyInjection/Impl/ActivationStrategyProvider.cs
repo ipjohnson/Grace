@@ -16,6 +16,8 @@ namespace Grace.DependencyInjection.Impl
         ICompiledExportStrategy GetCompiledExportStrategy(Type exportType);
 
         ICompiledExportStrategy GetConstantStrategyFromConfiguration<T>(T value);
+        
+        ICompiledExportStrategy GetFactoryStrategy<TResult>(Func<TResult> factory);
 
         ICompiledExportStrategy GetFactoryStrategy<T1, TResult>(Func<T1, TResult> factory);
 
@@ -87,6 +89,11 @@ namespace Grace.DependencyInjection.Impl
         public virtual ICompiledExportStrategy GetConstantStrategyFromConfiguration<T>(T value)
         {
             return new ConstantInstanceExportStrategy<T>(value, _injectionScope);
+        }
+
+        public virtual ICompiledExportStrategy GetFactoryStrategy<TResult>(Func<TResult> factory)
+        {
+            return new FactoryNoArgStrategy<TResult>(factory, _injectionScope);
         }
 
         public virtual ICompiledExportStrategy GetFuncStrategy<T>(Func<T> func)

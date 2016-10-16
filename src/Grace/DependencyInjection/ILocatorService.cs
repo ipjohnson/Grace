@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Represents a class that can locate types, classes should not implement this interface directly rather IExportLocatorScope
+    /// </summary>
     public interface ILocatorService
     {
         /// <summary>
@@ -35,6 +38,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey">key to use for locating type</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
+        // ReSharper disable once MethodOverloadWithOptionalParameter
         object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey">key to use during construction</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
+        // ReSharper disable once MethodOverloadWithOptionalParameter
         T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>

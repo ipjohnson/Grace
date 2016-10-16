@@ -8,6 +8,9 @@ using Grace.DependencyInjection.Impl.Wrappers;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// Root injection scope that is inherited by the Dependency injection container
+    /// </summary>
     public class RootInjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
@@ -116,6 +119,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey">key to use for locating type</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
+        // ReSharper disable once MethodOverloadWithOptionalParameter
         public object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false)
         {
             var context = CreateInjectionContextFromExtraData(type, extraData);
@@ -145,6 +149,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey">key to use during construction</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
+        // ReSharper disable once MethodOverloadWithOptionalParameter
         public T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false)
         {
             return (T)Locate(typeof(T), extraData, withKey, isDynamic);
