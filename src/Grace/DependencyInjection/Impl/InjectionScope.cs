@@ -312,8 +312,7 @@ namespace Grace.DependencyInjection.Impl
         /// Wrappers associated with this scope
         /// </summary>
         public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer => _wrappers ?? GetWrappers();
-
-
+        
         /// <summary>
         /// Decorators associated with this scope
         /// </summary>
@@ -322,8 +321,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// List of missing export strategy providers
         /// </summary>
-        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
-            => _missingExportStrategyProviders;
+        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders => _missingExportStrategyProviders;
 
         /// <summary>
         /// Locate an export from a child scope
@@ -334,7 +332,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="allowNull"></param>
         /// <returns>configuration object</returns>
-        public object LocateFromChildScope(IExportLocatorScope childScope, Type type, object extraData, object key, bool allowNull)
+        object IInjectionScope.LocateFromChildScope(IExportLocatorScope childScope, Type type, object extraData, object key, bool allowNull)
         {
             return LocateObjectFactory(childScope, type, key, null, allowNull);
         }
