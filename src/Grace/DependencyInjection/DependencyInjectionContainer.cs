@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
 
@@ -39,14 +40,16 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// This is here to allow adding configuration modules through object initialization
+        /// This is here to allow adding configuration modules through object initialization. Always returns empty
         /// </summary>
         /// <returns></returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public IEnumerator<object> GetEnumerator()
         {
             return ImmutableLinkedList<object>.Empty.GetEnumerator();
         }
-
+        
+        [EditorBrowsable(EditorBrowsableState.Never)]
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
