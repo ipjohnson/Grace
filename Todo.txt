@@ -13,7 +13,7 @@ Dynamic
 
 Child Container
 
-TryLocate
+TryLocate - tests
 
 Generic Decorator support
 --------- beta ----------
