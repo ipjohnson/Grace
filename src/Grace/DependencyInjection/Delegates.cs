@@ -1,6 +1,12 @@
 ﻿namespace Grace.DependencyInjection
 {
-
+    /// <summary>
+    /// Delegate for activating a strategy
+    /// </summary>
+    /// <param name="scope"></param>
+    /// <param name="disposalScope"></param>
+    /// <param name="injectionContext"></param>
+    /// <returns></returns>
     public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
 
     /// <summary>
