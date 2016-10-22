@@ -36,9 +36,22 @@ namespace Grace.DependencyInjection.Conditions
             throw new NotImplementedException();
         }
 
-        public T WhenInjectedInto<TInjectedType>()
+        public T InjectedInto<TInjectedType>()
         {
-            throw new NotImplementedException();
+            _addAction(new WhenInjectedInto(typeof(TInjectedType)));
+
+            return _t;
+        }
+
+        public T InjectedInto(params Type[] types)
+        {
+            if (types == null) throw new ArgumentNullException(nameof(types));
+
+            if (types.Length < 0) throw new ArgumentException("", nameof(types));
+
+            _addAction(new WhenInjectedInto());
+
+            return _t;
         }
     }
 }

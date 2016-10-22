@@ -31,6 +31,13 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TInjectedType">injected type</typeparam>
         /// <returns>configuration</returns>
-        T WhenInjectedInto<TInjectedType>();
+        T InjectedInto<TInjectedType>();
+
+        /// <summary>
+        /// Use export when injected into one of the specified types
+        /// </summary>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        T InjectedInto(params Type[] types);
     }
 }
