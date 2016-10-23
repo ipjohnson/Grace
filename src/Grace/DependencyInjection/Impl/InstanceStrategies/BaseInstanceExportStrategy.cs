@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
@@ -38,7 +39,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
                 return StrategyDelegate;
             }
 
-            var  request = compiler.CreateNewRequest(activationType, 1);
+            var request = compiler.CreateNewRequest(activationType, 1);
 
             var expression = GetActivationExpression(scope, request);
 
@@ -59,12 +60,18 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
         public Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression)
         {
+            if (expression.Type != request.ActivationType &&
+               !ReflectionService.CheckTypeIsBasedOnAnotherType(expression.Type, request.ActivationType))
+            {
+                expression = Expression.Convert(expression, request.ActivationType);
+            }
+
             if (ExternallyOwned)
             {
                 if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull())
                 {
                     var closedMethod = CheckForNullMethodInfo.MakeGenericMethod(request.ActivationType);
-                    
+
                     return Expression.Call(closedMethod, expression);
                 }
             }
@@ -81,7 +88,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
                     var closedMethod =
                         CheckForNullAndAddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
 
-                    return Expression.Call(closedMethod, 
+                    return Expression.Call(closedMethod,
                                            request.DisposalScopeExpression,
                                            Expression.Constant(request.GetStaticInjectionContext()), expression);
                 }
