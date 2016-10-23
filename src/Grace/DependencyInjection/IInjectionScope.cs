@@ -54,6 +54,6 @@ namespace Grace.DependencyInjection
         /// <param name="configure">configure scope</param>
         /// <param name="scopeName">scope name </param>
         /// <returns></returns>
-        IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = null);
+        IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "");
     }
 }

@@ -21,7 +21,6 @@ namespace Grace.DependencyInjection
 
     public interface IFluentExportStrategyConfiguration<T>
     {
-
         /// <summary>
         /// Apply an action to the export just after construction
         /// </summary>

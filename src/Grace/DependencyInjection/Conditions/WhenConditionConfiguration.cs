@@ -9,7 +9,12 @@ namespace Grace.DependencyInjection.Conditions
 
         public WhenConditionConfiguration(Action<ICompiledCondition> addAction, T t)
         {
+            if (addAction == null) throw new ArgumentNullException(nameof(addAction));
+
+            if (t == null) throw new ArgumentNullException(nameof(t));
+
             _addAction = addAction;
+
             _t = t;
         }
         

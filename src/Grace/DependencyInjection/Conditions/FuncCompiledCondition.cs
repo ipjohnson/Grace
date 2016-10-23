@@ -8,6 +8,8 @@ namespace Grace.DependencyInjection.Conditions
 
         public FuncCompiledCondition(Func<IActivationStrategy, StaticInjectionContext, bool> condition)
         {
+            if (condition == null) throw new ArgumentNullException(nameof(condition));
+
             _condition = condition;
         }
 

@@ -86,37 +86,47 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return wrapperResult;
             }
 
-            lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
+            if (scope.MissingExportStrategyProviders.Any())
             {
-                activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
-
-                if (activationExpressionResult != null)
+                lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                 {
-                    return activationExpressionResult;
+                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+
+                    if (activationExpressionResult != null)
+                    {
+                        return activationExpressionResult;
+                    }
+
+                    wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+
+                    if (wrapperResult != null)
+                    {
+                        return wrapperResult;
+                    }
+
+                    request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
+
+                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+
+                    if (activationExpressionResult != null)
+                    {
+                        return activationExpressionResult;
+                    }
+
+                    wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+
+                    if (wrapperResult != null)
+                    {
+                        return wrapperResult;
+                    }
                 }
+            }
 
-                wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+            var parent = scope.Parent as IInjectionScope;
 
-                if (wrapperResult != null)
-                {
-                    return wrapperResult;
-                }
-
-                request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
-
-                activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
-
-                if (activationExpressionResult != null)
-                {
-                    return activationExpressionResult;
-                }
-
-                wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
-
-                if (wrapperResult != null)
-                {
-                    return wrapperResult;
-                }
+            if (parent != null)
+            {
+                return GetActivationExpression(parent, request);
             }
 
             return GetValueFromInjectionContext(scope, request);

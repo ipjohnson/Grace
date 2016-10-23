@@ -71,7 +71,7 @@ namespace Grace.DependencyInjection.Impl
                 ActivationDelegates[i] = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
             }
 
-            if (configuration.AutoRegisterUnknown)
+            if (configuration.AutoRegisterUnknown && Parent == null)
             {
                 _missingExportStrategyProviders =
                     _missingExportStrategyProviders.Add(
@@ -109,7 +109,7 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) : LocateObjectFactory(this, type, null, null, false);
+            return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) : LocateObjectFactory(this, type, null, null, false, false);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (withKey != null)
             {
-                return LocateObjectFactory(this, type, withKey, context, false);
+                return LocateObjectFactory(this, type, withKey, context, false, isDynamic);
             }
 
             if (!isDynamic)
@@ -146,10 +146,10 @@ namespace Grace.DependencyInjection.Impl
 
                 var func = ActivationDelegates[hash & ArrayLengthMinusOne].GetValueOrDefault(type, hash);
 
-                return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), context) : LocateObjectFactory(this, type, null, context, false);
+                return func != null ? func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), context) : LocateObjectFactory(this, type, null, context, false, true);
             }
 
-            return LocateObjectFactory(this, type, null, context, false);
+            return LocateObjectFactory(this, type, null, context, false, true);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl
         {
             IInjectionContext context = CreateInjectionContextFromExtraData(typeof(T), extraData);
 
-            var newValue = LocateObjectFactory(this, typeof(T), withKey, context, true);
+            var newValue = LocateObjectFactory(this, typeof(T), withKey, context, true, false);
 
             bool returnValue = false;
 
@@ -238,7 +238,7 @@ namespace Grace.DependencyInjection.Impl
         {
             IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
 
-            value = LocateObjectFactory(this, type, withKey, context, true);
+            value = LocateObjectFactory(this, type, withKey, context, true, false);
 
             return value != null;
         }
@@ -310,7 +310,7 @@ namespace Grace.DependencyInjection.Impl
         /// Wrappers associated with this scope
         /// </summary>
         public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer => _wrappers ?? GetWrappers();
-        
+
         /// <summary>
         /// Decorators associated with this scope
         /// </summary>
@@ -332,7 +332,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         object IInjectionScope.LocateFromChildScope(IExportLocatorScope childScope, Type type, object extraData, object key, bool allowNull)
         {
-            return LocateObjectFactory(childScope, type, key, null, allowNull);
+            return LocateObjectFactory(childScope, type, key, null, allowNull, false);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="configure">configure scope</param>
         /// <param name="scopeName">scope name </param>
         /// <returns></returns>
-        public IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = null)
+        public IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "")
         {
             var newScope = new InjectionScope(ScopeConfiguration, this, scopeName);
 
@@ -371,13 +371,13 @@ namespace Grace.DependencyInjection.Impl
 
             return configurationObject;
         }
-        
+
         protected virtual IInjectionContext CreateInjectionContextFromExtraData(Type type, object extraData)
         {
             return InjectionContextCreator.CreateContext(type, extraData);
         }
 
-        private object LocateObjectFactory(IExportLocatorScope scope, Type type, object key, IInjectionContext injectionContext, bool allowNull)
+        private object LocateObjectFactory(IExportLocatorScope scope, Type type, object key, IInjectionContext injectionContext, bool allowNull, bool isDynamic)
         {
             var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, key);
 
@@ -389,6 +389,13 @@ namespace Grace.DependencyInjection.Impl
                 }
 
                 return compiledDelegate(scope, DisposalScopeProvider == null ? scope : DisposalScopeProvider.ProvideDisposalScope(scope), injectionContext);
+            }
+
+            if (Parent != null)
+            {
+                var injectionScopeParent = (IInjectionScope) Parent;
+                
+                return injectionScopeParent.LocateFromChildScope(this, type, injectionContext, key, allowNull);
             }
 
             if (!allowNull)

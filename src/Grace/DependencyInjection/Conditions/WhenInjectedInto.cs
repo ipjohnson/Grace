@@ -13,6 +13,8 @@ namespace Grace.DependencyInjection.Conditions
 
         public WhenInjectedInto(params Type[] types)
         {
+            if (types == null) throw new ArgumentNullException(nameof(types));
+
             _types = types;
         }
 
