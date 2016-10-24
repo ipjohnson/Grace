@@ -45,5 +45,26 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
 
             Assert.True(disposedCalled);
         }
+
+        [Fact]
+        public void Container_BeginLifetimeScope_Locate_ExportLocatorScope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<DependentService<IExportLocatorScope>>().Lifestyle.SingletonPerScope());
+
+            using (var scope1 = container.BeginLifetimeScope())
+            {
+                using (var scope2 = container.BeginLifetimeScope())
+                {
+                    var instance1 = scope1.Locate<DependentService<IExportLocatorScope>>();
+                    var instance2 = scope2.Locate<DependentService<IExportLocatorScope>>();
+
+                    Assert.NotNull(instance1);
+                    Assert.NotNull(instance2);
+                    Assert.NotSame(instance1, instance2);
+                }
+            }
+        }
     }
 }
