@@ -6,15 +6,36 @@ using System.Text;
 
 namespace Grace.DependencyInjection.Exceptions
 {
+    /// <summary>
+    /// Default locate exception for the container
+    /// </summary>
     public class LocateException : Exception
     {
         private StaticInjectionContext _context;
 
-        public LocateException(StaticInjectionContext context, string message =null) : base(CreateMessage(context, message))
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="context">static context required</param>
+        /// <param name="message">message, this is not required</param>
+        public LocateException(StaticInjectionContext context, string message = null) : base(CreateMessage(context, message))
+        {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
+            _context = context;
+        }
+
+        /// <summary>
+        /// Constructor that takes an inner exception
+        /// </summary>
+        /// <param name="context">static context</param>
+        /// <param name="innerException">inner exception</param>
+        /// <param name="message">message for exception</param>
+        public LocateException(StaticInjectionContext context, Exception innerException, string message = null) : base(CreateMessage(context, message), innerException)
         {
             _context = context;
         }
-        
+
         private static string CreateMessage(StaticInjectionContext context, string message = null)
         {
             var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
@@ -64,10 +85,6 @@ namespace Grace.DependencyInjection.Exceptions
             builder.AppendLine();
         }
 
-        public LocateException(StaticInjectionContext context, Exception innerException) : base(CreateMessage(context), innerException)
-        {
-            _context = context;
-        }
 
     }
 }

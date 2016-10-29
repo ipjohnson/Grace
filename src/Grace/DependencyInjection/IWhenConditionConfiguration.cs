@@ -3,6 +3,10 @@ using Grace.DependencyInjection.Conditions;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Object used to configure a condition
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IWhenConditionConfiguration<T>
     {
         /// <summary>
@@ -22,9 +26,10 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Add a condition to use this export only when the clas being injected into has a specific attribute
         /// </summary>
+        /// <param name="testFunc"></param>
         /// <typeparam name="TAttribute">attribute</typeparam>
         /// <returns></returns>
-        T ClassHas<TAttribute>();
+        T ClassHas<TAttribute>(Func<TAttribute,bool> testFunc = null);
 
         /// <summary>
         /// Use export when injecting into a specific type
