@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "5.0.0-*",
   "authors": [ "Ian Johnson" ],
   "description": "Grace is a feature rich Dependency Injection Container",
@@ -49,5 +49,8 @@
         "System.Xml.XDocument": ""
       }
     }
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }
