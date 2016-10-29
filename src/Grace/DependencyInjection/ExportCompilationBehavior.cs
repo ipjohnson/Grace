@@ -48,6 +48,8 @@ namespace Grace.DependencyInjection
         bool AllowInstanceAndFactoryToReturnNull();
 
         int MaxObjectGraphDepth();
+
+        bool AllowInjectionScopeLocation { get; set; }
     }
 
     public class ExportCompilationBehavior : IExportCompilationBehaviorValues
@@ -122,5 +124,7 @@ namespace Grace.DependencyInjection
         {
             return _depth;
         }
+
+        public bool AllowInjectionScopeLocation { get; set; } = false;
     }
 }

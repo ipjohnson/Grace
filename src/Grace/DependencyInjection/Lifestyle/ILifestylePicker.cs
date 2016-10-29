@@ -13,16 +13,16 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Create one instance per ancestor in the object graph
         /// </summary>
-        /// <param name="ancestorType"></param>
-        /// <param name="locking"></param>
+        /// <param name="ancestorType">ancestor type to scope to</param>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
         /// <returns></returns>
         T SingletonPerAncestor(Type ancestorType, bool locking = false);
 
         /// <summary>
         /// Create one instance per ancestor in the object graph
         /// </summary>
-        /// <typeparam name="TAncestor"></typeparam>
-        /// <param name="locking"></param>
+        /// <typeparam name="TAncestor">ancestor type to scope to</typeparam>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
         /// <returns></returns>
         T SingletonPerAncestor<TAncestor>(bool locking = false);
 
@@ -32,6 +32,13 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scopeName">scope name</param>
         /// <returns></returns>
         T SingletonPerNamedScope(string scopeName);
+
+        /// <summary>
+        /// Create one instance per object graph
+        /// </summary>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
+        /// <returns></returns>
+        T SingletonPerObjectGraph(bool locking = false);
         
         /// <summary>
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true

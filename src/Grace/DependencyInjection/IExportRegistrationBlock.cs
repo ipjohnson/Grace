@@ -33,6 +33,18 @@ namespace Grace.DependencyInjection
         void AddInspector(IActivationStrategyInspector inspector);
 
         /// <summary>
+        /// Add missing export strategy provider
+        /// </summary>
+        /// <param name="provider"></param>
+        void AddMissingExportStrategyProvider(IMissingExportStrategyProvider provider);
+
+        /// <summary>
+        /// Add IInjectionValueProvider allowing the developer to override the normal behavior for creating an injection value
+        /// </summary>
+        /// <param name="provider"></param>
+        void AddInjectionValueProvider(IInjectionValueProvider provider);
+
+        /// <summary>
         /// Export a specific type
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>

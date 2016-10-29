@@ -1,5 +1,6 @@
 ﻿using Grace.DependencyInjection.Lifestyle;
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Grace.DependencyInjection
@@ -70,7 +71,15 @@ namespace Grace.DependencyInjection
         /// <param name="selector">select specific members, if null all public members will be injected</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null);
-        
+
+        /// <summary>
+        /// Import a specific property
+        /// </summary>
+        /// <typeparam name="TProp"></typeparam>
+        /// <param name="property">property expression</param>
+        /// <returns></returns>
+        IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
+
         /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>

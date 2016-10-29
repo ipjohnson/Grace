@@ -37,6 +37,11 @@ namespace Grace.DependencyInjection
         IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders { get; }
 
         /// <summary>
+        /// List of value providers that can be used during construction of linq expression
+        /// </summary>
+        IEnumerable<IInjectionValueProvider> InjectionValueProviders { get; }
+
+        /// <summary>
         /// Locate an export from a child scope
         /// </summary>
         /// <param name="childScope">scope where the locate originated</param>

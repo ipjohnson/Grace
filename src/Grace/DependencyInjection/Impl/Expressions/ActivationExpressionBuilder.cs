@@ -61,6 +61,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return activationExpressionResult;
             }
 
+            activationExpressionResult = GetValueFromInjectionValueProviders(scope, request);
+
+            if (activationExpressionResult != null)
+            {
+                return activationExpressionResult;
+            }
+
             activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
 
             if (activationExpressionResult != null)
@@ -132,6 +139,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return GetValueFromInjectionContext(scope, request);
         }
 
+        private IActivationExpressionResult GetValueFromInjectionValueProviders(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            if (!ReferenceEquals(scope.InjectionValueProviders, ImmutableLinkedList<IInjectionValueProvider>.Empty))
+            {
+                foreach (var valueProvider in scope.InjectionValueProviders)
+                {
+                    var result = valueProvider.GetExpressionResult(scope, request);
+
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            var parent = scope.Parent as IInjectionScope;
+
+            return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
+        }
+
         public IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
                                                                IActivationExpressionRequest request,
                                                                Type activationType,
@@ -165,6 +192,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
             }
 
+            if (request.ActivationType == typeof(IInjectionScope))
+            {
+                if (!scope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+                {
+                    throw new ImportInjectionScopeException(request.GetStaticInjectionContext());
+                }
+
+                var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod("GetInjectionScope", new[] { typeof(IExportLocatorScope) });
+
+                var expression = Expression.Call(method, request.Constants.ScopeParameter);
+
+                return request.Services.Compiler.CreateNewResult(request, expression);
+            }
+
             if (request.ActivationType == typeof(IExportLocatorScope) ||
                 request.ActivationType == typeof(ILocatorService))
             {
@@ -187,13 +228,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.IsDynamic)
             {
-                if(request.ActivationType.IsArray || 
-                    (request.ActivationType.IsConstructedGenericType && 
+                if (request.ActivationType.IsArray ||
+                    (request.ActivationType.IsConstructedGenericType &&
                      request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                 {
-                    
+
                 }
-                
+
                 throw new NotImplementedException();
             }
 
@@ -275,7 +316,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
 
                 var context = request.GetStaticInjectionContext();
-                    
+
                 if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
                 {
                     continue;

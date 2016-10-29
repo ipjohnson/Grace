@@ -26,6 +26,18 @@ namespace Grace.DependencyInjection.Lifestyle
 
 
         /// <summary>
+        /// Create one instance per object graph
+        /// </summary>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
+        /// <returns></returns>
+        public T SingletonPerObjectGraph(bool locking = false)
+        {
+            _addLifestyle(new SingletonPerObjectGraph(locking));
+
+            return _returnValue;
+        }
+
+        /// <summary>
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
         /// </summary>
         /// <param name="locking">false by default, set to true if you have multiple threads resolving from the </param>
@@ -44,6 +56,8 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <returns></returns>
         public T SingletonPerNamedScope(string scopeName)
         {
+            if (scopeName == null) throw new ArgumentNullException(nameof(scopeName));
+
             _addLifestyle(new SingletonPerNamedScopeLifestyle(scopeName));
 
             return _returnValue;
@@ -60,13 +74,27 @@ namespace Grace.DependencyInjection.Lifestyle
             return _returnValue;
         }
 
+        /// <summary>
+        /// Create one instance per ancestor in the object graph
+        /// </summary>
+        /// <param name="ancestorType">ancestor type to scope to</param>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
+        /// <returns></returns>
         public T SingletonPerAncestor(Type ancestorType, bool locking = false)
         {
+            if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
+
             _addLifestyle(new SingletonPerAncestor(ancestorType, locking));
 
             return _returnValue;
         }
 
+        /// <summary>
+        /// Create one instance per ancestor in the object graph
+        /// </summary>
+        /// <typeparam name="TAncestor">ancestor type to scope to</typeparam>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
+        /// <returns></returns>
         public T SingletonPerAncestor<TAncestor>(bool locking = false)
         {
             return SingletonPerAncestor(typeof(TAncestor), locking);

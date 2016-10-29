@@ -6,6 +6,6 @@
 
         ICompiledLifestyle Clone();
 
-        IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest requst, IActivationExpressionResult activationExpression);
+        IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationExpressionResult activationExpression);
     }
 }

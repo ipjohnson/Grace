@@ -1,17 +1,10 @@
-Fix exception so it's readable and describes problem.
-Add stack to exception
-Add Exception when trying to inject IInjectionScope
-
-Lifestyle  
- - per object graph 
+Change expression behavior to be properties
 
 ExternallyOwned - make sure it works
 
 Dynamic
 
 TryLocate - tests
-
-ImportProperty<TProp>
 
 Import Method
 
@@ -25,12 +18,9 @@ IExportTypeSetConfiguration ExportAttributedTypes
 
 Export Property
 
-
-
 --------- beta ----------
 
 Generic Decorator support
-
 
 Export Method
 

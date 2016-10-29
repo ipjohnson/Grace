@@ -9,6 +9,8 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<IWrapperStrategyProvider> _wrapperProviders = ImmutableLinkedList<IWrapperStrategyProvider>.Empty;
         private ImmutableLinkedList<IDecoratorStrategyProvider> _decoratorStrategyProviders = ImmutableLinkedList<IDecoratorStrategyProvider>.Empty;
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
+        private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
+        private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
         private readonly IActivationStrategyCreator _strategyCreator;
 
         public ExportRegistrationBlock(IInjectionScope owningScope, IActivationStrategyCreator strategyCreator)
@@ -66,6 +68,17 @@ namespace Grace.DependencyInjection.Impl
         {
             return _inspectors;
         }
+
+        public IEnumerable<IMissingExportStrategyProvider> GetMissingExportStrategyProviders()
+        {
+            return _missingExportStrategyProviders;
+        }
+
+        public IEnumerable<IInjectionValueProvider> GetValueProviders()
+        {
+            return _valueProviders;
+        }
+
 
         public IFluentExportStrategyConfiguration<T> Export<T>()
         {
@@ -268,6 +281,21 @@ namespace Grace.DependencyInjection.Impl
             if (inspector == null) throw new ArgumentNullException(nameof(inspector));
 
             _inspectors = _inspectors.Add(inspector);
+        }
+
+
+        public void AddInjectionValueProvider(IInjectionValueProvider provider)
+        {
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+
+            _valueProviders = _valueProviders.Add(provider);
+        }
+
+        public void AddMissingExportStrategyProvider(IMissingExportStrategyProvider provider)
+        {
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+
+            _missingExportStrategyProviders = _missingExportStrategyProviders.Add(provider);
         }
 
         public void AddActivationStrategy(IActivationStrategy activationStrategy)

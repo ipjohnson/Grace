@@ -10,17 +10,24 @@ namespace Grace.DependencyInjection.Exceptions
     {
         private StaticInjectionContext _context;
 
-        public LocateException(StaticInjectionContext context) : base(CreateMessage(context))
+        public LocateException(StaticInjectionContext context, string message =null) : base(CreateMessage(context, message))
         {
             _context = context;
         }
-
-        private static string CreateMessage(StaticInjectionContext context)
+        
+        private static string CreateMessage(StaticInjectionContext context, string message = null)
         {
             var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
             var builder = new StringBuilder();
 
-            builder.AppendFormat("Could not locate Type {0}", context.ActivationType);
+            if (message == null)
+            {
+                builder.AppendLine($"Could not locate Type {context.ActivationType}");
+            }
+            else
+            {
+                builder.AppendLine(message);
+            }
 
             for (int i = 0; i < infoStack.Count; i++)
             {
@@ -32,7 +39,7 @@ namespace Grace.DependencyInjection.Exceptions
 
         private static void CreateMessageForTargetInfo(StringBuilder builder, InjectionTargetInfo info, int stepIndex)
         {
-            builder.AppendFormat("Importing {0} ", info.LocateType);
+            builder.AppendFormat("{0} Importing {1} ", stepIndex, info.LocateType);
 
             var parameter = info.InjectionTarget as ParameterInfo;
 
@@ -53,6 +60,8 @@ namespace Grace.DependencyInjection.Exceptions
             {
                 builder.AppendFormat(" for property {0}", ((PropertyInfo)info.InjectionTarget).Name);
             }
+
+            builder.AppendLine();
         }
 
         public LocateException(StaticInjectionContext context, Exception innerException) : base(CreateMessage(context), innerException)

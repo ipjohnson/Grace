@@ -27,5 +27,17 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <returns></returns>
         IEnumerable<IActivationStrategyInspector> GetInspectors();
+
+        /// <summary>
+        /// Get list of missing export strategy providers
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IMissingExportStrategyProvider> GetMissingExportStrategyProviders();
+
+        /// <summary>
+        /// Get list of value providers
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IInjectionValueProvider> GetValueProviders();
     }
 }

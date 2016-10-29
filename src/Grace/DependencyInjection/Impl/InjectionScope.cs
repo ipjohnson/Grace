@@ -12,8 +12,9 @@ namespace Grace.DependencyInjection.Impl
     public class InjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
-        private readonly ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
+        private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
             ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+        private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> _wrappers;
         protected IActivationStrategyCompiler ActivationStrategyCompiler;
         protected ILifetimeScopeProvider LifetimeScopeProvider;
@@ -274,6 +275,16 @@ namespace Grace.DependencyInjection.Impl
                     DecoratorCollectionContainer.AddInspector(inspector);
                 }
 
+                foreach (var missingExportStrategyProvider in provider.GetMissingExportStrategyProviders())
+                {
+                    _missingExportStrategyProviders = _missingExportStrategyProviders.Add(missingExportStrategyProvider);
+                }
+
+                foreach (var injectionValueProvider in provider.GetValueProviders())
+                {
+                    _valueProviders = _valueProviders.Add(injectionValueProvider);
+                }
+
                 foreach (var compiledWrapperStrategy in provider.GetWrapperStrategies())
                 {
                     WrapperCollectionContainer.AddStrategy(compiledWrapperStrategy);
@@ -320,6 +331,11 @@ namespace Grace.DependencyInjection.Impl
         /// List of missing export strategy providers
         /// </summary>
         public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders => _missingExportStrategyProviders;
+
+        /// <summary>
+        /// List of value providers that can be used during construction of linq expression
+        /// </summary>
+        public IEnumerable<IInjectionValueProvider> InjectionValueProviders => _valueProviders;
 
         /// <summary>
         /// Locate an export from a child scope
