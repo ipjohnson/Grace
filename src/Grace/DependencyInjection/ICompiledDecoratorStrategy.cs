@@ -1,5 +1,8 @@
 ﻿namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Compiled decorator strategy
+    /// </summary>
     public interface ICompiledDecoratorStrategy : IConfigurableActivationStrategy, IDecoratorOrExportActivationStrategy
     {
         /// <summary>

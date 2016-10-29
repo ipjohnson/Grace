@@ -5,6 +5,9 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Interface for configuring a set of exports
+    /// </summary>
     public interface IExportTypeSetConfiguration
     {
         /// <summary>

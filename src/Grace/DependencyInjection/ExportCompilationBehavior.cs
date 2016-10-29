@@ -4,7 +4,9 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection
 {
-
+    /// <summary>
+    /// Enumeration for constructor selection method
+    /// </summary>
     public enum ConstructorSelectionMethod
     {
         /// <summary>
@@ -47,8 +49,15 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         bool AllowInstanceAndFactoryToReturnNull();
 
+        /// <summary>
+        /// Max object graph depth, this is what's used to detect a recursive loop
+        /// </summary>
+        /// <returns></returns>
         int MaxObjectGraphDepth();
 
+        /// <summary>
+        /// Allow IInjectionScope to be injected, false by default because you normally wnt IExportLocatorScope
+        /// </summary>
         bool AllowInjectionScopeLocation { get; set; }
     }
 
