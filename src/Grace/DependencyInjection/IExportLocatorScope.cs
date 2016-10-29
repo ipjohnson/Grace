@@ -3,6 +3,9 @@ using Grace.Data;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Export locator scope represents a scope that can be located from InjectionScope and LifetimeScope implement this interface
+    /// </summary>
     public interface IExportLocatorScope : ILocatorService, IExtraDataContainer, IDisposalScope
     {
         /// <summary>
