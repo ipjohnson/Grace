@@ -31,6 +31,8 @@ namespace Grace.DependencyInjection.Impl
 
         public object DisposalDelegate { get; set; }
 
+        public bool ExternallyOwned { get; set; }
+
         public IEnumerable<ConstructorParameterInfo> ConstructorParameters => ConstructorParametersList;
 
         public void ConstructorParameter(ConstructorParameterInfo info)

@@ -53,6 +53,13 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        public IFluentExportStrategyConfiguration ExternallyOwned()
+        {
+            _exportConfiguration.ExternallyOwned = true;
+
+            return this;
+        }
     }
 
     public class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>
@@ -133,6 +140,13 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate)
         {
             _exportConfiguration.DisposalDelegate = disposalCleanupDelegate;
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> ExternallyOwned()
+        {
+            _exportConfiguration.ExternallyOwned = true;
 
             return this;
         }

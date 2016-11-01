@@ -80,7 +80,7 @@ namespace Grace.Tests.DependencyInjection.Enumerable
         public void Container_IEnumerableCreator_ReturnsMultiple()
         {
             var container =
-                new DependencyInjectionContainer(c => c.Behaviors.CustomEnumerableCreator(new ReadOnlyCreator()));
+                new DependencyInjectionContainer(c => c.Behaviors.CustomEnumerableCreator = new ReadOnlyCreator());
 
             container.Configure(c =>
             {

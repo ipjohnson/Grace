@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     var newRequest =
                         request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Value);
 
-                    if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector()(memberType))
+                    if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                     {
                         newRequest.SetLocateKey(memberKVP.Key.Name);
                     }

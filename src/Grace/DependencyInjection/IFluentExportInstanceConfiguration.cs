@@ -35,7 +35,13 @@ namespace Grace.DependencyInjection
         /// <param name="key">key to export as</param>
         /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AsKeyed<TExportType, TKey>(TKey key);
-        
+
+        /// <summary>
+        /// Mark an export as externally owned means the container will not track and dispose the instance
+        /// </summary>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> ExternallyOwned();
+
         /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>

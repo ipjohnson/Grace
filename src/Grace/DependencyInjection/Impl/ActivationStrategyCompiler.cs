@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection.Impl
             _builder.SetCompiler(this);
         }
 
-        public int MaxObjectGraphDepth => _configuration.Behaviors.MaxObjectGraphDepth();
+        public int MaxObjectGraphDepth => _configuration.Behaviors.MaxObjectGraphDepth;
 
         public virtual IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth)
         {

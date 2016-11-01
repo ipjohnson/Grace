@@ -4,12 +4,24 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
+    /// <summary>
+    /// Wrapper strategy for Lazy&lt;T&gt;
+    /// </summary>
     public class LazyWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="injectionScope"></param>
         public LazyWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Lazy<>), injectionScope)
         {
         }
 
+        /// <summary>
+        /// Get type that wrapper wraps
+        /// </summary>
+        /// <param name="type">wrapper type</param>
+        /// <returns>type that has been wrapped</returns>
         public override Type GetWrappedType(Type type)
         {
             if (!type.IsConstructedGenericType)
@@ -22,6 +34,12 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return genericType == typeof(Lazy<>) ? type.GetTypeInfo().GenericTypeArguments[0] : null;
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(LazyExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments);
@@ -37,10 +55,20 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
 
+        /// <summary>
+        /// Lazy expression helper class
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
         public class LazyExpression<TResult>
         {
             private readonly ActivationStrategyDelegate _delegate;
 
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="request"></param>
+            /// <param name="activationStrategy"></param>
             public LazyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy)
             {
                 var requestType = request.ActivationType.GenericTypeArguments[0];
@@ -54,6 +82,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 _delegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
             }
 
+            /// <summary>
+            /// Create lazy instance
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="disposalScope"></param>
+            /// <param name="injectionContext"></param>
+            /// <returns></returns>
             public Lazy<TResult> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
                 IInjectionContext injectionContext)
             {

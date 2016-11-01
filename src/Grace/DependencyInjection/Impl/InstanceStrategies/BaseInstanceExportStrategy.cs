@@ -68,16 +68,18 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
             if (ExternallyOwned)
             {
-                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull())
+                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
                 {
                     var closedMethod = CheckForNullMethodInfo.MakeGenericMethod(request.ActivationType);
 
-                    return Expression.Call(closedMethod, expression);
+                    return Expression.Call(closedMethod,
+                                           Expression.Constant(request.GetStaticInjectionContext()),
+                                           expression);
                 }
             }
             else
             {
-                if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull())
+                if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
                 {
                     var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
 

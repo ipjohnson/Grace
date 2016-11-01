@@ -34,7 +34,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             currentExpression = _memberInjectionExpressionCreator.CreateExpression(scope, request, activationConfiguration, currentExpression);
             
-            if (activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IDisposable)))
+            if (activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IDisposable)) && 
+                activationConfiguration.ExternallyOwned == false)
             {
                 currentExpression = _disposalScopeExpressionCreator.CreateExpression(scope, request,
                     activationConfiguration, currentExpression);

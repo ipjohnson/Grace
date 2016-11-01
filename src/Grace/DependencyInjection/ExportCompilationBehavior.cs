@@ -30,80 +30,34 @@ namespace Grace.DependencyInjection
         Other
     }
 
+    /// <summary>
+    /// Classes that implement this can be used to create enumerables
+    /// </summary>
     public interface IEnumerableCreator
     {
+        /// <summary>
+        /// Construct enumerable
+        /// </summary>
+        /// <typeparam name="T">Type to enumerate</typeparam>
+        /// <param name="scope">export locator scope</param>
+        /// <param name="array">array to wrap as enumerable</param>
+        /// <returns>enumerable</returns>
         IEnumerable<T> CreateEnumerable<T>(IExportLocatorScope scope, T[] array);
     }
-
-    public interface IExportCompilationBehaviorValues
+    
+    /// <summary>
+    /// Configure the how expressions are created
+    /// </summary>
+    public class ExportCompilationBehavior
     {
-        ConstructorSelectionMethod ConstructorSelection();
-
-        IEnumerableCreator CustomEnumerableCreator();
-
-        Func<Type, bool> KeyedTypeSelector();
-
-        /// <summary>
-        /// By default ExportInstance and ExportFactory must return a value. 
-        /// </summary>
-        /// <returns></returns>
-        bool AllowInstanceAndFactoryToReturnNull();
-
-        /// <summary>
-        /// Max object graph depth, this is what's used to detect a recursive loop
-        /// </summary>
-        /// <returns></returns>
-        int MaxObjectGraphDepth();
-
-        /// <summary>
-        /// Allow IInjectionScope to be injected, false by default because you normally wnt IExportLocatorScope
-        /// </summary>
-        bool AllowInjectionScopeLocation { get; set; }
-    }
-
-    public class ExportCompilationBehavior : IExportCompilationBehaviorValues
-    {
-        private ConstructorSelectionMethod _constructorSelection = DependencyInjection.ConstructorSelectionMethod.BestMatch;
-        private IEnumerableCreator _enumerableCreator;
         private Func<Type, bool> _keyedTypeSelector = DefaultKeyedTypeSelector;
-        private bool _allowInstanceAndFactoryToReturnNull;
-        private int _depth = 100;
-
-        public void ConstructorSelection(ConstructorSelectionMethod selection)
-        {
-            _constructorSelection = selection;
-        }
-
-        ConstructorSelectionMethod IExportCompilationBehaviorValues.ConstructorSelection()
-        {
-            return _constructorSelection;
-        }
 
         /// <summary>
-        /// Set the type that will be used for IEnumerable, by default this is an array
+        /// Default implementation for selecting types that should be located by key.
+        /// Note: string, primitive and datetime are located by key
         /// </summary>
-        public void CustomEnumerableCreator(IEnumerableCreator creator)
-        {
-            _enumerableCreator = creator;
-        }
-
-        IEnumerableCreator IExportCompilationBehaviorValues.CustomEnumerableCreator()
-        {
-            return _enumerableCreator;
-        }
-
-        public void KeyedTypeSelector(Func<Type, bool> selector)
-        {
-            if (selector == null) throw new ArgumentNullException(nameof(selector));
-
-            _keyedTypeSelector = selector;
-        }
-
-        public Func<Type, bool> KeyedTypeSelector()
-        {
-            return _keyedTypeSelector;
-        }
-
+        /// <param name="arg"></param>
+        /// <returns></returns>
         public static bool DefaultKeyedTypeSelector(Type arg)
         {
             if (arg.GetTypeInfo().IsAssignableFrom(typeof(Delegate).GetTypeInfo()))
@@ -114,26 +68,48 @@ namespace Grace.DependencyInjection
             return arg == typeof(string) || arg.GetTypeInfo().IsPrimitive || arg == typeof(DateTime);
         }
 
-        public void AllowInstanceAndFactoryToReturnNull(bool value)
-        {
-            _allowInstanceAndFactoryToReturnNull = value;
-        }
+        /// <summary>
+        /// Max object graph depth, this is what's used to detect a recursive loop
+        /// </summary>
+        /// <returns></returns>
+        public int MaxObjectGraphDepth { get; set; } = 100;
 
-        public bool AllowInstanceAndFactoryToReturnNull()
-        {
-            return _allowInstanceAndFactoryToReturnNull;
-        }
-
-        public void MaxObjectGraphDepth(int depth)
-        {
-            _depth = depth;
-        }
-
-        public int MaxObjectGraphDepth()
-        {
-            return _depth;
-        }
-
+        /// <summary>
+        /// Allow IInjectionScope to be injected, false by default because you normally wnt IExportLocatorScope
+        /// </summary>
         public bool AllowInjectionScopeLocation { get; set; } = false;
+
+        /// <summary>
+        /// Constructor selection algorithm 
+        /// </summary>
+        public ConstructorSelectionMethod ConstructorSelection { get; set; } = ConstructorSelectionMethod.BestMatch;
+
+        /// <summary>
+        /// customize enumerable creation
+        /// </summary>
+        public IEnumerableCreator CustomEnumerableCreator { get; set; }
+
+        /// <summary>
+        /// Allows you to override the default behavior for what is located by key and what's not 
+        /// </summary>
+        public Func<Type, bool> KeyedTypeSelector
+        {
+            get { return _keyedTypeSelector; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(KeyedTypeSelector), "Keyed must not be null");
+                }
+
+                _keyedTypeSelector = value;
+            }
+        }
+
+        /// <summary>
+        /// By default ExportInstance and ExportFactory must return a value. 
+        /// </summary>
+        /// <returns></returns>
+        public bool AllowInstanceAndFactoryToReturnNull { get; set; } = false;
     }
 }

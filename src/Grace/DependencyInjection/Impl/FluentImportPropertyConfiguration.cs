@@ -79,6 +79,11 @@ namespace Grace.DependencyInjection.Impl
             return _strategy.DisposalCleanupDelegate(disposalCleanupDelegate);
         }
 
+        public IFluentExportStrategyConfiguration<T> ExternallyOwned()
+        {
+            return _strategy.ExternallyOwned();
+        }
+
         public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null)
         {
             return _strategy.ImportMembers(selector);

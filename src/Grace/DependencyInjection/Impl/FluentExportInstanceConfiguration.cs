@@ -13,7 +13,6 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration = exportConfiguration;
         }
 
-
         public IFluentExportInstanceConfiguration<T> As(Type type)
         {
             _exportConfiguration.AddExportAs(type);
@@ -38,6 +37,13 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportInstanceConfiguration<T> AsKeyed<TExportType, TKey>(TKey key)
         {
             _exportConfiguration.AddExportAsKeyed(typeof(TExportType), key);
+
+            return this;
+        }
+
+        public IFluentExportInstanceConfiguration<T> ExternallyOwned()
+        {
+            _exportConfiguration.ExternallyOwned = true;
 
             return this;
         }

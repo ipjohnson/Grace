@@ -14,8 +14,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public IActivationExpressionResult GetEnumerableExpression(IInjectionScope scope, IActivationExpressionRequest request,
             IArrayExpressionCreator arrayExpressionCreator)
         {
-            var enumerableCreator =
-                ((IExportCompilationBehaviorValues)scope.ScopeConfiguration.Behaviors).CustomEnumerableCreator();
+            var enumerableCreator = scope.ScopeConfiguration.Behaviors.CustomEnumerableCreator;
 
             if (enumerableCreator == null)
             {

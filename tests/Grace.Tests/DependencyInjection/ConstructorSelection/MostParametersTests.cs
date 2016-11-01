@@ -11,7 +11,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
         // [Fact]
         public void MostParametrs_Uses_Correct_Constructor()
         {
-            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection(ConstructorSelectionMethod.LeastParameters));
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.LeastParameters);
 
             container.Configure(c =>
             {

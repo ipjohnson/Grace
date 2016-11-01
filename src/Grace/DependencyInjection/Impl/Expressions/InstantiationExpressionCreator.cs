@@ -53,10 +53,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, constructor);
             }
-
-            var behavior = injectionScope.ScopeConfiguration.Behaviors as IExportCompilationBehaviorValues;
-
-            switch (behavior.ConstructorSelection())
+            
+            switch (injectionScope.ScopeConfiguration.Behaviors.ConstructorSelection)
             {
                 case ConstructorSelectionMethod.LeastParameters:
                     return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, constructors.Last());
@@ -197,7 +195,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 newRequest.SetLocateKey(parameterInfo.LocateWithKey);
             }
-            else if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector()(parameter.ParameterType))
+            else if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
             {
                 newRequest.SetLocateKey(parameter.Name);
             }

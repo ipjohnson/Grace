@@ -1,5 +1,3 @@
-Change expression behavior to be properties
-
 ExternallyOwned - make sure it works
 
 Dynamic

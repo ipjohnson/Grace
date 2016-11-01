@@ -8,7 +8,9 @@ namespace Grace.DependencyInjection
     public interface IFluentExportStrategyConfiguration
     {
         IFluentExportStrategyConfiguration As(Type type);
-        
+
+        IFluentExportStrategyConfiguration ExternallyOwned();
+
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
         
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
@@ -20,6 +22,10 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration WithMetadata(object key, object value);
     }
 
+    /// <summary>
+    /// Represents a class that configures an export
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IFluentExportStrategyConfiguration<T>
     {
         /// <summary>
@@ -56,14 +62,19 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null);
-
-
+        
         /// <summary>
         /// You can provide a cleanup method to be called 
         /// </summary>
         /// <param name="disposalCleanupDelegate"></param>
         /// <returns></returns>
         IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate);
+
+        /// <summary>
+        /// Mark an export as externally owned means the container will not track and dispose the instance
+        /// </summary>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ExternallyOwned();
 
         /// <summary>
         /// Mark specific members to be injected

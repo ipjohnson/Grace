@@ -52,7 +52,11 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             set { ActivationConfiguration.DisposalDelegate = value; }
         }
 
-        public bool ExternallyOwned { get; set; }
+        public bool ExternallyOwned
+        {
+            get { return ActivationConfiguration.ExternallyOwned; }
+            set { ActivationConfiguration.ExternallyOwned = value; }
+        }
 
         public void SetMetadata(object key, object value)
         {
