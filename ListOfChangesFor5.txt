@@ -14,13 +14,24 @@
 
 * BeingLifetimeScope -> IExportLocatorScope instead of IInjectionScope
 
-* IInjectionScope won't inject by default, more than likely want IExportLocatorScope
+* IInjectionScope won't inject by default, more than likely you want IExportLocatorScope
 
 * Removed Named - this will be an add on after the fact rather than part of the core functionality. 
 
 * Conditions are tested once at resolution time rather than every time an export is located, runtime conditions can be implemented as ExportFactory
 
+* When____ moved to When.______ this was to clean up the interface
+
+---------- Improvements
+
 * Decorators are now supported
 
 * Custom Wrappers are supported 
 
+* Override IEnumerable creation
+
+* ExportFactory - allows the developer to export a method with dependencies injected to arguments
+
+* Export Method - you can now export a method of a type
+
+* Performance - object graphs are now calculated completely at first location. This allows it to operate as fast or faster than all other containers
