@@ -61,7 +61,14 @@ namespace Grace.DependencyInjection.Conditions
         /// <param name="testFunc"></param>
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
-        public T ClassHas<TAttribute>(Func<TAttribute, bool> testFunc = null)
+        public T ClassHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
+        {
+            _addAction(new WhenClassHas<TAttribute>(testFunc));
+
+            return _t;
+        }
+
+        public T MemberHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
             throw new NotImplementedException();
         }

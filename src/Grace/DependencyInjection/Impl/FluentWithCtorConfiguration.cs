@@ -6,7 +6,7 @@ namespace Grace.DependencyInjection.Impl
     {
         private readonly ConstructorParameterInfo _constructorParameterInfo;
 
-        public FluentWithCtorConfiguration(IConfigurableActivationStrategy exportConfiguration, Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext,TParam> exportFunc) : base(exportConfiguration)
+        public FluentWithCtorConfiguration(ICompiledExportStrategy exportConfiguration, Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext,TParam> exportFunc) : base(exportConfiguration)
         {
             exportConfiguration.ConstructorParameter(_constructorParameterInfo = new ConstructorParameterInfo(exportFunc) { ParameterType = typeof(TParam)});
         }

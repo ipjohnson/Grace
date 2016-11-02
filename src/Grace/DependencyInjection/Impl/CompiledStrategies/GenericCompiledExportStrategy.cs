@@ -7,19 +7,37 @@ using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
+    /// <summary>
+    /// Export strategy for open generic types
+    /// </summary>
     public class GenericCompiledExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
     {
         private readonly ILifestyleExpressionBuilder _builder;
         private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
         private ImmutableHashTree<Type, ICompiledLifestyle> _lifestyles = ImmutableHashTree<Type, ICompiledLifestyle>.Empty;
+        private ImmutableLinkedList<ICompiledExportStrategy> _secondaryStrategies = ImmutableLinkedList<ICompiledExportStrategy>.Empty;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="injectionScope"></param>
+        /// <param name="builder"></param>
         public GenericCompiledExportStrategy(Type activationType, IInjectionScope injectionScope, ILifestyleExpressionBuilder builder) : base(activationType, injectionScope)
         {
             _builder = builder;
         }
 
+        /// <summary>
+        /// Type of activation strategy
+        /// </summary>
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
 
+        /// <summary>
+        /// Get activation configuration for strategy
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <returns></returns>
         public override TypeActivationConfiguration GetActivationConfiguration(Type activationType)
         {
             var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
@@ -31,25 +49,14 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             return configuration;
         }
 
-        private ICompiledLifestyle GetLifestyle(Type activationType)
-        {
-            if (Lifestyle == null)
-            {
-                return null;
-            }
 
-            var lifestyle = _lifestyles.GetValueOrDefault(activationType);
-
-            if (lifestyle != null)
-            {
-                return lifestyle;
-            }
-
-            lifestyle = Lifestyle.Clone();
-
-            return ImmutableHashTree.ThreadSafeAdd(ref _lifestyles, activationType, lifestyle);
-        }
-
+        /// <summary>
+        /// Get an activation strategy for this delegate
+        /// </summary>
+        /// <param name="scope">injection scope</param>
+        /// <param name="compiler"></param>
+        /// <param name="activationType">activation type</param>
+        /// <returns>activation delegate</returns>
         public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
@@ -71,11 +78,24 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             return objectDelegate;
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationType = request.ActivationType;
@@ -89,9 +109,44 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             return result ?? _builder.GetActivationExpression(scope, request, activation, activation.Lifestyle);
         }
 
+        /// <summary>
+        /// Add a secondary strategy for this export strategy
+        /// </summary>
+        /// <param name="secondaryStrategy">new secondary strategy</param>
+        public void AddSecondaryStrategy(ICompiledExportStrategy secondaryStrategy)
+        {
+            if (secondaryStrategy == null) throw new ArgumentNullException(nameof(secondaryStrategy));
+
+            _secondaryStrategies = _secondaryStrategies.Add(secondaryStrategy);
+        }
+
+        /// <summary>
+        /// Provide secondary strategies such as exporting property or method
+        /// </summary>
+        /// <returns>export strategies</returns>
         public IEnumerable<ICompiledExportStrategy> SecondaryStrategies()
         {
-            return ImmutableLinkedList<ICompiledExportStrategy>.Empty;
+            return _secondaryStrategies;
+        }
+
+
+        private ICompiledLifestyle GetLifestyle(Type activationType)
+        {
+            if (Lifestyle == null)
+            {
+                return null;
+            }
+
+            var lifestyle = _lifestyles.GetValueOrDefault(activationType);
+
+            if (lifestyle != null)
+            {
+                return lifestyle;
+            }
+
+            lifestyle = Lifestyle.Clone();
+
+            return ImmutableHashTree.ThreadSafeAdd(ref _lifestyles, activationType, lifestyle);
         }
     }
 }

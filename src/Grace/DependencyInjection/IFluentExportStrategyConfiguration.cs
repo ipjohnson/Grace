@@ -5,20 +5,54 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Interface for configuring a non generic type
+    /// </summary>
     public interface IFluentExportStrategyConfiguration
     {
+        /// <summary>
+        /// Export as a specific type
+        /// </summary>
+        /// <param name="type">type to export as</param>
+        /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration As(Type type);
 
+        /// <summary>
+        /// Mark the export as externally owned so the container does not track for disposal
+        /// </summary>
+        /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration ExternallyOwned();
 
+        /// <summary>
+        /// Import a specific member
+        /// </summary>
+        /// <param name="selector">selector method, can be null</param>
+        /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
         
+        /// <summary>
+        /// Apply a lifestlye to export strategy
+        /// </summary>
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
 
+        /// <summary>
+        /// Assign a custom lifestyle to an export
+        /// </summary>
+        /// <param name="lifestyle"></param>
+        /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
 
+        /// <summary>
+        /// Apply a condition on when to use strategy
+        /// </summary>
         IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When { get; }
 
+        /// <summary>
+        /// Export with specific metadata
+        /// </summary>
+        /// <param name="key">metadata key</param>
+        /// <param name="value">metadata value</param>
+        /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration WithMetadata(object key, object value);
     }
 
@@ -60,20 +94,28 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export the type by the interfaces it implements
         /// </summary>
-        /// <returns></returns>
+        /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null);
-        
+
         /// <summary>
         /// You can provide a cleanup method to be called 
         /// </summary>
-        /// <param name="disposalCleanupDelegate"></param>
-        /// <returns></returns>
+        /// <param name="disposalCleanupDelegate">action to call when disposing</param>
+        /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate);
+
+        /// <summary>
+        /// Export a public member of the type (property, field or method with return value)
+        /// </summary>
+        /// <typeparam name="TValue">type to export</typeparam>
+        /// <param name="memberExpression">member expression</param>
+        /// <returns></returns>
+        IFluentExportMemberConfiguration<T> ExportMember<TValue>(Expression<Func<T, TValue>> memberExpression);
 
         /// <summary>
         /// Mark an export as externally owned means the container will not track and dispose the instance
         /// </summary>
-        /// <returns></returns>
+        /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ExternallyOwned();
 
         /// <summary>
@@ -88,7 +130,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TProp"></typeparam>
         /// <param name="property">property expression</param>
-        /// <returns></returns>
+        /// <returns>configuration object</returns>
         IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
 
         /// <summary>

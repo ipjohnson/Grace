@@ -1,8 +1,4 @@
-ExternallyOwned - make sure it works
-
 Dynamic
-
-TryLocate - tests
 
 Import Method
 
@@ -14,14 +10,8 @@ Collection Parameter configuration
 
 IExportTypeSetConfiguration ExportAttributedTypes
 
-Export Property
-
 --------- beta ----------
 
 Generic Decorator support
-
-When.______
-
-Export Method
 
 Tests, Tests, Tests

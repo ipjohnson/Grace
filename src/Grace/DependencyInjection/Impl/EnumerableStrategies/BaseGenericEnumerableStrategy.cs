@@ -6,20 +6,46 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 {
+    /// <summary>
+    /// Base class for all enumerable strategies
+    /// </summary>
     public abstract class BaseGenericEnumerableStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
     {
         private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+        private ImmutableLinkedList<ICompiledExportStrategy> _secondaryStrategies = ImmutableLinkedList<ICompiledExportStrategy>.Empty;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="injectionScope"></param>
         protected BaseGenericEnumerableStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
         {
         }
 
+        /// <summary>
+        /// Type of activation strategy
+        /// </summary>
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.FrameworkExportStrategy;
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
         public abstract IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope,
             IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle);
 
+        /// <summary>
+        /// Get an activation strategy for this delegate
+        /// </summary>
+        /// <param name="scope">injection scope</param>
+        /// <param name="compiler"></param>
+        /// <param name="activationType">activation type</param>
+        /// <returns>activation delegate</returns>
         public virtual ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType)
         {
             var objectDelegate = _delegates.GetValueOrDefault(activationType);
@@ -40,11 +66,32 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             return objectDelegate;
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public abstract IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
+        /// <summary>
+        /// Add a secondary strategy for this export strategy
+        /// </summary>
+        /// <param name="secondaryStrategy">new secondary strategy</param>
+        public void AddSecondaryStrategy(ICompiledExportStrategy secondaryStrategy)
+        {
+            if (secondaryStrategy == null) throw new ArgumentNullException(nameof(secondaryStrategy));
+
+            _secondaryStrategies = _secondaryStrategies.Add(secondaryStrategy);
+        }
+
+        /// <summary>
+        /// Provide secondary strategies such as exporting property or method
+        /// </summary>
+        /// <returns>export strategies</returns>
         public IEnumerable<ICompiledExportStrategy> SecondaryStrategies()
         {
-            return ImmutableLinkedList<ICompiledExportStrategy>.Empty;
+            return _secondaryStrategies;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -64,9 +65,9 @@ namespace Grace.DependencyInjection.Impl
 
     public class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>
     {
-        private readonly IConfigurableActivationStrategy _exportConfiguration;
+        private readonly ICompiledExportStrategy _exportConfiguration;
 
-        public FluentExportStrategyConfiguration(IConfigurableActivationStrategy exportConfiguration)
+        public FluentExportStrategyConfiguration(ICompiledExportStrategy exportConfiguration)
         {
             _exportConfiguration = exportConfiguration;
         }
@@ -142,6 +143,52 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration.DisposalDelegate = disposalCleanupDelegate;
 
             return this;
+        }
+
+        public IFluentExportMemberConfiguration<T> ExportMember<TValue>(Expression<Func<T, TValue>> memberExpression)
+        {
+            ICompiledExportStrategy strategy = null;
+
+            var member = memberExpression.Body as MemberExpression;
+
+            if (member != null)
+            {
+                if (member.Member is PropertyInfo)
+                {
+                    var propertyInfo = (PropertyInfo) member.Member;
+
+                    strategy = new ExportedPropertyOrFieldStrategy(propertyInfo.PropertyType,
+                        _exportConfiguration.InjectionScope, _exportConfiguration, propertyInfo.Name);
+                }
+                else if (member.Member is FieldInfo)
+                {
+                    var fieldInfo = (FieldInfo) member.Member;
+
+                    strategy = new ExportedPropertyOrFieldStrategy(fieldInfo.FieldType,
+                        _exportConfiguration.InjectionScope, _exportConfiguration, fieldInfo.Name);
+                }
+            }
+            else
+            {
+                var methodCall = memberExpression.Body as MethodCallExpression;
+
+                if (methodCall != null)
+                {
+                    var methodInfo = methodCall.Method;
+
+                    strategy = new ExportMethodStrategy(methodInfo.ReturnType, _exportConfiguration.InjectionScope,
+                        _exportConfiguration, methodInfo);
+                }
+            }
+
+            if (strategy == null)
+            {
+                throw new NotSupportedException("Expression is not supported as a means to export, please use a property, field or method");
+            }
+
+            _exportConfiguration.AddSecondaryStrategy(strategy);
+
+            return new FluentExportMemberConfiguration<T>(this, strategy);
         }
 
         public IFluentExportStrategyConfiguration<T> ExternallyOwned()

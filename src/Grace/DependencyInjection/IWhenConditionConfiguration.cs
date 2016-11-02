@@ -29,7 +29,15 @@ namespace Grace.DependencyInjection
         /// <param name="testFunc"></param>
         /// <typeparam name="TAttribute">attribute</typeparam>
         /// <returns></returns>
-        T ClassHas<TAttribute>(Func<TAttribute,bool> testFunc = null);
+        T ClassHas<TAttribute>(Func<TAttribute,bool> testFunc = null) where TAttribute : Attribute; 
+
+        /// <summary>
+        /// Add a condition to use this export only when the member being injected into has a specific attribute
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="testFunc"></param>
+        /// <returns></returns>
+        T MemberHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute;
 
         /// <summary>
         /// Use export when injecting into a specific type
