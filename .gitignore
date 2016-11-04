@@ -5,7 +5,6 @@
 *.suo
 *.user
 *.sln.docstates
-*.dg
 
 # Build results
 
@@ -174,3 +173,4 @@ $RECYCLE.BIN/
 /NuGet/lib
 /Source/.vs/config/applicationhost.config
 /.vs/config/applicationhost.config
+/.vs/restore.dg
