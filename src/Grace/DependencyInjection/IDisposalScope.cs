@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Add an object for disposal tracking
         /// </summary>
-        /// <param name="disposable"></param>
+        /// <param name="disposable">object to track for disposal</param>
         /// <param name="cleanupDelegate">logic that will be run directly before the object is disposed</param>
         T AddDisposable<T>(T disposable, Action<T> cleanupDelegate = null) where T : IDisposable;
     }
