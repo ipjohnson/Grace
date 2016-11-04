@@ -171,7 +171,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 
-            var strategy = _strategyCreator.GetConstantStrategyFromConfiguration(instance);
+            var strategy = _strategyCreator.GetConstantStrategy(instance);
 
             _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
 

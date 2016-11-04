@@ -5,17 +5,20 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// Container of activation strategy collection
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
     {
-        protected bool ExportAsBase;
-        protected int ArraySizeMinusOne;
-        protected ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] Collections;
-        protected ImmutableLinkedList<IActivationStrategyInspector> Inspectors =
-            ImmutableLinkedList<IActivationStrategyInspector>.Empty;
-
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="arraySize"></param>
+        /// <param name="exportAsBase"></param>
         public ActivationStrategyCollectionContainer(int arraySize, bool exportAsBase)
         {
-            ArraySizeMinusOne = arraySize - 1;
+            ArrayLengthMinusOne = arraySize - 1;
             Collections = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[arraySize];
 
             for (var i = 0; i < arraySize; i++)
@@ -26,13 +29,42 @@ namespace Grace.DependencyInjection.Impl
             ExportAsBase = exportAsBase;
         }
 
+        /// <summary>
+        /// Protected constructor to be used internally
+        /// </summary>
+        /// <param name="collections"></param>
         protected ActivationStrategyCollectionContainer(
             ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] collections)
         {
-            ArraySizeMinusOne = collections.Length - 1;
+            ArrayLengthMinusOne = collections.Length - 1;
             Collections = collections;
         }
+        
+        /// <summary>
+        /// Export type as their base
+        /// </summary>
+        protected bool ExportAsBase;
 
+        /// <summary>
+        /// Array length of Collections minus one 
+        /// </summary>
+        protected int ArrayLengthMinusOne;
+
+        /// <summary>
+        /// Array of hash trees
+        /// </summary>
+        protected ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] Collections;
+
+        /// <summary>
+        /// Inspectors to apply to strategies
+        /// </summary>
+        protected ImmutableLinkedList<IActivationStrategyInspector> Inspectors =
+            ImmutableLinkedList<IActivationStrategyInspector>.Empty;
+
+        /// <summary>
+        /// Add strategy to container
+        /// </summary>
+        /// <param name="strategy">strategy</param>
         public void AddStrategy(T strategy)
         {
             Inspectors.Visit(inspector => inspector.Inspect(strategy), true);
@@ -97,6 +129,79 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
+        /// <summary>
+        /// Get all strategies
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<T> GetAllStrategies()
+        {
+            var returnList = new List<T>();
+
+            foreach (var hashEntry in Collections)
+            {
+                hashEntry.IterateInOrder((type, export) => returnList.AddRange(export.GetStrategies()));
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// Get collection for a specific type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type)
+        {
+            var hashCode = type.GetHashCode();
+
+            return Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+        }
+
+        /// <summary>
+        /// Clone the container
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategyCollectionContainer<T> Clone()
+        {
+            var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArrayLengthMinusOne + 1];
+
+            for (int i = 0; i <= ArrayLengthMinusOne; i++)
+            {
+                newArray[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
+
+                foreach (var keyValuePair in Collections[i])
+                {
+                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value);
+                }
+            }
+
+            return new ActivationStrategyCollectionContainer<T>(newArray);
+        }
+
+        /// <summary>
+        /// Add strategy inspector
+        /// </summary>
+        /// <param name="inspector">inspector</param>
+        public void AddInspector(IActivationStrategyInspector inspector)
+        {
+            ImmutableLinkedList.ThreadSafeAdd(ref Inspectors, inspector);
+
+            foreach (var strategy in GetAllStrategies())
+            {
+                inspector.Inspect(strategy);
+            }
+        }
+
+        /// <summary>
+        /// Create a collection of activation strategy
+        /// </summary>
+        /// <param name="exportType"></param>
+        /// <returns></returns>
+        protected virtual IActivationStrategyCollection<T> CreateCollection(Type exportType)
+        {
+            return new ActivationStrategyCollection<T>(exportType);
+        }
+
         private IEnumerable<Type> GetTypes(Type type)
         {
             if (type.GetTypeInfo().IsInterface)
@@ -122,73 +227,23 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
         }
-
-        protected virtual IActivationStrategyCollection<T> CreateCollection(Type exportType)
-        {
-            return new ActivationStrategyCollection<T>(exportType);
-        }
-
+        
         private void AddStrategyByAs(T strategy, Type exportAs, object withKey)
         {
             var hashCode = exportAs.GetHashCode();
 
-            var collection = Collections[hashCode & ArraySizeMinusOne].GetValueOrDefault(exportAs);
+            var collection = Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(exportAs);
 
             if (collection == null)
             {
                 collection = CreateCollection(exportAs);
 
-                Collections[hashCode & ArraySizeMinusOne] =
-                Collections[hashCode & ArraySizeMinusOne].Add(exportAs, collection);
+                Collections[hashCode & ArrayLengthMinusOne] =
+                Collections[hashCode & ArrayLengthMinusOne].Add(exportAs, collection);
             }
 
             collection.AddStrategy(strategy, withKey);
         }
 
-        public IEnumerable<T> GetAllStrategies()
-        {
-            var returnList = new List<T>();
-
-            foreach (var hashEntry in Collections)
-            {
-                hashEntry.IterateInOrder((type, export) => returnList.AddRange(export.GetStrategies()));
-            }
-
-            return returnList;
-        }
-
-        public IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type)
-        {
-            var hashCode = type.GetHashCode();
-
-            return Collections[hashCode & ArraySizeMinusOne].GetValueOrDefault(type, hashCode);
-        }
-
-        public IActivationStrategyCollectionContainer<T> Clone()
-        {
-            var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArraySizeMinusOne + 1];
-
-            for (int i = 0; i <= ArraySizeMinusOne; i++)
-            {
-                newArray[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
-
-                foreach (var keyValuePair in Collections[i])
-                {
-                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value);
-                }
-            }
-
-            return new ActivationStrategyCollectionContainer<T>(newArray);
-        }
-
-        public void AddInspector(IActivationStrategyInspector inspector)
-        {
-            ImmutableLinkedList.ThreadSafeAdd(ref Inspectors, inspector);
-
-            foreach (var strategy in GetAllStrategies())
-            {
-                inspector.Inspect(strategy);
-            }
-        }
     }
 }

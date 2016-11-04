@@ -4,6 +4,10 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// holds a set of activation strategies
+    /// </summary>
+    /// <typeparam name="T">type of activation strategy</typeparam>
     public class ActivationStrategyCollection<T> : IActivationStrategyCollection<T> where T : class, IActivationStrategy
     {
         private readonly Type _exportType;
@@ -13,11 +17,20 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableArray<T> _strategies = ImmutableArray<T>.Empty;
         private ImmutableHashTree<object, T> _keyedStrategies = ImmutableHashTree<object, T>.Empty;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="exportType"></param>
         public ActivationStrategyCollection(Type exportType)
         {
             _exportType = exportType;
         }
 
+        /// <summary>
+        /// Add a new strategy to collection
+        /// </summary>
+        /// <param name="strategy">strategy to add</param>
+        /// <param name="key">key associated with type, can be null</param>
         public void AddStrategy(T strategy, object key)
         {
             if (key == null)
@@ -57,26 +70,47 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
+        /// <summary>
+        /// Strategies that are non keyed
+        /// </summary>
+        /// <returns></returns>
         public ImmutableArray<T> GetStrategies()
         {
             return _strategies;
         }
 
+        /// <summary>
+        /// Get primary strategy
+        /// </summary>
+        /// <returns></returns>
         public T GetPrimary()
         {
             return _primary;
         }
 
+        /// <summary>
+        /// list of strategies and their keys
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<KeyValuePair<object, T>> GetKeyedStrategies()
         {
             return _keyedStrategies;
         }
 
+        /// <summary>
+        /// Get a keyed strategy
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <returns></returns>
         public T GetKeyedStrategy(object key)
         {
             return _keyedStrategies.GetValueOrDefault(key);
         }
 
+        /// <summary>
+        /// Clone the collection
+        /// </summary>
+        /// <returns></returns>
         public IActivationStrategyCollection<T> Clone()
         {
             return new ActivationStrategyCollection<T>(_exportType)

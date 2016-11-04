@@ -6,17 +6,32 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {
-
+    /// <summary>
+    /// Service for discovering attributes and sharing them
+    /// </summary>
     public interface IAttributeDiscoveryService
     {
+        /// <summary>
+        /// Get attributes from MethodInfo, PropertyInfo, ParameterInfo, and FieldInfo
+        /// </summary>
+        /// <param name="value">MethodInfo, PropertyInfo, ParameterInfo, and FieldInfo</param>
+        /// <returns>attributes</returns>
         IEnumerable<Attribute> GetAttributes(object value);
     }
 
+    /// <summary>
+    /// attribute dicovery service
+    /// </summary>
     public class AttributeDiscoveryService : IAttributeDiscoveryService
     {
         private ImmutableHashTree<object, IEnumerable<Attribute>> _knownValues =
             ImmutableHashTree<object, IEnumerable<Attribute>>.Empty;
 
+        /// <summary>
+        /// Get attributes from MethodInfo, PropertyInfo, ParameterInfo, and FieldInfo
+        /// </summary>
+        /// <param name="value">MethodInfo, PropertyInfo, ParameterInfo, and FieldInfo</param>
+        /// <returns>attributes</returns>
         public IEnumerable<Attribute> GetAttributes(object value)
         {
             if (value == null)
