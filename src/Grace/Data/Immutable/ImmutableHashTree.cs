@@ -9,8 +9,18 @@ using System.Threading;
 
 namespace Grace.Data.Immutable
 {
-    public class ImmutableHashTree
+    /// <summary>
+    /// Static helper class for immutable hash tree
+    /// </summary>
+    public static class ImmutableHashTree
     {
+        /// <summary>
+        /// Create immutable hash tree from IEnuermable
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <returns></returns>
         public static ImmutableHashTree<TKey, TValue> From<TKey, TValue>(
             IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
         {
@@ -315,11 +325,24 @@ namespace Grace.Data.Immutable
             return false;
         }
 
+        /// <summary>
+        /// Get value or default from hash tree
+        /// </summary>
+        /// <param name="key">key to use for looking up</param>
+        /// <param name="defaultValue">default value if not found</param>
+        /// <returns></returns>
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
             return GetValueOrDefault(key, key.GetHashCode(), defaultValue);
         }
 
+        /// <summary>
+        /// Get value or default value from hash tree using a known hash value
+        /// </summary>
+        /// <param name="key">key to use for look up</param>
+        /// <param name="keyHash">hash value for key</param>
+        /// <param name="defaultValue">default value to return when not found</param>
+        /// <returns></returns>
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
@@ -356,7 +379,11 @@ namespace Grace.Data.Immutable
             return defaultValue;
         }
 
-
+        /// <summary>
+        /// Locate value from hash table, throws exception if not found
+        /// </summary>
+        /// <param name="key">key for hash table</param>
+        /// <returns></returns>
         public TValue this[TKey key]
         {
             get
@@ -392,6 +419,26 @@ namespace Grace.Data.Immutable
         /// Is the hash tree empty
         /// </summary>
         public bool IsEmpty => Height == 0;
+        
+        /// <summary>
+        /// Gets an enumerator for the immutable hash
+        /// </summary>
+        /// <returns>enumerator</returns>
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            return IterateInOrder().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Gets the count of the immutable hashtree. Note its faster to do a lookup than to do a count
+        /// If you want to test for emptyness use the IsEmpty property
+        /// </summary>
+        public int Count => Height == 0 ? 0 : this.Count();
 
         private ImmutableHashTree()
         {
@@ -503,24 +550,5 @@ namespace Grace.Data.Immutable
             throw new KeyExistsException<TKey>();
         }
 
-        /// <summary>
-        /// Gets an enumerator for the immutable hash
-        /// </summary>
-        /// <returns>enumerator</returns>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return IterateInOrder().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <summary>
-        /// Gets the count of the immutable hashtree. Note its faster to do a lookup than to do a count
-        /// If you want to test for emptyness use the IsEmpty property
-        /// </summary>
-        public int Count => Height == 0 ? 0 : this.Count();
     }
 }

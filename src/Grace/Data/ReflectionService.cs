@@ -7,6 +7,9 @@ using Grace.Data.Immutable;
 
 namespace Grace.Data
 {
+    /// <summary>
+    /// Helper class for accessing values using reflection
+    /// </summary>
     public class ReflectionService
     {
         private static readonly MethodInfo ImmutableTreeAdd =
@@ -14,6 +17,13 @@ namespace Grace.Data
 
         private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _propertyDelegates =
             ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
+
+        /// <summary>
+        /// Delegate for creating dictionaries from object properties
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public delegate ImmutableHashTree<string, object> PropertyDictionaryDelegate(object instance, ImmutableHashTree<string, object> values);
 
 

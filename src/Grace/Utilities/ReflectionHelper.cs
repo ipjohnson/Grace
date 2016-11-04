@@ -5,10 +5,11 @@ using System.Reflection;
 
 namespace Grace.Utilities
 {
+    /// <summary>
+    /// Static helper class for reflection methods
+    /// </summary>
     public static class ReflectionHelper
     {
-
-
         /// <summary>
         /// A helper to check to see if a generic parameter type meets the specified constraints
         /// </summary>
@@ -79,6 +80,11 @@ namespace Grace.Utilities
             return type.GetTypeInfo().DeclaredConstructors.Any(x => x.IsPublic && !x.GetParameters().Any());
         }
 
+        /// <summary>
+        /// Get the type for a specific MemberInfo
+        /// </summary>
+        /// <param name="memberInfo"></param>
+        /// <returns></returns>
         public static Type GetMemeberType(this MemberInfo memberInfo)
         {
             var propertyInfo = memberInfo as PropertyInfo;

@@ -98,7 +98,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else if (ShouldCreateConcreteStrategy(requestedType))
             {
-                yield return new CompiledExportStrategy(requestedType, scope, request.Services.ExportExpressionBuilder);
+                yield return new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder);
             }
         }
 

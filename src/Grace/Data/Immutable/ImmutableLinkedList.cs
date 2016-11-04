@@ -6,6 +6,9 @@ using System.Threading;
 
 namespace Grace.Data.Immutable
 {
+    /// <summary>
+    /// Static helper class for linked list
+    /// </summary>
     public static class ImmutableLinkedList
     {
         
@@ -159,10 +162,23 @@ namespace Grace.Data.Immutable
         }
     }
 
+    /// <summary>
+    /// Immutable linked list class
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ImmutableLinkedList<T> : IEnumerable<T>
     {
+        /// <summary>
+        /// Empty instance of list
+        /// </summary>
         public static readonly ImmutableLinkedList<T> Empty = new ImmutableLinkedList<T>(default(T), null, 0);
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="next"></param>
+        /// <param name="count"></param>
         private ImmutableLinkedList(T value, ImmutableLinkedList<T> next, int count)
         {
             Value = value;
@@ -170,17 +186,36 @@ namespace Grace.Data.Immutable
             Count = count;
         }
 
+        /// <summary>
+        /// For for link
+        /// </summary>
         public T Value { get; }
 
+        /// <summary>
+        /// Next link in the list
+        /// </summary>
         public ImmutableLinkedList<T> Next { get; }
 
+        /// <summary>
+        /// Count for list
+        /// </summary>
         public int Count { get; }
 
+        /// <summary>
+        /// Add value to list
+        /// </summary>
+        /// <param name="value">value to add to list</param>
+        /// <returns>new linked list</returns>
         public ImmutableLinkedList<T> Add(T value)
         {
             return new ImmutableLinkedList<T>(value, this, Count + 1);
         }
 
+        /// <summary>
+        /// Add range to linked list
+        /// </summary>
+        /// <param name="range">range to add</param>
+        /// <returns>new linked list</returns>
         public ImmutableLinkedList<T> AddRange(IEnumerable<T> range)
         {
             var current = this;
@@ -193,21 +228,38 @@ namespace Grace.Data.Immutable
             return current;
         }
 
+        /// <summary>
+        /// Get an enumerator for list
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new LinkedListEnumerator(this);
         }
 
+        /// <summary>
+        /// Get enumerator for list
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Reverse linked list
+        /// </summary>
+        /// <returns></returns>
         public ImmutableLinkedList<T> Reverse()
         {
             return this.Aggregate(Empty, (current, t) => current.Add(t));
         }
 
+        /// <summary>
+        /// Visit all values in list
+        /// </summary>
+        /// <param name="action">action to call</param>
+        /// <param name="startAtEnd">start at the end of the linked list</param>
         public void Visit(Action<T> action, bool startAtEnd = false)
         {
             if (this == Empty)
