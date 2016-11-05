@@ -18,5 +18,24 @@ namespace Grace.Tests.DependencyInjection.Enrichment
             Assert.NotNull(basicService);
             Assert.Equal(5, basicService.Count);
         }
+
+        [Fact]
+        public void ActivationMethod_Executes()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<MethodInjectionClass>().ActivationMethod(m => m.InjectBasicService(Arg.Any<IBasicService>()));
+            });
+
+            var instance = container.Locate<MethodInjectionClass>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.IsType<BasicService>(instance.BasicService);
+
+        }
     }
 }

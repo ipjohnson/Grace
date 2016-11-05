@@ -30,8 +30,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var bindings = new List<MemberBinding>();
             var members = new Dictionary<MemberInfo, MemberInjectionInfo>();
-
-
+            
             foreach (var memberInjectionSelector in activationConfiguration.MemberInjectionSelectors)
             {
                 foreach (var memberInjectionInfo in memberInjectionSelector.GetMembers(activationConfiguration.ActivationType, scope, request))

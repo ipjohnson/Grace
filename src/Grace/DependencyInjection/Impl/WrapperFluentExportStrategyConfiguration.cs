@@ -28,6 +28,16 @@ namespace Grace.DependencyInjection.Impl
         #region IFluentExportStrategyConfiguration
 
         /// <summary>
+        /// Mark a particular Action() as the activation action
+        /// </summary>
+        /// <param name="activationMethod"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod)
+        {
+            return _strategy.ActivationMethod(activationMethod);
+        }
+
+        /// <summary>
         /// Apply an action to the export just after construction
         /// </summary>
         /// <param name="applyAction">action to apply to export upon construction</param>
@@ -85,6 +95,16 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate)
         {
             return _strategy.DisposalCleanupDelegate(disposalCleanupDelegate);
+        }
+
+        /// <summary>
+        /// Enrich with delegate
+        /// </summary>
+        /// <param name="enrichmentDelegate">enrichment delegate</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> enrichmentDelegate)
+        {
+            return _strategy.EnrichWithDelegate(enrichmentDelegate);
         }
 
         /// <summary>

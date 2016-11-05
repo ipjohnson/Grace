@@ -72,6 +72,19 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration = exportConfiguration;
         }
 
+        public IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod)
+        {
+            if (activationMethod == null) throw new ArgumentNullException(nameof(activationMethod));
+
+            var methodExpression = activationMethod.Body as MethodCallExpression;
+
+            if (methodExpression == null) throw new ArgumentException("Must be method call expression", nameof(activationMethod));
+
+            _exportConfiguration.ActivationMethod = new MethodInjectionInfo { Method = methodExpression.Method };
+
+            return this;
+        }
+
         public IFluentExportStrategyConfiguration<T> Apply(Action<T> applyAction)
         {
             var enrichmentDelegate = new Func<IExportLocatorScope, T, T>((scope, t) =>
@@ -141,6 +154,15 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate)
         {
             _exportConfiguration.DisposalDelegate = disposalCleanupDelegate;
+
+            return this;
+        }
+
+        public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> enrichmentDelegate)
+        {
+            if (enrichmentDelegate == null) throw new ArgumentNullException(nameof(enrichmentDelegate));
+
+            _exportConfiguration.EnrichmentDelegate(enrichmentDelegate);
 
             return this;
         }

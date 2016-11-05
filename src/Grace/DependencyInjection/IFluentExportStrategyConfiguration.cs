@@ -63,6 +63,13 @@ namespace Grace.DependencyInjection
     public interface IFluentExportStrategyConfiguration<T>
     {
         /// <summary>
+        /// Mark a particular Action() as the activation action
+        /// </summary>
+        /// <param name="activationMethod"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod);
+
+        /// <summary>
         /// Apply an action to the export just after construction
         /// </summary>
         /// <param name="applyAction">action to apply to export upon construction</param>
@@ -103,6 +110,14 @@ namespace Grace.DependencyInjection
         /// <param name="disposalCleanupDelegate">action to call when disposing</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate);
+
+        /// <summary>
+        /// Enrich with delegate
+        /// </summary>
+        /// <param name="enrichmentDelegate">enrichment delegate</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> EnrichWithDelegate(
+            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> enrichmentDelegate);
 
         /// <summary>
         /// Export a public member of the type (property, field or method with return value)

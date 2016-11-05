@@ -26,6 +26,8 @@ namespace Grace.DependencyInjection.Impl
 
         public IActivationStrategy ActivationStrategy { get; }
 
+        public MethodInjectionInfo ActivationMethod { get; set; }
+
         public ICompiledLifestyle Lifestyle { get; set; }
 
         public bool SupportsDecorators { get; set; }

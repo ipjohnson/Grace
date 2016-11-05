@@ -1,7 +1,5 @@
 Dynamic
 
-Activation Method
-
 Export Initialize
 
 --------- beta ----------

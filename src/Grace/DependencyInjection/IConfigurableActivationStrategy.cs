@@ -79,5 +79,10 @@ namespace Grace.DependencyInjection
         /// <param name="key"></param>
         /// <param name="value"></param>
         void SetMetadata(object key, object value);
+
+        /// <summary>
+        /// Method that's called when the type is activated
+        /// </summary>
+        MethodInjectionInfo ActivationMethod { get; set; }
     }
 }

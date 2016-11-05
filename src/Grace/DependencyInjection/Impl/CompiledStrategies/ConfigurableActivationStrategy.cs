@@ -113,6 +113,21 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// Method that's called when the type is activated
+        /// </summary>
+        public MethodInjectionInfo ActivationMethod
+        {
+            get
+            {
+                return ActivationConfiguration.ActivationMethod;
+            }
+            set
+            {
+                ActivationConfiguration.ActivationMethod = value;
+            }
+        }
+
+        /// <summary>
         /// Get activation configuration for strategy
         /// </summary>
         /// <param name="activationType"></param>
