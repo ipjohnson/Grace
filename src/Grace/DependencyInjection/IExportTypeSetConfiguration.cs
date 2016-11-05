@@ -78,6 +78,12 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude);
 
         /// <summary>
+        /// Export types using their attributes
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ExportAttributedTypes();
+
+        /// <summary>
         /// Lifestyle for set
         /// </summary>
         ILifestylePicker<IExportTypeSetConfiguration> Lifestyle { get; }

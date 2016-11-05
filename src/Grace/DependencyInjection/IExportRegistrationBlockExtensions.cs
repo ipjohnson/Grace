@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export(typeof(T).GetTypeInfo().Assembly.ExportedTypes);
         }
-
+        
         /// <summary>
         /// Export types from a set of assemblies
         /// </summary>

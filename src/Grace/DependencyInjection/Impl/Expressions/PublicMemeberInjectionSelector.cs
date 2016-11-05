@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
+    /// <summary>
+    /// Select public members that can be injected
+    /// </summary>
     public class PublicMemeberInjectionSelector : IMemeberInjectionSelector
     {
         private readonly Func<MemberInfo, bool> _picker;
@@ -12,6 +15,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             _picker = picker;
         }
+
+        public bool IsRequired { get; set; }
+
+        public object DefaultValue { get; set; }
 
         public IEnumerable<MemberInjectionInfo> GetMembers(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
@@ -41,7 +48,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (test && _picker(declaredMember))
                 {
-                    yield return new MemberInjectionInfo { MemberInfo = declaredMember };
+                    yield return new MemberInjectionInfo { MemberInfo = declaredMember, IsRequired = IsRequired, DefaultValue = DefaultValue };
                 }
             }
         }

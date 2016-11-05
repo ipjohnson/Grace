@@ -4,8 +4,6 @@ Activation Method
 
 Export Initialize
 
-IExportTypeSetConfiguration ExportAttributedTypes
-
 --------- beta ----------
 
 Generic Decorator support
