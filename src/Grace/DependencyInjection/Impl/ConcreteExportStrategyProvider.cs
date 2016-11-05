@@ -10,8 +10,17 @@ using Grace.DependencyInjection.Impl.Wrappers;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// Provides export strategies for concrete types
+    /// </summary>
     public class ConcreteExportStrategyProvider : IMissingExportStrategyProvider
     {
+        /// <summary>
+        /// Provide exports for a missing type
+        /// </summary>
+        /// <param name="scope">scope to provide value</param>
+        /// <param name="request">request</param>
+        /// <returns>set of activation strategies</returns>
         public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var requestedType = request.ActivationType;
@@ -98,7 +107,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else if (ShouldCreateConcreteStrategy(requestedType))
             {
-                yield return new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder);
+                yield return new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder).ProcessAttributeForStrategy();
             }
         }
 

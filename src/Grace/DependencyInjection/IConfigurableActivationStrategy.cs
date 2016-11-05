@@ -51,6 +51,12 @@ namespace Grace.DependencyInjection
         void MemberInjectionSelector(IMemeberInjectionSelector selector);
 
         /// <summary>
+        /// Add method injection info
+        /// </summary>
+        /// <param name="methodInjectionInfo"></param>
+        void MethodInjectionInfo(MethodInjectionInfo methodInjectionInfo);
+
+        /// <summary>
         /// Delegate to enrich strategy with
         /// </summary>
         /// <param name="enrichmentDelegate">enrichment delegate</param>

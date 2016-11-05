@@ -2,13 +2,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Grace.Data;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Conditions
 {
     /// <summary>
     /// condition class for testing if target has a particular attribute
     /// </summary>
-    /// <typeparam name="TAttribute"></typeparam>
+    public class WhenClassHas : ICompiledCondition
+    {
+        private readonly Type _attributeType;
+        private readonly Func<Attribute, bool> _filter;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="attributeType"></param>
+        /// <param name="filter"></param>
+        public WhenClassHas(Type attributeType, Func<Attribute, bool> filter = null)
+        {
+            _attributeType = attributeType;
+            _filter = filter;
+        }
+
+        /// <summary>
+        /// Test if strategy meets condition
+        /// </summary>
+        /// <param name="strategy">strategy to test</param>
+        /// <param name="staticInjectionContext">static injection context</param>
+        /// <returns>meets condition</returns>
+        public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
+        {
+            var targetInfo = staticInjectionContext.TargetInfo;
+
+            if (targetInfo != null)
+            {
+                foreach (var attribute in targetInfo.InjectionTypeAttributes)
+                {
+                    if (attribute.GetType() != _attributeType &&_filter == null || _filter(attribute))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
+
+    /// <summary>
+    /// condition class for testing if target has a particular attribute
+    /// </summary>
+    /// <typeparam name="TAttribute">attribute type</typeparam>
     public class WhenClassHas<TAttribute> : ICompiledCondition where TAttribute : Attribute
     {
         private readonly Func<TAttribute, bool> _filter;

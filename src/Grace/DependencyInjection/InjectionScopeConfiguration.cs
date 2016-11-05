@@ -112,11 +112,13 @@ namespace Grace.DependencyInjection
                 f => new TypeExpressionBuilder(f.Locate<IInstantiationExpressionCreator>(), 
                                                f.Locate<IDisposalScopeExpressionCreator>(), 
                                                f.Locate<IMemberInjectionExpressionCreator>(), 
+                                               f.Locate<IMethodInvokeExpressionCreator>(),
                                                f.Locate<IEnrichmentExpressionCreator>()));
 
             DefaultImplementation.ExportInstance<IInstantiationExpressionCreator>(f => new InstantiationExpressionCreator());
             DefaultImplementation.ExportInstance<IDisposalScopeExpressionCreator>(f => new DisposalScopeExpressionCreator());
             DefaultImplementation.ExportInstance<IEnrichmentExpressionCreator>(f => new EnrichmentExpressionCreator());
+            DefaultImplementation.ExportInstance<IMethodInvokeExpressionCreator>(f => new MethodInvokeExpressionCreator());
             DefaultImplementation.ExportInstance<IMemberInjectionExpressionCreator>(f => new MemberInjectionExpressionCreator());
 
             DefaultImplementation.ExportInstance<IActivationExpressionBuilder>(
@@ -142,6 +144,8 @@ namespace Grace.DependencyInjection
                 f => new DefaultWrapperCollectionProvider());
 
             DefaultImplementation.ExportInstance<IInjectionContextCreator>(f => new InjectionContextCreator());
+
+            DefaultImplementation.ExportInstance< IActivationStrategyAttributeProcessor>(f => new ActivationStrategyAttributeProcessor());
         }
 
         #endregion

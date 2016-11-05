@@ -27,10 +27,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 disposalDelegate = activationConfiguration.DisposalDelegate;
             }
 
-            var disposalCall = 
+            var disposalCall =
                 Expression.Call(request.DisposalScopeExpression, closedGeneric, result.Expression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType));
 
-            return request.Services.Compiler.CreateNewResult(request, disposalCall);
+            var disposalResult = request.Services.Compiler.CreateNewResult(request, disposalCall);
+
+            disposalResult.AddExpressionResult(result);
+
+            return disposalResult;
         }
 
         protected MethodInfo AddMethod

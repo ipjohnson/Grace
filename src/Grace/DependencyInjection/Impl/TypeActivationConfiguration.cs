@@ -13,6 +13,7 @@ namespace Grace.DependencyInjection.Impl
         protected ImmutableLinkedList<ConstructorParameterInfo> ConstructorParametersList = ImmutableLinkedList<ConstructorParameterInfo>.Empty;
         protected ImmutableLinkedList<object> EncrichmentDelegateList = ImmutableLinkedList<object>.Empty;
         protected ImmutableLinkedList<IMemeberInjectionSelector> MemberInjectorList = ImmutableLinkedList<IMemeberInjectionSelector>.Empty;
+        protected ImmutableLinkedList<MethodInjectionInfo> MethodInjectionList = ImmutableLinkedList<MethodInjectionInfo>.Empty;
 
         public TypeActivationConfiguration(Type activationType, IActivationStrategy activationStrategy)
         {
@@ -52,6 +53,13 @@ namespace Grace.DependencyInjection.Impl
         public void MemberInjectionSelector(IMemeberInjectionSelector selector)
         {
             MemberInjectorList = MemberInjectorList.Add(selector);
+        }
+
+        public IEnumerable<MethodInjectionInfo> MethodInjections => MethodInjectionList;
+
+        public void MethodInjection(MethodInjectionInfo methodInjection)
+        {
+            MethodInjectionList = MethodInjectionList.Add(methodInjection);
         }
 
         public TypeActivationConfiguration CloneToType(Type activationType)

@@ -146,30 +146,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return constructor;
         }
-
-
-        protected virtual Expression GetParameterExpressionFromInfo(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
-        {
-            //var exportFunc = parameterInfo.ExportFunc as Delegate;
-
-            //if (exportFunc != null)
-            //{
-            //    var getMethod = exportFunc.GetMethodInfo();
-
-            //    request.ExpressionContext.RequireDataProvider();
-
-            //    return Expression.Call(Expression.Constant(exportFunc.Target),
-            //        getMethod,
-            //        request.ExpressionContext.ScopeParameter,
-            //        Expression.Constant(request.GetStaticInjectionContext()),
-            //        request.ExpressionContext.ExtraDataParameter);
-            //}
-
-            return null;
-            //var newRequest = new CompiledExportRequest(request, parameter.ParameterType, RequestType.ConstructorParameter, request.ActivationType, request.WrapperRequest, parameterInfo.LocateWithKey, parameter, parameterInfo.ExportStrategyFilter);
-
-            //return objectFactoryCompiler.GetActivationExpression(injectionScope, newRequest);
-        }
+        
 
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {

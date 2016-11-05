@@ -54,8 +54,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             return _delegate;
         }
-
-
+        
         /// <summary>
         /// Get an activation expression for this strategy
         /// </summary>

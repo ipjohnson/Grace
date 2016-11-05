@@ -129,6 +129,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Import a specific method on the type
+        /// </summary>
+        /// <param name="method">method to import</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportMethod(Expression<Action<T>> method)
+        {
+            return _strategy.ImportMethod(method);
+        }
+
+        /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>
         public ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle => _strategy.Lifestyle;

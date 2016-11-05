@@ -155,14 +155,14 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (member.Member is PropertyInfo)
                 {
-                    var propertyInfo = (PropertyInfo) member.Member;
+                    var propertyInfo = (PropertyInfo)member.Member;
 
                     strategy = new ExportedPropertyOrFieldStrategy(propertyInfo.PropertyType,
                         _exportConfiguration.InjectionScope, _exportConfiguration, propertyInfo.Name);
                 }
                 else if (member.Member is FieldInfo)
                 {
-                    var fieldInfo = (FieldInfo) member.Member;
+                    var fieldInfo = (FieldInfo)member.Member;
 
                     strategy = new ExportedPropertyOrFieldStrategy(fieldInfo.FieldType,
                         _exportConfiguration.InjectionScope, _exportConfiguration, fieldInfo.Name);
@@ -211,7 +211,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (member == null)
             {
-                throw new ArgumentException("property", "Property must be a property on type" + typeof(T).FullName);
+                throw new ArgumentException("Property must be a property on type" + typeof(T).FullName, nameof(property));
             }
 
             var propertyInfo =
@@ -222,6 +222,22 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration.MemberInjectionSelector(new PropertyMemberInjectionSelector(memberInfo));
 
             return new FluentImportPropertyConfiguration<T, TProp>(this, memberInfo);
+        }
+
+        public IFluentExportStrategyConfiguration<T> ImportMethod(Expression<Action<T>> method)
+        {
+            var methodCall = method.Body as MethodCallExpression;
+
+            if (methodCall == null)
+            {
+                throw new ArgumentException("expression must be method", nameof(method));
+            }
+
+            var methodInjectionInfo = new MethodInjectionInfo { Method = methodCall.Method };
+
+            _exportConfiguration.MethodInjectionInfo(methodInjectionInfo);
+
+            return this;
         }
 
         public ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle

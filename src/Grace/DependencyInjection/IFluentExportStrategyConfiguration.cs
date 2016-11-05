@@ -132,6 +132,13 @@ namespace Grace.DependencyInjection
         /// <param name="property">property expression</param>
         /// <returns>configuration object</returns>
         IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
+        
+        /// <summary>
+        /// Import a specific method on the type
+        /// </summary>
+        /// <param name="method">method to import</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ImportMethod(Expression<Action<T>> method);
 
         /// <summary>
         /// Assign a lifestyle to this export

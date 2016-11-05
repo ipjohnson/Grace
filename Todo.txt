@@ -1,17 +1,15 @@
 Dynamic
 
-Import Method
-
-Export Initialize
-
 Activation Method
 
-Collection Parameter configuration
+Export Initialize
 
 IExportTypeSetConfiguration ExportAttributedTypes
 
 --------- beta ----------
 
 Generic Decorator support
+
+Collection Parameter configuration
 
 Tests, Tests, Tests
