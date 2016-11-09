@@ -3,6 +3,9 @@ using Grace.Data;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Context that can be created for each request
+    /// </summary>
     public interface IInjectionContext : IExtraDataContainer
     {
         /// <summary>

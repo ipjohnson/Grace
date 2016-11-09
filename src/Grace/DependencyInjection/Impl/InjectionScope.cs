@@ -395,6 +395,19 @@ namespace Grace.DependencyInjection.Impl
 
         private object LocateObjectFactory(IExportLocatorScope scope, Type type, object key, IInjectionContext injectionContext, bool allowNull, bool isDynamic)
         {
+            if (isDynamic)
+            {
+                if (type.IsArray)
+                {
+                    return DynamicArray(scope, type, key, injectionContext, allowNull);
+                }
+
+                if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    return DynamicIEnumerable(scope, type, key, injectionContext, allowNull);
+                }
+            }
+
             var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, key);
 
             if (compiledDelegate != null)
@@ -409,8 +422,8 @@ namespace Grace.DependencyInjection.Impl
 
             if (Parent != null)
             {
-                var injectionScopeParent = (IInjectionScope) Parent;
-                
+                var injectionScopeParent = (IInjectionScope)Parent;
+
                 return injectionScopeParent.LocateFromChildScope(this, type, injectionContext, key, allowNull);
             }
 
@@ -420,6 +433,16 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return null;
+        }
+
+        private object DynamicIEnumerable(IExportLocatorScope scope, Type type, object key, IInjectionContext injectionContext, bool allowNull)
+        {
+            throw new NotImplementedException();
+        }
+
+        private object DynamicArray(IExportLocatorScope scope, Type type, object key, IInjectionContext injectionContext, bool allowNull)
+        {
+            throw new NotImplementedException();
         }
 
         private ActivationStrategyDelegate AddObjectFactory(Type type, ActivationStrategyDelegate activationStrategyDelegate)
