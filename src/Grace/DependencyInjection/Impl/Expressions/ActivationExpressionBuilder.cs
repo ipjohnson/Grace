@@ -228,13 +228,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.IsDynamic)
             {
-                if (request.ActivationType.IsArray ||
-                    (request.ActivationType.IsConstructedGenericType &&
-                     request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                {
-
-                }
-
                 throw new NotImplementedException();
             }
 
