@@ -70,6 +70,10 @@ namespace Grace.DependencyInjection.Impl
             {
                 EncrichmentDelegateList = EncrichmentDelegateList,
                 MemberInjectorList = MemberInjectorList,
+                ConstructorParametersList = ConstructorParametersList,
+                ActivationMethod = ActivationMethod,
+                DisposalDelegate = DisposalDelegate,
+                ExternallyOwned = ExternallyOwned,
                 // leaving out lifestyle as that needs to be thread safe
             };
         }

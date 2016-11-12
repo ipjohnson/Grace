@@ -45,12 +45,13 @@ namespace Grace.DependencyInjection
         /// Locate an export from a child scope
         /// </summary>
         /// <param name="childScope">scope where the locate originated</param>
+        /// <param name="disposalScope">disposal scope to use</param>
         /// <param name="type">type to locate</param>
-        /// <param name="extraData"></param>
-        /// <param name="key"></param>
-        /// <param name="allowNull"></param>
+        /// <param name="extraData">extra data passed in</param>
+        /// <param name="key">key to use during locate</param>
+        /// <param name="allowNull">allow null to be returned</param>
         /// <returns>configuration object</returns>
-        object LocateFromChildScope(IExportLocatorScope childScope, Type type, object extraData, object key, bool allowNull);
+        object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull);
 
         /// <summary>
         /// Creates a new child scope

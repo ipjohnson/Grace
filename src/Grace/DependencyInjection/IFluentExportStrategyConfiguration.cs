@@ -48,6 +48,14 @@ namespace Grace.DependencyInjection
         IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When { get; }
 
         /// <summary>
+        /// Configure constructor parameter
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <param name="paramFunc"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null);
+
+            /// <summary>
         /// Export with specific metadata
         /// </summary>
         /// <param name="key">metadata key</param>

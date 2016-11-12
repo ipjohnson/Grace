@@ -12,8 +12,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
         void SetCompiler(IActivationStrategyCompiler compiler);
 
-        IActivationExpressionResult GetActivationExpression(IInjectionScope scope, Type type);
-
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
@@ -44,14 +42,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             _compiler = compiler;
         }
-
-        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, Type type)
-        {
-            var request = _compiler.CreateNewRequest(type, 1);
-
-            return GetActivationExpression(scope, request);
-        }
-
+        
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);

@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// Configuration object for exporting a member
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class FluentExportMemberConfiguration<T> : WrapperFluentExportStrategyConfiguration<T>, IFluentExportMemberConfiguration<T>
+    public class FluentExportMemberConfiguration<T> : ProxyFluentExportStrategyConfiguration<T>, IFluentExportMemberConfiguration<T>
     {
         private readonly ICompiledExportStrategy _exportStrategy;
 

@@ -48,6 +48,15 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
+        public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null)
+        {
+            var constructorInfo = new ConstructorParameterInfo(paramFunc) { ParameterType = typeof(TParam) };
+
+            _exportConfiguration.ConstructorParameter(constructorInfo);
+
+            return new FluentWithCtorConfiguration<TParam>(this, constructorInfo);
+        }
+
         public IFluentExportStrategyConfiguration WithMetadata(object key, object value)
         {
             _exportConfiguration.SetMetadata(key, value);

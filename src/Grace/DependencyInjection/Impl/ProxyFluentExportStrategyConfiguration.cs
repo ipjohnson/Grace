@@ -9,10 +9,98 @@ using Grace.DependencyInjection.Lifestyle;
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
+    /// forwards strategy configuration
+    /// </summary>
+    public abstract class ProxyFluentExportStrategyConfiguration : IFluentExportStrategyConfiguration
+    {
+        private readonly IFluentExportStrategyConfiguration _strategy;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="strategy"></param>
+        protected ProxyFluentExportStrategyConfiguration(IFluentExportStrategyConfiguration strategy)
+        {
+            _strategy = strategy;
+        }
+
+        /// <summary>
+        /// Export as a specific type
+        /// </summary>
+        /// <param name="type">type to export as</param>
+        /// <returns>configuraiton object</returns>
+        public IFluentExportStrategyConfiguration As(Type type)
+        {
+            return _strategy.As(type);
+        }
+
+        /// <summary>
+        /// Mark the export as externally owned so the container does not track for disposal
+        /// </summary>
+        /// <returns>configuraiton object</returns>
+        public IFluentExportStrategyConfiguration ExternallyOwned()
+        {
+            return _strategy.ExternallyOwned();
+        }
+
+        /// <summary>
+        /// Import a specific member
+        /// </summary>
+        /// <param name="selector">selector method, can be null</param>
+        /// <returns>configuraiton object</returns>
+        public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null)
+        {
+            return _strategy.ImportMembers(selector);
+        }
+
+        /// <summary>
+        /// Apply a lifestlye to export strategy
+        /// </summary>
+        public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => _strategy.Lifestyle;
+
+        /// <summary>
+        /// Assign a custom lifestyle to an export
+        /// </summary>
+        /// <param name="lifestyle"></param>
+        /// <returns>configuraiton object</returns>
+        public IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
+        {
+            return _strategy.UsingLifestyle(lifestyle);
+        }
+
+        /// <summary>
+        /// Apply a condition on when to use strategy
+        /// </summary>
+        public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When => _strategy.When;
+
+        /// <summary>
+        /// Configure constructor parameter
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <param name="paramFunc"></param>
+        /// <returns></returns>
+        public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null)
+        {
+            return _strategy.WithCtorParam(paramFunc);
+        }
+
+        /// <summary>
+        /// Export with specific metadata
+        /// </summary>
+        /// <param name="key">metadata key</param>
+        /// <param name="value">metadata value</param>
+        /// <returns>configuraiton object</returns>
+        public IFluentExportStrategyConfiguration WithMetadata(object key, object value)
+        {
+            return _strategy.WithMetadata(key, value);
+        }
+    }
+
+    /// <summary>
     /// Base class for configurin an export strategy
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class WrapperFluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>
+    public abstract class ProxyFluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>
     {
         private readonly IFluentExportStrategyConfiguration<T> _strategy;
 
@@ -20,7 +108,7 @@ namespace Grace.DependencyInjection.Impl
         /// Default constructor
         /// </summary>
         /// <param name="strategy"></param>
-        protected WrapperFluentExportStrategyConfiguration(IFluentExportStrategyConfiguration<T> strategy)
+        protected ProxyFluentExportStrategyConfiguration(IFluentExportStrategyConfiguration<T> strategy)
         {
             _strategy = strategy;
         }

@@ -151,9 +151,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {
             return
-                configuration.ConstructorParameters.FirstOrDefault(p => p.ParameterName == parameter.Name &&
-                                                                        p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo())) ??
+                configuration.ConstructorParameters.FirstOrDefault(p => string.Compare(p.ParameterName, parameter.Name,StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                                                                        (p.ParameterType == null || p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()))) ??
                 configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
+                                                                        p.ParameterType != null && 
                                                                         p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()));
         }
 

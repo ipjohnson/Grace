@@ -164,7 +164,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">function to create instance</param>
         /// <returns></returns>
-        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<T> instanceFunc);
 
         /// <summary>
@@ -173,7 +172,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">instance func</param>
         /// <returns></returns>
-        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, T> instanceFunc);
 
         /// <summary>
@@ -182,7 +180,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
-        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc);
 
         /// <summary>
@@ -191,7 +188,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
-        [Obsolete("Please transition to use ExportFactory as this will go away at some point")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc);
 
         /// <summary>

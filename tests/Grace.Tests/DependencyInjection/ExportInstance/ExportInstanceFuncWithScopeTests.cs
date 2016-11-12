@@ -1,4 +1,5 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -21,6 +22,34 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
 
             Assert.NotNull(service);
             Assert.Equal(5, service.BasicService.Count);
+        }
+
+        [Fact]
+        public void ExportInstance_Correct_Scope_Returned()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Guid currentId;
+
+            container.Configure(c =>
+            {
+                c.ExportInstance(scope =>
+                {
+                    currentId = scope.ScopeId;
+
+                    return new BasicService();
+                }).As<IBasicService>();
+                c.Export<ConstructorImportService>().As<IConstructorImportService>();
+            });
+
+            using (var childScope = container.BeginLifetimeScope())
+            {
+                var instance = childScope.Locate<IConstructorImportService>();
+
+                Assert.NotNull(instance);
+
+                Assert.Equal(childScope.ScopeId, currentId);
+            }
         }
     }
 }

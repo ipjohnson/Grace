@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TProp"></typeparam>
-    public class FluentImportPropertyConfiguration<T, TProp> : WrapperFluentExportStrategyConfiguration<T>, IFluentImportPropertyConfiguration<T, TProp>
+    public class FluentImportPropertyConfiguration<T, TProp> : ProxyFluentExportStrategyConfiguration<T>, IFluentImportPropertyConfiguration<T, TProp>
     {
         private readonly MemberInjectionInfo _memberInjectionInfo;
 

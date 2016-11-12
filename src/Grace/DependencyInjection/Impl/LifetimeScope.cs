@@ -179,7 +179,7 @@ namespace Grace.DependencyInjection.Impl
 
         protected virtual object LocateFromParent(Type type, object extraData, object key, bool isRequired)
         {
-            return _injectionScope.LocateFromChildScope(this, type, extraData, key, isRequired);
+            return _injectionScope.LocateFromChildScope(this, this, type, extraData, key, isRequired);
         }
     }
 }
