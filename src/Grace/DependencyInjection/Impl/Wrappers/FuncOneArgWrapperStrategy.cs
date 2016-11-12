@@ -8,8 +8,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 {
     public class FuncOneArgWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
     {
-        
-
         public FuncOneArgWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Func<,>), injectionScope)
         {
         
