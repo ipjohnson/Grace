@@ -1,4 +1,8 @@
-Dynamic
+Dynamic - Array, IEnumerable
+
+Debugger view
+
+Update mvc extensions
 
 --------- beta ----------
 
