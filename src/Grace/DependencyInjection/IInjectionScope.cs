@@ -50,8 +50,9 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data passed in</param>
         /// <param name="key">key to use during locate</param>
         /// <param name="allowNull">allow null to be returned</param>
+        /// <param name="isDynamic"></param>
         /// <returns>configuration object</returns>
-        object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull);
+        object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull, bool isDynamic);
 
         /// <summary>
         /// Creates a new child scope

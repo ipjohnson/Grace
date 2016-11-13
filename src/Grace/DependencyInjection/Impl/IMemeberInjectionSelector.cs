@@ -15,6 +15,8 @@ namespace Grace.DependencyInjection.Impl
         public bool IsRequired { get; set; }
 
         public object DefaultValue { get; set; }
+
+        public bool IsDynamic { get; set; }
     }
 
     public interface IMemeberInjectionSelector

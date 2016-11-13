@@ -55,6 +55,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         newRequest.SetLocateKey(memberKVP.Key.Name);
                     }
 
+                    newRequest.IsDynamic = memberKVP.Value.IsDynamic;
+                    newRequest.SetIsRequired(memberKVP.Value.IsRequired);
+
                     var memberResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
                     if (memberResult == null)

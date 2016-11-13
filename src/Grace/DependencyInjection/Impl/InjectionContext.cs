@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Grace.Data;
@@ -31,9 +32,75 @@ namespace Grace.DependencyInjection.Impl
             ExtraData = extraData;
             SharedData = new InjectionContextSharedData();
 
-            _extraDataProperties = extraData != null ? 
-                ReflectionService.GetPropertiesFromObject(extraData) : 
+            _extraDataProperties = extraData != null ?
+                ReflectionService.GetPropertiesFromObject(extraData) :
                 ImmutableHashTree<string, object>.Empty;
+        }
+
+        /// <summary>
+        /// Keys for data
+        /// </summary>
+        public IEnumerable<object> Keys
+        {
+            get
+            {
+                if (_extraDataProperties == ImmutableHashTree<string, object>.Empty &&
+                    _extraDataValues == ImmutableHashTree<object, object>.Empty)
+                {
+                    return ImmutableLinkedList<object>.Empty;
+                }
+
+                var keys = new List<object>();
+
+                keys.AddRange(_extraDataValues.Keys);
+                keys.AddRange(_extraDataProperties.Keys);
+
+                return keys;
+            }
+        }
+
+        /// <summary>
+        /// Values for data
+        /// </summary>
+        public IEnumerable<object> Values
+        {
+            get
+            {
+                if (_extraDataProperties == ImmutableHashTree<string, object>.Empty &&
+                    _extraDataValues == ImmutableHashTree<object, object>.Empty)
+                {
+                    return ImmutableLinkedList<object>.Empty;
+                }
+
+                var values = new List<object>();
+
+                values.AddRange(_extraDataValues.Values);
+                values.AddRange(_extraDataProperties.Values);
+
+                return values;
+            }
+        }
+
+        /// <summary>
+        /// Enumeration of all the key value pairs
+        /// </summary>
+        public IEnumerable<KeyValuePair<object, object>> KeyValuePairs
+        {
+            get
+            {
+                if (_extraDataProperties == ImmutableHashTree<string, object>.Empty &&
+                    _extraDataValues == ImmutableHashTree<object, object>.Empty)
+                {
+                    return ImmutableLinkedList<KeyValuePair<object, object>>.Empty;
+                }
+
+                var pairs = new List<KeyValuePair<object, object>>();
+
+                pairs.AddRange(_extraDataValues);
+                pairs.AddRange(_extraDataProperties.Select(p => new KeyValuePair<object, object>(p.Key, p.Value)));
+
+                return pairs;
+            }
         }
 
         /// <summary>
@@ -60,9 +127,13 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="newValue"></param>
         /// <param name="replaceIfExists"></param>
-        public void SetExtraData(object key, object newValue, bool replaceIfExists = true)
+        public object SetExtraData(object key, object newValue, bool replaceIfExists = true)
         {
-            _extraDataValues = _extraDataValues.Add(key, newValue, (o, n) => replaceIfExists ? n : o);
+            var finalValue = newValue;
+
+            _extraDataValues = _extraDataValues.Add(key, newValue, (o, n) => finalValue = replaceIfExists ? n : o);
+
+            return finalValue;
         }
 
         /// <summary>

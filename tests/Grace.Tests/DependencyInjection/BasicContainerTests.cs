@@ -1,4 +1,5 @@
-﻿using Grace.DependencyInjection;
+﻿using System.Linq;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace Grace.Tests.DependencyInjection
             var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>());
-
+            
             var basicService = container.Locate<IBasicService>();
 
             Assert.NotNull(basicService);

@@ -29,6 +29,12 @@ namespace Grace.DependencyInjection
         IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type);
 
         /// <summary>
+        /// Get all activation types
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Type> GetActivationTypes();
+
+            /// <summary>
         /// Clone the container
         /// </summary>
         /// <returns></returns>

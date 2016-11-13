@@ -187,9 +187,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameter.DefaultValue });
             }
 
-            if (parameterInfo?.IsRequired != null)
+            if (parameterInfo != null)
             {
-                newRequest.SetIsRequired(parameterInfo.IsRequired.Value);
+                newRequest.IsDynamic = parameterInfo.IsDynamic;
+
+                newRequest.SetIsRequired(parameterInfo.IsRequired.GetValueOrDefault(true));
             }
 
             return newRequest.Services.ExpressionBuilder.GetActivationExpression(injectionScope, newRequest);

@@ -73,7 +73,7 @@ namespace Grace.DependencyInjection
         /// <param name="comparer"></param>
         /// <returns></returns>
         List<T> LocateAll<T>(object extraData = null, ExportStrategyFilter filter = null, object withKey = null, IComparer<T> comparer = null);
-        
+
         /// <summary>
         /// Try to locate an export by type
         /// </summary>
@@ -82,8 +82,9 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
+        /// <param name="isDynamic"></param>
         /// <returns></returns>
-        bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null);
+        bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// try to locate a specific type
@@ -93,8 +94,9 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
+        /// <param name="isDynamic"></param>
         /// <returns></returns>
-        bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null);
+        bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
     }
 }

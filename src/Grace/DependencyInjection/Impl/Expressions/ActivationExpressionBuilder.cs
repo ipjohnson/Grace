@@ -42,7 +42,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             _compiler = compiler;
         }
-        
+
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
@@ -219,10 +219,63 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.IsDynamic)
             {
-                throw new NotImplementedException();
+                var dynamicMethod =
+                    typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetDynamicValue",
+                        new[]
+                        {
+                            typeof(IExportLocatorScope),
+                            typeof(IDisposalScope),
+                            typeof(StaticInjectionContext),
+                            typeof(IInjectionContext),
+                            typeof(object),
+                            typeof(bool)
+                        });
+
+                var closedMethod = dynamicMethod.MakeGenericMethod(request.ActivationType);
+
+                var expression = Expression.Call(closedMethod,
+                                                 request.Constants.ScopeParameter,
+                                                 request.DisposalScopeExpression,
+                                                 Expression.Constant(request.GetStaticInjectionContext()),
+                                                 request.Constants.InjectionContextParameter,
+                                                 Expression.Constant(request.LocateKey, typeof(object)),
+                                                 Expression.Constant(request.IsRequired));
+
+                return request.Services.Compiler.CreateNewResult(request, expression);
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Get a value dynamically
+        /// </summary>
+        /// <typeparam name="T">value to get</typeparam>
+        /// <param name="scope">scope</param>
+        /// <param name="disposalScope">disposal scope to use</param>
+        /// <param name="staticInjectionContext">static injection context </param>
+        /// <param name="context">context for call</param>
+        /// <param name="key"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
+            IInjectionContext context, object key, bool isRequired)
+        {
+            var injectionScope = scope.GetInjectionScope();
+
+            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, key, true, true);
+
+            if (value == null)
+            {
+                if (isRequired)
+                {
+                    throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
+                }
+
+                return default(T);
+            }
+
+            return (T)value;
         }
 
         private IActivationExpressionResult ProcessPathNode(IInjectionScope scope, IActivationExpressionRequest request, Type activationType, IActivationPathNode decorator)
@@ -414,7 +467,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     catch (Exception exp)
                     {
                         // to do fix up exception
-                        throw new LocateException(staticContext);
+                        throw new LocateException(staticContext, exp);
                     }
                 }
             }
@@ -494,7 +547,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     pathNodes = pathNodes.Add(currentNode);
                 }
 
-                currentNode.Lifestyle = strategy.Lifestyle;
+                if (currentNode != null)
+                {
+                    currentNode.Lifestyle = strategy.Lifestyle;
+                }
 
                 foreach (var decorator in decorators.Where(d => d.ApplyAfterLifestyle))
                 {

@@ -8,12 +8,6 @@ namespace Grace.DependencyInjection
     /// <typeparam name="TParam"></typeparam>
     public interface IFluentWithCtorConfiguration<in TParam>
     {
-        /// <summary>
-        /// Name of the parameter being configured
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IFluentWithCtorConfiguration<TParam> Named(string name);
 
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
@@ -45,6 +39,13 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc);
 
         /// <summary>
+        /// Mark the parameter as dynamic
+        /// </summary>
+        /// <param name="isDynamic"></param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<TParam> IsDynamic(bool isDynamic = true);
+
+        /// <summary>
         /// Is the parameter required when resolving the type
         /// </summary>
         /// <param name="isRequired">is the parameter required</param>
@@ -57,6 +58,13 @@ namespace Grace.DependencyInjection
         /// <param name="locateKey">ocate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<TParam> LocateWithKey(object locateKey);
+
+        /// <summary>
+        /// Name of the parameter being configured
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<TParam> Named(string name);
     }
 
     /// <summary>
@@ -64,14 +72,8 @@ namespace Grace.DependencyInjection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TParam"></typeparam>
-    public interface IFluentWithCtorConfiguration<T, in TParam> 
+    public interface IFluentWithCtorConfiguration<T, in TParam>
     {
-        /// <summary>
-        /// Name of the parameter being configured
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IFluentWithCtorConfiguration<T, TParam> Named(string name);
 
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
@@ -103,6 +105,13 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc);
 
         /// <summary>
+        /// Mark the parameter as dynamic (will be located from child scopes)
+        /// </summary>
+        /// <param name="isDynamic"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<T, TParam> IsDynamic(bool isDynamic = true);
+
+        /// <summary>
         /// Is the parameter required when resolving the type
         /// </summary>
         /// <param name="isRequired">is the parameter required</param>
@@ -115,5 +124,12 @@ namespace Grace.DependencyInjection
         /// <param name="locateKey">ocate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey);
+        
+        /// <summary>
+        /// Name of the parameter being configured
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<T, TParam> Named(string name);
     }
 }

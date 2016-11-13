@@ -52,5 +52,9 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public object LocateWithKey { get; set; }
 
+        /// <summary>
+        /// Is the parameter dynamic
+        /// </summary>
+        public bool IsDynamic { get; set; }
     }
 }

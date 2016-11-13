@@ -194,6 +194,11 @@ namespace Grace.Data.Immutable
         /// <param name="iterateAction"></param>
         public void IterateInOrder(Action<TKey, TValue> iterateAction)
         {
+            if (Height == 0)
+            {
+                return;
+            }
+
             if (Left.Height > 0)
             {
                 Left.IterateInOrder(iterateAction);

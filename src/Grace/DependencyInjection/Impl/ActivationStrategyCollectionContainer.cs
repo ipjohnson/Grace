@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Grace.Data.Immutable;
 using System.Reflection;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -9,6 +12,8 @@ namespace Grace.DependencyInjection.Impl
     /// Container of activation strategy collection
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [DebuggerDisplay("{DebugDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDiagnostic<>))]
     public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
     {
         /// <summary>
@@ -158,6 +163,22 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Get all activation types
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Type> GetActivationTypes()
+        {
+            var returnList = ImmutableLinkedList<Type>.Empty;
+
+            foreach (var hashEntry in Collections)
+            {
+                hashEntry.IterateInOrder((type, collection) => returnList = returnList.Add(type));
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
         /// Clone the container
         /// </summary>
         /// <returns></returns>
@@ -245,5 +266,6 @@ namespace Grace.DependencyInjection.Impl
             collection.AddStrategy(strategy, withKey);
         }
 
+        private string DebugDisplayString => "Count: " + GetAllStrategies().Count();
     }
 }

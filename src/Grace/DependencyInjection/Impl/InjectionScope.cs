@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Grace.Data.Immutable;
 using System.Threading;
 using Grace.DependencyInjection.Impl.Wrappers;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
     /// Root injection scope that is inherited by the Dependency injection container
     /// </summary>
+    [DebuggerDisplay("{DebugDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(InjectionScopeDiagnostics))]
     public class InjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
@@ -16,13 +21,40 @@ namespace Grace.DependencyInjection.Impl
             ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
         private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> _wrappers;
+
+        /// <summary>
+        /// Compiler that produces Activation Strategy Delegates
+        /// </summary>
         protected IActivationStrategyCompiler ActivationStrategyCompiler;
+
+        /// <summary>
+        /// Provides IExportLocatorScope when requested
+        /// </summary>
         protected ILifetimeScopeProvider LifetimeScopeProvider;
+
+        /// <summary>
+        /// Creates injection context when needed
+        /// </summary>
         protected IInjectionContextCreator InjectionContextCreator;
+
+        /// <summary>
+        /// Implementation to tell if a type can be located
+        /// </summary>
         protected ICanLocateTypeService CanLocateTypeService;
+
+        /// <summary>
+        /// Disposal scope providers, can be null
+        /// </summary>
         protected IDisposalScopeProvider DisposalScopeProvider;
+
+        /// <summary>
+        /// Default disposal scope, null if DisposalScopeProvider is set
+        /// </summary>
         protected IDisposalScope DisposalScope;
 
+        /// <summary>
+        /// string constant that is used to locate a lock for adding strategies to the container
+        /// </summary>
         public const string ActivationStrategyAddLockName = "ActivationStrategyAddLock";
         #endregion
 
@@ -207,12 +239,13 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to be used during construction</param>
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
+        /// <param name="isDynamic"></param>
         /// <returns></returns>
-        public bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null)
+        public bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             IInjectionContext context = CreateInjectionContextFromExtraData(typeof(T), extraData);
 
-            var newValue = LocateObjectFactory(this, this, typeof(T), withKey, context, true, false);
+            var newValue = LocateObjectFactory(this, this, typeof(T), withKey, context, true, isDynamic);
 
             bool returnValue = false;
 
@@ -237,13 +270,13 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to use during locate</param>
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
+        /// <param name="isDynamic"></param>
         /// <returns>returns tue if export found</returns>
-        public bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null,
-            object withKey = null)
+        public bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
 
-            value = LocateObjectFactory(this, this, type, withKey, context, true, false);
+            value = LocateObjectFactory(this, this, type, withKey, context, true, isDynamic);
 
             return value != null;
         }
@@ -350,8 +383,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="key"></param>
         /// <param name="allowNull"></param>
+        /// <param name="isDynamic"></param>
         /// <returns>configuration object</returns>
-        object IInjectionScope.LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull)
+        object IInjectionScope.LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull, bool isDynamic)
         {
             return LocateObjectFactory(childScope,disposalScope, type, key, CreateInjectionContextFromExtraData(type, extraData), allowNull, false);
         }
@@ -393,6 +427,12 @@ namespace Grace.DependencyInjection.Impl
             return configurationObject;
         }
 
+        /// <summary>
+        /// Create an injection context from extra data
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="extraData"></param>
+        /// <returns></returns>
         protected virtual IInjectionContext CreateInjectionContextFromExtraData(Type type, object extraData)
         {
             return InjectionContextCreator.CreateContext(type, extraData);
@@ -429,7 +469,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 var injectionScopeParent = (IInjectionScope)Parent;
 
-                return injectionScopeParent.LocateFromChildScope(this, disposalScope, type, injectionContext, key, allowNull);
+                return injectionScopeParent.LocateFromChildScope(this, disposalScope, type, injectionContext, key, allowNull, isDynamic);
             }
 
             if (!allowNull)
@@ -538,6 +578,8 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
         }
+        
+        private string DebugDisplayString => "Exports: " + StrategyCollectionContainer.GetAllStrategies().Count();
 
         #endregion
 
