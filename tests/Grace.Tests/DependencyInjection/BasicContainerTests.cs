@@ -12,8 +12,7 @@ namespace Grace.Tests.DependencyInjection
         {
             var container = new DependencyInjectionContainer();
 
-            container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton().WithMetadata("hello","World"));
-            container.SetExtraData("Hello", "Blah");
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
             
             var basicService = container.Locate<IBasicService>();
 
