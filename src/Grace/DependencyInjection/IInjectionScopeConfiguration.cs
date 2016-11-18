@@ -1,8 +1,10 @@
-﻿using Grace.DependencyInjection.Impl;
+﻿using System;
+using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
 {
-
+   
     /// <summary>
     /// Represents a configuration information needed to construct an injection scope
     /// </summary>
@@ -53,5 +55,12 @@ namespace Grace.DependencyInjection
         /// Override which disposal scope is used for tracking disposables, null by default
         /// </summary>
         IDisposalScopeProvider DisposalScopeProvider { get; }
+
+        /// <summary>
+        /// Function that filters out interface types.
+        /// First type arg is interface, second type arg is implementing, return true if should filter out
+        /// Note: by default IDisposable and _Attribute are filter out
+        /// </summary>
+        Func<Type,Type,bool> ExportByInterfaceFilter { get; }
     }
 }

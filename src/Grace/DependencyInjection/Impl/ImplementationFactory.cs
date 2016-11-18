@@ -1,11 +1,21 @@
 ﻿using Grace.Data.Immutable;
 using System;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl
 {
     public class ImplementationFactory
     {
         private ImmutableHashTree<Type, object> _factories = ImmutableHashTree<Type, object>.Empty;
+
+        public void Test()
+        {
+            var debugger = new ImmutableHashTreeDebuggerView<Type,object>(_factories);
+
+            var items = debugger.Items;
+
+            items.ToString();
+        }
 
         public IInjectionScope InjectionScope { get; set; }
 

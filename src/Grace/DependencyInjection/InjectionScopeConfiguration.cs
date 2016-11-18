@@ -1,6 +1,9 @@
-﻿using Grace.DependencyInjection.Impl;
+﻿using System;
+using System.Diagnostics;
+using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Impl.Wrappers;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection
 {
@@ -19,7 +22,10 @@ namespace Grace.DependencyInjection
             ExportStrategyArraySize = 16;
             AutoRegisterUnknown = true;
             ExportAsBase = false;
+
+            ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
+
 
         /// <summary>
         /// internal method used by the container
@@ -70,8 +76,26 @@ namespace Grace.DependencyInjection
         /// </summary>
         public IDisposalScopeProvider DisposalScopeProvider { get; set; }
 
+        /// <summary>
+        /// Filter interfaces to be exported
+        /// </summary>
+        public Func<Type, Type, bool> ExportByInterfaceFilter { get; set; }
+
+        /// <summary>
+        /// Default interface filter
+        /// </summary>
+        /// <returns></returns>
+        public static bool DefaultInterfaceFilter(Type interfaceType, Type implementingType)
+        {
+            return interfaceType == typeof(IDisposable) ||
+                   interfaceType.Name == "_Attribute";
+        }
+
         #region Default Configuration
 
+        /// <summary>
+        /// Default implementation factor
+        /// </summary>
         protected static readonly ImplementationFactory DefaultImplementation;
 
         static InjectionScopeConfiguration()

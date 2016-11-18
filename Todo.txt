@@ -1,8 +1,12 @@
 Dynamic - Array, IEnumerable
 
-Debugger view
+Export Dependency
+
+Missing Dependency
 
 Update mvc extensions
+
+Make decision on ExportStrategyFilter
 
 --------- beta ----------
 
@@ -11,5 +15,13 @@ Generic Decorator support
 Export Initialize
 
 Collection Parameter configuration
+
+WhatDoIHave
+
+Named Exports extensions
+
+Simple Exports extensions
+
+Dynamic method library
 
 Tests, Tests, Tests

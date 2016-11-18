@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Grace.Data;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -45,7 +46,7 @@ namespace Grace.Diagnostics
             }
 
             _strategiesByType.Sort(
-                (x, y) => string.Compare(x.Type.FullName, y.Type.FullName, StringComparison.CurrentCultureIgnoreCase));
+                (x, y) => string.Compare(x.TypeName, y.TypeName, StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace Grace.Diagnostics
             {
                 _strategies = strategies;
                 Type = type;
+                TypeName = ReflectionService.GetFriendlyNameForType(type, true);
             }
 
             /// <summary>
@@ -84,6 +86,12 @@ namespace Grace.Diagnostics
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             public Type Type { get; }
+
+            /// <summary>
+            /// Name for Type
+            /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            public string TypeName { get; }
 
             /// <summary>
             /// Items
@@ -101,7 +109,7 @@ namespace Grace.Diagnostics
             /// Debugger display name
             /// </summary>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-            private string DebuggerDisplayName => Type.FullName;
+            private string DebuggerDisplayName => TypeName;
         }
     }
 }

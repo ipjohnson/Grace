@@ -18,6 +18,7 @@ namespace Grace.DependencyInjection.Impl
         private readonly IActivationStrategyCreator _strategyCreator;
         private readonly IEnumerable<Type> _typesToExport;
         private readonly GenericFilterGroup<Type> _whereFilter;
+        private readonly IInjectionScopeConfiguration _scopeConfiguration;
 
         private ImmutableLinkedList<Type> _basedOnTypes = ImmutableLinkedList<Type>.Empty;
         private ImmutableLinkedList<Type> _byInterface = ImmutableLinkedList<Type>.Empty;
@@ -35,10 +36,12 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="strategyCreator"></param>
         /// <param name="typesToExport"></param>
-        public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport)
+        /// <param name="scopeConfiguration"></param>
+        public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport,IInjectionScopeConfiguration scopeConfiguration)
         {
             _strategyCreator = strategyCreator;
             _typesToExport = typesToExport;
+            _scopeConfiguration = scopeConfiguration;
             _whereFilter = new GenericFilterGroup<Type>(ShouldSkipType, ExcludeTypesFilter);
         }
 
@@ -379,6 +382,12 @@ namespace Grace.DependencyInjection.Impl
 
             foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
             {
+                if (_scopeConfiguration.ExportByInterfaceFilter != null &&
+                    _scopeConfiguration.ExportByInterfaceFilter(implementedInterface, type))
+                {
+                    continue;
+                }   
+
                 foreach (Type exportInterface in _byInterface)
                 {
                     if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)

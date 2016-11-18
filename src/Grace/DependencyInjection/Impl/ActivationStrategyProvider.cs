@@ -195,7 +195,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>type set configuration</returns>
         public virtual IExportTypeSetConfiguration GetTypeSetConfiguration(IEnumerable<Type> types)
         {
-            return new ExportTypeSetConfiguration(this, types);
+            return new ExportTypeSetConfiguration(this, types, _injectionScope.ScopeConfiguration);
         }
 
         /// <summary>
