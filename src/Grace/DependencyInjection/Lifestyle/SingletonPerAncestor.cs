@@ -1,28 +1,52 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
+    /// <summary>
+    /// Singleton per ancestor
+    /// </summary>
+    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
     public class SingletonPerAncestor : ICompiledLifestyle
     {
         private readonly Type _ancestorType;
         private readonly bool _guaranteeOnlyOne;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="ancestorType"></param>
+        /// <param name="guaranteeOnlyOne"></param>
         public SingletonPerAncestor(Type ancestorType, bool guaranteeOnlyOne)
         {
             _ancestorType = ancestorType;
             _guaranteeOnlyOne = guaranteeOnlyOne;
         }
 
+        /// <summary>
+        /// Root the request context when creating expression
+        /// </summary>
         public bool RootRequest { get; } = false;
 
+        /// <summary>
+        /// Clone the lifestyle
+        /// </summary>
+        /// <returns></returns>
         public ICompiledLifestyle Clone()
         {
             return new SingletonPerAncestor(_ancestorType, _guaranteeOnlyOne);
         }
 
+        /// <summary>
+        /// Provide an expression that uses the lifestyle
+        /// </summary>
+        /// <param name="scope">scope for the strategy</param>
+        /// <param name="request">activation request</param>
+        /// <param name="activationExpression">expression to create strategy type</param>
+        /// <returns></returns>
         public IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope,
                                                                      IActivationExpressionRequest request,
                                                                      IActivationExpressionResult activationExpression)
@@ -97,6 +121,18 @@ namespace Grace.DependencyInjection.Lifestyle
             return injectionInfoTarget.UniqueId;
         }
 
+        private string DebuggerDisplayValue => $"Singleton Per Ancestor ({_ancestorType.FullName})";
+
+        /// <summary>
+        /// Get value without locking
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="context"></param>
+        /// <param name="activationDelegate"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public static T GetValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate,
             string uniqueId)
         {
@@ -113,7 +149,16 @@ namespace Grace.DependencyInjection.Lifestyle
 
             return (T)value;
         }
-
+        /// <summary>
+        /// Get a value using lock to guarantee only one is created
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="context"></param>
+        /// <param name="activationDelegate"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
             var value = context.SharedData.GetExtraData(uniqueId);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using Grace.Data.Immutable;
 
 namespace Grace.Data
@@ -25,6 +26,60 @@ namespace Grace.Data
         /// <param name="values"></param>
         /// <returns></returns>
         public delegate ImmutableHashTree<string, object> PropertyDictionaryDelegate(object instance, ImmutableHashTree<string, object> values);
+
+        /// <summary>
+        /// Method to get friendly version of a type name for display purposes
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="includeNamespace"></param>
+        /// <returns></returns>
+        public static string GetFriendlyNameForType(Type type, bool includeNamespace = false)
+        {
+            if (type.IsConstructedGenericType)
+            {
+                StringBuilder builder = new StringBuilder();
+
+                if (includeNamespace)
+                {
+                    builder.Append(type.Namespace);
+                    builder.Append('.');
+                }
+
+                CreateFriendlyNameForType(type, builder);
+
+                return builder.ToString();
+            }
+
+            return includeNamespace ? type.Namespace + '.' + type.Name : type.Name;
+        }
+
+        private static void CreateFriendlyNameForType(Type currentType, StringBuilder builder)
+        {
+            if (currentType.IsConstructedGenericType)
+            {
+                int tickIndex = currentType.Name.LastIndexOf('`');
+                builder.Append(currentType.Name.Substring(0, tickIndex));
+                builder.Append('<');
+
+                Type[] types = currentType.GenericTypeArguments;
+
+                for (int i = 0; i < types.Length; i++)
+                {
+                    CreateFriendlyNameForType(types[i], builder);
+
+                    if (i + 1 < types.Length)
+                    {
+                        builder.Append(',');
+                    }
+                }
+
+                builder.Append('>');
+            }
+            else
+            {
+                builder.Append(currentType.Name);
+            }
+        }
 
 
         /// <summary>

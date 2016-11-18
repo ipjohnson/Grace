@@ -1,34 +1,68 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
+    /// <summary>
+    /// Singleton per scope
+    /// </summary>
+    [DebuggerDisplay("Singleton Per Scope")]
     public class SingletonPerScopeLifestyle : ICompiledLifestyle
     {
+        /// <summary>
+        /// Unique id
+        /// </summary>
         protected readonly string UniqueId = Guid.NewGuid().ToString();
+
+        /// <summary>
+        /// Compiled delegate
+        /// </summary>
         protected ActivationStrategyDelegate CompiledDelegate;
+
+        /// <summary>
+        /// Thread safe
+        /// </summary>
         protected readonly bool ThreadSafe;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="threadSafe"></param>
         public SingletonPerScopeLifestyle(bool threadSafe)
         {
             ThreadSafe = threadSafe;
         }
 
+        /// <summary>
+        /// Root the request context when creating expression
+        /// </summary>
         public virtual bool RootRequest { get; } = true;
 
+        /// <summary>
+        /// Clone the lifestyle
+        /// </summary>
+        /// <returns></returns>
         public virtual ICompiledLifestyle Clone()
         {
             return new SingletonPerScopeLifestyle(ThreadSafe);
         }
 
-        public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest requst,
+        /// <summary>
+        /// Provide an expression that uses the lifestyle
+        /// </summary>
+        /// <param name="scope">scope for the strategy</param>
+        /// <param name="request">activation request</param>
+        /// <param name="activationExpression">expression to create strategy type</param>
+        /// <returns></returns>
+        public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request,
             IActivationExpressionResult activationExpression)
         {
             if (CompiledDelegate == null)
             {
-                var localDelegate = requst.Services.Compiler.CompileDelegate(scope, activationExpression);
+                var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
 
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
@@ -40,16 +74,24 @@ namespace Grace.DependencyInjection.Lifestyle
                 typeof(string)
             });
 
-            var closedMethod = getValueFromScopeMethod.MakeGenericMethod(requst.ActivationType);
+            var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
             var expression = Expression.Call(closedMethod,
-                                             requst.Constants.ScopeParameter,
+                                             request.Constants.ScopeParameter,
                                              Expression.Constant(CompiledDelegate),
                                              Expression.Constant(UniqueId));
 
-            return requst.Services.Compiler.CreateNewResult(requst, expression);
+            return request.Services.Compiler.CreateNewResult(request, expression);
         }
 
+        /// <summary>
+        /// Get value from scope with no lock
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="creationDelegate"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
             string uniqueId)
         {
@@ -66,7 +108,15 @@ namespace Grace.DependencyInjection.Lifestyle
 
             return (T)value;
         }
-
+        
+        /// <summary>
+        /// Get value from scope using lock
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="creationDelegate"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate, string uniqueId)
         {
             var value = scope.GetExtraData(uniqueId);

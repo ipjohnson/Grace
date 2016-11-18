@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{DebugDisplayString,nq}")]
-    [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDiagnostic<>))]
+    [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDebuggerView<>))]
     public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
     {
         /// <summary>

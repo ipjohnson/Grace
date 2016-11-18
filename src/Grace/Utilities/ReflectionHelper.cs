@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Grace.Utilities
 {
@@ -10,6 +11,8 @@ namespace Grace.Utilities
     /// </summary>
     public static class ReflectionHelper
     {
+
+
         /// <summary>
         /// A helper to check to see if a generic parameter type meets the specified constraints
         /// </summary>

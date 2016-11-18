@@ -2,9 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Grace.Diagnostics;
 
 
 namespace Grace.Data.Immutable
@@ -138,6 +140,8 @@ namespace Grace.Data.Immutable
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
+    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(ImmutableHashTreeDebuggerView<,>))]
     public sealed class ImmutableHashTree<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
     {
         /// <summary>
@@ -554,6 +558,8 @@ namespace Grace.Data.Immutable
         {
             throw new KeyExistsException<TKey>();
         }
+
+        private string DebuggerDisplayString => $"Count: {Count}";
 
     }
 }

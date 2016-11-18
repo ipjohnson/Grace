@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
@@ -13,6 +14,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Provides export strategies for concrete types
     /// </summary>
+    [DebuggerDisplay("ConcreteExportStrategyProvider")]
     public class ConcreteExportStrategyProvider : IMissingExportStrategyProvider
     {
         /// <summary>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Grace.Diagnostics;
 
 namespace Grace.Data.Immutable
 {
@@ -166,6 +168,8 @@ namespace Grace.Data.Immutable
     /// Immutable linked list class
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(ImmutableLinkedListDebugView<>))]
     public class ImmutableLinkedList<T> : IEnumerable<T>
     {
         /// <summary>
@@ -282,6 +286,8 @@ namespace Grace.Data.Immutable
                 action(Value);
             }
         }
+
+        private string DebuggerDisplayString => $"Count: {Count}";
 
         private class LinkedListEnumerator : IEnumerator<T>
         {

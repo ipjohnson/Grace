@@ -4,28 +4,65 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.Diagnostics
 {
+    /// <summary>
+    /// Diagnostic class for injection scope
+    /// </summary>
     public class InjectionScopeDiagnostics
     {
         private readonly IInjectionScope _injectionScope;
 
-        public InjectionScopeDiagnostics(IInjectionScope injectionScope)
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="injectionScope"></param>
+        public InjectionScopeDiagnostics(IExportLocatorScope injectionScope)
         {
-            _injectionScope = injectionScope;
+            _injectionScope = injectionScope.GetInjectionScope();
         }
 
-        public ExtraDataContainerDiagnostic ExtraData => new ExtraDataContainerDiagnostic(_injectionScope);
+        /// <summary>
+        /// Scope Configuration
+        /// </summary>
+        public IInjectionScopeConfiguration Configuration => _injectionScope.ScopeConfiguration;
 
+        /// <summary>
+        /// Extra data for scope
+        /// </summary>
+        public ExtraDataContainerDebuggerView ExtraData => new ExtraDataContainerDebuggerView(_injectionScope);
 
-        [DebuggerDisplay("{ExportDisplayString}", Name = "Exports")]
-        public ActivationStrategyCollectionContainerDiagnostic<ICompiledExportStrategy> Exports => new ActivationStrategyCollectionContainerDiagnostic<ICompiledExportStrategy>(_injectionScope.StrategyCollectionContainer);
+        /// <summary>
+        /// Name of the scope
+        /// </summary>
+        public string Name => _injectionScope.Name;
 
-        public ActivationStrategyCollectionContainerDiagnostic<ICompiledDecoratorStrategy> Decorators => new ActivationStrategyCollectionContainerDiagnostic<ICompiledDecoratorStrategy>(_injectionScope.DecoratorCollectionContainer);
+        /// <summary>
+        /// Scope id
+        /// </summary>
+        public Guid ScopeId => _injectionScope.ScopeId;
+        
+        /// <summary>
+        /// Exports in the scope
+        /// </summary>
+        public IActivationStrategyCollectionContainer<ICompiledExportStrategy> Exports => _injectionScope.StrategyCollectionContainer;
 
-        public ActivationStrategyCollectionContainerDiagnostic<ICompiledWrapperStrategy> Wrappers => new ActivationStrategyCollectionContainerDiagnostic<ICompiledWrapperStrategy>(_injectionScope.WrapperCollectionContainer);
+        /// <summary>
+        /// Decorators for the scope
+        /// </summary>
+        public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> Decorators => _injectionScope.DecoratorCollectionContainer;
 
-        private string ExportDisplayString() => "Count: " + _injectionScope.StrategyCollectionContainer.GetAllStrategies().Count();
+        /// <summary>
+        /// Wrappers for the scope
+        /// </summary>
+        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> Wrappers => _injectionScope.WrapperCollectionContainer;
+
+        /// <summary>
+        /// Missing export strategy provides
+        /// </summary>
+        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
+            => _injectionScope.MissingExportStrategyProviders;
     }
 }

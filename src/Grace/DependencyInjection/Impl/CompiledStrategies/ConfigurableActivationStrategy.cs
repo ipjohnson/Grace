@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
     /// <summary>
     /// Abstract class that most strategies are based off of
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "{DebuggerNameDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(ConfigurableActivationStrategyDiagnostic))]
     public abstract class ConfigurableActivationStrategy : IConfigurableActivationStrategy
     {
         /// <summary>
@@ -218,6 +224,56 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             ActivationConfiguration.ConstructorParameter(info);
         }
 
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        // ReSharper disable once UnusedMember.Local
+        private string DebuggerDisplayString
+        {
+            get
+            {
+                string returnValue = null;
+
+                if (_exportAs.Count > 0)
+                {
+                    string exportName = ReflectionService.GetFriendlyNameForType(_exportAs.First());
+
+                    returnValue = "  as  " + exportName;
+
+                    if (_exportAs.Count > 1)
+                    {
+                        returnValue += " ...";
+                    }
+                }
+                else if (_exportAsKeyed.Count > 0)
+                {
+                    var keyedType = _exportAsKeyed.First();
+                    string typeName = ReflectionService.GetFriendlyNameForType(keyedType.Key);
+
+                    returnValue = $"  as  {typeName}({keyedType.Value}) ";
+
+                    if (_exportAsKeyed.Count > 1)
+                    {
+                        returnValue += " ...";
+                    }
+                }
+                else
+                {
+                    returnValue = " as " + ReflectionService.GetFriendlyNameForType(ActivationType);
+                }
+
+                return returnValue;
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        // ReSharper disable once UnusedMember.Local
+        private string DebuggerNameDisplayString
+        {
+            get
+            {
+                return ReflectionService.GetFriendlyNameForType(ActivationType, true);
+            }
+        }
 
         private IActivationStrategyMetadata CreateMetadataObject()
         {
