@@ -28,6 +28,8 @@
 
 * Func<Type,Object> is not supported out of the box. It's easy to add by hand and very few projects need support for it.
 
+* WithKey and AsKeyed<TInterface,TKey>() have been consolidated into AsKeyed<TInterface>(object key)
+
 ---------- New Features
 
 * Decorators are now supported

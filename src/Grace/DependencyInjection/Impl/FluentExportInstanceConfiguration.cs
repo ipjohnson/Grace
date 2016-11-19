@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
-        public IFluentExportInstanceConfiguration<T> AsKeyed<TExportType, TKey>(TKey key)
+        public IFluentExportInstanceConfiguration<T> AsKeyed<TExportType>(object key)
         {
             _exportConfiguration.AddExportAsKeyed(typeof(TExportType), key);
 

@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         private readonly Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> _func;
 
         public FuncWithInjectionContextInstanceExportStrategy(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func, IInjectionScope injectionScope) : 
-            base(typeof(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>), injectionScope)
+            base(typeof(T), injectionScope)
         {
             _func = func;
         }

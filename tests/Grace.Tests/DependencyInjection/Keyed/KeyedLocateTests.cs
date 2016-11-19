@@ -70,5 +70,46 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<SimpleObjectA>(instanceA);
             Assert.IsType<SimpleObjectB>(instanceB);
         }
+
+
+        [Fact]
+        public void AsKeyedStringTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportInstance((scope, context) => "Hello");
+                c.ExportInstance((scope, context) => "HelloAgain").AsKeyed<string>("Key");
+            });
+
+            Assert.Equal("Hello", container.Locate<string>());
+            Assert.Equal("HelloAgain", container.Locate<string>(withKey: "Key"));
+        }
+
+        [Fact]
+        public void AsKeyedBasicTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>('A');
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>('B');
+                c.Export<SimpleObjectC>().AsKeyed<ISimpleObject>('C');
+                c.Export<SimpleObjectD>().AsKeyed<ISimpleObject>('D');
+                c.Export<SimpleObjectE>().AsKeyed<ISimpleObject>('E');
+            });
+
+            for (char locateChar = 'A'; locateChar < 'F'; locateChar++)
+            {
+                var simpleObject = container.Locate<ISimpleObject>(withKey: locateChar);
+
+                Assert.NotNull(simpleObject);
+                Assert.True(simpleObject.GetType().FullName.EndsWith(locateChar.ToString()));
+            }
+        }
+
+
     }
 }
