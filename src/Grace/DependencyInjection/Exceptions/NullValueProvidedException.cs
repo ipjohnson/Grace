@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Grace.DependencyInjection.Exceptions
+﻿namespace Grace.DependencyInjection.Exceptions
 {
     /// <summary>
     /// Exception thrown when a null value is provided from a factory

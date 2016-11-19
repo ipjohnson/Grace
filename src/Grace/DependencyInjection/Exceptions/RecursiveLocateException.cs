@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Grace.DependencyInjection.Exceptions
+﻿namespace Grace.DependencyInjection.Exceptions
 {
     /// <summary>
     /// Exception thrown when a recursive loop is detected in the object graph

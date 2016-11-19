@@ -1,8 +1,4 @@
-﻿using System;
-using Grace.DependencyInjection.Attributes.Interfaces;
-using Grace.DependencyInjection.Lifestyle;
-
-namespace Grace.DependencyInjection.Attributes
+﻿namespace Grace.DependencyInjection.Attributes
 {
 	/// <summary>
 	/// Exports that are marked with this attribute will be shared per request.
