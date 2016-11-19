@@ -36,23 +36,23 @@ namespace Grace.DependencyInjection.Named
 
         public object GetNamed(IExportLocatorScope scope, string name)
         {
-            var strategyCollection = _strategies.GetValueOrDefault(name);
+            //var strategyCollection = _strategies.GetValueOrDefault(name);
 
-            if (strategyCollection != null)
-            {
-                var primary = strategyCollection.GetPrimary();
+            //if (strategyCollection != null)
+            //{
+            //    var primary = strategyCollection.GetPrimary();
 
-                if (primary != null)
-                {
-                    var activationDelegate = primary.GetActivationStrategyDelegate(_scope, primary.InjectionScope.ActivationStrategyCompiler, primary.ActivationType);
+            //    if (primary != null)
+            //    {
+            //        var activationDelegate = primary.GetActivationStrategyDelegate(_scope, primary.InjectionScope.ActivationStrategyCompiler, primary.ActivationType);
 
-                    return activationDelegate(scope, scope, null);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            //        return activationDelegate(scope, scope, null);
+            //    }
+            //    else
+            //    {
+            //        throw new NotImplementedException();
+            //    }
+            //}
 
             return null;
         }
