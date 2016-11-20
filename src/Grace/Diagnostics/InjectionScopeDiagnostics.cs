@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 
 namespace Grace.Diagnostics
@@ -10,6 +12,8 @@ namespace Grace.Diagnostics
     public class InjectionScopeDiagnostics
     {
         private readonly IInjectionScope _injectionScope;
+        private ImmutableLinkedList<ActivationStrategyDependency> _missingDependencies = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+        private ImmutableLinkedList<string> _containerExceptions = ImmutableLinkedList<string>.Empty;
 
         /// <summary>
         /// Default Constructor
@@ -18,47 +22,35 @@ namespace Grace.Diagnostics
         public InjectionScopeDiagnostics(IExportLocatorScope injectionScope)
         {
             _injectionScope = injectionScope.GetInjectionScope();
+
+            ProcessInjectionDependencies();
         }
-
-        /// <summary>
-        /// Scope Configuration
-        /// </summary>
-        public IInjectionScopeConfiguration Configuration => _injectionScope.ScopeConfiguration;
-
-        /// <summary>
-        /// Extra data for scope
-        /// </summary>
-        public ExtraDataContainerDebuggerView ExtraData => new ExtraDataContainerDebuggerView(_injectionScope);
-
-        /// <summary>
-        /// Name of the scope
-        /// </summary>
-        public string Name => _injectionScope.Name;
-
-        /// <summary>
-        /// Scope id
-        /// </summary>
-        public Guid ScopeId => _injectionScope.ScopeId;
         
         /// <summary>
-        /// Exports in the scope
+        /// List of possible missing dependencies in this scope
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledExportStrategy> Exports => _injectionScope.StrategyCollectionContainer;
+        public IEnumerable<ActivationStrategyDependency> PossibleMissingDependencies => _missingDependencies;
 
         /// <summary>
-        /// Decorators for the scope
+        /// List of exceptions discovered while looking for dependencies
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> Decorators => _injectionScope.DecoratorCollectionContainer;
+        public IEnumerable<string> ContainerExceptions => _containerExceptions;
 
-        /// <summary>
-        /// Wrappers for the scope
-        /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> Wrappers => _injectionScope.WrapperCollectionContainer;
+        private void ProcessInjectionDependencies()
+        {
+            foreach (var strategy in _injectionScope.StrategyCollectionContainer.GetAllStrategies())
+            {
+                try
+                {
+                    var dependencies = strategy.GetDependencies();
 
-        /// <summary>
-        /// Missing export strategy provides
-        /// </summary>
-        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders
-            => _injectionScope.MissingExportStrategyProviders;
+                    _missingDependencies = _missingDependencies.AddRange(dependencies.Where(d => d.IsSatisfied == false));
+                }
+                catch (Exception exp)
+                {
+                    _containerExceptions = _containerExceptions.Add(exp.Message);
+                }
+            }
+        }
     }
 }

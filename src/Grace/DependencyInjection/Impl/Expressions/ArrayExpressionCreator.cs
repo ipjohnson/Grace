@@ -56,7 +56,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     return expressions;
                 }
 
-                request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1));
+                request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
 
                 expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, true);
             }
@@ -111,7 +111,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, bool locked)
         {
             Type wrappedType;
-            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, out wrappedType);
+            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType,request, out wrappedType);
 
             if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
             {

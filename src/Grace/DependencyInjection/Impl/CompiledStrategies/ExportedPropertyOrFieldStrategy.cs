@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 return _delegate;
             }
 
-            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1));
+            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
 
             var compiledDelegate = compiler.CompileDelegate(scope, request);
 

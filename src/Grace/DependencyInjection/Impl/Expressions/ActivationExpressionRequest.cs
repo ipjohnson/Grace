@@ -169,7 +169,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="services"></param>
         /// <param name="constants"></param>
         /// <param name="objectGraphDepth"></param>
-        public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth)
+        public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth, IInjectionScope requestingScope)
         {
             ActivationType = activationType;
 
@@ -183,6 +183,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             Parent = null;
             IsRequired = true;
             ObjectGraphDepth = objectGraphDepth;
+            RequestingScope = requestingScope;
         }
 
         /// <summary>
@@ -218,7 +219,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Export strategy filter to use
         /// </summary>
-        public ExportStrategyFilter Filter { get; set; }
+        public ActivationStrategyFilter Filter { get; set; }
 
         /// <summary>
         /// Services for request
@@ -318,6 +319,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
+        /// Set filter
+        /// </summary>
+        /// <param name="filter"></param>
+        public void SetFilter(ActivationStrategyFilter filter)
+        {
+            Filter = filter;
+        }
+
+        /// <summary>
         /// Set the decorator path for request
         /// </summary>
         /// <param name="path">node path</param>
@@ -395,7 +405,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 throw new RecursiveLocateException(GetStaticInjectionContext());
             }
 
-            var returnValue = new ActivationExpressionRequest(activationType, requestType, Services, Constants, ObjectGraphDepth + 1)
+            var returnValue = new ActivationExpressionRequest(activationType, requestType, Services, Constants, ObjectGraphDepth + 1, RequestingScope)
             {
                 Parent = this,
                 InjectedType = injectedType,
@@ -405,6 +415,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 KnownValueExpressions = KnownValueExpressions
             };
 
+            if (Filter != null && RequestingStrategy != null &&
+                RequestingStrategy.StrategyType == ActivationStrategyType.WrapperStrategy)
+            {
+                returnValue.Filter = Filter;
+            }
+
             if (maintainPath)
             {
                 returnValue._wrapperNodes = _wrapperNodes;
@@ -413,6 +429,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return returnValue;
         }
+
+        public IInjectionScope RequestingScope { get; }
 
         /// <summary>
         /// Get static injection context for request

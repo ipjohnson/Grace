@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -9,6 +10,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// </summary>
     public interface IMethodInvokeExpressionCreator
     {
+        /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request);
+
         /// <summary>
         /// Create expressions for calling methods
         /// </summary>
@@ -25,6 +34,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// </summary>
     public class MethodInvokeExpressionCreator : IMethodInvokeExpressionCreator
     {
+        /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        public IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request)
+        {
+            return ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+        }
+
         /// <summary>
         /// Create expressions for calling methods
         /// </summary>

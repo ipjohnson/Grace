@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="consider">filter delegate</param>
         /// <returns>configuration object</returns>
-        IFluentImportPropertyConfiguration<T, TProp> Consider(ExportStrategyFilter consider);
+        IFluentImportPropertyConfiguration<T, TProp> Consider(ActivationStrategyFilter consider);
 
         /// <summary>
         /// Default value if one can not be found

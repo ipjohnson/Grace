@@ -186,7 +186,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export strategy filter to use
         /// </summary>
-        ExportStrategyFilter Filter { get; }
+        ActivationStrategyFilter Filter { get; }
 
         /// <summary>
         /// Services for request
@@ -254,6 +254,12 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns></returns>
         IActivationPathNode PopDecoratorPathNode();
+
+        /// <summary>
+        /// Set filter for this request
+        /// </summary>
+        /// <param name="filter"></param>
+        void SetFilter(ActivationStrategyFilter filter);
 
         /// <summary>
         /// Set the decorator path for request
@@ -332,5 +338,10 @@ namespace Grace.DependencyInjection
         /// <param name="maintainPaths">maintain wrapper and decorator path</param>
         /// <returns>new request</returns>
         IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false);
+
+        /// <summary>
+        /// Scope the request originated in
+        /// </summary>
+        IInjectionScope RequestingScope { get; }
     }
 }

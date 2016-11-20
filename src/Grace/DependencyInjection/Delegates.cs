@@ -22,7 +22,7 @@
     /// </summary>
     /// <param name="strategy">strategy to filter</param>
     /// <returns>return true if the strategy should be used</returns>
-    public delegate bool ExportStrategyFilter(ICompiledExportStrategy strategy);
+    public delegate bool ActivationStrategyFilter(IActivationStrategy strategy);
     
     /// <summary>
     /// This delegate will locate an export using a Key

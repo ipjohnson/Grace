@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="filter">filter delegate to be used when resolving parameter</param>
         /// <returns>configuration object</returns>
-        public IFluentWithCtorConfiguration<TParam> Consider(ExportStrategyFilter filter)
+        public IFluentWithCtorConfiguration<TParam> Consider(ActivationStrategyFilter filter)
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
@@ -151,7 +151,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="filter">filter delegate to be used when resolving parameter</param>
         /// <returns>configuration object</returns>
-        public IFluentWithCtorConfiguration<T, TParam> Consider(ExportStrategyFilter filter)
+        public IFluentWithCtorConfiguration<T, TParam> Consider(ActivationStrategyFilter filter)
         {
             _constructorParameterInfo.ExportStrategyFilter = filter;
 

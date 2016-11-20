@@ -1,12 +1,10 @@
 Dynamic - Array, IEnumerable
 
-Export Dependency
+Dependencies for Properties
 
-Missing Dependency
+Dependencies for method parameters
 
 Update mvc extensions
-
-Make decision on ExportStrategyFilter
 
 --------- beta ----------
 

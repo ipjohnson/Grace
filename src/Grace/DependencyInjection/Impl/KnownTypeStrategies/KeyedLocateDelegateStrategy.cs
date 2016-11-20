@@ -58,7 +58,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
                 return objectDelegate;
             }
 
-            var request = compiler.CreateNewRequest(activationType, 1);
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
 
             var expression = GetActivationExpression(scope, request);
 

@@ -12,9 +12,10 @@ namespace Grace.DependencyInjection
         /// Can Locator type
         /// </summary>
         /// <param name="type">type to locate</param>
+        /// <param name="filter"></param>
         /// <param name="key">key to use while locating</param>
         /// <returns></returns>
-        bool CanLocate(Type type, object key = null);
+        bool CanLocate(Type type, ActivationStrategyFilter filter = null, object key = null);
 
         /// <summary>
         /// Locate a specific type
@@ -35,22 +36,24 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data to be used during construction</param>
+        /// <param name="filter"></param>
         /// <param name="withKey">key to use for locating type</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false);
+        object Locate(Type type, object extraData = null, ActivationStrategyFilter filter = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// Locate specific type using extra data or key
         /// </summary>
         /// <typeparam name="T">type to locate</typeparam>
         /// <param name="extraData">extra data</param>
+        /// <param name="filter"></param>
         /// <param name="withKey">key to use during construction</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false);
+        T Locate<T>(object extraData = null, ActivationStrategyFilter filter = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// Locate all instances of a specific type
@@ -61,7 +64,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey">locate with key</param>
         /// <param name="comparer">comparer to use to sort collection</param>
         /// <returns></returns>
-        List<object> LocateAll(Type type, object extraData = null, ExportStrategyFilter filter = null, object withKey = null, IComparer<object> comparer = null);
+        List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter filter = null, object withKey = null, IComparer<object> comparer = null);
 
         /// <summary>
         /// 
@@ -72,7 +75,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey"></param>
         /// <param name="comparer"></param>
         /// <returns></returns>
-        List<T> LocateAll<T>(object extraData = null, ExportStrategyFilter filter = null, object withKey = null, IComparer<T> comparer = null);
+        List<T> LocateAll<T>(object extraData = null, ActivationStrategyFilter filter = null, object withKey = null, IComparer<T> comparer = null);
 
         /// <summary>
         /// Try to locate an export by type
@@ -84,7 +87,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
         /// <returns></returns>
-        bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
+        bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
         /// try to locate a specific type
@@ -96,7 +99,7 @@ namespace Grace.DependencyInjection
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
         /// <returns></returns>
-        bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
+        bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
     }
 }

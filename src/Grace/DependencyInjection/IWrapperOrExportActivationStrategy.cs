@@ -2,6 +2,9 @@
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Represents a wrapper strategy or an export strategy
+    /// </summary>
     public interface IWrapperOrExportActivationStrategy : IActivationStrategy
     {
         /// <summary>

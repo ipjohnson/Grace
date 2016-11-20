@@ -43,7 +43,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         protected virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
-            var request = compiler.CreateNewRequest(activationType, 1);
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
 
             var expressionResult = GetActivationExpression(scope, request);
 

@@ -7,23 +7,115 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
+    /// <summary>
+    /// implementation for creating an instantiation expression for a type
+    /// </summary>
     public interface IInstantiationExpressionCreator
     {
-        IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration);
+        /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration,
+            IActivationExpressionRequest request);
+
+        /// <summary>
+        /// Create instantiation expression
+        /// </summary>
+        /// <param name="scope">scope the configuration is associated with</param>
+        /// <param name="request">expression request</param>
+        /// <param name="activationConfiguration">configuration</param>
+        /// <returns>expression result</returns>
+        IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
+            TypeActivationConfiguration activationConfiguration);
     }
 
+    /// <summary>
+    /// Creates instantiation expressions
+    /// </summary>
     public class InstantiationExpressionCreator : IInstantiationExpressionCreator
     {
+        /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        public IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration,
+            IActivationExpressionRequest request)
+        {
+            var constructor = PickConstructor(request.RequestingScope, configuration, request);
+
+            return GetDependenciesForConstructor(configuration, request, constructor);
+        }
+
+        /// <summary>
+        /// Get a list of dependencies for a constructor
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="request"></param>
+        /// <param name="constructor"></param>
+        /// <returns></returns>
+        protected virtual IEnumerable<ActivationStrategyDependency> GetDependenciesForConstructor(TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo constructor)
+        {
+            ImmutableLinkedList<ActivationStrategyDependency> dependencies = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+            var injectionScope = request.RequestingScope;
+
+            foreach (var parameter in constructor.GetParameters())
+            {
+                object key = null;
+
+                if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
+                {
+                    key = parameter.Name;
+                }
+
+                bool dependencySatisified = parameter.IsOptional ||
+                    parameter.ParameterType.IsGenericParameter ||
+                    CanGetValueFromInfo(configuration, parameter) ||
+                    injectionScope.CanLocate(parameter.ParameterType,null, key);
+
+                var dependency = new ActivationStrategyDependency(DependencyType.ConstructorParameter,
+                                                                  configuration.ActivationStrategy,
+                                                                  parameter,
+                                                                  parameter.ParameterType,
+                                                                  parameter.Name,
+                                                                  false,
+                                                                  false,
+                                                                  dependencySatisified);
+
+                dependencies = dependencies.Add(dependency);
+            }
+
+            return dependencies;
+        }
+
+        /// <summary>
+        /// Create instantiation expression
+        /// </summary>
+        /// <param name="scope">scope the configuration is associated with</param>
+        /// <param name="request">expression request</param>
+        /// <param name="activationConfiguration">configuration</param>
+        /// <returns>expression result</returns>
         public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             TypeActivationConfiguration activationConfiguration)
         {
-            List<IActivationExpressionResult> expressions;
+            var constructor = PickConstructor(scope, activationConfiguration, request);
 
-            var constructor = PickBestConstructor(scope, activationConfiguration, request, out expressions);
+            var expressions = GetParameterExpressionsForConstructor(scope, activationConfiguration, request, constructor);
 
             return CreateConstructorExpression(request, constructor, expressions);
         }
 
+        /// <summary>
+        /// Creates an expression to call a constructor given a ConstructorInfo and a list of parameters
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <param name="constructor">constructor</param>
+        /// <param name="expressions">parameters</param>
+        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateConstructorExpression(IActivationExpressionRequest request, ConstructorInfo constructor, List<IActivationExpressionResult> expressions)
         {
             var newExpression = Expression.New(constructor, expressions.Select(e => e.Expression));
@@ -38,7 +130,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return result;
         }
 
-        protected virtual ConstructorInfo PickBestConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, out List<IActivationExpressionResult> parameterExpressions)
+        /// <summary>
+        /// Method to pick the constructor to use based on how the container is configured
+        /// </summary>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="configuration">type configuration</param>
+        /// <param name="request">activation request</param>
+        /// <returns></returns>
+        protected virtual ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
             var constructors = configuration.ActivationType.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic && !c.IsStatic).OrderByDescending(c => c.GetParameters().Length).ToArray();
 
@@ -49,35 +148,51 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (constructors.Length == 1)
             {
-                var constructor = constructors[0];
-
-                return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, constructor);
+                return constructors[0];
             }
-            
+
             switch (injectionScope.ScopeConfiguration.Behaviors.ConstructorSelection)
             {
                 case ConstructorSelectionMethod.LeastParameters:
-                    return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, constructors.Last());
+                    return constructors.Last();
 
                 case ConstructorSelectionMethod.MostParameters:
-                    return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, constructors.First());
+                    return constructors.First();
 
                 case ConstructorSelectionMethod.BestMatch:
-                    return MatchBestConstructor(injectionScope, configuration, request, out parameterExpressions, constructors);
+                    return MatchBestConstructor(injectionScope, configuration, request, constructors);
 
                 default:
                     throw new Exception("Unknown constrcutor selection type");
             }
         }
 
-        private struct MatchInfo
+        /// <summary>
+        /// Class used for keeping track of information about a constructor
+        /// </summary>
+        protected struct MatchInfo
         {
+            /// <summary>
+            /// how many parameters dependencies were satisfied
+            /// </summary>
             public int Matched;
+
+            /// <summary>
+            /// how many parameters dependencies could not be found
+            /// </summary>
             public int Missing;
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
             public ConstructorInfo ConstructorInfo;
         }
 
-        protected virtual ConstructorInfo MatchBestConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, out List<IActivationExpressionResult> parameterExpressions, ConstructorInfo[] constructors)
+        /// <summary>
+        /// Find best constructor to use 
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ConstructorInfo MatchBestConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {
             ConstructorInfo returnConstructor = null;
             List<MatchInfo> matchInfos = new List<MatchInfo>();
@@ -88,8 +203,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 foreach (var parameter in constructor.GetParameters())
                 {
-                    if (injectionScope != null &&
-                        injectionScope.CanLocate(parameter.ParameterType))
+                    object key = null;
+
+                    if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
+                    {
+                        key = parameter.Name;
+                    }
+
+                    if (parameter.IsOptional ||
+                        parameter.ParameterType.IsGenericParameter ||
+                        CanGetValueFromInfo(configuration, parameter) ||
+                        injectionScope.CanLocate(parameter.ParameterType,null, key))
                     {
                         matchInfo.Matched++;
                     }
@@ -114,19 +238,36 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 matchInfos.Sort((x, y) => comparer.Compare(x.Matched - x.Missing, y.Matched - y.Missing));
 
-                returnConstructor = matchInfos.LastOrDefault().ConstructorInfo;
+                returnConstructor = matchInfos.Last().ConstructorInfo;
             }
 
-            return CreateActivationExpressionFromConstructor(injectionScope, configuration, request, out parameterExpressions, returnConstructor);
+            return returnConstructor;
         }
 
-        protected virtual ConstructorInfo CreateActivationExpressionFromConstructor(
+        /// <summary>
+        /// Test if the parameter was specified 
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Get a list of expressions for the parameters in a constructor
+        /// </summary>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="configuration">configuration for strategy</param>
+        /// <param name="request">request</param>
+        /// <param name="constructor">constructor</param>
+        /// <returns></returns>
+        protected virtual List<IActivationExpressionResult> GetParameterExpressionsForConstructor(
             IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request,
-            out List<IActivationExpressionResult> parameterExpressions, ConstructorInfo constructor)
+            ConstructorInfo constructor)
         {
             var returnList = new List<IActivationExpressionResult>();
-
-            parameterExpressions = returnList;
 
             foreach (var parameter in constructor.GetParameters())
             {
@@ -144,17 +285,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 returnList.Add(expression);
             }
 
-            return constructor;
+            return returnList;
         }
-        
+
 
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {
             return
-                configuration.ConstructorParameters.FirstOrDefault(p => string.Compare(p.ParameterName, parameter.Name,StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                configuration.ConstructorParameters.FirstOrDefault(p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
                                                                         (p.ParameterType == null || p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()))) ??
                 configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
-                                                                        p.ParameterType != null && 
+                                                                        p.ParameterType != null &&
                                                                         p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()));
         }
 
@@ -191,7 +332,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 newRequest.IsDynamic = parameterInfo.IsDynamic;
 
-                newRequest.SetIsRequired(parameterInfo.IsRequired.GetValueOrDefault(true));
+                newRequest.SetIsRequired(parameterInfo.IsRequired.GetValueOrDefault(!parameter.IsOptional));
+
+                newRequest.SetFilter(parameterInfo.ExportStrategyFilter);
+            }
+            else
+            {
+                newRequest.SetIsRequired(!parameter.IsOptional);
             }
 
             return newRequest.Services.ExpressionBuilder.GetActivationExpression(injectionScope, newRequest);

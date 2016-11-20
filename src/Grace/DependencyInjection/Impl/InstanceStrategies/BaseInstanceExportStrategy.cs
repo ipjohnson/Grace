@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
                 return StrategyDelegate;
             }
 
-            var request = compiler.CreateNewRequest(activationType, 1);
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
 
             var expression = GetActivationExpression(scope, request);
 

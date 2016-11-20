@@ -263,7 +263,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var injectionScope = scope.GetInjectionScope();
 
-            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, key, true, true);
+            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, null, key, true, true);
 
             if (value == null)
             {
@@ -382,9 +382,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
                 else
                 {
-                    var strategy = collection.GetPrimary();
+                    var strategy =  request.Filter == null ? collection.GetPrimary() : null;
 
-                    if (strategy != null && request.Filter == null)
+                    if (strategy != null)
                     {
                         return ActivationExpressionForStrategy(scope, request, strategy);
                     }

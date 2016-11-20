@@ -8,12 +8,12 @@ namespace Grace.DependencyInjection.Impl
 {
     public interface ICanLocateTypeService
     {
-        bool CanLocate(IInjectionScope injectionScope, Type type, object key = null);
+        bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null);
     }
 
     public class CanLocateTypeService : ICanLocateTypeService
     {
-        public bool CanLocate(IInjectionScope injectionScope, Type type, object key = null)
+        public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null)
         {
             if (key != null)
             {

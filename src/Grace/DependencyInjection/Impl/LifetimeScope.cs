@@ -39,9 +39,10 @@ namespace Grace.DependencyInjection.Impl
         /// Can Locator type
         /// </summary>
         /// <param name="type">type to locate</param>
+        /// <param name="filter"></param>
         /// <param name="key">key to use while locating</param>
         /// <returns></returns>
-        public bool CanLocate(Type type, object key = null)
+        public bool CanLocate(Type type, ActivationStrategyFilter filter = null, object key = null)
         {
             return _injectionScope.CanLocate(type);
         }
@@ -57,7 +58,7 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, true, false);
+            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, null, true, false);
         }
 
         /// <summary>
@@ -65,13 +66,14 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data to be used during construction</param>
+        /// <param name="consider"></param>
         /// <param name="withKey">key to use for locating type</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public object Locate(Type type, object extraData = null, object withKey = null, bool isDynamic = false)
+        public object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            return LocateFromParent(type, extraData, withKey, true, isDynamic);
+            return LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
         }
 
         /// <summary>
@@ -99,13 +101,14 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to locate</typeparam>
         /// <param name="extraData">extra data</param>
+        /// <param name="consider">filter out different strategies</param>
         /// <param name="withKey">key to use during construction</param>
         /// <param name="isDynamic"></param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public T Locate<T>(object extraData = null, object withKey = null, bool isDynamic = false)
+        public T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            return (T)LocateFromParent(typeof(T), extraData, withKey, true, isDynamic);
+            return (T)LocateFromParent(typeof(T), extraData, consider, withKey, true, isDynamic);
         }
 
         /// <summary>
@@ -117,7 +120,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey">locate with key</param>
         /// <param name="comparer">comparer to use to sort collection</param>
         /// <returns></returns>
-        public List<object> LocateAll(Type type, object extraData = null, ExportStrategyFilter filter = null, object withKey = null,
+        public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter filter = null, object withKey = null,
             IComparer<object> comparer = null)
         {
             return Parent.LocateAll(type, extraData, filter, withKey, comparer);
@@ -132,7 +135,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey"></param>
         /// <param name="comparer"></param>
         /// <returns></returns>
-        public List<T> LocateAll<T>(object extraData = null, ExportStrategyFilter filter = null, object withKey = null,
+        public List<T> LocateAll<T>(object extraData = null, ActivationStrategyFilter filter = null, object withKey = null,
             IComparer<T> comparer = null)
         {
             return Parent.LocateAll<T>(extraData, filter, withKey, comparer);
@@ -148,10 +151,10 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
         /// <returns></returns>
-        public bool TryLocate<T>(out T value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             var returnValue = false;
-            var objectValue = LocateFromParent(typeof(T), extraData, withKey, false, isDynamic);
+            var objectValue = LocateFromParent(typeof(T), extraData, consider, withKey, false, isDynamic);
 
             if (objectValue != null)
             {
@@ -176,16 +179,16 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
         /// <returns></returns>
-        public bool TryLocate(Type type, out object value, object extraData = null, ExportStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            value = LocateFromParent(type, extraData, withKey, false, isDynamic);
+            value = LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
 
             return value != null;
         }
 
-        protected virtual object LocateFromParent(Type type, object extraData, object key, bool isRequired, bool isDynamic)
+        protected virtual object LocateFromParent(Type type, object extraData, ActivationStrategyFilter consider, object key, bool isRequired, bool isDynamic)
         {
-            return _injectionScope.LocateFromChildScope(this, this, type, extraData, key, isRequired, isDynamic);
+            return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, isRequired, isDynamic);
         }
     }
 }

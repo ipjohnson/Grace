@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Attributes.Interfaces
 		/// <summary>
 		/// Import Filter 
 		/// </summary>
-		public ExportStrategyFilter ExportStrategyFilter { get; set; }
+		public ActivationStrategyFilter ExportStrategyFilter { get; set; }
 
 		/// <summary>
 		/// Comparer object for import

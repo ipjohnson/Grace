@@ -6,15 +6,35 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Type of strategy, export, wrapper, or decorator
+    /// </summary>
     public enum ActivationStrategyType
     {
+        /// <summary>
+        /// Export
+        /// </summary>
         ExportStrategy,
+
+        /// <summary>
+        /// Export from framework
+        /// </summary>
         FrameworkExportStrategy,
+
+        /// <summary>
+        /// Wrapper strategy
+        /// </summary>
         WrapperStrategy,
+
+        /// <summary>
+        /// Decorator strategy
+        /// </summary>
         DecoratorStrategy
     }
 
-
+    /// <summary>
+    /// Activation strategy
+    /// </summary>
     public interface IActivationStrategy
     {
         /// <summary>
@@ -79,5 +99,10 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns></returns>
         IActivationStrategyMetadata Metadata { get; }
+
+        /// <summary>
+        /// Dependencies needed to activate strategy given a specific request
+        /// </summary>
+        IEnumerable<ActivationStrategyDependency> GetDependencies(IActivationExpressionRequest request = null);
     }
 }

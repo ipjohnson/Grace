@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Injection scope abstraction
+    /// </summary>
     public interface IInjectionScope : IExportLocatorScope
     {
         /// <summary>
@@ -42,18 +45,19 @@ namespace Grace.DependencyInjection
         IEnumerable<IInjectionValueProvider> InjectionValueProviders { get; }
 
         /// <summary>
-        /// Locate an export from a child scope
+        /// Locate an export from a child scope (for internal use)
         /// </summary>
         /// <param name="childScope">scope where the locate originated</param>
         /// <param name="disposalScope">disposal scope to use</param>
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data passed in</param>
+        /// <param name="consider"></param>
         /// <param name="key">key to use during locate</param>
         /// <param name="allowNull">allow null to be returned</param>
         /// <param name="isDynamic"></param>
         /// <returns>configuration object</returns>
-        object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData, object key, bool allowNull, bool isDynamic);
-
+        object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData,ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic);
+        
         /// <summary>
         /// Creates a new child scope
         /// This is best used for long term usage, not per request scenario
@@ -62,5 +66,10 @@ namespace Grace.DependencyInjection
         /// <param name="scopeName">scope name </param>
         /// <returns></returns>
         IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "");
+
+        /// <summary>
+        /// Strategy compiler used for this scope
+        /// </summary>
+        IActivationStrategyCompiler StrategyCompiler { get; }
     }
 }

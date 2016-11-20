@@ -17,6 +17,10 @@ namespace Grace.DependencyInjection.Impl
         public object DefaultValue { get; set; }
 
         public bool IsDynamic { get; set; }
+
+        public object LocateKey { get; set; }
+
+        public ActivationStrategyFilter Filter { get; set; }
     }
 
     public interface IMemeberInjectionSelector

@@ -104,7 +104,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Get data from context
+        /// Get data from context, returns null if not found
         /// </summary>
         /// <param name="key">key</param>
         /// <returns></returns>

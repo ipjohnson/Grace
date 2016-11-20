@@ -45,7 +45,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export filter associated with this import
         /// </summary>
-        public ExportStrategyFilter ExportStrategyFilter { get; set; }
+        public ActivationStrategyFilter ExportStrategyFilter { get; set; }
 
         /// <summary>
         /// Locate parameter with key

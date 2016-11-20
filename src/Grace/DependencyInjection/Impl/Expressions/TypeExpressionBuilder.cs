@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -10,6 +12,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
     public interface ITypeExpressionBuilder
     {
         /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request);
+
+            /// <summary>
         /// Get activation expression
         /// </summary>
         /// <param name="scope">scope</param>
@@ -49,6 +59,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
             _memberInjectionExpressionCreator = memberInjectionExpressionCreator;
             _enrichmentExpressionCreator = enrichmentExpressionCreator;
             _methodInvokeExpressionCreator = methodInvokeExpressionCreator;
+        }
+
+        /// <summary>
+        /// Get an enumeration of dependencies
+        /// </summary>
+        /// <param name="configuration">configuration object</param>
+        /// <param name="request"></param>
+        /// <returns>dependencies</returns>
+        public IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request)
+        {
+            var returnList = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+
+            returnList = returnList.AddRange(_methodInvokeExpressionCreator.GetDependencies(configuration, request));
+            returnList = returnList.AddRange(_memberInjectionExpressionCreator.GetDependencies(configuration, request));
+            returnList = returnList.AddRange(_instantiationExpressionCreator.GetDependencies(configuration, request));
+
+            return returnList;
         }
 
         /// <summary>

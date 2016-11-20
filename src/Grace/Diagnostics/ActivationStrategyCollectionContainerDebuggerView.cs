@@ -50,12 +50,13 @@ namespace Grace.Diagnostics
         /// <summary>
         /// All strategies
         /// </summary>
-        public IEnumerable<T> Strategies => _container.GetAllStrategies();
+        //public IEnumerable<T> Strategies => _container.GetAllStrategies();
 
         /// <summary>
         /// Strategies by type
         /// </summary>
-        public IEnumerable<StrategyListDebuggerView<T>> StrategiesByType => _strategiesByType;
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public StrategyListDebuggerView<T>[] StrategiesByType => _strategiesByType.ToArray();
 
         /// <summary>
         /// Strategies debugger view

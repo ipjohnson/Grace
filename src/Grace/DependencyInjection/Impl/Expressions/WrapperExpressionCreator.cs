@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
         IActivationExpressionResult GetActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request);
 
-        ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, out Type wrappedType);
+        ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType);
     }
 
     public class WrapperExpressionCreator : IWrapperExpressionCreator
@@ -17,11 +17,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             Type wrappedType;
 
-            var wrappers = GetWrappers(scope, request.ActivationType, out wrappedType);
+            var wrappers = GetWrappers(scope, request.ActivationType, request, out wrappedType);
 
             if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
             {
-                if (request.DecoratorPathNode != null && wrappedType.GetTypeInfo().IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType.GetTypeInfo()))
+                if (request.DecoratorPathNode != null &&
+                    wrappedType.GetTypeInfo().IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType.GetTypeInfo()))
                 {
                     var decorator = request.PopDecoratorPathNode();
 
@@ -40,20 +41,41 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (collection != null)
                     {
-                        var primary = collection.GetPrimary();
+                        var primary = request.Filter == null ? collection.GetPrimary() : null;
 
                         if (primary != null)
                         {
-                            wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode ( primary, wrappedType, null)).AddRange(wrappers.Reverse());
+                            wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            foreach (var strategy in collection.GetStrategies())
+                            {
+                                bool pass = true;
+
+                                if (strategy.HasConditions)
+                                {
+                                    foreach (var condition in strategy.Conditions)
+                                    {
+                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext()))
+                                        {
+                                            pass = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (pass &&
+                                    (request.Filter == null || request.Filter(strategy)))
+                                {
+                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        return null;
                     }
                 }
 
@@ -67,7 +89,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return null;
         }
 
-        public ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, out Type wrappedType)
+        public ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType)
         {
             var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(type);
 
@@ -80,21 +102,43 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (wrapperCollection != null)
             {
-                var primary = wrapperCollection.GetPrimary();
+                var strategy = request.Filter == null ? wrapperCollection.GetPrimary() : null;
 
-                if (primary != null)
+                if (strategy == null)
                 {
-                    var newType = primary.GetWrappedType(type);
+                    foreach (var s in wrapperCollection.GetStrategies())
+                    {
+                        bool pass = true;
+                        if (s.HasConditions)
+                        {
+                            foreach (var condition in s.Conditions)
+                            {
+                                if (!condition.MeetsCondition(s, request.GetStaticInjectionContext()))
+                                {
+                                    pass = false;
+                                }
+                            }
+                        }
 
+                        if (pass)
+                        {
+                            strategy = s;
+                            break;
+                        }
+                    }
+                }
+
+                if (strategy != null)
+                {
+                    var newType = strategy.GetWrappedType(type);
+                    
                     if (newType == null)
                     {
-                        throw new Exception("Wrapper strategy returned null for wrapped type, " + primary.GetType().FullName);
+                        throw new Exception("Wrapper strategy returned null for wrapped type, " +
+                                            strategy.GetType().FullName);
                     }
-                    return GetWrappers(scope, newType, out wrappedType).Add(new WrapperActivationPathNode ( primary, type, null));
-                }
-                else
-                {
-                    throw new NotImplementedException();
+
+                    return GetWrappers(scope, newType, request, out wrappedType).Add(new WrapperActivationPathNode(strategy, type, null));
                 }
             }
 

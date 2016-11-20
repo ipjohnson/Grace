@@ -29,7 +29,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var compilerService = request.Services.Compiler;
 
-                request = compilerService.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth + 1);
+                request = compilerService.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth + 1, scope);
             }
 
             var currentExpression = TypeExpressionBuilder.GetActivationExpression(scope, request, activationConfiguration);

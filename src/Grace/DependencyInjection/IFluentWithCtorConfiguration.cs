@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="filter">filter delegate to be used when resolving parameter</param>
         /// <returns>configuration object</returns>
-        IFluentWithCtorConfiguration<TParam> Consider(ExportStrategyFilter filter);
+        IFluentWithCtorConfiguration<TParam> Consider(ActivationStrategyFilter filter);
 
         /// <summary>
         /// Assign a default value if no better option is found
@@ -81,7 +81,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="filter">filter delegate to be used when resolving parameter</param>
         /// <returns>configuration object</returns>
-        IFluentWithCtorConfiguration<T, TParam> Consider(ExportStrategyFilter filter);
+        IFluentWithCtorConfiguration<T, TParam> Consider(ActivationStrategyFilter filter);
 
         /// <summary>
         /// Assign a default value if no better option is found

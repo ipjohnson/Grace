@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
-            var request = compiler.CreateNewRequest(activationType, 1);
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
 
             var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, request);
 

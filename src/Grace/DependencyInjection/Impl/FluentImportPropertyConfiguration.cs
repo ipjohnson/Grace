@@ -29,9 +29,11 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="consider">filter delegate</param>
         /// <returns>configuration object</returns>
-        public IFluentImportPropertyConfiguration<T, TProp> Consider(ExportStrategyFilter consider)
+        public IFluentImportPropertyConfiguration<T, TProp> Consider(ActivationStrategyFilter consider)
         {
-            throw new NotImplementedException();
+            _memberInjectionInfo.Filter = consider;
+
+            return this;
         }
 
         /// <summary>
@@ -65,7 +67,9 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey)
         {
-            throw new NotImplementedException();
+            _memberInjectionInfo.LocateKey = locateKey;
+
+            return this;
         }
 
         #endregion

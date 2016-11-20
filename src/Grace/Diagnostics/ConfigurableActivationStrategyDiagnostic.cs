@@ -38,6 +38,12 @@ namespace Grace.Diagnostics
         public bool HasConditions => _configurableActivationStrategy.HasConditions;
 
         /// <summary>
+        /// List of dependencies needed for this strategy
+        /// </summary>
+        public IEnumerable<ActivationStrategyDependency> Dependencies
+            => _configurableActivationStrategy.GetDependencies();
+
+        /// <summary>
         /// Export the strategy as types
         /// </summary>
         public IEnumerable<Type> ExportAs

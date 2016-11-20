@@ -18,8 +18,9 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="activationType">activation type</param>
         /// <param name="objectGraphDepth">current object depth</param>
+        /// <param name="requestingScope">requesting scope</param>
         /// <returns>request</returns>
-        IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth);
+        IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth, IInjectionScope requestingScope);
 
         /// <summary>
         /// Create a new expresion result
@@ -34,9 +35,10 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="locateType"></param>
+        /// <param name="consider"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, object key);
+        ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key);
         
         /// <summary>
         /// Compile a delegate

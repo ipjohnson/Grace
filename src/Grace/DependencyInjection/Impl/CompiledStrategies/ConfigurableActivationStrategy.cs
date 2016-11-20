@@ -161,6 +161,14 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// Dependencies needed to activate strategy
+        /// </summary>
+        public virtual IEnumerable<ActivationStrategyDependency> GetDependencies(IActivationExpressionRequest request)
+        {
+            return ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+        }
+
+        /// <summary>
         /// Export as a specific type
         /// </summary>
         /// <param name="exportType">type to export as</param>

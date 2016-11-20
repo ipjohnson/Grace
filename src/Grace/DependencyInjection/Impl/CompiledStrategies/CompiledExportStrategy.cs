@@ -33,6 +33,19 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
 
         /// <summary>
+        /// Dependencies needed to activate strategy
+        /// </summary>
+        public override IEnumerable<ActivationStrategyDependency> GetDependencies(IActivationExpressionRequest request)
+        {
+            if (request == null)
+            {
+                request = InjectionScope.StrategyCompiler.CreateNewRequest(ActivationType, 0, InjectionScope);
+            }
+
+            return _builder.TypeExpressionBuilder.GetDependencies(ActivationConfiguration, request);
+        }
+
+        /// <summary>
         /// Get an activation strategy for this delegate
         /// </summary>
         /// <param name="scope">injection scope</param>
@@ -46,7 +59,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 return _delegate;
             }
 
-            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1));
+            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
 
             var compiledDelegate = compiler.CompileDelegate(scope, request);
 
@@ -54,7 +67,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             return _delegate;
         }
-        
+
         /// <summary>
         /// Get an activation expression for this strategy
         /// </summary>
