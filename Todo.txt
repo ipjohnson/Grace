@@ -20,6 +20,6 @@ Named Exports extensions
 
 Simple Exports extensions
 
-Dynamic method library
+Dynamic method library 
 
 Tests, Tests, Tests

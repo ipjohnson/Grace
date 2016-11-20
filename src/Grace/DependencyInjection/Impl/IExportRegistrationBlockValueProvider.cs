@@ -2,6 +2,9 @@
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// interface to provide activation strategies
+    /// </summary>
     public interface IExportRegistrationBlockValueProvider : IExportRegistrationBlock
     {
         /// <summary>
