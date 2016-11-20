@@ -542,7 +542,6 @@ namespace Grace.DependencyInjection.Impl
 
             if (Parent != null)
             {
-                var parentValues = Parent.LocateAll()
             }
 
             return returnList;
