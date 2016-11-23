@@ -17,6 +17,8 @@ build:
   verbosity: minimal
 after_build:
 - cmd: c:\Projects\Grace\nuget\nuget pack src/Grace/project.json -Prop Configuration=Release -version %build_version%-alpha%APPVEYOR_BUILD_NUMBER%
+- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace.DependencyInjection.Extensions/project.json -Prop Configuration=Release -version %build_version%-alpha%APPVEYOR_BUILD_NUMBER%
+- cmd: c:\Projects\Grace\nuget\nuget pack src/Grace.AspNetCore.MVC/project.json -Prop Configuration=Release -version %build_version%-alpha%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
 artifacts:
