@@ -17,7 +17,8 @@
       ]
     },
     "net451": {
-      "dependencies": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.10.0"
       }
     }
   }
