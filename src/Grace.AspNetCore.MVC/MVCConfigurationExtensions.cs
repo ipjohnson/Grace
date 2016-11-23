@@ -32,14 +32,14 @@ namespace Grace.AspNetCore.MVC
 
             configure?.Invoke(configuration);
             
-            if (configuration.SupportHttpInfoInjection)
-            {
-                //locator.AddStrategyInspector(new ExportPropertyInspector());
-                //locator.AddInjectionValueProviderInspector(new FromAttributeValueProviderInspector());
-            }
-
             locator.Configure(c =>
             {
+                if (configuration.SupportHttpInfoInjection)
+                {
+                    c.AddInspector(new BindingSourceAttributePropertyInspector());
+                    c.AddInjectionValueProvider(new BindingSourceMetadataValueProvider());
+                }
+                
                 if (configuration.UseControllerActivator)
                 {
                     c.Export<GraceControllerActivator>().As<IControllerActivator>().WithPriority(10).Lifestyle.Singleton();
