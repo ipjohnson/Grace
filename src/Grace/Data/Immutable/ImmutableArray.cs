@@ -238,7 +238,7 @@ namespace Grace.Data.Immutable
             }
             else
             {
-                Array.Copy(_list, 0, newArray, 0, index - 1);
+                Array.Copy(_list, 0, newArray, 0, index);
 
                 newArray[index] = value;
 
