@@ -32,13 +32,12 @@ namespace Grace.AspNetCore.MVC.Inspector
             if (propertyInfo != null)
             {
                 var bindingAttribute =
-                    propertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBindingSourceMetadata) as IBinderTypeProviderMetadata;
+                    propertyInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBindingSourceMetadata) as IBindingSourceMetadata;
 
                 if (bindingAttribute != null)
                 {
                     return CreateExpressionResultFromBindingAttribute(scope,
                                                                   request,
-                                                                  bindingAttribute,
                                                                   propertyInfo,
                                                                   propertyInfo.Name,
                                                                   propertyInfo.PropertyType,
@@ -54,13 +53,12 @@ namespace Grace.AspNetCore.MVC.Inspector
             if (fieldInfo != null)
             {
                 var bindingAttribute =
-                    fieldInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBindingSourceMetadata) as IBinderTypeProviderMetadata;
+                    fieldInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBindingSourceMetadata) as IBindingSourceMetadata;
 
                 if (bindingAttribute != null)
                 {
                     return CreateExpressionResultFromBindingAttribute(scope,
                         request,
-                        bindingAttribute,
                         fieldInfo,
                         fieldInfo.Name,
                         fieldInfo.PropertyType,
@@ -75,13 +73,12 @@ namespace Grace.AspNetCore.MVC.Inspector
             if (parameterInfo != null)
             {
                 var bindingAttribute =
-                    parameterInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBinderTypeProviderMetadata) as IBinderTypeProviderMetadata;
+                    parameterInfo.GetCustomAttributes(true).FirstOrDefault(a => a is IBindingSourceMetadata) as IBindingSourceMetadata;
 
                 if (bindingAttribute != null)
                 {
                     return CreateExpressionResultFromBindingAttribute(scope,
                         request,
-                        bindingAttribute,
                         parameterInfo,
                         parameterInfo.Name,
                         parameterInfo.ParameterType,
@@ -95,8 +92,7 @@ namespace Grace.AspNetCore.MVC.Inspector
         }
 
         private IActivationExpressionResult CreateExpressionResultFromBindingAttribute(IInjectionScope scope, 
-                                                                                       IActivationExpressionRequest request, 
-                                                                                       IBinderTypeProviderMetadata bindingAttribute, 
+                                                                                       IActivationExpressionRequest request,  
                                                                                        object cacheKey, 
                                                                                        string name, 
                                                                                        Type modelType, 
