@@ -7,7 +7,7 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '$(build_version).0'
   assembly_file_version: '$(build_version).{build}'
-  assembly_informational_version: '$(build_version)-alpha{build}'
+  assembly_informational_version: '$(build_version)-RC{build}'
 before_build:
  - cmd: c:\Projects\Grace\nuget\nuget.exe restore Grace.sln
 build:
@@ -16,9 +16,9 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix alpha%APPVEYOR_BUILD_NUMBER%
-- cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix alpha%APPVEYOR_BUILD_NUMBER%
-- cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix alpha%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
 artifacts:
