@@ -11,7 +11,6 @@ namespace Grace.Utilities
         /// Value for lining method
         /// </summary>
         public const MethodImplOptions Value = (MethodImplOptions)256;
-
-        public const MethodImplOptions NotValue = (MethodImplOptions) 8;
+        
     }
 }

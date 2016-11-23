@@ -3,7 +3,7 @@
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
-    /// interface to provide activation strategies
+    /// Registration block that returns exports, decorators, wrappers and inspectors
     /// </summary>
     public interface IExportRegistrationBlockValueProvider : IExportRegistrationBlock
     {

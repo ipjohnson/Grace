@@ -1,12 +1,5 @@
 ﻿namespace Grace.DependencyInjection.Attributes
 {
-	/// <summary>
-	/// Exports that are marked with this attribute will be shared per request.
-	/// Note: request has different meanings in different contexts.
-	/// WCF - limited to per WCF operation
-	/// MVC - Per HTTP Request
-	/// Other - without a context the export will be shared for the injection context
-	/// </summary>
 	//[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	//public class SingletonPerRequestAttribute : Attribute, ILifestyleProviderAttribute
 	//{

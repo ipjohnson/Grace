@@ -186,6 +186,16 @@ namespace Grace.DependencyInjection.Impl
             return value != null;
         }
 
+        /// <summary>
+        /// Locate from a parent scope if it's not in the cache
+        /// </summary>
+        /// <param name="type">type to locate</param>
+        /// <param name="extraData">extra data</param>
+        /// <param name="consider">filter for strategies</param>
+        /// <param name="key">key to use for locate</param>
+        /// <param name="isRequired">is it required</param>
+        /// <param name="isDynamic">is the request dynamic</param>
+        /// <returns></returns>
         protected virtual object LocateFromParent(Type type, object extraData, ActivationStrategyFilter consider, object key, bool isRequired, bool isDynamic)
         {
             return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, isRequired, isDynamic);

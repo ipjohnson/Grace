@@ -6,20 +6,42 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
+    /// <summary>
+    /// Interface for creating array expressions for a given request
+    /// </summary>
     public interface IArrayExpressionCreator
     {
+        /// <summary>
+        /// Get linq expression to create
+        /// </summary>
+        /// <param name="scope">scope for strategy</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
         IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
+    /// <summary>
+    /// Creates linq expression for array initialization
+    /// </summary>
     public class ArrayExpressionCreator : IArrayExpressionCreator
     {
         private readonly IWrapperExpressionCreator _wrapperExpressionCreator;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="wrapperExpressionCreator"></param>
         public ArrayExpressionCreator(IWrapperExpressionCreator wrapperExpressionCreator)
         {
             _wrapperExpressionCreator = wrapperExpressionCreator;
         }
 
+        /// <summary>
+        /// Get linq expression to create
+        /// </summary>
+        /// <param name="scope">scope for strategy</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
         public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var arrayElementType = request.ActivationType.GetElementType();
@@ -38,7 +60,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return returnResult;
         }
 
-        private List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
+        /// <summary>
+        /// Get list of expressions to populate array
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="arrayElementType"></param>
+        /// <returns></returns>
+        protected virtual List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
         {
             var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, false);
 
@@ -64,7 +93,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return expressions;
         }
 
-        private List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
+        /// <summary>
+        /// Get activation expression for export strategies
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="locked"></param>
+        /// <returns></returns>
+        protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
             Type arrayElementType, bool locked)
         {
             var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(arrayElementType);
@@ -108,7 +145,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return expressions;
         }
 
-        private void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, bool locked)
+        /// <summary>
+        /// Process wrappers looking for matching type
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="request"></param>
+        /// <param name="expressions"></param>
+        /// <param name="locked"></param>
+        protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, bool locked)
         {
             Type wrappedType;
             var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType,request, out wrappedType);
@@ -151,7 +196,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
         }
 
-        private static void GetExpressionsFromCollections(IInjectionScope scope, Type arrayElementType,
+        /// <summary>
+        /// Get expression from collections
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="request"></param>
+        /// <param name="expressions"></param>
+        /// <param name="wrappedType"></param>
+        /// <param name="wrappers"></param>
+        public static void GetExpressionsFromCollections(IInjectionScope scope, Type arrayElementType,
             IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, Type wrappedType, ImmutableLinkedList<IActivationPathNode> wrappers)
         {
             var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(wrappedType);
@@ -176,7 +230,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
         }
 
-        private static void GetExpressionFromCollection(IInjectionScope scope, Type arrayElementType,
+        /// <summary>
+        /// Get expression from an activation strategy collection
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="request"></param>
+        /// <param name="expressions"></param>
+        /// <param name="collection"></param>
+        /// <param name="wrappedType"></param>
+        /// <param name="wrappers"></param>
+        public static void GetExpressionFromCollection(IInjectionScope scope, Type arrayElementType,
             IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, IActivationStrategyCollection<ICompiledExportStrategy> collection, Type wrappedType,
             ImmutableLinkedList<IActivationPathNode> wrappers)
         {

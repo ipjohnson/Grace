@@ -184,6 +184,9 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
         private static MethodInfo _checkForNullMethodInfo;
 
+        /// <summary>
+        /// Method info for CheckForNull
+        /// </summary>
         public static MethodInfo CheckForNullMethodInfo
         {
             get
@@ -197,6 +200,14 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         #endregion
 
         #region AddToDisposalScope
+
+        /// <summary>
+        /// Add instance to disposal scope and return it
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="disposalScope"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static T AddToDisposalScope<T>(IDisposalScope disposalScope, T value)
         {
             var disposable = value as IDisposable;
@@ -211,6 +222,9 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
         private static MethodInfo _addToDisposalScopeMethodInfo;
 
+        /// <summary>
+        /// Method info for AddToDisposalScope
+        /// </summary>
         public static MethodInfo AddToDisposalScopeMethodInfo
         {
             get
@@ -223,6 +237,15 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         #endregion
 
         #region CheckForNullAndAddToDisposalScope
+
+        /// <summary>
+        /// Check for null and then add to disposal scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="disposalScope"></param>
+        /// <param name="context"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static T CheckForNullAndAddToDisposalScope<T>(IDisposalScope disposalScope,
             StaticInjectionContext context, T value)
         {
@@ -243,6 +266,9 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
         private static MethodInfo _checkForNullAndAddToDisposalScopeMethodInfo;
 
+        /// <summary>
+        /// Method info for CheckForNullAndAddToDisposalScope
+        /// </summary>
         public static MethodInfo CheckForNullAndAddToDisposalScopeMethodInfo
         {
             get

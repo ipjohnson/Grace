@@ -2,11 +2,20 @@
 
 namespace Grace.DependencyInjection.Lifestyle
 {
+    /// <summary>
+    /// Class used to configure lifestyles 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class LifestylePicker<T> : ILifestylePicker<T>
     {
         private readonly T _returnValue;
         private readonly Action<ICompiledLifestyle> _addLifestyle;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="returnValue"></param>
+        /// <param name="addLifestyle"></param>
         public LifestylePicker(T returnValue, Action<ICompiledLifestyle> addLifestyle)
         {
             _returnValue = returnValue;

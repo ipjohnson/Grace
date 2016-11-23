@@ -68,9 +68,17 @@ namespace Grace.DependencyInjection.Conditions
             return _t;
         }
 
+        /// <summary>
+        /// Add a condition to use this export only when the member being injected into has a specific attribute
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="testFunc"></param>
+        /// <returns></returns>
         public T MemberHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
-            throw new NotImplementedException();
+            _addAction(new WhenMemberHas<TAttribute>(testFunc));
+
+            return _t;
         }
 
         /// <summary>

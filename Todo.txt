@@ -20,6 +20,8 @@ Named Exports extensions
 
 Simple Exports extensions
 
-Dynamic method library 
+Dynamic method library
+
+Feature parity between old registration and new registration
 
 Tests, Tests, Tests

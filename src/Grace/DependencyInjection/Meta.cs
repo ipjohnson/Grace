@@ -1,5 +1,9 @@
 ﻿namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Class that holds a dependency and it's metadata
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Meta<T>
     {
         /// <summary>

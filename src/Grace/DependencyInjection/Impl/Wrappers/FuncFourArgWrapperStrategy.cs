@@ -6,12 +6,24 @@ using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
+    /// <summary>
+    /// Strategy for creating Func with 4 args
+    /// </summary>
     public class FuncFourArgWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="injectionScope"></param>
         public FuncFourArgWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Func<,,,,>), injectionScope)
         {
         }
-
+        
+        /// <summary>
+        /// Get the type that is being wrapped
+        /// </summary>
+        /// <param name="type">requested type</param>
+        /// <returns>wrapped type</returns>
         public override Type GetWrappedType(Type type)
         {
             if (!type.IsConstructedGenericType)
@@ -24,6 +36,12 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return genericType == typeof(Func<,,,>) ? type.GetTypeInfo().GenericTypeArguments[4] : null;
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(FuncExpression<,,,,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
@@ -39,6 +57,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
 
+        /// <summary>
+        /// Helper class that creates Func with 4 arguements
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <typeparam name="T3"></typeparam>
+        /// <typeparam name="T4"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         public class FuncExpression<T1, T2, T3, T4, TResult>
         {
             private readonly IInjectionContextCreator _injectionContextCreator;
@@ -48,6 +74,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             private readonly string _t4Id = Guid.NewGuid().ToString();
             private readonly ActivationStrategyDelegate _action;
 
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="request"></param>
+            /// <param name="injectionContextCreator"></param>
+            /// <param name="activationStrategy"></param>
             public FuncExpression(IInjectionScope scope, IActivationExpressionRequest request,
                 IInjectionContextCreator injectionContextCreator, IActivationStrategy activationStrategy)
             {
@@ -77,6 +110,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
             }
 
+            /// <summary>
+            /// Method that creates new Func with 4 args
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="disposalScope"></param>
+            /// <param name="context"></param>
+            /// <returns></returns>
             public Func<T1, T2, T3, T4, TResult> CreateFunc(IExportLocatorScope scope, IDisposalScope disposalScope,
                 IInjectionContext context)
             {

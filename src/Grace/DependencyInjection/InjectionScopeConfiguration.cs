@@ -5,7 +5,9 @@ using Grace.DependencyInjection.Impl.Wrappers;
 
 namespace Grace.DependencyInjection
 {
-
+    /// <summary>
+    /// Configuration for injection scope
+    /// </summary>
     public class InjectionScopeConfiguration : IInjectionScopeConfiguration
     {
         /// <summary>

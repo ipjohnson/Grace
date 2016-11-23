@@ -52,6 +52,24 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
+        /// Create instantiation expression
+        /// </summary>
+        /// <param name="scope">scope the configuration is associated with</param>
+        /// <param name="request">expression request</param>
+        /// <param name="activationConfiguration">configuration</param>
+        /// <returns>expression result</returns>
+        public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
+            TypeActivationConfiguration activationConfiguration)
+        {
+            var constructor = PickConstructor(scope, activationConfiguration, request);
+
+            var expressions = GetParameterExpressionsForConstructor(scope, activationConfiguration, request, constructor);
+
+            return CreateConstructorExpression(request, constructor, expressions);
+        }
+
+
+        /// <summary>
         /// Get a list of dependencies for a constructor
         /// </summary>
         /// <param name="configuration"></param>
@@ -90,23 +108,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return dependencies;
-        }
-
-        /// <summary>
-        /// Create instantiation expression
-        /// </summary>
-        /// <param name="scope">scope the configuration is associated with</param>
-        /// <param name="request">expression request</param>
-        /// <param name="activationConfiguration">configuration</param>
-        /// <returns>expression result</returns>
-        public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
-            TypeActivationConfiguration activationConfiguration)
-        {
-            var constructor = PickConstructor(scope, activationConfiguration, request);
-
-            var expressions = GetParameterExpressionsForConstructor(scope, activationConfiguration, request, constructor);
-
-            return CreateConstructorExpression(request, constructor, expressions);
         }
 
         /// <summary>
@@ -288,7 +289,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return returnList;
         }
 
-
+        /// <summary>
+        /// Find matching ConstructorParameterInfo if one exists
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {
             return
@@ -299,14 +305,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                                                         p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()));
         }
 
+        /// <summary>
+        /// Get expression for parameter
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="parameterInfo"></param>
+        /// <param name="injectionScope"></param>
+        /// <param name="configuration"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
-            var expressionResult = request.Services.ExpressionBuilder.GetValueFromRequest(injectionScope, request, parameter.ParameterType, null);
-
-            if (expressionResult != null)
-            {
-                return expressionResult;
-            }
 
             var newRequest = request.NewRequest(parameter.ParameterType, configuration.ActivationStrategy, configuration.ActivationType, RequestType.ConstructorParameter, parameter, true);
 

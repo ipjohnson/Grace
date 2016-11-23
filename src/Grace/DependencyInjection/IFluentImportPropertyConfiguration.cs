@@ -1,5 +1,10 @@
 ﻿namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// configuration for importing a property
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TProp"></typeparam>
     public interface IFluentImportPropertyConfiguration<T, in TProp> : IFluentExportStrategyConfiguration<T>
     {
         /// <summary>

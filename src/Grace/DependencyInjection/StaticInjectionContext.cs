@@ -5,8 +5,16 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// hold static information about the injection
+    /// </summary>
     public class StaticInjectionContext
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="injectionStack"></param>
         public StaticInjectionContext(Type activationType, IEnumerable<InjectionTargetInfo> injectionStack = null)
         {
             ActivationType = activationType;
@@ -25,10 +33,19 @@ namespace Grace.DependencyInjection
             }
         }
 
+        /// <summary>
+        /// Type being activated
+        /// </summary>
         public Type ActivationType { get; }
 
+        /// <summary>
+        /// Target information
+        /// </summary>
         public InjectionTargetInfo TargetInfo { get; }
 
+        /// <summary>
+        /// Injection context stack
+        /// </summary>
         public IEnumerable<InjectionTargetInfo> InjectionStack { get; }
     }
 }

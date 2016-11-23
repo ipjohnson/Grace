@@ -5,11 +5,6 @@
 	/// </summary>
 	public interface IEnrichWithAttribute
 	{
-		/// <summary>
-		/// Provides an EnrichWithDelegate for an attributed type
-		/// </summary>
-		/// <param name="attributedType"></param>
-		/// <returns></returns>
 		//EnrichWithDelegate ProvideDelegate(Type attributedType);
 	}
 }

@@ -8,12 +8,25 @@ using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
+    /// <summary>
+    /// Strategy for creating delegate with 3 args
+    /// </summary>
     public class DelegateThreeArgWrapperStrategy : BaseWrapperStrategy
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="injectionScope"></param>
         public DelegateThreeArgWrapperStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
         {
         }
 
+        /// <summary>
+        /// Get the type that is being wrapped
+        /// </summary>
+        /// <param name="type">requested type</param>
+        /// <returns>wrapped type</returns>
         public override Type GetWrappedType(Type type)
         {
             var invokeMethod = type.GetTypeInfo().GetDeclaredMethod("Invoke");
@@ -22,6 +35,12 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");
@@ -43,6 +62,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
 
+        /// <summary>
+        /// Helper class that creates delegate expression
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <typeparam name="T3"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="TDelegate"></typeparam>
         public class DelegateExpression<T1, T2, T3, TResult, TDelegate>
         {
             private readonly IInjectionContextCreator _injectionContextCreator;
@@ -52,6 +79,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             private readonly ActivationStrategyDelegate _action;
             private readonly MethodInfo _funcMethodInfo;
 
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="request"></param>
+            /// <param name="injectionContextCreator"></param>
+            /// <param name="activationStrategy"></param>
             public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request, 
                 IInjectionContextCreator injectionContextCreator, IActivationStrategy activationStrategy)
             {
@@ -81,6 +115,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
             }
 
+            /// <summary>
+            /// MEthod that creates delegate
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="disposalScope"></param>
+            /// <param name="context"></param>
+            /// <returns></returns>
             public TDelegate CreateDelegate(IExportLocatorScope scope, IDisposalScope disposalScope,
                 IInjectionContext context)
             {
@@ -89,6 +130,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 return (TDelegate)((object)_funcMethodInfo.CreateDelegate(typeof(TDelegate), funcClass));
             }
 
+            /// <summary>
+            /// Helper class that has actual delegate method
+            /// </summary>
             public class FuncClass
             {
                 private readonly IExportLocatorScope _scope;
@@ -100,6 +144,17 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 private readonly ActivationStrategyDelegate _action;
                 private readonly IInjectionContextCreator _injectionContextCreator;
 
+                /// <summary>
+                /// Default constructor
+                /// </summary>
+                /// <param name="scope"></param>
+                /// <param name="disposalScope"></param>
+                /// <param name="context"></param>
+                /// <param name="action"></param>
+                /// <param name="injectionContextCreator"></param>
+                /// <param name="arg1Id"></param>
+                /// <param name="arg2Id"></param>
+                /// <param name="arg3Id"></param>
                 public FuncClass(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate action, IInjectionContextCreator injectionContextCreator, string arg1Id, string arg2Id, string arg3Id)
                 {
                     _scope = scope;
@@ -112,6 +167,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                     _arg3Id = arg3Id;
                 }
 
+                /// <summary>
+                /// delegate method
+                /// </summary>
+                /// <param name="arg1"></param>
+                /// <param name="arg2"></param>
+                /// <param name="arg3"></param>
+                /// <returns></returns>
                 public TResult Func(T1 arg1, T2 arg2, T3 arg3)
                 {
                     var newContext = _context?.Clone() ?? _injectionContextCreator.CreateContext(typeof(TResult), null);

@@ -169,6 +169,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="services"></param>
         /// <param name="constants"></param>
         /// <param name="objectGraphDepth"></param>
+        /// <param name="requestingScope"></param>
         public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth, IInjectionScope requestingScope)
         {
             ActivationType = activationType;
@@ -429,7 +430,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return returnValue;
         }
-
+        
+        /// <summary>
+        /// Original requesting scope
+        /// </summary>
         public IInjectionScope RequestingScope { get; }
 
         /// <summary>

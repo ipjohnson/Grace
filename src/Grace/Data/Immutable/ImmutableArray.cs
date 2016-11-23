@@ -342,8 +342,8 @@ namespace Grace.Data.Immutable
 
         /// <summary>Determines whether the specified objects are equal.</summary>
         /// <returns>true if the specified objects are equal; otherwise, false.</returns>
-        /// <param name="x">The first object of type <paramref name="T" /> to compare.</param>
-        /// <param name="y">The second object of type <paramref name="T" /> to compare.</param>
+        /// <param name="x">The first object of type T to compare.</param>
+        /// <param name="y">The second object of type T to compare.</param>
         public bool Equals(ImmutableArray<T> x, ImmutableArray<T> y)
         {
             return x._list == y._list;

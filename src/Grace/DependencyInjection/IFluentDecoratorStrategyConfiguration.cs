@@ -2,6 +2,9 @@
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Configuration interface for decorator strategy
+    /// </summary>
     public interface IFluentDecoratorStrategyConfiguration
     {
         /// <summary>

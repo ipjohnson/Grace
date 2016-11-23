@@ -11,15 +11,32 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
         private readonly Func<MemberInfo, bool> _picker;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="picker"></param>
         public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker)
         {
             _picker = picker;
         }
 
+        /// <summary>
+        /// Is the member required
+        /// </summary>
         public bool IsRequired { get; set; }
 
+        /// <summary>
+        /// Default value for member
+        /// </summary>
         public object DefaultValue { get; set; }
 
+        /// <summary>
+        /// Get a list of member injection info for a specific type
+        /// </summary>
+        /// <param name="type">type being activated</param>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="request">request</param>
+        /// <returns>members being injected</returns>
         public IEnumerable<MemberInjectionInfo> GetMembers(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
             foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)

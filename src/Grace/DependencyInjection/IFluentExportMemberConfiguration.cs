@@ -4,7 +4,7 @@ using Grace.DependencyInjection.Conditions;
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// 
+    /// Interface for configuring exporting a member
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IFluentExportMemberConfiguration<T> : IFluentExportStrategyConfiguration<T>

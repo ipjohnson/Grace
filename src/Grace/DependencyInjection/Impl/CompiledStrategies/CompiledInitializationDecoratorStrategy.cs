@@ -5,17 +5,36 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
+    /// <summary>
+    /// Decorator strategy for Func
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CompiledInitializationDecoratorStrategy<T> : ConfigurableActivationStrategy, ICompiledDecoratorStrategy
     {
         private readonly Func<T, T> _func;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="injectionScope"></param>
         public CompiledInitializationDecoratorStrategy( Func<T, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
         {
             _func = func;
         }
 
+        /// <summary>
+        /// Type of activation strategy
+        /// </summary>
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.DecoratorStrategy;
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
@@ -35,6 +54,9 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             return resultExpression;
         }
 
+        /// <summary>
+        /// Apply the decorator after a lifestyle has been used
+        /// </summary>
         public bool ApplyAfterLifestyle { get; set; }
     }
 }

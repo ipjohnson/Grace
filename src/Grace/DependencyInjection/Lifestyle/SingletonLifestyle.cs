@@ -40,15 +40,15 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
         public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope,
-                                                                     IActivationExpressionRequest requst,
+                                                                     IActivationExpressionRequest request,
                                                                      IActivationExpressionResult activationExpression)
         {
             if (ConstantExpression != null)
             {
-                return requst.Services.Compiler.CreateNewResult(requst, ConstantExpression);
+                return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
             
-            var activationDelegate = requst.Services.Compiler.CompileDelegate(scope, activationExpression);
+            var activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
 
             lock (_lockObject)
             {
@@ -60,7 +60,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             Interlocked.CompareExchange(ref ConstantExpression, Expression.Constant(_singleton), null);
 
-            return requst.Services.Compiler.CreateNewResult(requst, ConstantExpression);
+            return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
         }
     }
 }

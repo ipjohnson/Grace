@@ -5,10 +5,25 @@ using System.Reflection;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// information for a specific instance of a type being injected
+    /// </summary>
     public class InjectionTargetInfo
     {
         private readonly IAttributeDiscoveryService _attributeDiscoveryService;
 
+        /// <summary>
+        /// Default cosntructor
+        /// </summary>
+        /// <param name="attributeDiscoveryService"></param>
+        /// <param name="injectionType"></param>
+        /// <param name="requestingStrategy"></param>
+        /// <param name="injectionTarget"></param>
+        /// <param name="injectionDependencyType"></param>
+        /// <param name="locatedType"></param>
+        /// <param name="isRequired"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="uniqueId"></param>
         public InjectionTargetInfo(IAttributeDiscoveryService attributeDiscoveryService,
                                    Type injectionType,
                                    IActivationStrategy requestingStrategy,

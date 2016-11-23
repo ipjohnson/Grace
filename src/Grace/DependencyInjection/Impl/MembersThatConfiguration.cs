@@ -5,6 +5,9 @@ using Grace.Data;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// Configuration object for filtering members
+    /// </summary>
     public class MembersThatConfiguration
     {
         private readonly GenericFilterGroup<MethodInfo> _filters = new GenericFilterGroup<MethodInfo>();

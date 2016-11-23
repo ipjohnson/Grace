@@ -71,6 +71,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             return newResult;
         }
 
+        /// <summary>
+        /// Compiles delegate
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="compiler"></param>
+        /// <param name="activationType"></param>
+        /// <returns></returns>
         protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {

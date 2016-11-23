@@ -8,8 +8,15 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 {
+    /// <summary>
+    /// Strategy for creating ReadOnly(T) 
+    /// </summary>
     public class ReadOnlyCollectionStrategy : BaseGenericEnumerableStrategy
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="injectionScope"></param>
         public ReadOnlyCollectionStrategy(IInjectionScope injectionScope) : base(typeof(ReadOnlyCollection<>), injectionScope)
         {
             AddExportAs(typeof(ReadOnlyCollection<>));
@@ -17,12 +24,25 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             AddExportAs(typeof(IReadOnlyCollection<>));
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
         public override IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
             throw new NotSupportedException("Decorators on collection is not supported at this time");
         }
 
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];

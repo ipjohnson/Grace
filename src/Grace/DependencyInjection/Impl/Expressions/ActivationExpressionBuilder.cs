@@ -8,42 +8,72 @@ using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
+    /// <summary>
+    /// interface for building Linq Expression tree for strategy activation
+    /// </summary>
     public interface IActivationExpressionBuilder
     {
-        void SetCompiler(IActivationStrategyCompiler compiler);
-
+        /// <summary>
+        /// Get a linq expression to satisfy the request
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
-        IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
-                                                        IActivationExpressionRequest request,
-                                                        Type activationType,
-                                                        object key);
-
+        /// <summary>
+        /// Decorate an export strategy with decorators
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="strategy">strategy being decorated</param>
+        /// <returns></returns>
         IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy);
     }
 
+    /// <summary>
+    /// builder creates linq expression to satify request
+    /// </summary>
     public class ActivationExpressionBuilder : IActivationExpressionBuilder
     {
-        private readonly IEnumerableExpressionCreator _enumerableExpressionCreator;
-        private readonly IArrayExpressionCreator _arrayExpressionCreator;
-        private readonly IWrapperExpressionCreator _wrapperExpressionCreator;
-        private IActivationStrategyCompiler _compiler;
+        /// <summary>
+        /// Enumerable expression creator
+        /// </summary>
+        protected readonly IEnumerableExpressionCreator EnumerableExpressionCreator;
 
+        /// <summary>
+        /// Array expression creator
+        /// </summary>
+        protected readonly IArrayExpressionCreator ArrayExpressionCreator;
+
+        /// <summary>
+        /// Wrapper expression creator
+        /// </summary>
+        protected readonly IWrapperExpressionCreator WrapperExpressionCreator;
+        
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="arrayExpressionCreator"></param>
+        /// <param name="enumerableExpressionCreator"></param>
+        /// <param name="wrapperExpressionCreator"></param>
         public ActivationExpressionBuilder(IArrayExpressionCreator arrayExpressionCreator,
                                            IEnumerableExpressionCreator enumerableExpressionCreator,
                                            IWrapperExpressionCreator wrapperExpressionCreator)
         {
-            _enumerableExpressionCreator = enumerableExpressionCreator;
-            _arrayExpressionCreator = arrayExpressionCreator;
-            _wrapperExpressionCreator = wrapperExpressionCreator;
+            EnumerableExpressionCreator = enumerableExpressionCreator;
+            ArrayExpressionCreator = arrayExpressionCreator;
+            WrapperExpressionCreator = wrapperExpressionCreator;
         }
 
-        public void SetCompiler(IActivationStrategyCompiler compiler)
-        {
-            _compiler = compiler;
-        }
 
-        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <summary>
+        /// Get a linq expression to satisfy the request
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
+        public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
 
@@ -68,16 +98,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.ActivationType.IsArray)
             {
-                return _arrayExpressionCreator.GetArrayExpression(scope, request);
+                return ArrayExpressionCreator.GetArrayExpression(scope, request);
             }
 
             if (request.ActivationType.IsConstructedGenericType &&
                 request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
-                return _enumerableExpressionCreator.GetEnumerableExpression(scope, request, _arrayExpressionCreator);
+                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator);
             }
 
-            var wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+            var wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
 
             if (wrapperResult != null)
             {
@@ -95,7 +125,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         return activationExpressionResult;
                     }
 
-                    wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (wrapperResult != null)
                     {
@@ -111,7 +141,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         return activationExpressionResult;
                     }
 
-                    wrapperResult = _wrapperExpressionCreator.GetActivationStrategy(scope, request);
+                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (wrapperResult != null)
                     {
@@ -130,7 +160,158 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return GetValueFromInjectionContext(scope, request);
         }
 
-        private IActivationExpressionResult GetValueFromInjectionValueProviders(IInjectionScope scope, IActivationExpressionRequest request)
+
+        /// <summary>
+        /// Get a value dynamically
+        /// </summary>
+        /// <typeparam name="T">value to get</typeparam>
+        /// <param name="scope">scope</param>
+        /// <param name="disposalScope">disposal scope to use</param>
+        /// <param name="staticInjectionContext">static injection context </param>
+        /// <param name="context">context for call</param>
+        /// <param name="key"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
+            IInjectionContext context, object key, bool isRequired)
+        {
+            var injectionScope = scope.GetInjectionScope();
+
+            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, null, key, true, true);
+
+            if (value == null)
+            {
+                if (isRequired)
+                {
+                    throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
+                }
+
+                return default(T);
+            }
+
+            return (T)value;
+        }
+
+        /// <summary>
+        /// Creates expression for calling method GetValueFromInjectionContext
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new []
+            {
+                typeof(IExportLocatorScope),
+                typeof(StaticInjectionContext),
+                typeof(object),
+                typeof(IInjectionContext),
+                typeof(object),
+                typeof(bool),
+                typeof(bool)
+            });
+
+            var closedMethod = valueMethod.MakeGenericMethod(request.ActivationType);
+
+            var expresion = Expression.Call(closedMethod,
+                                            request.Constants.ScopeParameter,
+                                            Expression.Constant(request.GetStaticInjectionContext()),
+                                            Expression.Constant(request.LocateKey, typeof(object)),
+                                            request.Constants.InjectionContextParameter,
+                                            Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
+                                            Expression.Constant(request.DefaultValue != null),
+                                            Expression.Constant(request.IsRequired));
+
+            return request.Services.Compiler.CreateNewResult(request, expresion);
+        }
+
+        /// <summary>
+        /// Gets value from injection context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="locator"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="key"></param>
+        /// <param name="dataProvider"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="useDefault"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public static T GetValueFromInjectionContext<T>(
+            IExportLocatorScope locator,
+            StaticInjectionContext staticContext,
+            object key,
+            IInjectionContext dataProvider,
+            object defaultValue,
+            bool useDefault,
+            bool isRequired)
+        {
+            object value = null;
+
+            if (dataProvider != null && key != null)
+            {
+                value = dataProvider.GetExtraData(key);
+            }
+
+            if (value == null && useDefault)
+            {
+                var defaultFunc = defaultValue as Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>;
+
+                value = defaultFunc != null ? defaultFunc(locator, staticContext, dataProvider) : defaultValue;
+            }
+
+            if (value != null)
+            {
+                if (!value.GetType().GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+                {
+                    try
+                    {
+                        value = Convert.ChangeType(value, typeof(T));
+                    }
+                    catch (Exception exp)
+                    {
+                        // to do fix up exception
+                        throw new LocateException(staticContext, exp);
+                    }
+                }
+            }
+            else if (isRequired && !useDefault)
+            {
+                throw new LocateException(staticContext);
+            }
+
+            return (T)value;
+        }
+
+        /// <summary>
+        /// Decorate an export strategy with decorators
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="strategy">strategy being decorated</param>
+        /// <returns></returns>
+        public IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request,
+            ICompiledExportStrategy strategy)
+        {
+            var decorators = FindDecoratorsForStrategy(scope, request);
+
+            if (decorators.Count == 0)
+            {
+                return null;
+            }
+
+            return CreateDecoratedActivationStrategy(scope, request, strategy, decorators);
+        }
+
+        #region protected methods
+
+        /// <summary>
+        /// Get IInjectionValueProviders for expression result for request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetValueFromInjectionValueProviders(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (!ReferenceEquals(scope.InjectionValueProviders, ImmutableLinkedList<IInjectionValueProvider>.Empty))
             {
@@ -150,7 +331,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
         }
 
-        public IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
+        /// <summary>
+        /// Get expression result from request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationType"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
                                                                IActivationExpressionRequest request,
                                                                Type activationType,
                                                                object key)
@@ -248,42 +437,25 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
-        /// Get a value dynamically
+        /// Get expression from decorator
         /// </summary>
-        /// <typeparam name="T">value to get</typeparam>
-        /// <param name="scope">scope</param>
-        /// <param name="disposalScope">disposal scope to use</param>
-        /// <param name="staticInjectionContext">static injection context </param>
-        /// <param name="context">context for call</param>
-        /// <param name="key"></param>
-        /// <param name="isRequired"></param>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationType"></param>
+        /// <param name="decorator"></param>
         /// <returns></returns>
-        public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
-            IInjectionContext context, object key, bool isRequired)
-        {
-            var injectionScope = scope.GetInjectionScope();
-
-            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, null, key, true, true);
-
-            if (value == null)
-            {
-                if (isRequired)
-                {
-                    throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
-                }
-
-                return default(T);
-            }
-
-            return (T)value;
-        }
-
-        private IActivationExpressionResult ProcessPathNode(IInjectionScope scope, IActivationExpressionRequest request, Type activationType, IActivationPathNode decorator)
+        protected virtual IActivationExpressionResult ProcessPathNode(IInjectionScope scope, IActivationExpressionRequest request, Type activationType, IActivationPathNode decorator)
         {
             return decorator.GetActivationExpression(scope, request);
         }
 
-        private IActivationExpressionResult GetActivationExpressionFromStrategies(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <summary>
+        /// Get expression for non generic strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetActivationExpressionFromStrategies(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var expressionResult = GetExpressionFromStrategyCollection(scope, request);
 
@@ -295,7 +467,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return GetExpressionFromGenericStrategies(scope, request);
         }
 
-        private IActivationExpressionResult GetExpressionFromGenericStrategies(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <summary>
+        /// Get expression for generic strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetExpressionFromGenericStrategies(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (request.ActivationType.IsConstructedGenericType)
             {
@@ -336,7 +514,57 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return null;
         }
 
-        private ICompiledExportStrategy SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
+
+        /// <summary>
+        /// Get expression from strategy collections (export and wrapper)
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetExpressionFromStrategyCollection(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
+
+            if (collection != null)
+            {
+                if (request.LocateKey != null)
+                {
+                    var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
+
+                    if (keyedStrategy != null)
+                    {
+                        return ActivationExpressionForStrategy(scope, request, keyedStrategy);
+                    }
+                }
+                else
+                {
+                    var strategy = request.Filter == null ? collection.GetPrimary() : null;
+
+                    if (strategy != null)
+                    {
+                        return ActivationExpressionForStrategy(scope, request, strategy);
+                    }
+
+                    strategy = SelectStrategyFromCollection(collection, scope, request);
+
+                    if (strategy != null)
+                    {
+                        return ActivationExpressionForStrategy(scope, request, strategy);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Select the best strategy from collection to satisfy request
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual ICompiledExportStrategy SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
         {
             var filter = request.Filter;
 
@@ -365,133 +593,24 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return null;
         }
 
-        private IActivationExpressionResult GetExpressionFromStrategyCollection(IInjectionScope scope, IActivationExpressionRequest request)
-        {
-            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
-
-            if (collection != null)
-            {
-                if (request.LocateKey != null)
-                {
-                    var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
-
-                    if (keyedStrategy != null)
-                    {
-                        return ActivationExpressionForStrategy(scope, request, keyedStrategy);
-                    }
-                }
-                else
-                {
-                    var strategy =  request.Filter == null ? collection.GetPrimary() : null;
-
-                    if (strategy != null)
-                    {
-                        return ActivationExpressionForStrategy(scope, request, strategy);
-                    }
-
-                    strategy = SelectStrategyFromCollection(collection, scope, request);
-
-                    if (strategy != null)
-                    {
-                        return ActivationExpressionForStrategy(scope, request, strategy);
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private IActivationExpressionResult ActivationExpressionForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
+        /// <summary>
+        /// Gets an activation expression for a given strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="strategy"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult ActivationExpressionForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
             return strategy.GetActivationExpression(scope, request);
         }
 
-        public IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
-        {
-            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new Type[]
-            {
-                typeof(IExportLocatorScope),
-                typeof(StaticInjectionContext),
-                typeof(object),
-                typeof(IInjectionContext),
-                typeof(object),
-                typeof(bool),
-                typeof(bool)
-            });
-
-            var closedMethod = valueMethod.MakeGenericMethod(request.ActivationType);
-
-            var expresion = Expression.Call(closedMethod,
-                                            request.Constants.ScopeParameter,
-                                            Expression.Constant(request.GetStaticInjectionContext()),
-                                            Expression.Constant(request.LocateKey, typeof(object)),
-                                            request.Constants.InjectionContextParameter,
-                                            Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
-                                            Expression.Constant(request.DefaultValue != null),
-                                            Expression.Constant(request.IsRequired));
-
-            return request.Services.Compiler.CreateNewResult(request, expresion);
-        }
-
-        public static T GetValueFromInjectionContext<T>(
-            IExportLocatorScope locator,
-            StaticInjectionContext staticContext,
-            object key,
-            IInjectionContext dataProvider,
-            object defaultValue,
-            bool useDefault,
-            bool isRequired)
-        {
-            object value = null;
-
-            if (dataProvider != null && key != null)
-            {
-                value = dataProvider.GetExtraData(key);
-            }
-
-            if (value == null && useDefault)
-            {
-                var defaultFunc = defaultValue as Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>;
-
-                value = defaultFunc != null ? defaultFunc(locator, staticContext, dataProvider) : defaultValue;
-            }
-
-            if (value != null)
-            {
-                if (!value.GetType().GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
-                {
-                    try
-                    {
-                        value = Convert.ChangeType(value, typeof(T));
-                    }
-                    catch (Exception exp)
-                    {
-                        // to do fix up exception
-                        throw new LocateException(staticContext, exp);
-                    }
-                }
-            }
-            else if (isRequired && !useDefault)
-            {
-                throw new LocateException(staticContext);
-            }
-
-            return (T)value;
-        }
-
-        public IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request,
-            ICompiledExportStrategy strategy)
-        {
-            var decorators = FindDecoratorsForStrategy(scope, request);
-
-            if (decorators.Count == 0)
-            {
-                return null;
-            }
-
-            return CreateDecoratedActiationStrategy(scope, request, strategy, decorators);
-        }
-
+        /// <summary>
+        /// Finds decorators for a strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var decorators = new List<ICompiledDecoratorStrategy>();
@@ -519,7 +638,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return decorators;
         }
 
-        protected virtual IActivationExpressionResult CreateDecoratedActiationStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy, List<ICompiledDecoratorStrategy> decorators)
+        /// <summary>
+        /// Creates decorated expression for activation strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="strategy"></param>
+        /// <param name="decorators"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateDecoratedActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy, List<ICompiledDecoratorStrategy> decorators)
         {
             decorators.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
 
@@ -564,6 +691,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return pathNode.GetActivationExpression(scope, request);
         }
+        #endregion
     }
 }
 

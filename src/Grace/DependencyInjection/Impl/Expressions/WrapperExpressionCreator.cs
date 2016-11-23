@@ -4,16 +4,42 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
+    /// <summary>
+    /// interface for creating wrappers around exports
+    /// </summary>
     public interface IWrapperExpressionCreator
     {
-        IActivationExpressionResult GetActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request);
+        /// <summary>
+        /// Get an activation expression for a request
+        /// </summary>
+        /// <param name="scope">scope for request</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
+        IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
+        /// <summary>
+        /// Get wrappers for a request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="type"></param>
+        /// <param name="request"></param>
+        /// <param name="wrappedType"></param>
+        /// <returns></returns>
         ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType);
     }
 
+    /// <summary>
+    /// Creates linq expressions for wrappers
+    /// </summary>
     public class WrapperExpressionCreator : IWrapperExpressionCreator
     {
-        public IActivationExpressionResult GetActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <summary>
+        /// Get an activation expression for a request
+        /// </summary>
+        /// <param name="scope">scope for request</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
+        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             Type wrappedType;
 
@@ -68,7 +94,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                 if (pass &&
                                     (request.Filter == null || request.Filter(strategy)))
                                 {
-                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
+                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(strategy, wrappedType, null)).AddRange(wrappers.Reverse());
                                 }
                             }
                         }
@@ -89,6 +115,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return null;
         }
 
+        /// <summary>
+        /// Get wrappers for a request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="type"></param>
+        /// <param name="request"></param>
+        /// <param name="wrappedType"></param>
+        /// <returns></returns>
         public ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType)
         {
             var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(type);

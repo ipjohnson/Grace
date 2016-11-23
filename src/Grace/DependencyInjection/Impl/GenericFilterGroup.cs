@@ -29,6 +29,10 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public bool UseOr { get; set; }
 
+        /// <summary>
+        /// Add filter to filter group
+        /// </summary>
+        /// <param name="filter"></param>
         public void Add(Func<T, bool> filter)
         {
             _typeFilters = _typeFilters.Add(filter);
@@ -44,7 +48,12 @@ namespace Grace.DependencyInjection.Impl
             return group.InternalFilter;
         }
 
-        protected bool InternalFilter(T type)
+        /// <summary>
+        /// Internal method that does the filtering 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        protected virtual bool InternalFilter(T type)
         {
             if (UseOr)
             {

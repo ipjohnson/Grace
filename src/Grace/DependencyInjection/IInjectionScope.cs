@@ -51,10 +51,10 @@ namespace Grace.DependencyInjection
         /// <param name="disposalScope">disposal scope to use</param>
         /// <param name="type">type to locate</param>
         /// <param name="extraData">extra data passed in</param>
-        /// <param name="consider"></param>
+        /// <param name="consider">filter for strategies</param>
         /// <param name="key">key to use during locate</param>
         /// <param name="allowNull">allow null to be returned</param>
-        /// <param name="isDynamic"></param>
+        /// <param name="isDynamic">is the lookup dynamic</param>
         /// <returns>configuration object</returns>
         object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData,ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic);
         

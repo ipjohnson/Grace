@@ -7,6 +7,9 @@ using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection.Impl
 {
+    /// <summary>
+    /// Locates and compiles activation strategies for
+    /// </summary>
     public class ActivationStrategyCompiler : IActivationStrategyCompiler
     {
         private readonly IInjectionScopeConfiguration _configuration;
@@ -16,6 +19,15 @@ namespace Grace.DependencyInjection.Impl
         private readonly IInjectionContextCreator _injectionContextCreator;
         private readonly IExpressionConstants _constants;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="configuration">scope configuration</param>
+        /// <param name="builder">activation expression builder</param>
+        /// <param name="attributeDiscoveryService">attribute discovery service</param>
+        /// <param name="exportExpressionBuilder">expression builder</param>
+        /// <param name="injectionContextCreator">injection context creator</param>
+        /// <param name="constants">expression constants</param>
         public ActivationStrategyCompiler(IInjectionScopeConfiguration configuration,
                                           IActivationExpressionBuilder builder,
                                           IAttributeDiscoveryService attributeDiscoveryService,
@@ -29,12 +41,20 @@ namespace Grace.DependencyInjection.Impl
             _constants = constants;
             _exportExpressionBuilder = exportExpressionBuilder;
             _injectionContextCreator = injectionContextCreator;
-
-            _builder.SetCompiler(this);
         }
 
+        /// <summary>
+        /// Max object graph depth
+        /// </summary>
         public int MaxObjectGraphDepth => _configuration.Behaviors.MaxObjectGraphDepth;
 
+        /// <summary>
+        /// Creates a new expression request
+        /// </summary>
+        /// <param name="activationType">activation type</param>
+        /// <param name="objectGraphDepth">current object depth</param>
+        /// <param name="requestingScope">requesting scope</param>
+        /// <returns>request</returns>
         public virtual IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth, IInjectionScope requestingScope)
         {
             if (activationType == null) throw new ArgumentNullException(nameof(activationType));
@@ -47,6 +67,12 @@ namespace Grace.DependencyInjection.Impl
                                                    requestingScope);
         }
 
+        /// <summary>
+        /// Create a new expresion result
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <param name="expression">expression</param>
+        /// <returns></returns>
         public virtual IActivationExpressionResult CreateNewResult(IActivationExpressionRequest request, Expression expression = null)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -54,6 +80,14 @@ namespace Grace.DependencyInjection.Impl
             return new ActivationExpressionResult(request) { Expression = expression };
         }
 
+        /// <summary>
+        /// Find a delegate for a specific type
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="locateType"></param>
+        /// <param name="consider"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
         {
             var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
@@ -96,18 +130,82 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
-        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
-        {
-            if (locateType.IsArray ||
-                (locateType.IsConstructedGenericType &&
-                 locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-            {
-                var result = _builder.GetActivationExpression(scope, CreateNewRequest(locateType, 1, scope));
 
-                return CompileDelegate(scope, result);
+        /// <summary>
+        /// Compile a delegate
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="expressionContext"></param>
+        /// <returns></returns>
+        public virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
+        {
+            Expression compileExpression;
+
+            if (expressionContext.Request.InjectionContextRequired())
+            {
+                AddInjectionContextExpression(expressionContext);
             }
 
-            return null;
+            var finalExpression = expressionContext.Expression;
+
+            if (!finalExpression.Type.IsByRef)
+            {
+                finalExpression = Expression.Convert(finalExpression, typeof(object));
+            }
+
+            var parameters = expressionContext.ExtraParameters();
+            var extraExpressions = expressionContext.ExtraExpressions();
+
+            if (parameters == ImmutableLinkedList<ParameterExpression>.Empty &&
+                extraExpressions == ImmutableLinkedList<Expression>.Empty)
+            {
+                compileExpression = finalExpression;
+            }
+            else
+            {
+                var list = new List<Expression>(expressionContext.ExtraExpressions())
+                {
+                    finalExpression
+                };
+
+                compileExpression = Expression.Block(expressionContext.ExtraParameters(), list);
+            }
+
+            var compiled =
+                Expression.Lambda<ActivationStrategyDelegate>(compileExpression,
+                                                              expressionContext.Request.Constants.ScopeParameter,
+                                                              expressionContext.Request.Constants.RootDisposalScope,
+                                                              expressionContext.Request.Constants.InjectionContextParameter)
+                                                              .Compile();
+
+            return compiled;
+        }
+
+        /// <summary>
+        /// Process missing strategy providers
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        public void ProcessMissingStrategyProviders(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            foreach (var strategyProvider in scope.MissingExportStrategyProviders)
+            {
+                foreach (var activationStrategy in strategyProvider.ProvideExports(scope, request))
+                {
+                    if (activationStrategy is ICompiledExportStrategy)
+                    {
+                        scope.StrategyCollectionContainer.AddStrategy(activationStrategy as ICompiledExportStrategy);
+                    }
+                    else if (activationStrategy is ICompiledWrapperStrategy)
+                    {
+                        scope.WrapperCollectionContainer.AddStrategy(activationStrategy as ICompiledWrapperStrategy);
+                    }
+                    else if (activationStrategy is ICompiledDecoratorStrategy)
+                    {
+                        scope.DecoratorCollectionContainer.AddStrategy(activationStrategy as ICompiledDecoratorStrategy);
+                    }
+                }
+            }
         }
 
 
@@ -217,6 +315,51 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
+        /// <summary>
+        /// Find keyed delegate from strategies
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="locateType">locate type</param>
+        /// <param name="consider">filter for strategies</param>
+        /// <param name="key">key to use during locate</param>
+        /// <returns>delegate</returns>
+        protected virtual ActivationStrategyDelegate FindKeyedDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
+        {
+            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(locateType);
+
+            var strategy = collection?.GetKeyedStrategy(key);
+
+            return strategy?.GetActivationStrategyDelegate(scope, this, locateType);
+        }
+
+
+        private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
+        {
+            var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
+                    new[]
+                    {
+                        typeof(Type),
+                        typeof(object)
+                    });
+
+
+            var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
+                                                method,
+                                                Expression.Constant(expressionContext.Request.ActivationType),
+                                                Expression.Constant(null, typeof(object)));
+
+            var assign =
+                Expression.Assign(expressionContext.Request.Constants.InjectionContextParameter, newExpression);
+
+            var ifThen =
+                Expression.IfThen(
+                    Expression.Equal(expressionContext.Request.Constants.InjectionContextParameter,
+                        Expression.Constant(null, typeof(IInjectionContext))),
+                    assign);
+
+            expressionContext.AddExtraExpression(ifThen);
+        }
+
         private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType) where T : IActivationStrategy
         {
             foreach (var strategy in strategyCollection.GetStrategies())
@@ -251,106 +394,19 @@ namespace Grace.DependencyInjection.Impl
             return default(T);
         }
 
-        protected virtual ActivationStrategyDelegate FindKeyedDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
+
+        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
         {
-            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(locateType);
-
-            var strategy = collection?.GetKeyedStrategy(key);
-
-            return strategy?.GetActivationStrategyDelegate(scope, this, locateType);
-        }
-
-        public virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
-        {
-            Expression compileExpression;
-
-            if (expressionContext.Request.InjectionContextRequired())
+            if (locateType.IsArray ||
+                (locateType.IsConstructedGenericType &&
+                 locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                AddInjectionContextExpression(expressionContext);
+                var result = _builder.GetActivationExpression(scope, CreateNewRequest(locateType, 1, scope));
+
+                return CompileDelegate(scope, result);
             }
 
-            var finalExpression = expressionContext.Expression;
-
-            if (!finalExpression.Type.IsByRef)
-            {
-                finalExpression = Expression.Convert(finalExpression, typeof(object));
-            }
-
-            var parameters = expressionContext.ExtraParameters();
-            var extraExpressions = expressionContext.ExtraExpressions();
-
-            if (parameters == ImmutableLinkedList<ParameterExpression>.Empty &&
-                extraExpressions == ImmutableLinkedList<Expression>.Empty)
-            {
-                compileExpression = finalExpression;
-            }
-            else
-            {
-                var list = new List<Expression>(expressionContext.ExtraExpressions())
-                {
-                    finalExpression
-                };
-
-                compileExpression = Expression.Block(expressionContext.ExtraParameters(), list);
-            }
-
-            var compiled =
-                Expression.Lambda<ActivationStrategyDelegate>(compileExpression,
-                                                              expressionContext.Request.Constants.ScopeParameter,
-                                                              expressionContext.Request.Constants.RootDisposalScope,
-                                                              expressionContext.Request.Constants.InjectionContextParameter)
-                                                              .Compile();
-
-            return compiled;
-        }
-
-        public void ProcessMissingStrategyProviders(IInjectionScope scope, IActivationExpressionRequest request)
-        {
-            foreach (var strategyProvider in scope.MissingExportStrategyProviders)
-            {
-                foreach (var activationStrategy in strategyProvider.ProvideExports(scope, request))
-                {
-                    if (activationStrategy is ICompiledExportStrategy)
-                    {
-                        scope.StrategyCollectionContainer.AddStrategy(activationStrategy as ICompiledExportStrategy);
-                    }
-                    else if (activationStrategy is ICompiledWrapperStrategy)
-                    {
-                        scope.WrapperCollectionContainer.AddStrategy(activationStrategy as ICompiledWrapperStrategy);
-                    }
-                    else if (activationStrategy is ICompiledDecoratorStrategy)
-                    {
-                        scope.DecoratorCollectionContainer.AddStrategy(activationStrategy as ICompiledDecoratorStrategy);
-                    }
-                }
-            }
-        }
-
-        private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
-        {
-            var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
-                    new[]
-                    {
-                        typeof(Type),
-                        typeof(object)
-                    });
-
-
-            var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
-                                                method,
-                                                Expression.Constant(expressionContext.Request.ActivationType),
-                                                Expression.Constant(null, typeof(object)));
-
-            var assign =
-                Expression.Assign(expressionContext.Request.Constants.InjectionContextParameter, newExpression);
-
-            var ifThen =
-                Expression.IfThen(
-                    Expression.Equal(expressionContext.Request.Constants.InjectionContextParameter,
-                        Expression.Constant(null, typeof(IInjectionContext))),
-                    assign);
-
-            expressionContext.AddExtraExpression(ifThen);
+            return null;
         }
     }
 }

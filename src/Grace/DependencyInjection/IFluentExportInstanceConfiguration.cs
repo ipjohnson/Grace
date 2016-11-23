@@ -3,6 +3,10 @@ using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
+    /// <summary>
+    /// Configuration interface for export instance
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IFluentExportInstanceConfiguration<T>
     {
         /// <summary>

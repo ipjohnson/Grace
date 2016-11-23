@@ -1,7 +1,15 @@
 ﻿namespace Grace.DependencyInjection.Impl.Wrappers
 {
+    /// <summary>
+    /// Provides a collection of default wrappers
+    /// </summary>
     public class DefaultWrapperCollectionProvider : IDefaultWrapperCollectionProvider
     {
+        /// <summary>
+        /// Provide collection of wrappers
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <returns>wrapper collection container</returns>
         public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> ProvideCollection(IInjectionScope scope)
         {
             var collection = scope.ScopeConfiguration.Implementation

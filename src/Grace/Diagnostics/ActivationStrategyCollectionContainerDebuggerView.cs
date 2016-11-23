@@ -48,11 +48,6 @@ namespace Grace.Diagnostics
         }
 
         /// <summary>
-        /// All strategies
-        /// </summary>
-        //public IEnumerable<T> Strategies => _container.GetAllStrategies();
-
-        /// <summary>
         /// Strategies by type
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]

@@ -113,7 +113,12 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
-        private bool ShouldCreateConcreteStrategy(Type type)
+        /// <summary>
+        /// Should a type be exported
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public virtual bool ShouldCreateConcreteStrategy(Type type)
         {
             return !(type == typeof(string) || type.GetTypeInfo().IsPrimitive || type == typeof(DateTime));
         }

@@ -1,5 +1,8 @@
 ﻿namespace Grace.DependencyInjection.Named
 {
+    /// <summary>
+    /// Extension class for named exports
+    /// </summary>
     public static class ExportNamedExtensions
     {
         //public static object Locate(this IExportLocatorScope scope, string exportName)
