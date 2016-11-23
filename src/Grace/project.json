@@ -38,6 +38,7 @@
         "System.Resources.ResourceManager": "",
         "System.Runtime": "",
         "System.Runtime.Extensions": "",
+        "System.Reflection.Primitives": "", 
         "System.Runtime.Serialization": "",
         "System.Runtime.Serialization.Primitives": "",
         "System.Text.Encoding": "",
