@@ -47,9 +47,29 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var returnValue = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
 
-            foreach (var memberInfo in GetMemberInjectionInfoForConfiguration(request.RequestingScope, request, configuration))
+            foreach (var kvp in GetMemberInjectionInfoForConfiguration(request.RequestingScope, request, configuration))
             {
+                var memberType = kvp.Key.GetMemeberType();
+                object key = null;
 
+
+                if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
+                {
+                    key = kvp.Key.Name;
+                }
+
+                var found = memberType.IsGenericParameter ||
+                            request.RequestingScope.CanLocate(memberType, key: key);
+
+                returnValue =
+                    returnValue.Add(new ActivationStrategyDependency(kvp.Key is PropertyInfo ? DependencyType.Property : DependencyType.Field,
+                                                                     configuration.ActivationStrategy,
+                                                                     kvp.Key, 
+                                                                     kvp.Key.GetMemeberType(), 
+                                                                     kvp.Key.Name, 
+                                                                     false, 
+                                                                     false,
+                                                                     found));
             }
 
             return returnValue;

@@ -42,8 +42,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns>dependencies</returns>
         public IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
-            return ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+            var list = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+
+            foreach (var methodInjection in configuration.MethodInjections)
+            {
+                list = list.AddRange(GetDependenciesForMethod(methodInjection, configuration, request));
+            }
+
+            if (configuration.ActivationMethod != null)
+            {
+                list = list.AddRange(GetDependenciesForMethod(configuration.ActivationMethod, configuration, request));
+            }
+
+            return list;
         }
+
 
         /// <summary>
         /// Create expressions for calling methods
@@ -78,6 +91,36 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return activationExpressionResult;
+        }
+        
+        private IEnumerable<ActivationStrategyDependency> GetDependenciesForMethod(MethodInjectionInfo methodInjection, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
+        {
+            var list = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+
+            foreach (var parameter in methodInjection.Method.GetParameters())
+            {
+                object key = null;
+
+                if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
+                {
+                    key = parameter.Name;
+                }
+
+                var found = parameter.ParameterType.IsGenericParameter ||
+                            request.RequestingScope.CanLocate(parameter.ParameterType, key: key);
+
+                list =
+                    list.Add(new ActivationStrategyDependency(DependencyType.MethodParameter,
+                                                              configuration.ActivationStrategy, 
+                                                              parameter, 
+                                                              parameter.ParameterType, 
+                                                              parameter.Name, 
+                                                              false,
+                                                              false, 
+                                                              found));
+            }
+
+            return list;
         }
 
         private static void AddMethodCall(IInjectionScope scope, IActivationExpressionRequest request,

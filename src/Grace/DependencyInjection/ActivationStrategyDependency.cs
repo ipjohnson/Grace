@@ -15,9 +15,14 @@ namespace Grace.DependencyInjection
         ConstructorParameter,
 
         /// <summary>
-        /// For member (field or property)
+        /// Property
         /// </summary>
-        Member,
+        Property,
+
+        /// <summary>
+        /// Field
+        /// </summary>
+        Field,
 
         /// <summary>
         /// Method parameter
@@ -95,6 +100,6 @@ namespace Grace.DependencyInjection
         public bool IsSatisfied { get; set; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebuggerDisplayString => $"{ReflectionService.GetFriendlyNameForType(TypeBeingImported)} ({DependencyType} {MemberName})";
+        private string DebuggerDisplayString => $"{ReflectionService.GetFriendlyNameForType(TypeBeingImported)} {MemberName} ({DependencyType})";
     }
 }

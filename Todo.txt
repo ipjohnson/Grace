@@ -1,9 +1,5 @@
 Dynamic - Array, IEnumerable
 
-Dependencies for Properties
-
-Dependencies for method parameters
-
 Update mvc extensions
 
 --------- beta ----------
