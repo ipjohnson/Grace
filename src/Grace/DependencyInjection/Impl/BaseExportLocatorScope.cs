@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection.Impl
         {
             ActivationDelegates = activationDelegates;
             Parent = parent;
-            Name = name ?? "";
+            ScopeName = name ?? "";
 
             ActivationDelegates = activationDelegates;
             ArrayLengthMinusOne = activationDelegates.Length - 1;
@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Name of scope
         /// </summary>
-        public string Name { get; }
+        public string ScopeName { get; }
 
         /// <summary>
         /// Scope id

@@ -37,7 +37,7 @@ namespace Grace.Diagnostics
         /// <summary>
         /// Name of the scope
         /// </summary>
-        public string Name => _injectionScope.Name;
+        public string Name => _injectionScope.ScopeName;
 
         /// <summary>
         /// Scope id

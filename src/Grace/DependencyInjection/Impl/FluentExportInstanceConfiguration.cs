@@ -101,6 +101,18 @@ namespace Grace.DependencyInjection.Impl
             => new WhenConditionConfiguration<IFluentExportInstanceConfiguration<T>>(condition => _exportConfiguration.AddCondition(condition), this);
 
         /// <summary>
+        /// Set priority for export
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public IFluentExportInstanceConfiguration<T> WithPriority(int priority)
+        {
+            _exportConfiguration.Priority = priority;
+
+            return this;
+        }
+
+        /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>
         public ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle => 

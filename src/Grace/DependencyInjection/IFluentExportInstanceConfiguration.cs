@@ -61,5 +61,12 @@ namespace Grace.DependencyInjection
         /// Use export under specific conditions
         /// </summary>
         IWhenConditionConfiguration<IFluentExportInstanceConfiguration<T>> When { get; }
+
+        /// <summary>
+        /// Set priority for export
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> WithPriority(int priority);
     }
 }

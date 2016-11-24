@@ -10,8 +10,6 @@ Export Initialize
 
 Collection Parameter configuration
 
-WhatDoIHave
-
 Named Exports extensions
 
 Simple Exports extensions

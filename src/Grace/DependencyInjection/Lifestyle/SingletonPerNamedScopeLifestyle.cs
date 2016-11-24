@@ -105,7 +105,7 @@ namespace Grace.DependencyInjection.Lifestyle
         {
             while (scope != null)
             {
-                if (scope.Name == scopeName)
+                if (scope.ScopeName == scopeName)
                 {
                     break;
                 }

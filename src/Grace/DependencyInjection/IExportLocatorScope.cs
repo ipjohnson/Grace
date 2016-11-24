@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Name of the scope
         /// </summary>
-        string Name { get; }
+        string ScopeName { get; }
 
         /// <summary>
         /// Gets a named object that can be used for locking
