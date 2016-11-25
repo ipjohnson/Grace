@@ -57,7 +57,20 @@ namespace Grace.DependencyInjection
         /// <param name="isDynamic">is the lookup dynamic</param>
         /// <returns>configuration object</returns>
         object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData,ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic);
-        
+
+        /// <summary>
+        /// Internal locate all method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="type"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        List<T> InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer);
+
         /// <summary>
         /// Creates a new child scope
         /// This is best used for long term usage, not per request scenario

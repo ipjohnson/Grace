@@ -36,5 +36,12 @@ namespace Grace.DependencyInjection
         /// <param name="scopeName">scope name</param>
         /// <returns>new scope</returns>
         IExportLocatorScope BeginLifetimeScope(string scopeName = "");
+
+        /// <summary>
+        /// Create injection context
+        /// </summary>
+        /// <param name="extraData">extra data</param>
+        /// <returns></returns>
+        IInjectionContext CreateContext(object extraData = null);
     }
 }

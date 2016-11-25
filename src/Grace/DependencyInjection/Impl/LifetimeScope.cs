@@ -39,12 +39,12 @@ namespace Grace.DependencyInjection.Impl
         /// Can Locator type
         /// </summary>
         /// <param name="type">type to locate</param>
-        /// <param name="filter"></param>
+        /// <param name="consider"></param>
         /// <param name="key">key to use while locating</param>
         /// <returns></returns>
-        public bool CanLocate(Type type, ActivationStrategyFilter filter = null, object key = null)
+        public bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
         {
-            return _injectionScope.CanLocate(type);
+            return _injectionScope.CanLocate(type, consider, key);
         }
 
         /// <summary>
@@ -87,6 +87,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Create injection context
+        /// </summary>
+        /// <param name="extraData">extra data</param>
+        /// <returns></returns>
+        public IInjectionContext CreateContext(object extraData = null)
+        {
+            return _injectionScope.CreateContext(extraData);
+        }
+
+        /// <summary>
         /// Locate type
         /// </summary>
         /// <typeparam name="T">type to locate</typeparam>
@@ -116,29 +126,28 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">type ot locate</param>
         /// <param name="extraData">extra data to be used while locating</param>
-        /// <param name="filter">strategy filter</param>
-        /// <param name="withKey">locate with key</param>
+        /// <param name="consider">strategy filter</param>
         /// <param name="comparer">comparer to use to sort collection</param>
         /// <returns></returns>
-        public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter filter = null, object withKey = null,
-            IComparer<object> comparer = null)
+        public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
         {
-            return Parent.LocateAll(type, extraData, filter, withKey, comparer);
+            var context = _injectionScope.CreateContext(extraData);
+
+            return _injectionScope.InternalLocateAll(this, this, type, context, consider, comparer);
         }
 
         /// <summary>
-        /// 
+        /// Locate all of a specific type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="extraData"></param>
-        /// <param name="filter"></param>
-        /// <param name="withKey"></param>
-        /// <param name="comparer"></param>
+        /// <param name="type">type to locate, can be null</param>
+        /// <param name="extraData">extra data to use during locate</param>
+        /// <param name="consider">filter for strategies</param>
+        /// <param name="comparer">comparer</param>
         /// <returns></returns>
-        public List<T> LocateAll<T>(object extraData = null, ActivationStrategyFilter filter = null, object withKey = null,
-            IComparer<T> comparer = null)
+        public List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
         {
-            return Parent.LocateAll<T>(extraData, filter, withKey, comparer);
+            return _injectionScope.InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
         }
 
         /// <summary>

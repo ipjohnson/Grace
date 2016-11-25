@@ -98,6 +98,9 @@ namespace Grace.DependencyInjection
         /// </summary>
         protected static readonly ImplementationFactory DefaultImplementation;
 
+        /// <summary>
+        /// static constructor that sets up a default implementation for the DI container
+        /// </summary>
         static InjectionScopeConfiguration()
         {
             DefaultImplementation = new ImplementationFactory();
@@ -170,6 +173,9 @@ namespace Grace.DependencyInjection
             DefaultImplementation.ExportInstance<IInjectionContextCreator>(f => new InjectionContextCreator());
 
             DefaultImplementation.ExportInstance< IActivationStrategyAttributeProcessor>(f => new ActivationStrategyAttributeProcessor());
+
+            DefaultImplementation.ExportInstance<IDynamicArrayLocator>(f => new DynamicArrayLocator());
+            DefaultImplementation.ExportInstance<IDynamicIEnumerableLocator>(f => new DynamicIEnumerableLocator());
         }
 
         #endregion

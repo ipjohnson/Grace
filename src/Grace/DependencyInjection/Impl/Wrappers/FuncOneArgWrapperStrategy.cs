@@ -115,7 +115,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             {
                 return arg1 =>
                 {
-                    var newContext = context?.Clone() ?? _injectionContextCreator.CreateContext(typeof(TResult), null);
+                    var newContext = context?.Clone() ?? _injectionContextCreator.CreateContext(null);
 
                     newContext.SetExtraData(_arg1Id, arg1);
 

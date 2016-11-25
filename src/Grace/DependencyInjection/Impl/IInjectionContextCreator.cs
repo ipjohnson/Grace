@@ -10,9 +10,8 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Create new injection context
         /// </summary>
-        /// <param name="type">type being requested</param>
         /// <param name="extraData">current extra data</param>
         /// <returns>new context</returns>
-        IInjectionContext CreateContext(Type type, object extraData);
+        IInjectionContext CreateContext(object extraData);
     }
 }
