@@ -47,6 +47,9 @@ build/
 *.scc
 *.lock.json
 
+#VS restore
+*/restore.dg
+
 # Visual C++ cache files
 ipch/
 *.aps
@@ -174,4 +177,3 @@ $RECYCLE.BIN/
 /NuGet/lib
 /Source/.vs/config/applicationhost.config
 /.vs/config/applicationhost.config
-/.vs/restore.dg
