@@ -1,5 +1,3 @@
-Dynamic - Array, IEnumerable
-
 Update mvc extensions
 
 --------- beta ----------

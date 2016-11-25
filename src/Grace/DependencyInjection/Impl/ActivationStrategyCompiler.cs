@@ -338,14 +338,12 @@ namespace Grace.DependencyInjection.Impl
             var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
                     new[]
                     {
-                        typeof(Type),
                         typeof(object)
                     });
 
 
             var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
                                                 method,
-                                                Expression.Constant(expressionContext.Request.ActivationType),
                                                 Expression.Constant(null, typeof(object)));
 
             var assign =

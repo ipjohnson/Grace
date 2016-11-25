@@ -2612,7 +2612,7 @@
           "netstandard1.0/Grace.dll": {}
         }
       },
-      "Grace.DependencyInjection.Extensions/1.0.0": {
+      "Grace.DependencyInjection.Extensions/5.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.5",
         "dependencies": {
@@ -3425,9 +3425,6 @@
       "Grace/5.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
         "frameworkAssemblies": [
           "System.Data",
           "System.Numerics",
@@ -3442,13 +3439,16 @@
           "net45/Grace.dll": {}
         }
       },
-      "Grace.DependencyInjection.Extensions/1.0.0": {
+      "Grace.DependencyInjection.Extensions/5.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
           "Grace": "5.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0"
         },
+        "frameworkAssemblies": [
+          "System.Runtime"
+        ],
         "compile": {
           "net451/Grace.DependencyInjection.Extensions.dll": {}
         },
@@ -8487,7 +8487,7 @@
       "path": "../../src/Grace/project.json",
       "msbuildProject": "../../src/Grace/Grace.xproj"
     },
-    "Grace.DependencyInjection.Extensions/1.0.0": {
+    "Grace.DependencyInjection.Extensions/5.0.0": {
       "type": "project",
       "path": "../../src/Grace.DependencyInjection.Extensions/project.json",
       "msbuildProject": "../../src/Grace.DependencyInjection.Extensions/Grace.DependencyInjection.Extensions.xproj"
