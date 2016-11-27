@@ -141,15 +141,7 @@ namespace Grace.DependencyInjection
         /// <param name="factory">export factory</param>
         /// <returns></returns>
         IFluentExportInstanceConfiguration<TResult> ExportFactory<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory);
-
-
-        /// <summary>
-        /// Initialize all types using a decorator
-        /// </summary>
-        /// <typeparam name="T">type to decorate</typeparam>
-        /// <param name="apply">apply logic</param>
-        void ExportInitialize<T>(Action<T> apply);
-
+        
         /// <summary>
         /// Export a specific value
         /// </summary>
