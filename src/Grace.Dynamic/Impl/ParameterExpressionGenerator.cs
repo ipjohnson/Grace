@@ -20,21 +20,21 @@ namespace Grace.Dynamic.Impl
 
             if (expression == expressionConstants.ScopeParameter)
             {
-                request.ILGenerator.Emit(OpCodes.Ldarg_0);
+                request.ILGenerator.Emit(OpCodes.Ldarg_1);
 
                 return true;
             }
 
             if (expression == expressionConstants.RootDisposalScope)
             {
-                request.ILGenerator.Emit(OpCodes.Ldarg_1);
+                request.ILGenerator.Emit(OpCodes.Ldarg_2);
 
                 return true;
             }
 
             if (expression == expressionConstants.InjectionContextParameter)
             {
-                request.ILGenerator.Emit(OpCodes.Ldarg_2);
+                request.ILGenerator.Emit(OpCodes.Ldarg_3);
 
                 return true;
             }
