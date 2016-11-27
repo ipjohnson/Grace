@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class MembersThatConfiguration
     {
-        private readonly GenericFilterGroup<MethodInfo> _filters = new GenericFilterGroup<MethodInfo>();
+        private readonly GenericFilterGroup<MemberInfo> _filters = new GenericFilterGroup<MemberInfo>();
 
         /// <summary>
         /// Are named a specific name
