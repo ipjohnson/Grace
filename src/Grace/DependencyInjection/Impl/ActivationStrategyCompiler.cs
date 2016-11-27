@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data.Immutable;
@@ -139,8 +140,26 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
         {
-            Expression compileExpression;
+            ParameterExpression[] parameters;
+            Expression[] extraExpressions;
 
+            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out parameters, out extraExpressions);
+
+            var compiled = CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
+
+            return compiled;
+        }
+
+        /// <summary>
+        /// Process expression result for compiling
+        /// </summary>
+        /// <param name="expressionContext"></param>
+        /// <param name="parameters"></param>
+        /// <param name="extraExpressions"></param>
+        /// <returns></returns>
+        protected virtual Expression ProcessExpressionResultForCompile(IActivationExpressionResult expressionContext,
+            out ParameterExpression[] parameters, out Expression[] extraExpressions)
+        {
             if (expressionContext.Request.InjectionContextRequired())
             {
                 AddInjectionContextExpression(expressionContext);
@@ -153,11 +172,34 @@ namespace Grace.DependencyInjection.Impl
                 finalExpression = Expression.Convert(finalExpression, typeof(object));
             }
 
-            var parameters = expressionContext.ExtraParameters();
-            var extraExpressions = expressionContext.ExtraExpressions();
+            if (finalExpression.NodeType == ExpressionType.Convert && 
+               !expressionContext.Expression.Type.GetTypeInfo().IsValueType)
+            {
+                finalExpression = ((UnaryExpression) finalExpression).Operand;
+            }
+            
+            parameters = expressionContext.ExtraParameters().ToArray();
+            extraExpressions = expressionContext.ExtraExpressions().ToArray();
 
-            if (parameters == ImmutableLinkedList<ParameterExpression>.Empty &&
-                extraExpressions == ImmutableLinkedList<Expression>.Empty)
+            return finalExpression;
+        }
+
+        /// <summary>
+        /// Compiles an expression result to a delegate
+        /// </summary>
+        /// <param name="expressionContext"></param>
+        /// <param name="parameters"></param>
+        /// <param name="extraExpressions"></param>
+        /// <param name="finalExpression"></param>
+        /// <returns></returns>
+        protected virtual ActivationStrategyDelegate CompileExpressionResultToDelegate(
+            IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions,
+            Expression finalExpression)
+        {
+            Expression compileExpression;
+
+            if (parameters.Length == 0 &&
+                extraExpressions.Length == 0)
             {
                 compileExpression = finalExpression;
             }
@@ -173,10 +215,9 @@ namespace Grace.DependencyInjection.Impl
 
             var compiled =
                 Expression.Lambda<ActivationStrategyDelegate>(compileExpression,
-                                                              expressionContext.Request.Constants.ScopeParameter,
-                                                              expressionContext.Request.Constants.RootDisposalScope,
-                                                              expressionContext.Request.Constants.InjectionContextParameter)
-                                                              .Compile();
+                        expressionContext.Request.Constants.ScopeParameter,
+                        expressionContext.Request.Constants.RootDisposalScope,
+                        expressionContext.Request.Constants.InjectionContextParameter).Compile();
 
             return compiled;
         }

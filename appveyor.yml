@@ -19,6 +19,7 @@ after_build:
 - cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
 artifacts:
