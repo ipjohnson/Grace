@@ -2,7 +2,7 @@
   "version": "5.0.0-*",
   "authors": [ "Ian Johnson" ],
   "description": "Grace is a feature rich Dependency Injection Container",
-  "dependencies": {    
+  "dependencies": {
   },
 
   "frameworks": {
@@ -38,7 +38,7 @@
         "System.Resources.ResourceManager": "",
         "System.Runtime": "",
         "System.Runtime.Extensions": "",
-        "System.Reflection.Primitives": "", 
+        "System.Reflection.Primitives": "",
         "System.Runtime.Serialization": "",
         "System.Runtime.Serialization.Primitives": "",
         "System.Text.Encoding": "",
@@ -55,5 +55,22 @@
   },
   "buildOptions": {
     "xmlDoc": true
+  },
+  "packOptions": {
+    "licenseUrl": "https://github.com/ipjohnson/Grace/blob/master/License.md",
+    "projectUrl": "https://github.com/ipjohnson/Grace",
+    "releaseNotes": "5.0 is a major rewrite and some features may not be there",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ipjohnson/Grace"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "Grace is a feature rich dependency injection container for .Net 4.5, .Net Standard 1.0, and PCL",
+    "tags": [
+      "Grace",
+      "di",
+      "ioc",
+      "dependencyinjection"
+    ]
   }
 }
