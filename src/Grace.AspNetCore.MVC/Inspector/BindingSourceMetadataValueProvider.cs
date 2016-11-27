@@ -20,7 +20,8 @@ namespace Grace.AspNetCore.MVC.Inspector
     public class BindingSourceMetadataValueProvider : IInjectionValueProvider
     {
         private IModelMetadataProvider _modelMetadataProvider;
-        private IModelBinderFactory _modelBinderFactory;
+        private IModelBinderFactory _modelBinderFactory;        
+        private IReadOnlyList<IValueProviderFactory> _factories;
 
         public IActivationExpressionResult GetExpressionResult(IInjectionScope scope, IActivationExpressionRequest request)
         {
@@ -113,11 +114,22 @@ namespace Grace.AspNetCore.MVC.Inspector
                 scope.TryLocate(out _modelMetadataProvider);
             }
 
-            if (_modelBinderFactory != null && _modelMetadataProvider != null)
+            if (_factories == null)
+            {
+                IOptions<MvcOptions> optionsAccessor;
+
+                if (scope.TryLocate(out optionsAccessor))
+                {
+                    _factories = optionsAccessor.Value.ValueProviderFactories.ToArray();
+                }
+            }
+
+            if (_modelBinderFactory != null && _modelMetadataProvider != null && _factories != null)
             {
                 var defaultValue = request.DefaultValue?.DefaultValue;
 
                 var instance = Activator.CreateInstance(closedType,
+                                                        _factories,
                                                         name,
                                                         attributes,
                                                         defaultValue,
@@ -137,16 +149,19 @@ namespace Grace.AspNetCore.MVC.Inspector
 
         public class BindingSourceHelper<T>
         {
+            private readonly IReadOnlyList<IValueProviderFactory> _factories;
             private readonly string _name;
             private readonly object _defaultValue;
             private readonly StaticInjectionContext _staticInjectionContext;
             private readonly BindingInfo _binding;
 
-            public BindingSourceHelper(string name,
+            public BindingSourceHelper(IReadOnlyList<IValueProviderFactory> factories,
+                                       string name,
                                        IEnumerable<object> attributes,
                                        object defaultValue,
                                        StaticInjectionContext staticInjectionContext)
             {
+                _factories = factories;
                 _name = name;
                 _defaultValue = defaultValue;
                 _staticInjectionContext = staticInjectionContext;
@@ -159,6 +174,8 @@ namespace Grace.AspNetCore.MVC.Inspector
                 var controllerContext = new ControllerContext(accessor.ActionContext);
                 var argumentBinder = scope.Locate<DefaultControllerArgumentBinder>();
 
+                controllerContext.ValueProviderFactories = new CopyOnWriteList<IValueProviderFactory>(_factories);    
+                    
                 var descriptor = new ParameterDescriptor { BindingInfo = _binding, Name = _name, ParameterType = typeof(T) };
 
                 var activateTask = argumentBinder.BindModelAsync(descriptor, controllerContext);
