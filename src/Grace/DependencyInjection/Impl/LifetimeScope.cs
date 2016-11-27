@@ -36,6 +36,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Create as a new IExportLocate scope
+        /// </summary>
+        /// <param name="scopeName">scope name</param>
+        /// <returns>new scope</returns>
+        public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
+        {
+            return new LifetimeScope(this, scopeName, ActivationDelegates);
+        }
+
+        /// <summary>
         /// Can Locator type
         /// </summary>
         /// <param name="type">type to locate</param>
@@ -45,6 +55,16 @@ namespace Grace.DependencyInjection.Impl
         public bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
         {
             return _injectionScope.CanLocate(type, consider, key);
+        }
+
+        /// <summary>
+        /// Create injection context
+        /// </summary>
+        /// <param name="extraData">extra data</param>
+        /// <returns>injection context</returns>
+        public IInjectionContext CreateContext(object extraData = null)
+        {
+            return _injectionScope.CreateContext(extraData);
         }
 
         /// <summary>
@@ -62,6 +82,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Locate type
+        /// </summary>
+        /// <typeparam name="T">type to locate</typeparam>
+        /// <returns>located instance</returns>
+        public T Locate<T>()
+        {
+            return (T)Locate(typeof(T));
+        }
+
+        /// <summary>
         /// Locate specific type using extra data or key
         /// </summary>
         /// <param name="type">type to locate</param>
@@ -73,37 +103,18 @@ namespace Grace.DependencyInjection.Impl
         // ReSharper disable once MethodOverloadWithOptionalParameter
         public object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            return LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
-        }
+            if (isDynamic || withKey != null || consider != null)
+            {
+                return LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
+            }
 
-        /// <summary>
-        /// Create as a new IExportLocate scope
-        /// </summary>
-        /// <param name="scopeName">scope name</param>
-        /// <returns>new scope</returns>
-        public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
-        {
-            return new LifetimeScope(this, scopeName, ActivationDelegates);
-        }
+            var hashCode = type.GetHashCode();
 
-        /// <summary>
-        /// Create injection context
-        /// </summary>
-        /// <param name="extraData">extra data</param>
-        /// <returns></returns>
-        public IInjectionContext CreateContext(object extraData = null)
-        {
-            return _injectionScope.CreateContext(extraData);
-        }
+            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-        /// <summary>
-        /// Locate type
-        /// </summary>
-        /// <typeparam name="T">type to locate</typeparam>
-        /// <returns>located instance</returns>
-        public T Locate<T>()
-        {
-            return (T)Locate(typeof(T));
+            return func != null ? 
+                   func(this, this, extraData == null ? null : CreateContext(extraData)) : 
+                   LocateFromParent(type, null, null, null, true, false);
         }
 
         /// <summary>
@@ -118,7 +129,7 @@ namespace Grace.DependencyInjection.Impl
         // ReSharper disable once MethodOverloadWithOptionalParameter
         public T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            return (T)LocateFromParent(typeof(T), extraData, consider, withKey, true, isDynamic);
+            return (T)Locate(typeof(T), extraData, consider, withKey, isDynamic);
         }
 
         /// <summary>
@@ -128,7 +139,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to be used while locating</param>
         /// <param name="consider">strategy filter</param>
         /// <param name="comparer">comparer to use to sort collection</param>
-        /// <returns></returns>
+        /// <returns>list of objects</returns>
         public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
         {
             var context = _injectionScope.CreateContext(extraData);
@@ -144,7 +155,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to use during locate</param>
         /// <param name="consider">filter for strategies</param>
         /// <param name="comparer">comparer</param>
-        /// <returns></returns>
+        /// <returns>list of all T</returns>
         public List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
         {
             return _injectionScope.InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
@@ -162,20 +173,18 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            var returnValue = false;
-            var objectValue = LocateFromParent(typeof(T), extraData, consider, withKey, false, isDynamic);
+            object outValue;
 
-            if (objectValue != null)
+            if (TryLocate(typeof(T), out outValue, extraData, consider, withKey, isDynamic))
             {
-                returnValue = true;
-                value = (T)objectValue;
-            }
-            else
-            {
-                value = default(T);
+                value = (T)outValue;
+
+                return true;
             }
 
-            return returnValue;
+            value = default(T);
+
+            return false;
         }
 
         /// <summary>
@@ -183,13 +192,27 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">type to locate</param>
         /// <param name="value">located value</param>
-        /// <param name="extraData"></param>
-        /// <param name="consider"></param>
-        /// <param name="withKey"></param>
-        /// <param name="isDynamic"></param>
-        /// <returns></returns>
+        /// <param name="extraData">extra data to be used during locate</param>
+        /// <param name="consider">filter to use during location</param>
+        /// <param name="withKey">key to use during locate</param>
+        /// <param name="isDynamic">is the request dynamic</param>
+        /// <returns>true if export could be located</returns>
         public bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
+            if (!isDynamic && withKey == null && consider == null)
+            {
+                var hashCode = type.GetHashCode();
+
+                var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+
+                if (func != null)
+                {
+                    value = func(this, this, extraData == null ? null : CreateContext(extraData));
+
+                    return value != null;
+                }
+            }
+
             value = LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
 
             return value != null;
