@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Grace.AspNetCore.MVC.Inspector
@@ -26,7 +28,7 @@ namespace Grace.AspNetCore.MVC.Inspector
             {
                 return null;
             }
-            
+
             var propertyInfo = request.Info as PropertyInfo;
 
             if (propertyInfo != null)
@@ -43,7 +45,7 @@ namespace Grace.AspNetCore.MVC.Inspector
                                                                   propertyInfo.PropertyType,
                                                                   propertyInfo.GetCustomAttributes());
                 }
-                
+
                 return null;
             }
 
@@ -64,7 +66,7 @@ namespace Grace.AspNetCore.MVC.Inspector
                         fieldInfo.PropertyType,
                         fieldInfo.GetCustomAttributes());
                 }
-                
+
                 return null;
             }
 
@@ -84,18 +86,18 @@ namespace Grace.AspNetCore.MVC.Inspector
                         parameterInfo.ParameterType,
                         parameterInfo.GetCustomAttributes(true));
                 }
-                
+
                 return null;
             }
 
             return null;
         }
 
-        private IActivationExpressionResult CreateExpressionResultFromBindingAttribute(IInjectionScope scope, 
-                                                                                       IActivationExpressionRequest request,  
-                                                                                       object cacheKey, 
-                                                                                       string name, 
-                                                                                       Type modelType, 
+        private IActivationExpressionResult CreateExpressionResultFromBindingAttribute(IInjectionScope scope,
+                                                                                       IActivationExpressionRequest request,
+                                                                                       object cacheKey,
+                                                                                       string name,
+                                                                                       Type modelType,
                                                                                        IEnumerable<object> attributes)
         {
             var closedType = typeof(BindingSourceHelper<>).MakeGenericType(modelType);
@@ -115,18 +117,15 @@ namespace Grace.AspNetCore.MVC.Inspector
             {
                 var defaultValue = request.DefaultValue?.DefaultValue;
 
-                var instance = Activator.CreateInstance(closedType, 
-                                                        cacheKey, 
-                                                        name, 
-                                                        attributes, 
+                var instance = Activator.CreateInstance(closedType,
+                                                        name,
+                                                        attributes,
                                                         defaultValue,
-                                                        request.GetStaticInjectionContext(),
-                                                        _modelBinderFactory,
-                                                        _modelMetadataProvider);
+                                                        request.GetStaticInjectionContext());
 
-                var closedMethod = closedType.GetRuntimeMethod("GetValue", new[] {typeof(IExportLocatorScope)});
+                var closedMethod = closedType.GetRuntimeMethod("GetValue", new[] { typeof(IExportLocatorScope) });
 
-                var expression = Expression.Call(Expression.Constant(instance), 
+                var expression = Expression.Call(Expression.Constant(instance),
                                                  closedMethod,
                                                  request.Constants.ScopeParameter);
 
@@ -138,96 +137,49 @@ namespace Grace.AspNetCore.MVC.Inspector
 
         public class BindingSourceHelper<T>
         {
-            private readonly object _cacheKey;
             private readonly string _name;
             private readonly object _defaultValue;
             private readonly StaticInjectionContext _staticInjectionContext;
-            private readonly IModelBinderFactory _binderFactory;
             private readonly BindingInfo _binding;
-            private readonly ModelMetadata _metadata;
 
-            public BindingSourceHelper(object cacheKey,
-                                       string name, 
-                                       IEnumerable<object> attributes, 
+            public BindingSourceHelper(string name,
+                                       IEnumerable<object> attributes,
                                        object defaultValue,
-                                       StaticInjectionContext staticInjectionContext,
-                                       IModelBinderFactory binderFactory,
-                                       IModelMetadataProvider metadataProvider)
+                                       StaticInjectionContext staticInjectionContext)
             {
-                _cacheKey = cacheKey;
                 _name = name;
                 _defaultValue = defaultValue;
                 _staticInjectionContext = staticInjectionContext;
-                _binderFactory = binderFactory;
                 _binding = BindingInfo.GetBindingInfo(attributes);
-                _metadata = metadataProvider.GetMetadataForType(typeof(T));
             }
 
             public T GetValue(IExportLocatorScope scope)
             {
-                var activateTask = ActivateAsync(scope);
+                var accessor = scope.Locate<IActionContextAccessor>();
+                var controllerContext = new ControllerContext(accessor.ActionContext);
+                var argumentBinder = scope.Locate<DefaultControllerArgumentBinder>();
+
+                var descriptor = new ParameterDescriptor { BindingInfo = _binding, Name = _name, ParameterType = typeof(T) };
+
+                var activateTask = argumentBinder.BindModelAsync(descriptor, controllerContext);
 
                 activateTask.Wait();
-                
+
                 if (activateTask.Status == TaskStatus.RanToCompletion)
                 {
-                    return (T)activateTask.Result;
+                    var result = activateTask.Result;
+
+                    if (result.IsModelSet)
+                    {
+                        return (T)result.Model;
+                    }
                 }
 
                 if (activateTask.Exception != null)
                 {
-                    throw new LocateException(_staticInjectionContext, 
+                    throw new LocateException(_staticInjectionContext,
                                               activateTask.Exception,
                                               $"Exception thrown while trying to bind to {_name}");
-                }
-
-                return default(T);
-            }
-
-
-            private async Task<object> ActivateAsync(IExportLocatorScope exportInjectionScope)
-            {
-                var binder = _binderFactory.CreateBinder(new ModelBinderFactoryContext()
-                {
-                    BindingInfo = _binding,
-                    Metadata = _metadata,
-                    CacheToken = _cacheKey,
-                });
-
-                var accessor = exportInjectionScope.Locate<IActionContextAccessor>();
-                var controllerContext = new ControllerContext(accessor.ActionContext);
-
-                var valueProvider = await CompositeValueProvider.CreateAsync(controllerContext);
-
-                var modelBindingContext = DefaultModelBindingContext.CreateBindingContext(
-                    accessor.ActionContext,
-                    valueProvider,
-                    _metadata,
-                    _binding,
-                    _name);
-
-                var parameterModelName = _binding.BinderModelName ?? _metadata.BinderModelName;
-                if (parameterModelName != null)
-                {
-                    // The name was set explicitly, always use that as the prefix.
-                    modelBindingContext.ModelName = parameterModelName;
-                }
-                else if (modelBindingContext.ValueProvider.ContainsPrefix(_name))
-                {
-                    // We have a match for the parameter name, use that as that prefix.
-                    modelBindingContext.ModelName = _name;
-                }
-                else
-                {
-                    // No match, fallback to empty string as the prefix.
-                    modelBindingContext.ModelName = string.Empty;
-                }
-
-                await binder.BindModelAsync(modelBindingContext);
-
-                if (modelBindingContext.Result.IsModelSet)
-                {
-                    return modelBindingContext.Result.Model;
                 }
 
                 if (_defaultValue != null)
@@ -235,7 +187,6 @@ namespace Grace.AspNetCore.MVC.Inspector
                     return (T) _defaultValue;
                 }
 
-                // if we can't match return the default value
                 return default(T);
             }
         }
