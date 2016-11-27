@@ -8,13 +8,13 @@
     <projectUrl>https://github.com/ipjohnson/Grace</projectUrl>
     <id>Grace</id>
     <title>Grace</title>
-    <description>Grace is a portable class library that contains a feature rich Dependency Injection Container</description>
-    <summary>Grace is a portable class library that contains a feature rich Dependency Injection Container and other services</summary>
-    <releaseNotes>5.0 is a major rewrite and may not support all 4.0 features</releaseNotes>
+    <description>Grace is a feature rich Dependency Injection Container supporting .Net 4.5, .Net Standard 1.0, and PCL</description>
+    <summary>Grace is a feature rich Dependency Injection Container that focuses on ease of use and performance</summary>
+    <releaseNotes>5.0 is a major rewrite and some features may not exists in the same form as before.</releaseNotes>
     <copyright>Copyright 2016 Ian Johnson</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
-    <tags>IoC Dependency Injection Container Portable Library</tags>
+    <tags>IoC Dependency Injection Container</tags>
   </metadata>
 </package>
 
