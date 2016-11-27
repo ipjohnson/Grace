@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl.FactoryStrategies
 
             var arg3Result = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg3Request);
 
-            Expression expression = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(), arg1Result.Expression, arg2Result.Expression, arg3Result.Expression);
+            Expression expression = Expression.Call(_func.Target == null ? null : Expression.Constant(_func.Target), _func.GetMethodInfo(), arg1Result.Expression, arg2Result.Expression, arg3Result.Expression);
 
             expression = ApplyNullCheckAndAddDisposal(scope, request, expression);
 

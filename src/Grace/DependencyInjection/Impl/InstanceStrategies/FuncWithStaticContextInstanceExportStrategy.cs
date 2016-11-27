@@ -37,7 +37,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             var staticContext = request.GetStaticInjectionContext();
 
             Expression expressionStatement = 
-                Expression.Call(Expression.Constant(_func.Target),
+                Expression.Call(_func.Target == null ? null : Expression.Constant(_func.Target),
                                 _func.GetMethodInfo(), 
                                 request.Constants.ScopeParameter,
                                 Expression.Constant(staticContext));

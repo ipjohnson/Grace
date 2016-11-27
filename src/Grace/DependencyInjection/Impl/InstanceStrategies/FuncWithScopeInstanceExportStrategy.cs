@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
-            Expression expressionStatement = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(), request.Constants.ScopeParameter);
+            Expression expressionStatement = Expression.Call(_func.Target == null ? null : Expression.Constant(_func.Target), _func.GetMethodInfo(), request.Constants.ScopeParameter);
 
             expressionStatement = ApplyNullCheckAndAddDisposal(scope, request, expressionStatement);
 
