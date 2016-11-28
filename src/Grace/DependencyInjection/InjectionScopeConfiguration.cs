@@ -82,6 +82,26 @@ namespace Grace.DependencyInjection
         public Func<Type, Type, bool> ExportByInterfaceFilter { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IInjectionScopeConfiguration Clone()
+        {
+            return new InjectionScopeConfiguration
+            {
+                AutoRegisterUnknown = AutoRegisterUnknown,
+                Behaviors = Behaviors,
+                CacheArraySize = CacheArraySize,
+                CatchDisposalExceptions = CatchDisposalExceptions,
+                DisposalScopeProvider = DisposalScopeProvider,
+                ExportAsBase = ExportAsBase,
+                ExportByInterfaceFilter = ExportByInterfaceFilter,
+                ExportStrategyArraySize = ExportStrategyArraySize,
+                Implementation = Implementation.Clone()
+            };
+        }
+
+        /// <summary>
         /// Default interface filter
         /// </summary>
         /// <returns></returns>

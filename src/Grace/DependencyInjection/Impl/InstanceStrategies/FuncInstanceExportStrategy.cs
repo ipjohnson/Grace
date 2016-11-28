@@ -23,6 +23,33 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             _func = func;
         }
 
+        public override ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
+            Type activationType)
+        {
+            if (StrategyDelegate != null)
+            {
+                return StrategyDelegate;
+            }
+
+            return Lifestyle == null ? CreateDelegate() : base.GetActivationStrategyDelegate(scope, compiler, activationType);
+        }
+
+        private ActivationStrategyDelegate CreateDelegate()
+        {
+            var staticContext = new StaticInjectionContext(typeof(T));
+
+            if (ExternallyOwned || !typeof(T).GetTypeInfo().IsAssignableFrom(typeof(IDisposable).GetTypeInfo()))
+            {
+                StrategyDelegate = (scope, disposalScope, context) => CheckForNull(staticContext, _func());
+            }
+            else
+            {
+                StrategyDelegate = (scope, disposalScope, context) => CheckForNullAndAddToDisposalScope(disposalScope, staticContext, _func());
+            }
+
+            return StrategyDelegate;
+        }
+
         /// <summary>
         /// Create expression that is implemented in child class
         /// </summary>

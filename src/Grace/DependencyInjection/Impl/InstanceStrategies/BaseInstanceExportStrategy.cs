@@ -73,7 +73,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType)
+        public virtual ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType)
         {
             if (StrategyDelegate != null)
             {
@@ -86,7 +86,9 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
             var newDelegate = compiler.CompileDelegate(scope, expression);
 
-            return Interlocked.CompareExchange(ref StrategyDelegate, newDelegate, null);
+            Interlocked.CompareExchange(ref StrategyDelegate, newDelegate, null);
+
+            return StrategyDelegate;
         }
 
         /// <summary>

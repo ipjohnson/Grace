@@ -463,7 +463,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "")
         {
-            var newScope = new InjectionScope(ScopeConfiguration, this, scopeName);
+            var newScope = new InjectionScope(ScopeConfiguration.Clone(), this, scopeName);
 
             if (configure != null)
             {
@@ -517,7 +517,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key);
+            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
 
             if (compiledDelegate != null)
             {

@@ -88,8 +88,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateType"></param>
         /// <param name="consider"></param>
         /// <param name="key"></param>
+        /// <param name="checkMissing"></param>
         /// <returns></returns>
-        public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
+        public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, bool checkMissing)
         {
             var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
 
@@ -105,26 +106,29 @@ namespace Grace.DependencyInjection.Impl
                 return activationDelegate;
             }
 
-            lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
+            if (checkMissing)
             {
-                activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
-
-                if (activationDelegate != null)
+                lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                 {
-                    return activationDelegate;
-                }
+                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
 
-                var request = CreateNewRequest(locateType, 1, scope);
+                    if (activationDelegate != null)
+                    {
+                        return activationDelegate;
+                    }
 
-                request.SetFilter(consider);
+                    var request = CreateNewRequest(locateType, 1, scope);
 
-                ProcessMissingStrategyProviders(scope, request);
+                    request.SetFilter(consider);
 
-                activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
+                    ProcessMissingStrategyProviders(scope, request);
 
-                if (activationDelegate != null)
-                {
-                    return activationDelegate;
+                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
+
+                    if (activationDelegate != null)
+                    {
+                        return activationDelegate;
+                    }
                 }
             }
 

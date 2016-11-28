@@ -75,5 +75,30 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
 
             Assert.ThrowsAny<Exception>(() => container.Locate<IDependentService<IBasicService>>());
         }
+
+        [Fact]
+        public void ChildContainer_Locate_Correct_Instance()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            using (var child = container.CreateChildScope())
+            {
+                child.Configure(c =>
+                {
+                    c.ExportInstance<IBasicService>(() => new BasicService {Count = 10});
+                    c.ExportInstance(scope =>
+                    {
+                        return new DependentService<IBasicService>(scope.Locate<IBasicService>());
+                    });
+                });
+
+                var instance = child.Locate<DependentService<IBasicService>>();
+
+                Assert.NotNull(instance);
+                Assert.Equal(10, instance.Value.Count);
+            }
+        }
     }
 }

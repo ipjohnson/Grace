@@ -28,7 +28,7 @@ namespace Grace.Dynamic
 
         private void ConfigureImplementation()
         {
-            Implementation = DynamicImplementation;
+            Implementation = DynamicImplementation.Clone();
         }
 
         protected static ImplementationFactory DynamicImplementation;
