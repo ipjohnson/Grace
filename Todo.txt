@@ -1,19 +1,31 @@
-Update mvc extensions
+Fix MVC model binding
 
---------- beta ----------
+remove current ExportInitialize (want to rewrite it)
+
+--------- beta ---------  11/27/2016
+
+Decorate interface for export strategy (treat the same as other decorator)
 
 Generic Decorator support
 
-Export Initialize
-
-Collection Parameter configuration
-
-Named Exports extensions
+Collection Parameter configuration - (sort collection)
 
 Simple Exports extensions
 
-Dynamic method library
-
 Feature parity between old registration and new registration
 
-Tests, Tests, Tests
+Tests
+
+------- RC ------------- 12/11/2016
+
+More Tests
+
+Wait for feedback
+
+------- 5.0 ------------ Depending on feedback 1/1/2017 - 2/1/2017
+
+Export Initialize (Make first class ActivationStrategy like wrapper and decorator)
+
+Named Exports extensions
+
+------- 5.1 ------------ TBD
