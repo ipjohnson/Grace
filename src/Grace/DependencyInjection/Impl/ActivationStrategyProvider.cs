@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="value">constant value</param>
         /// <returns>constant export strategy</returns>
         ICompiledExportStrategy GetConstantStrategy<T>(T value);
-        
+
         /// <summary>
         /// Get new factory strategy no arg
         /// </summary>
@@ -220,6 +220,11 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new decorator</returns>
         public virtual ICompiledDecoratorStrategy GetCompiledDecoratorStrategy(Type activationType)
         {
+            if (activationType.GetTypeInfo().IsGenericTypeDefinition)
+            {
+                return new GenericCompiledDecoratorStrategy(activationType, _injectionScope, _exportExpressionBuilder);
+            }
+
             return new CompiledDecoratorStrategy(activationType, _injectionScope, _exportExpressionBuilder);
         }
 

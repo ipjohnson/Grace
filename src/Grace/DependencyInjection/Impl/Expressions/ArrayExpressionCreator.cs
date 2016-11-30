@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -48,8 +49,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var arrayExpressionList = GetArrayExpressionList(scope, request, arrayElementType);
 
-            var arrayInit = Expression.NewArrayInit(arrayElementType, arrayExpressionList.Select(e => e.Expression));
+            Expression arrayInit = Expression.NewArrayInit(arrayElementType, arrayExpressionList.Select(e => e.Expression));
 
+            if (request.EnumerableComparer != null)
+            {
+                arrayInit = CreateSortedArrayExpression(arrayInit, arrayElementType, request);
+            }
+            
             var returnResult = request.Services.Compiler.CreateNewResult(request, arrayInit);
 
             foreach (var result in arrayExpressionList)
@@ -58,6 +64,29 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return returnResult;
+        }
+
+        /// <summary>
+        /// Create an expression to sort the array
+        /// </summary>
+        /// <param name="arrayInit"></param>
+        /// <param name="arrayElementType"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual Expression CreateSortedArrayExpression(Expression arrayInit, Type arrayElementType, IActivationExpressionRequest request)
+        {
+            var compareInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
+
+            if (request.EnumerableComparer.GetType().GetTypeInfo().IsAssignableFrom(compareInterface.GetTypeInfo()))
+            {
+                return arrayInit;
+            }
+
+            var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods().First(m => m.Name == "SortArray");
+
+            var closedMethod = openMethod.MakeGenericMethod(arrayElementType);
+
+            return Expression.Call(closedMethod, arrayInit, Expression.Constant(request.EnumerableComparer));
         }
 
         /// <summary>
@@ -156,7 +185,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, bool locked)
         {
             Type wrappedType;
-            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType,request, out wrappedType);
+            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, request, out wrappedType);
 
             if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
             {
@@ -194,6 +223,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Sort an array using a IComparer
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arrayOfT"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static T[] SortArray<T>(T[] arrayOfT, IComparer<T> comparer)
+        {
+            Array.Sort(arrayOfT, comparer);
+
+            return arrayOfT;
         }
 
         /// <summary>
@@ -257,7 +300,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             pass = false;
                             break;
-                        }                           
+                        }
                     }
 
                     if (!pass)

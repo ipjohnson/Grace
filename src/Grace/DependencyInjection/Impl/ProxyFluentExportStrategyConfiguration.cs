@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Lifestyle;
@@ -272,6 +273,17 @@ namespace Grace.DependencyInjection.Impl
         public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
         {
             return _strategy.WithCtorParam(paramValue);
+        }
+
+        /// <summary>
+        /// Import a collection allowing you to specify a filter and a sort order
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <typeparam name="TItem"></typeparam>
+        /// <returns></returns>
+        public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
+        {
+            return _strategy.WithCtorCollectionParam<TParam, TItem>();
         }
 
         /// <summary>

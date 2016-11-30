@@ -189,6 +189,11 @@ namespace Grace.DependencyInjection
         ActivationStrategyFilter Filter { get; }
 
         /// <summary>
+        /// IComparer to be used when locating array or 
+        /// </summary>
+        object EnumerableComparer { get; }
+
+        /// <summary>
         /// Services for request
         /// </summary>
         IActivationServices Services { get; }
@@ -260,6 +265,12 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="filter"></param>
         void SetFilter(ActivationStrategyFilter filter);
+
+        /// <summary>
+        /// Set the comparer for this request
+        /// </summary>
+        /// <param name="comparer"></param>
+        void SetEnumerableComparer(object comparer);
 
         /// <summary>
         /// Set the decorator path for request

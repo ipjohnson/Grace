@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
@@ -68,7 +69,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Apply a condition on when to use strategy
         /// </summary>
-        public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When => 
+        public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When =>
             new WhenConditionConfiguration<IFluentExportStrategyConfiguration>(condition => _exportConfiguration.AddCondition(condition), this);
 
         /// <summary>
@@ -387,7 +388,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Assign a lifestyle to this export
         /// </summary>
-        public ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle => 
+        public ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle =>
             new LifestylePicker<IFluentExportStrategyConfiguration<T>>(this, lifeStyle => UsingLifestyle(lifeStyle));
 
         /// <summary>
@@ -405,7 +406,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Add a condition to when this export can be used
         /// </summary>
-        public IWhenConditionConfiguration<IFluentExportStrategyConfiguration<T>> When => 
+        public IWhenConditionConfiguration<IFluentExportStrategyConfiguration<T>> When =>
             new WhenConditionConfiguration<IFluentExportStrategyConfiguration<T>>(condition => _exportConfiguration.AddCondition(condition), this);
 
         /// <summary>
@@ -422,6 +423,21 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return new FluentWithCtorConfiguration<T, TParam>(_exportConfiguration, null);
+        }
+
+        /// <summary>
+        /// Import a collection allowing you to specify a filter and a sort order
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <typeparam name="TItem"></typeparam>
+        /// <returns></returns>
+        public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
+        {
+            var parameterInfo = new ConstructorParameterInfo(null) { ParameterType = typeof(IEnumerable<TItem>) };
+
+            _exportConfiguration.ConstructorParameter(parameterInfo);
+
+            return new FluentWithCtorCollectionConfiguration<T, TItem>(this, parameterInfo);
         }
 
         /// <summary>

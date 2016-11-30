@@ -2,11 +2,22 @@
   "version": "5.0.0-*",
 
   "dependencies": {
+    "Grace": "5.0.0-*",
     "NETStandard.Library": "1.6.0"
   },
 
   "frameworks": {
     "net45": {
+      "frameworkAssemblies": {
+        "System.Web": "4.0.0.0",
+        "System.Web.Routing": "4.0.0.0"
+      },
+      "dependencies": {
+        "Microsoft.AspNet.Mvc": "5.0.0",
+        "Microsoft.AspNet.Razor": "3.0.0",
+        "Microsoft.AspNet.WebPages": "3.0.0",
+        "Microsoft.Web.Infrastructure": "1.0.0"
+      }
     }
   },
   "buildOptions": {

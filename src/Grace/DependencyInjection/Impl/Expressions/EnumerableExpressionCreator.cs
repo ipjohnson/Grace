@@ -44,6 +44,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
 
+                newRequest.SetFilter(request.Filter);
+                newRequest.SetEnumerableComparer(request.EnumerableComparer);
+
                 var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 
                 return arrayExpression;
@@ -56,6 +59,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info,
                     true);
+
+                newRequest.SetFilter(request.Filter);
+                newRequest.SetEnumerableComparer(request.EnumerableComparer);
 
                 var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 

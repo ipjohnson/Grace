@@ -223,6 +223,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public ActivationStrategyFilter Filter { get; set; }
 
         /// <summary>
+        /// IComparer to be used when locating array or 
+        /// </summary>
+        public object EnumerableComparer { get; set; }
+
+        /// <summary>
         /// Services for request
         /// </summary>
         public IActivationServices Services { get; }
@@ -326,6 +331,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public void SetFilter(ActivationStrategyFilter filter)
         {
             Filter = filter;
+        }
+
+        /// <summary>
+        /// Set the comparer for this request
+        /// </summary>
+        /// <param name="comparer"></param>
+        public void SetEnumerableComparer(object comparer)
+        {
+            EnumerableComparer = comparer;
         }
 
         /// <summary>

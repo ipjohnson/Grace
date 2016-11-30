@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -22,6 +24,23 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         protected BaseWrapperStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
         {
 
+        }
+
+        /// <summary>
+        /// Get activation configuration for strategy
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <returns></returns>
+        public override TypeActivationConfiguration GetActivationConfiguration(Type activationType)
+        {
+            var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
+
+            if (closedType != null)
+            {
+                return ActivationConfiguration.CloneToType(closedType);
+            }
+
+            return base.GetActivationConfiguration(activationType);
         }
 
         /// <summary>

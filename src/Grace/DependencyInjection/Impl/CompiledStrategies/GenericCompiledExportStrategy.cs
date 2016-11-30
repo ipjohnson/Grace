@@ -87,7 +87,13 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
-            throw new NotImplementedException();
+            var activationType = request.ActivationType;
+
+            var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
+
+            var activation = GetActivationConfiguration(closedType);
+
+            return _builder.GetActivationExpression(scope, request, activation, lifestyle);
         }
 
         /// <summary>

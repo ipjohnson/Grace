@@ -1,5 +1,6 @@
 ﻿using Grace.DependencyInjection.Lifestyle;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -188,6 +189,16 @@ namespace Grace.DependencyInjection
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
 
+
+        /// <summary>
+        /// Import a collection allowing you to specify a filter and a sort order
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <typeparam name="TItem"></typeparam>
+        /// <returns></returns>
+        IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
+            where TParam : IEnumerable<TItem>;
+
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>
@@ -195,7 +206,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> paramValue);
-
+        
         /// <summary>
         /// Adds metadata to an export
         /// </summary>

@@ -48,6 +48,11 @@ namespace Grace.DependencyInjection.Impl
         public ActivationStrategyFilter ExportStrategyFilter { get; set; }
 
         /// <summary>
+        /// Comparer to use on enumerable
+        /// </summary>
+        public object EnumerableComparer { get; set; }
+
+        /// <summary>
         /// Locate parameter with key
         /// </summary>
         public object LocateWithKey { get; set; }

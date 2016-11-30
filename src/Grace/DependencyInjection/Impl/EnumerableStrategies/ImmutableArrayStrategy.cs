@@ -44,6 +44,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             var elementType = request.ActivationType.GenericTypeArguments[0];
 
             var newRequest = request.NewRequest(elementType.MakeArrayType(), this, request.ActivationType, RequestType.Other, null, true);
+            
+            newRequest.SetFilter(request.Filter);
+            newRequest.SetEnumerableComparer(request.EnumerableComparer);
 
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

@@ -344,6 +344,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 newRequest.SetIsRequired(parameterInfo.IsRequired.GetValueOrDefault(!parameter.IsOptional));
 
                 newRequest.SetFilter(parameterInfo.ExportStrategyFilter);
+
+                newRequest.SetEnumerableComparer(parameterInfo.EnumerableComparer);
             }
             else
             {
