@@ -16,4 +16,4 @@ REM Run code coverage analysis
 %opencover% -oldStyle -register:user -target:%dotnet% -output:%coveragefile% -targetargs:%targetargs% -filter:%filter% -skipautoprops -hideskipped:All
 
 REM publish
-%coveralls% --opencover -i .\Coverage.xml
+%coveralls% --serviceName appveyor --opencover -i .\Coverage.xml
