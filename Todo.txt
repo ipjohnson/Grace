@@ -1,7 +1,9 @@
 
-Feature parity between old registration and new registration
-
 MVC4, MVC5, WCF
+
+Add support for runtime conditions
+
+Feature parity between old registration and new registration
 
 Tests
 
