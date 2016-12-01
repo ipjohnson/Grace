@@ -61,5 +61,17 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export<T>().As<TInterface>();
         }
+
+
+        /// <summary>
+        /// Extension to export a list of types to a registration block
+        /// </summary>
+        /// <param name="types">list of types</param>
+        /// <param name="registrationBlock">registration block</param>
+        /// <returns>configuration object</returns>
+        public static IExportTypeSetConfiguration ExportTo(this IEnumerable<Type> types, IExportRegistrationBlock registrationBlock)
+        {
+            return registrationBlock.Export(types);
+        }
     }
 }
