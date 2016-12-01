@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 namespace Grace.AspNetCore.MVC.Inspector
 {
     /// <summary>
-    /// Provides values for members that are attributed
+    /// Provides values for members that are attributed with IBindingSourceMetadata
     /// </summary>
     public class BindingSourceMetadataValueProvider : IInjectionValueProvider
     {
@@ -24,6 +24,12 @@ namespace Grace.AspNetCore.MVC.Inspector
         private IModelBinderFactory _modelBinderFactory;        
         private IReadOnlyList<IValueProviderFactory> _factories;
 
+        /// <summary>
+        /// Get an expression for the request, returns null if this provider doesn't support it
+        /// </summary>
+        /// <param name="scope">scope for request</param>
+        /// <param name="request">request for expression</param>
+        /// <returns>expression result</returns>
         public IActivationExpressionResult GetExpressionResult(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (request.Info == null)
@@ -148,6 +154,10 @@ namespace Grace.AspNetCore.MVC.Inspector
             return null;
         }
 
+        /// <summary>
+        /// Helper class for binding MVC data to dependency
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public class BindingSourceHelper<T>
         {
             private readonly IReadOnlyList<IValueProviderFactory> _factories;
@@ -156,6 +166,14 @@ namespace Grace.AspNetCore.MVC.Inspector
             private readonly StaticInjectionContext _staticInjectionContext;
             private readonly BindingInfo _binding;
 
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="factories"></param>
+            /// <param name="name"></param>
+            /// <param name="attributes"></param>
+            /// <param name="defaultValue"></param>
+            /// <param name="staticInjectionContext"></param>
             public BindingSourceHelper(IReadOnlyList<IValueProviderFactory> factories,
                                        string name,
                                        IEnumerable<object> attributes,
@@ -169,6 +187,11 @@ namespace Grace.AspNetCore.MVC.Inspector
                 _binding = BindingInfo.GetBindingInfo(attributes);
             }
 
+            /// <summary>
+            /// Method that gets the value from MVC
+            /// </summary>
+            /// <param name="scope">current resolution scope</param>
+            /// <returns></returns>
             public T GetValue(IExportLocatorScope scope)
             {
                 var accessor = scope.Locate<IActionContextAccessor>();

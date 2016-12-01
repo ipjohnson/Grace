@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Grace.AspNetCore.MVC.Inspector
 {
     /// <summary>
-    /// Inspector class that imports properties that 
+    /// Inspector class that imports properties that have MVC binding attribute (IBindingSourceMetadata)
     /// </summary>
     public class BindingSourceAttributePropertyInspector : IActivationStrategyInspector
     {

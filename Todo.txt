@@ -1,7 +1,7 @@
 
 Feature parity between old registration and new registration
 
-MVC4 and MVC5
+MVC4, MVC5, WCF
 
 Tests
 

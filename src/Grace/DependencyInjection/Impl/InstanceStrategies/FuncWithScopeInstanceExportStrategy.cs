@@ -24,6 +24,13 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             _func = func;
         }
 
+        /// <summary>
+        /// Get an activation strategy for this delegate
+        /// </summary>
+        /// <param name="scope">injection scope</param>
+        /// <param name="compiler"></param>
+        /// <param name="activationType">activation type</param>
+        /// <returns>activation delegate</returns>
         public override ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
@@ -37,21 +44,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
                    base.GetActivationStrategyDelegate(scope, compiler, activationType);
         }
 
-        private ActivationStrategyDelegate CreateDelegateUsingFunc()
-        {
-            var staticContext = new StaticInjectionContext(typeof(T));
-
-            if (ExternallyOwned || !typeof(T).GetTypeInfo().IsAssignableFrom(typeof(IDisposable).GetTypeInfo()))
-            {
-                StrategyDelegate = (scope, disposalScope, context) => CheckForNull(staticContext, _func(scope));
-            }
-            else
-            {
-                StrategyDelegate = (scope, disposalScope, context) => CheckForNullAndAddToDisposalScope(disposalScope, staticContext, _func(scope));
-            }
-
-            return StrategyDelegate;
-        }
 
         /// <summary>
         /// Create expression that is implemented in child class
@@ -75,6 +67,22 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             }
 
             return expressionResult;
+        }
+
+        private ActivationStrategyDelegate CreateDelegateUsingFunc()
+        {
+            var staticContext = new StaticInjectionContext(typeof(T));
+
+            if (ExternallyOwned || !typeof(T).GetTypeInfo().IsAssignableFrom(typeof(IDisposable).GetTypeInfo()))
+            {
+                StrategyDelegate = (scope, disposalScope, context) => CheckForNull(staticContext, _func(scope));
+            }
+            else
+            {
+                StrategyDelegate = (scope, disposalScope, context) => CheckForNullAndAddToDisposalScope(disposalScope, staticContext, _func(scope));
+            }
+
+            return StrategyDelegate;
         }
     }
 }

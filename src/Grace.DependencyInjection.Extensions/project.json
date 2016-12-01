@@ -21,5 +21,8 @@
         "System.Runtime": "4.0.10.0"
       }
     }
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }

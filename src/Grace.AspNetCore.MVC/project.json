@@ -18,5 +18,8 @@
       "dependencies": {
       }
     }
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }
