@@ -1,5 +1,7 @@
 environment:
-  build_version: 5.0.0 
+  build_version: 5.0.0   
+  COVERALLS_REPO_TOKEN:
+    secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
 version: $(build_version)-{build}
 configuration: Release
 assembly_info:
@@ -20,6 +22,7 @@ after_build:
 - cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix Beta%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix Beta%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release --version-suffix Beta%APPVEYOR_BUILD_NUMBER%
+- cmd: tests/Grace.Tests/CodeCoverageAppVeyor.cmd
 test_script:
 - cmd: dotnet test tests\Grace.Tests -c Release
 artifacts:
