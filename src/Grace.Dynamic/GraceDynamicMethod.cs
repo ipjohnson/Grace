@@ -9,13 +9,21 @@ using Grace.Dynamic.Impl;
 
 namespace Grace.Dynamic
 {
+    /// <summary>
+    /// Configuration class for using IL generation in liue of Linq Expressions
+    /// </summary>
     public class GraceDynamicMethod : InjectionScopeConfiguration
     {
         public GraceDynamicMethod()
         {
-            ConfigureImplementation();
+            Implementation = DynamicImplementation.Clone();
         }
         
+        /// <summary>
+        /// Creates a configuration object for using IL Generation instead of Linq Expressions
+        /// </summary>
+        /// <param name="configure">configuration delegate, can be null</param>
+        /// <returns>configuration object</returns>
         public static GraceDynamicMethod Configuration(Action<InjectionScopeConfiguration> configure = null)
         {
             var config = new GraceDynamicMethod();
@@ -26,13 +34,14 @@ namespace Grace.Dynamic
         }
 
 
-        private void ConfigureImplementation()
-        {
-            Implementation = DynamicImplementation.Clone();
-        }
-
+        /// <summary>
+        /// Implementation factory for dynamic IL generation
+        /// </summary>
         protected static ImplementationFactory DynamicImplementation;
 
+        /// <summary>
+        /// Static constructor to setup dynamic implementation
+        /// </summary>
         static GraceDynamicMethod()
         {
             DynamicImplementation = DefaultImplementation.Clone();

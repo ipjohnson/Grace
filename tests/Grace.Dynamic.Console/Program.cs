@@ -24,7 +24,7 @@ namespace Grace.Dynamic.Console
 
             container.Configure(c =>
             {
-                c.ExportFactory(() => new BasicService()).As<IBasicService>();
+                c.ExportFactory(() => new BasicService()).As<IBasicService>().Lifestyle.Singleton();
             });
 
             var instance = container.Locate<DependentService<IEnumerable<IBasicService>>>();

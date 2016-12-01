@@ -7,13 +7,31 @@ using System.Threading.Tasks;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// interface for generating IL for Parameter expression
+    /// </summary>
     public interface IParameterExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for ParameterExpression
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <param name="expression">expression</param>
+        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, ParameterExpression expression);
     }
 
+    /// <summary>
+    /// class for generating parameter expression
+    /// </summary>
     public class ParameterExpressionGenerator : IParameterExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for ParameterExpression
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <param name="expression">expression</param>
+        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, ParameterExpression expression)
         {
             var expressionConstants = request.ExpressionRequest.Constants;

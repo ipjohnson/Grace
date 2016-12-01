@@ -9,22 +9,49 @@ using Grace.DependencyInjection.Impl;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// interface to convert linq expression to IL using dynamic method
+    /// </summary>
     public interface ILinqToDynamicMethodConverter
     {
+        /// <summary>
+        /// try to create delegate using IL generation
+        /// </summary>
+        /// <param name="expressionContext">expression context</param>
+        /// <param name="finalExpression">final expression to convert</param>
+        /// <param name="newDelegate">created delegate</param>
+        /// <returns>true if delegate was created</returns>
         bool TryCreateDelegate(IActivationExpressionResult expressionContext,
             Expression finalExpression,
             out ActivationStrategyDelegate newDelegate);
     }
 
+    /// <summary>
+    /// class to convert linq expression to IL using dynamic method
+    /// </summary>
     public class LinqToDynamicMethodConverter : ILinqToDynamicMethodConverter
     {
+        /// <summary>
+        /// Implementation factory
+        /// </summary>
         protected readonly ImplementationFactory ImplementationFactory;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="implementationFactory"></param>
         public LinqToDynamicMethodConverter(ImplementationFactory implementationFactory)
         {
             ImplementationFactory = implementationFactory;
         }
 
+        /// <summary>
+        /// try to create delegate using IL generation
+        /// </summary>
+        /// <param name="expressionContext">expression context</param>
+        /// <param name="finalExpression">final expression to convert</param>
+        /// <param name="newDelegate">created delegate</param>
+        /// <returns>true if delegate was created</returns>
         public virtual bool TryCreateDelegate(IActivationExpressionResult expressionContext, Expression finalExpression,
             out ActivationStrategyDelegate newDelegate)
         {
@@ -34,7 +61,7 @@ namespace Grace.Dynamic.Impl
             {
                 var request = new DynamicMethodGenerationRequest(expressionContext, TryGenerateIL);
 
-                List<object> constants = new List<object>();
+                var constants = new List<object>();
 
                 if (!ImplementationFactory.Locate<IConstantExpressionCollector>().GetConstantExpressions(finalExpression, constants))
                 {
@@ -77,7 +104,7 @@ namespace Grace.Dynamic.Impl
 
                 return true;
             }
-            catch (Exception exp)
+            catch (Exception)
             {
                 // ignore exception and compile linq expression normally
             }
@@ -85,6 +112,12 @@ namespace Grace.Dynamic.Impl
             return false;
         }
 
+        /// <summary>
+        /// Try to create IL from linq expression, this is called recursively as the expression is walked
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <param name="expression">expression to convert</param>
+        /// <returns></returns>
         protected virtual bool TryGenerateIL(DynamicMethodGenerationRequest request, Expression expression)
         {
             if (expression == null)

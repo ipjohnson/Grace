@@ -32,5 +32,8 @@
         "System.Reflection.Emit": "4.0.0"
       }
     }
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }

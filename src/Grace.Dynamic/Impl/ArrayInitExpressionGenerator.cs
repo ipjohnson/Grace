@@ -8,13 +8,31 @@ using System.Threading.Tasks;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// Interface for generating IL for a NewArray expression
+    /// </summary>
     public interface IArrayInitExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for new array expression
+        /// </summary>
+        /// <param name="request">request for generation</param>
+        /// <param name="expression">expression to convert</param>
+        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, NewArrayExpression expression);
     }
 
+    /// <summary>
+    /// Class for generating IL for a NewArray expression
+    /// </summary>
     public class ArrayInitExpressionGenerator : IArrayInitExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for new array expression
+        /// </summary>
+        /// <param name="request">request for generation</param>
+        /// <param name="expression">expression to convert</param>
+        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, NewArrayExpression expression)
         {
             var arrayType = expression.Type;

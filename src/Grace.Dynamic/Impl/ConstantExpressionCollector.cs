@@ -6,13 +6,31 @@ using System.Threading.Tasks;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// interface for collecting information about constants
+    /// </summary>
     public interface IConstantExpressionCollector
     {
+        /// <summary>
+        /// Get a list of constants from an expression
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="constants">list of constants</param>
+        /// <returns></returns>
         bool GetConstantExpressions(Expression expression, List<object> constants);
     }
 
+    /// <summary>
+    /// class for collecting constants from a Linq Expression
+    /// </summary>
     public class ConstantExpressionCollector : IConstantExpressionCollector
     {
+        /// <summary>
+        /// Get a list of constants from an expression
+        /// </summary>
+        /// <param name="expression">expression</param>
+        /// <param name="constants">list of constants</param>
+        /// <returns></returns>
         public bool GetConstantExpressions(Expression expression, List<object> constants)
         {
             if (expression == null)

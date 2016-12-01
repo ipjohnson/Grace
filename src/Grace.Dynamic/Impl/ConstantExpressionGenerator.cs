@@ -8,13 +8,31 @@ using System.Threading.Tasks;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// interface for generating IL for a constant expression
+    /// </summary>
     public interface IConstantExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for a constant expression
+        /// </summary>
+        /// <param name="request">dynamic request</param>
+        /// <param name="expression">constant expression to convert</param>
+        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, ConstantExpression expression);
     }
 
+    /// <summary>
+    /// Class for converting constant expression to IL
+    /// </summary>
     public class ConstantExpressionGenerator : IConstantExpressionGenerator
     {
+        /// <summary>
+        /// Generate IL for a constant expression
+        /// </summary>
+        /// <param name="request">dynamic request</param>
+        /// <param name="expression">constant expression to convert</param>
+        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, ConstantExpression expression)
         {
             if (expression.Value == null)
@@ -44,11 +62,39 @@ namespace Grace.Dynamic.Impl
             }
             else if (request.IsArrayTarget)
             {
-                return false;
+                return ProcessConstantFromArrayTarget(request, expression);
             }
             else
             {
                 return ProcessConstantFromTarget(request, expression);
+            }
+
+            return true;
+        }
+
+        private bool ProcessConstantFromArrayTarget(DynamicMethodGenerationRequest request, ConstantExpression expression)
+        {
+
+            int constantIndex = request.Constants.IndexOf(expression.Value);
+
+            if (constantIndex < 0)
+            {
+                return false;
+            }
+
+            var field = request.Target.GetType().GetRuntimeField("Items");
+
+            request.ILGenerator.Emit(OpCodes.Ldarg_0);
+
+            request.ILGenerator.Emit(OpCodes.Ldfld, field);
+
+            request.ILGenerator.EmitInt(constantIndex);
+
+            request.ILGenerator.Emit(OpCodes.Ldelem_Ref);
+
+            if (expression.Type != typeof(object))
+            {
+                request.ILGenerator.Emit(OpCodes.Castclass, expression.Type);
             }
 
             return true;
