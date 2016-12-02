@@ -1,9 +1,11 @@
 
-Add support for runtime conditions
+Change ICondition to IConfigurationCondition (remove extra fields from interface, cleaner to just make second interface for request time condition)
 
 MVC4, MVC5, WCF
 
 Feature parity between old registration and new registration
+
+improve logic for ProcessWrappers, look at locked logic
 
 Tests
 
@@ -24,5 +26,7 @@ Decorate interface for export strategy (treat the same as other decorator)
 Secondary export resolver
 
 Defered IEnumerable Location
+
+introduce IRequestTimeCondition
 
 ------- 5.1 ------------ TBD
