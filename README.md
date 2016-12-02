@@ -18,7 +18,7 @@ It's as easy as create, configure, and locate.
 Getting Grace
 =====
 
-[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, Windows Phone 8 and WinRT.
+[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, .Net Standard 1.0 and PCL Profile 259.
 
 
 Documented Grace
