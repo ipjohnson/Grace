@@ -517,7 +517,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
+            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key,injectionContext, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
 
             if (compiledDelegate != null)
             {
@@ -603,7 +603,7 @@ namespace Grace.DependencyInjection.Impl
 
                         foreach (var condition in strategy.Conditions)
                         {
-                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
+                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type), null))
                             {
                                 pass = false;
                                 break;

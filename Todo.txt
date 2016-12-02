@@ -1,7 +1,7 @@
 
-MVC4, MVC5, WCF
-
 Add support for runtime conditions
+
+MVC4, MVC5, WCF
 
 Feature parity between old registration and new registration
 
@@ -22,5 +22,7 @@ Named Exports extensions
 Decorate interface for export strategy (treat the same as other decorator)
 
 Secondary export resolver
+
+Defered IEnumerable Location
 
 ------- 5.1 ------------ TBD

@@ -21,12 +21,23 @@ namespace Grace.DependencyInjection.Conditions
         }
 
         /// <summary>
+        /// Should the condition be run at expression creation time or every time a request is made for the type
+        /// </summary>
+        public bool IsRequestTimeCondition { get; } = false;
+
+        /// <summary>
+        /// If it is a request time condition does it need an injection context
+        /// </summary>
+        public bool RequiresInjectionContext { get; } = false;
+
+        /// <summary>
         /// Test if condition is meet
         /// </summary>
         /// <param name="strategy">strategy to test</param>
         /// <param name="staticInjectionContext">static injection context</param>
+        /// <param name="context"></param>
         /// <returns>true if condition is meet</returns>
-        public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
+        public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext, IInjectionContext context)
         {
             return _condition(strategy, staticInjectionContext);
         }

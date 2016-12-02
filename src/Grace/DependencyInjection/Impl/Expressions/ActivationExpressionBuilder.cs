@@ -586,7 +586,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var context = request.GetStaticInjectionContext();
 
-                if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
+                if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context, null)))
                 {
                     continue;
                 }

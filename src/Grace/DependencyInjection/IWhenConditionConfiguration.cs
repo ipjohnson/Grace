@@ -24,7 +24,15 @@ namespace Grace.DependencyInjection
         T MeetsCondition(Func<IActivationStrategy, StaticInjectionContext, bool> condition);
 
         /// <summary>
-        /// Add a condition to use this export only when the clas being injected into has a specific attribute
+        /// Add a condition to use this export only when the class being injected into has a specific attribute
+        /// </summary>
+        /// <param name="attributeType"></param>
+        /// <param name="testFunc"></param>
+        /// <returns></returns>
+        T ClassHas(Type attributeType, Func<Attribute, bool> testFunc = null);
+
+        /// <summary>
+        /// Add a condition to use this export only when the class being injected into has a specific attribute
         /// </summary>
         /// <param name="testFunc"></param>
         /// <typeparam name="TAttribute">attribute</typeparam>

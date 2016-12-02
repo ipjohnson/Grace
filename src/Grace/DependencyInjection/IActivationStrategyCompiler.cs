@@ -37,9 +37,10 @@ namespace Grace.DependencyInjection
         /// <param name="locateType"></param>
         /// <param name="consider"></param>
         /// <param name="key"></param>
+        /// <param name="forMissingType"></param>
         /// <param name="checkForMissingType"></param>
         /// <returns></returns>
-        ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, bool checkForMissingType);
+        ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext forMissingType, bool checkForMissingType);
         
         /// <summary>
         /// Compile a delegate

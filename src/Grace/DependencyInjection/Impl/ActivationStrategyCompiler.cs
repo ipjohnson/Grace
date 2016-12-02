@@ -88,11 +88,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateType"></param>
         /// <param name="consider"></param>
         /// <param name="key"></param>
+        /// <param name="injectionContext"></param>
         /// <param name="checkMissing"></param>
         /// <returns></returns>
-        public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, bool checkMissing)
+        public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext injectionContext, bool checkMissing)
         {
-            var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
+            var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key, injectionContext);
 
             if (activationDelegate != null)
             {
@@ -110,7 +111,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                 {
-                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
+                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key, injectionContext);
 
                     if (activationDelegate != null)
                     {
@@ -123,7 +124,7 @@ namespace Grace.DependencyInjection.Impl
 
                     ProcessMissingStrategyProviders(scope, request);
 
-                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key);
+                    activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key, injectionContext);
 
                     if (activationDelegate != null)
                     {
@@ -261,8 +262,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateType"></param>
         /// <param name="consider"></param>
         /// <param name="key"></param>
+        /// <param name="injectionContext"></param>
         /// <returns></returns>
-        protected virtual ActivationStrategyDelegate LocateStrategyFromCollectionContainers(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
+        protected virtual ActivationStrategyDelegate LocateStrategyFromCollectionContainers(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext injectionContext)
         {
             if (key != null)
             {
@@ -280,7 +282,7 @@ namespace Grace.DependencyInjection.Impl
                     return primary.GetActivationStrategyDelegate(scope, this, locateType);
                 }
 
-                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
+                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
                 if (strategy != null)
                 {
@@ -305,7 +307,7 @@ namespace Grace.DependencyInjection.Impl
                         return primary.GetActivationStrategyDelegate(scope, this, locateType);
                     }
 
-                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
+                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
                     if (strategy != null)
                     {
@@ -325,7 +327,7 @@ namespace Grace.DependencyInjection.Impl
                     return primary.GetActivationStrategyDelegate(scope, this, locateType);
                 }
 
-                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
+                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
                 if (strategy != null)
                 {
@@ -348,7 +350,7 @@ namespace Grace.DependencyInjection.Impl
                         return primary.GetActivationStrategyDelegate(scope, this, locateType);
                     }
 
-                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
+                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
                     if (strategy != null)
                     {
@@ -403,7 +405,7 @@ namespace Grace.DependencyInjection.Impl
             expressionContext.AddExtraExpression(ifThen);
         }
 
-        private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType) where T : IActivationStrategy
+        private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType, IInjectionContext injectionContext) where T : IActivationStrategy
         {
             foreach (var strategy in strategyCollection.GetStrategies())
             {
@@ -413,7 +415,12 @@ namespace Grace.DependencyInjection.Impl
 
                     foreach (var condition in strategy.Conditions)
                     {
-                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType)))
+                        if (condition.IsRequestTimeCondition && condition.RequiresInjectionContext && injectionContext == null)
+                        {
+                            injectionContext = scope.CreateContext();
+                        }
+
+                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType), injectionContext))
                         {
                             pass = false;
                             break;

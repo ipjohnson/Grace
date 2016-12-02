@@ -83,7 +83,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                 {
                                     foreach (var condition in strategy.Conditions)
                                     {
-                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext()))
+                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext(), null))
                                         {
                                             pass = false;
                                             break;
@@ -147,7 +147,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             foreach (var condition in s.Conditions)
                             {
-                                if (!condition.MeetsCondition(s, request.GetStaticInjectionContext()))
+                                if (!condition.MeetsCondition(s, request.GetStaticInjectionContext(), null))
                                 {
                                     pass = false;
                                 }

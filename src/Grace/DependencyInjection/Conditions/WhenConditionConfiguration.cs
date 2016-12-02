@@ -26,7 +26,7 @@ namespace Grace.DependencyInjection.Conditions
 
             _t = t;
         }
-        
+
         /// <summary>
         /// Adds a new compiled condition to the strategy
         /// </summary>
@@ -51,6 +51,21 @@ namespace Grace.DependencyInjection.Conditions
             if (condition == null) throw new ArgumentNullException(nameof(condition));
 
             _addAction(new FuncCompiledCondition(condition));
+
+            return _t;
+        }
+
+        /// <summary>
+        /// Add a condition to use this export only when the class being injected into has a specific attribute
+        /// </summary>
+        /// <param name="attributeType"></param>
+        /// <param name="testFunc"></param>
+        /// <returns></returns>
+        public T ClassHas(Type attributeType, Func<Attribute, bool> testFunc = null)
+        {
+            if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
+
+            _addAction(new WhenClassHas(attributeType, testFunc));
 
             return _t;
         }
@@ -104,7 +119,7 @@ namespace Grace.DependencyInjection.Conditions
 
             if (types.Length < 0) throw new ArgumentException("You must provide at least one type to test against", nameof(types));
 
-            _addAction(new WhenInjectedInto());
+            _addAction(new WhenInjectedInto(types));
 
             return _t;
         }
