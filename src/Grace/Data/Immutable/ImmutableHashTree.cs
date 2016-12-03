@@ -48,6 +48,9 @@ namespace Grace.Data.Immutable
         /// <returns>final value for key</returns>
         public static TValue ThreadSafeAdd<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value, bool updateIfExists = false)
         {
+            if (destination == null) throw new ArgumentNullException(nameof(destination));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             var returnValue = value;
             var currentValue = destination;
 
@@ -108,6 +111,9 @@ namespace Grace.Data.Immutable
         /// <param name="updateDelegate">update delegate</param>
         public static void ThreadSafeAdd<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value, ImmutableHashTree<TKey, TValue>.UpdateDelegate updateDelegate)
         {
+            if (destination == null) throw new ArgumentNullException(nameof(destination));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             var currentValue = destination;
 
             var newValue = currentValue.Add(key, value, updateDelegate);
@@ -198,6 +204,8 @@ namespace Grace.Data.Immutable
         /// <param name="iterateAction"></param>
         public void IterateInOrder(Action<TKey, TValue> iterateAction)
         {
+            if (iterateAction == null) throw new ArgumentNullException(nameof(iterateAction));
+
             if (Height == 0)
             {
                 return;
@@ -262,6 +270,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public ImmutableHashTree<TKey, TValue> Add(TKey key, TValue value, UpdateDelegate updateDelegate = null)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             if (updateDelegate == null)
             {
                 updateDelegate = KeyAlreadyExists;
@@ -277,6 +287,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public bool ContainsKey(TKey key)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             TValue value;
 
             return TryGetValue(key, out value);
@@ -290,6 +302,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             var keyHash = key.GetHashCode();
 
             if (Height == 0)
@@ -355,6 +369,8 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             if (ReferenceEquals(Key, key))
             {
                 return Value;

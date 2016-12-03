@@ -34,6 +34,8 @@ namespace Grace.Data.Immutable
         /// <returns>immutable array</returns>
         public static ImmutableArray<T> From<T>(IEnumerable<T> list)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             var array = list.ToArray();
 
             return new ImmutableArray<T>(array);
@@ -48,6 +50,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableArray<T> From<T>(T[] ts, int count = -1)
         {
+            if (ts == null) throw new ArgumentNullException(nameof(ts));
+
             return new ImmutableArray<T>(CloneArray(ts,count));
         }
 

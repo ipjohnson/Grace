@@ -22,6 +22,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableLinkedList<T> ThreadSafeEmpty<T>(ref ImmutableLinkedList<T> list)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             return Interlocked.Exchange(ref list, ImmutableLinkedList<T>.Empty);
         }
         
@@ -33,6 +35,8 @@ namespace Grace.Data.Immutable
         /// <param name="value"></param>
         public static void ThreadSafeAdd<T>(ref ImmutableLinkedList<T> list, T value)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             var listValue = list;
             var newList = listValue.Add(value);
 
@@ -65,6 +69,8 @@ namespace Grace.Data.Immutable
         /// <param name="values"></param>
         public static void ThreadSafeAddRange<T>(ref ImmutableLinkedList<T> list, IEnumerable<T> values)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             foreach (var value in values)
             {
                 ThreadSafeAdd(ref list, value);
@@ -79,6 +85,8 @@ namespace Grace.Data.Immutable
         /// <returns>new list</returns>
         public static ImmutableLinkedList<T> From<T>(IEnumerable<T> enumerable)
         {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+
             return ImmutableLinkedList<T>.Empty.AddRange(enumerable);
         }
 
@@ -90,6 +98,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableLinkedList<T> Create<T>(params T[] values)
         {
+            if (values == null) throw new ArgumentNullException(nameof(values));
+
             return ImmutableLinkedList<T>.Empty.AddRange(values);
         }
 
@@ -101,6 +111,8 @@ namespace Grace.Data.Immutable
         /// <param name="value">value to remove from</param>
         public static void ThreadSafeRemove<T>(ref ImmutableLinkedList<T> list, T value)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             var listValue = list;
             var newList = ImmutableLinkedList<T>.Empty.AddRange(listValue.Where(x => !value.Equals(x)).Reverse());
 
@@ -184,6 +196,8 @@ namespace Grace.Data.Immutable
         /// <returns>new linked list</returns>
         public ImmutableLinkedList<T> AddRange(IEnumerable<T> range)
         {
+            if (range == null) throw new ArgumentNullException(nameof(range));
+
             var current = this;
 
             foreach (var value in range)
@@ -228,6 +242,8 @@ namespace Grace.Data.Immutable
         /// <param name="startAtEnd">start at the end of the linked list</param>
         public void Visit(Action<T> action, bool startAtEnd = false)
         {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
             if (this == Empty)
             {
                 return;
