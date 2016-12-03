@@ -70,6 +70,7 @@ namespace Grace.Data.Immutable
         public static void ThreadSafeAddRange<T>(ref ImmutableLinkedList<T> list, IEnumerable<T> values)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
+            if (values == null) throw new ArgumentNullException(nameof(values));
 
             foreach (var value in values)
             {
