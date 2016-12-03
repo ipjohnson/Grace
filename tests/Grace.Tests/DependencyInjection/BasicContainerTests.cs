@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
@@ -38,6 +39,14 @@ namespace Grace.Tests.DependencyInjection
 
             Assert.NotNull(instance);
         }
+        
+        [Fact]
+        public void DependencyInjectionContainer_Add_Module_Throws_Exception_For_Null()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Assert.Throws<ArgumentNullException>(() => container.Add(null));
+        }
 
         [Fact]
         public void DependencyInjectionContainer_Enumerable_Return_Empty()
@@ -46,6 +55,21 @@ namespace Grace.Tests.DependencyInjection
 
             Assert.Empty((IEnumerable<object>)container);
             Assert.Empty((IEnumerable)container);
+        }
+
+        public class CustomConfiguration : InjectionScopeConfiguration
+        {
+            
+        }
+
+        [Fact]
+        public void DependencyInjectionContainer_Create_Configuration()
+        {
+            var container = new DependencyInjectionContainer(new CustomConfiguration()) { new TestModule() };
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
         }
     }
 }
