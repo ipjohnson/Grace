@@ -287,6 +287,33 @@ namespace Grace.Data.Immutable
             }
         }
 
+        /// <summary>
+        /// Check if list contains value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Contains(T value)
+        {
+            if (this == Empty)
+            {
+                return false;
+            }
+
+            var current = this;
+
+            while (current != null && current != Empty)
+            {
+                if (value.Equals(current.Value))
+                {
+                    return true;
+                }
+
+                current = current.Next;
+            }
+
+            return false;
+        }
+
         private string DebuggerDisplayString => $"Count: {Count}";
 
         private class LinkedListEnumerator : IEnumerator<T>
