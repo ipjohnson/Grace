@@ -25,6 +25,19 @@ namespace Grace.Tests.Data.Immutable
             value = ImmutableLinkedList<int>.Empty;
             
             Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAddRange(ref value, null));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList<int>.Empty.Visit(null));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList<int>.Empty.AddRange(null));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.From<int>(null));
+        }
+
+        [Fact]
+        public void ImmutableLinkedList_Create_Returns_Empty_For_Null()
+        {
+            Assert.Equal(ImmutableLinkedList<int>.Empty, ImmutableLinkedList.Create<int>(null));
+            Assert.Equal(ImmutableLinkedList<int>.Empty, ImmutableLinkedList.Create(new int[0]));
         }
 
         [Fact]
