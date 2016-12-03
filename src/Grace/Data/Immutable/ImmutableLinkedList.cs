@@ -23,26 +23,6 @@ namespace Grace.Data.Immutable
         public static ImmutableLinkedList<T> ThreadSafeEmpty<T>(ref ImmutableLinkedList<T> list)
         {
             return Interlocked.Exchange(ref list, ImmutableLinkedList<T>.Empty);
-            //var listValue = list;
-
-            //if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
-            //{
-            //    return listValue;
-            //}
-
-            //var wait = new SpinWait();
-
-            //while (true)
-            //{
-            //    wait.SpinOnce();
-
-            //    listValue = list;
-
-            //    if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
-            //    {
-            //        return listValue;
-            //    }
-            //}
         }
         
         /// <summary>
@@ -65,8 +45,8 @@ namespace Grace.Data.Immutable
 
             while (true)
             {
-                wait.SpinOnce();
-
+                 wait.SpinOnce();
+             
                 listValue = list;
                 newList = listValue.Add(value);
 
