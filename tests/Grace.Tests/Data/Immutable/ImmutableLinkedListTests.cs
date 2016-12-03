@@ -161,11 +161,11 @@ namespace Grace.Tests.Data.Immutable
             Assert.Equal(15, newList[2]);
         }
 
-        private volatile ImmutableLinkedList<int> _linkedList;
+        private ImmutableLinkedList<int> _linkedList;
         private List<int> _finalList;
         private ManualResetEvent _startEvent;
         private CountdownEvent _countdownEvent;
-        private int _addAmount = 1000000;
+        private int _addAmount = 50000;
 
         [Fact]
         public void ImmutableLinkedList_Multithreaded_Test()
