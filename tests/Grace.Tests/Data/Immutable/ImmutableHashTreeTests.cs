@@ -19,7 +19,7 @@ namespace Grace.Tests.Data.Immutable
 
         private ImmutableHashTree<int, int> _hashTree;
         private ManualResetEvent _startEvent;
-        private int _addAmount = 50000;
+        private int _addAmount = 10000;
 
         [Fact]
         public void ImmutableHashTree_Threading_Test()
@@ -45,8 +45,10 @@ namespace Grace.Tests.Data.Immutable
             List<int> values = new List<int>();
 
             _hashTree.IterateInOrder((key, value) => values.Add(key));
-            
+
             values.Sort();
+
+            Assert.Equal(_addAmount * threadCount, values.Count);
 
             for (int i = 0; i < (_addAmount * threadCount); i++)
             {
