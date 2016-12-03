@@ -35,5 +35,75 @@ namespace Grace.Tests.Diagnostics
             Assert.Equal(DependencyType.ConstructorParameter, dependency.DependencyType);
             Assert.Equal(typeof(IBasicService), dependency.TypeBeingImported);
         }
+        
+        [Fact]
+        public void InjectionScopeDiagnostics_ImportMembers_Check_For_Missing_Method_Dependency()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(m => m.Name.StartsWith("Some")));
+            });
+
+            var diagnostic = container.Locate<InjectionScopeDiagnostics>();
+
+            Assert.NotNull(diagnostic);
+
+            var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
+
+            var dependency = missingDependencies[0];
+
+            Assert.Equal("basicService", dependency.MemberName);
+            Assert.Equal(DependencyType.MethodParameter, dependency.DependencyType);
+            Assert.Equal(typeof(IBasicService), dependency.TypeBeingImported);
+        }
+
+        [Fact]
+        public void InjectionScopeDiagnostics_ImportMethod_Check_For_Missing_Method_Dependency()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MethodInjectionClass>().ImportMethod(m => m.InjectMethod(Arg.Any<IBasicService>()));
+            });
+
+            var diagnostic = container.Locate<InjectionScopeDiagnostics>();
+
+            Assert.NotNull(diagnostic);
+
+            var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
+
+            var dependency = missingDependencies[0];
+
+            Assert.Equal("basicService", dependency.MemberName);
+            Assert.Equal(DependencyType.MethodParameter, dependency.DependencyType);
+            Assert.Equal(typeof(IBasicService), dependency.TypeBeingImported);
+        }
+
+
+        [Fact]
+        public void InjectionScopeDiagnostics_ActvationMethod_Check_For_Missing_Method_Dependency()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MethodInjectionClass>().ActivationMethod(m => m.InjectMethod(Arg.Any<IBasicService>()));
+            });
+
+            var diagnostic = container.Locate<InjectionScopeDiagnostics>();
+
+            Assert.NotNull(diagnostic);
+
+            var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
+
+            var dependency = missingDependencies[0];
+
+            Assert.Equal("basicService", dependency.MemberName);
+            Assert.Equal(DependencyType.MethodParameter, dependency.DependencyType);
+            Assert.Equal(typeof(IBasicService), dependency.TypeBeingImported);
+        }
     }
 }

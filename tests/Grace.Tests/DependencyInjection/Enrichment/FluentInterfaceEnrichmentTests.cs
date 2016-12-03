@@ -27,7 +27,7 @@ namespace Grace.Tests.DependencyInjection.Enrichment
             container.Configure(c =>
             {
                 c.Export<BasicService>().As<IBasicService>();
-                c.Export<MethodInjectionClass>().ActivationMethod(m => m.InjectBasicService(Arg.Any<IBasicService>()));
+                c.Export<MethodInjectionClass>().ActivationMethod(m => m.InjectMethod(Arg.Any<IBasicService>()));
             });
 
             var instance = container.Locate<MethodInjectionClass>();

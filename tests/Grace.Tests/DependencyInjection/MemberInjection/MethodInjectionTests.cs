@@ -6,22 +6,7 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
 {
     public class MethodInjectionTests
     {
-        public class MethodInjectionClass
-        {
-            public void InjectMethod(IBasicService basicService)
-            {
-                BasicService = basicService;
-            }
 
-            public void SomeOtherMethod(IBasicService basicService)
-            {
-                SecondService = basicService;
-            }
-
-            public IBasicService BasicService { get; set; }
-
-            public IBasicService SecondService { get; set; }
-        }
 
         [Fact]
         public void MethodInjection_OneArg()
@@ -81,5 +66,7 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
             Assert.NotNull(instance.SecondService);
             Assert.IsType<BasicService>(instance.SecondService);
         }
+
+
     }
 }
