@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Grace.Data.Immutable;
@@ -8,6 +9,24 @@ namespace Grace.Tests.Data.Immutable
 {
     public class ImmutableLinkedListTests
     {
+        [Fact]
+        public void ImmutableLinkedList_Null_Reference_Check()
+        {
+            var value = (ImmutableLinkedList<int>) null;
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAdd(ref value,2));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeEmpty(ref value));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeRemove(ref value,5));
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAddRange(ref value, new []{5}));
+
+            value = ImmutableLinkedList<int>.Empty;
+            
+            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAddRange(ref value, null));
+        }
+
         [Fact]
         public void ImmutableLinkedList_Add_Test()
         {
@@ -195,6 +214,8 @@ namespace Grace.Tests.Data.Immutable
 
             _finalList.Sort();
 
+            Assert.Equal(_finalList.Count, _addAmount * writerCount);
+
             for (int i = 0; i < (_addAmount * writerCount); i++)
             {
                 Assert.Equal(i, _finalList[i]);
@@ -212,6 +233,10 @@ namespace Grace.Tests.Data.Immutable
                     _finalList.AddRange(list);
                 }
             }
+
+            var lastList = ImmutableLinkedList.ThreadSafeEmpty(ref _linkedList);
+
+            _finalList.AddRange(lastList);
         }
 
         private void AddRangeToList(int startValue)

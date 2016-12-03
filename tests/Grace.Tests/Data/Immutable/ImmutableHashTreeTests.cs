@@ -10,6 +10,13 @@ namespace Grace.Tests.Data.Immutable
 {
     public class ImmutableHashTreeTests
     {
+        [Fact]
+        public void ImmutableHashTree_Null_Reference_Check()
+        {
+            Assert.Throws<ArgumentNullException>(() => ImmutableHashTree<int?, int>.Empty.Add(null, 5));
+            Assert.Throws<ArgumentNullException>(() => ImmutableHashTree<int?, int>.Empty.ContainsKey(null));
+        }
+
         private ImmutableHashTree<int, int> _hashTree;
         private ManualResetEvent _startEvent;
         private int _addAmount = 50000;

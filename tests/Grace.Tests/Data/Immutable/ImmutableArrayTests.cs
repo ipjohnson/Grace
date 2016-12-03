@@ -10,6 +10,12 @@ namespace Grace.Tests.Data.Immutable
     public class ImmutableArrayTests
     {
         [Fact]
+        public void ImmutableArray_Null_Reference_Check()
+        {
+            Assert.Throws<ArgumentNullException>(() => ImmutableArray.From<int>(null));
+        }
+        
+        [Fact]
         public void ImmutableArray_Create()
         {
             var array = ImmutableArray.Create(5, 10, 15);
