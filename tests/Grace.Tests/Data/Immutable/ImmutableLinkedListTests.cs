@@ -161,7 +161,7 @@ namespace Grace.Tests.Data.Immutable
             Assert.Equal(15, newList[2]);
         }
 
-        private ImmutableLinkedList<int> _linkedList;
+        private volatile ImmutableLinkedList<int> _linkedList;
         private List<int> _finalList;
         private ManualResetEvent _startEvent;
         private CountdownEvent _countdownEvent;
