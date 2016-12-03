@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Grace.Data.Immutable;
 using Xunit;
 
@@ -157,6 +159,76 @@ namespace Grace.Tests.Data.Immutable
             Assert.Equal(5, newList[0]);
             Assert.Equal(10, newList[1]);
             Assert.Equal(15, newList[2]);
+        }
+
+        private ImmutableLinkedList<int> _linkedList;
+        private List<int> _finalList;
+        private ManualResetEvent _startEvent;
+        private CountdownEvent _countdownEvent;
+        private int _addAmount = 1000000;
+
+        [Fact]
+        public void ImmutableLinkedList_Multithreaded_Test()
+        {
+            int writerCount = 4;
+
+            _finalList = new List<int>();
+            _linkedList = ImmutableLinkedList<int>.Empty;
+            _countdownEvent = new CountdownEvent(4);
+            _startEvent = new ManualResetEvent(false);
+
+            var listOfTasks = new List<Task>();
+
+            for (int i = 0; i < writerCount; i++)
+            {
+                var value = i;
+                var task = Task.Run(() => AddRangeToList(value * _addAmount));
+
+                listOfTasks.Add(task);
+            }
+
+            listOfTasks.Add(Task.Run(() => RemoveFromList()));
+
+            _startEvent.Set();
+
+            Task.WaitAll(listOfTasks.ToArray(), 60 * 1000);
+
+            _finalList.Sort();
+
+            for (int i = 0; i < (_addAmount * writerCount); i++)
+            {
+                Assert.Equal(i, _finalList[i]);
+            }
+        }
+
+        private void RemoveFromList()
+        {
+            while (!_countdownEvent.WaitHandle.WaitOne(0))
+            {
+                for (int i = 0; i < 500; i++)
+                {
+                    var list = ImmutableLinkedList.ThreadSafeEmpty(ref _linkedList);
+
+                    _finalList.AddRange(list);
+                }
+            }
+        }
+
+        private void AddRangeToList(int startValue)
+        {
+            _startEvent.WaitOne();
+
+            for (int i = startValue; i < (startValue + _addAmount); i++)
+            {
+                ImmutableLinkedList.ThreadSafeAdd(ref _linkedList, i);
+
+                if (_addAmount % 1000 == 0)
+                {
+                    Thread.Sleep(0);
+                }
+            }
+
+            _countdownEvent.Signal();
         }
     }
 }

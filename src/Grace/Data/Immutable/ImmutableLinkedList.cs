@@ -22,26 +22,27 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableLinkedList<T> ThreadSafeEmpty<T>(ref ImmutableLinkedList<T> list)
         {
-            var listValue = list;
+            return Interlocked.Exchange(ref list, ImmutableLinkedList<T>.Empty);
+            //var listValue = list;
 
-            if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
-            {
-                return listValue;
-            }
+            //if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
+            //{
+            //    return listValue;
+            //}
 
-            var wait = new SpinWait();
+            //var wait = new SpinWait();
 
-            while (true)
-            {
-                wait.SpinOnce();
+            //while (true)
+            //{
+            //    wait.SpinOnce();
 
-                listValue = list;
+            //    listValue = list;
 
-                if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
-                {
-                    return listValue;
-                }
-            }
+            //    if (ReferenceEquals(Interlocked.CompareExchange(ref list, ImmutableLinkedList<T>.Empty, listValue), listValue))
+            //    {
+            //        return listValue;
+            //    }
+            //}
         }
         
         /// <summary>
@@ -53,7 +54,7 @@ namespace Grace.Data.Immutable
         public static void ThreadSafeAdd<T>(ref ImmutableLinkedList<T> list, T value)
         {
             var listValue = list;
-            var newList = list.Add(value);
+            var newList = listValue.Add(value);
 
             if (ReferenceEquals(Interlocked.CompareExchange(ref list, newList, listValue), listValue))
             {
@@ -84,28 +85,9 @@ namespace Grace.Data.Immutable
         /// <param name="values"></param>
         public static void ThreadSafeAddRange<T>(ref ImmutableLinkedList<T> list, IEnumerable<T> values)
         {
-            var listValue = list;
-            var newValues = values.ToArray();
-            var newList = listValue.AddRange(newValues);
-
-            if (ReferenceEquals(Interlocked.CompareExchange(ref list, newList, listValue), listValue))
+            foreach (var value in values)
             {
-                return;
-            }
-
-            var wait = new SpinWait();
-
-            while (true)
-            {
-                wait.SpinOnce();
-
-                listValue = list;
-                newList = listValue.AddRange(newValues);
-
-                if (ReferenceEquals(Interlocked.CompareExchange(ref list, newList, listValue), listValue))
-                {
-                    return;
-                }
+                ThreadSafeAdd(ref list, value);
             }
         }
 
