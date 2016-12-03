@@ -98,7 +98,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _extraData.GetValueOrDefault(key);
         }
-
+        
         /// <summary>
         /// Sets extra data on the injection context
         /// </summary>

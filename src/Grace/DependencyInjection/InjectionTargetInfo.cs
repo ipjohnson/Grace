@@ -83,7 +83,7 @@ namespace Grace.DependencyInjection
             get
             {
                 var parameterInfo = InjectionTarget as ParameterInfo;
-
+                
                 return _attributeDiscoveryService.GetAttributes(parameterInfo != null ? parameterInfo.Member : InjectionTarget);
             }
         }

@@ -120,7 +120,7 @@ namespace Grace.DependencyInjection.Impl
 
             return _extraDataValues.GetValueOrDefault(key);
         }
-
+        
         /// <summary>
         /// Set data into context
         /// </summary>

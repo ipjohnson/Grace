@@ -22,12 +22,12 @@ namespace Grace.Data
         /// </summary>
         IEnumerable<KeyValuePair<object,object>> KeyValuePairs { get; }
 
-        /// <summary>
-        /// Extra data associated with the injection request. 
-        /// </summary>
-        /// <param name="key">key of the data object to get</param>
-        /// <returns>data value</returns>
-        object GetExtraData(object key);
+	    /// <summary>
+	    /// Extra data associated with the injection request. 
+	    /// </summary>
+	    /// <param name="key">key of the data object to get</param>
+	    /// <returns>data value</returns>
+	    object GetExtraData(object key);
 
 	    /// <summary>
 	    /// Sets extra data on the injection context
