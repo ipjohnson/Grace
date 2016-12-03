@@ -81,7 +81,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 var p = m as PropertyInfo;
 
-                if (filter != null)
+                if (p != null && filter != null)
                 {
                     return filter(p) == notValue;
                 }
@@ -108,7 +108,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 var p = m as MethodInfo;
 
-                if (filter != null)
+                if (p != null && filter != null)
                 {
                     return filter(p) == notValue;
                 }
@@ -156,8 +156,7 @@ namespace Grace.DependencyInjection.Impl
             else
             {
                 newFilter = t => t.GetCustomAttributes(typeof(TAttribute), true).
-                                   Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), typeof(TAttribute)))
-                                   == notValue;
+                                   Any(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), typeof(TAttribute))) == notValue;
             }
 
             _filters.Add(newFilter);

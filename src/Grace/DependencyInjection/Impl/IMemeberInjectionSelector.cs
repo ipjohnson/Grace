@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Is it required
         /// </summary>
-        public bool IsRequired { get; set; }
+        public bool IsRequired { get; set; } = true;
 
         /// <summary>
         /// Default value for member
@@ -58,6 +58,15 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="injectionScope">injection scope</param>
         /// <param name="request">request</param>
         /// <returns>members being injected</returns>
-        IEnumerable<MemberInjectionInfo> GetMembers(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request);
+        IEnumerable<MemberInjectionInfo> GetPropertiesAndFields(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request);
+
+        /// <summary>
+        /// Get Methods to inject
+        /// </summary>
+        /// <param name="type">type being activated</param>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="request">request</param>
+        /// <returns>methods being injected</returns>
+        IEnumerable<MethodInjectionInfo> GetMethods(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request);
     }
 }

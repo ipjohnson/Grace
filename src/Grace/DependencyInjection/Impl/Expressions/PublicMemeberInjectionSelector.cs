@@ -37,7 +37,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="injectionScope">injection scope</param>
         /// <param name="request">request</param>
         /// <returns>members being injected</returns>
-        public IEnumerable<MemberInjectionInfo> GetMembers(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
+        public IEnumerable<MemberInjectionInfo> GetPropertiesAndFields(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
             foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
             {
@@ -63,9 +63,30 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                 }
 
+
                 if (test && _picker(declaredMember))
                 {
                     yield return new MemberInjectionInfo { MemberInfo = declaredMember, IsRequired = IsRequired, DefaultValue = DefaultValue };
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get Methods to inject
+        /// </summary>
+        /// <param name="type">type being activated</param>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="request">request</param>
+        /// <returns>methods being injected</returns>
+        public IEnumerable<MethodInjectionInfo> GetMethods(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
+        {
+            foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
+            {
+                var methodInfo = declaredMember as MethodInfo;
+
+                if (methodInfo != null && _picker(declaredMember))
+                {
+                    yield return new MethodInjectionInfo { Method = methodInfo };
                 }
             }
         }

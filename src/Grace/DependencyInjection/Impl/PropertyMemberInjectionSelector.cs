@@ -26,9 +26,21 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="injectionScope"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public IEnumerable<MemberInjectionInfo> GetMembers(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
+        public IEnumerable<MemberInjectionInfo> GetPropertiesAndFields(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
             yield return _memberInfo;
+        }
+
+        /// <summary>
+        /// Get Methods to inject
+        /// </summary>
+        /// <param name="type">type being activated</param>
+        /// <param name="injectionScope">injection scope</param>
+        /// <param name="request">request</param>
+        /// <returns>methods being injected</returns>
+        public IEnumerable<MethodInjectionInfo> GetMethods(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
+        {
+            yield break;
         }
     }
 }

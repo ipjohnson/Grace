@@ -44,6 +44,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var list = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
 
+            foreach (var selector in configuration.MemberInjectionSelectors)
+            {
+                foreach (var methodInjection in selector.GetMethods(configuration.ActivationType, request.RequestingScope, request))
+                {
+                    list = list.AddRange(GetDependenciesForMethod(methodInjection, configuration, request));
+                }
+            }
+
             foreach (var methodInjection in configuration.MethodInjections)
             {
                 list = list.AddRange(GetDependenciesForMethod(methodInjection, configuration, request));
@@ -70,6 +78,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             ParameterExpression variableExpression = null;
 
+            foreach (var selector in activationConfiguration.MemberInjectionSelectors)
+            {
+                foreach (var methodInjectionInfo in selector.GetMethods(activationConfiguration.ActivationType, request.RequestingScope, request))
+                {
+                    if (variableExpression == null)
+                    {
+                        variableExpression = CreateVariablExpression(activationConfiguration, activationExpressionResult);
+                    }
+
+                    AddMethodCall(scope, request, activationConfiguration, activationExpressionResult, methodInjectionInfo, variableExpression);
+                }
+            }
+
             foreach (var methodInjectionInfo in activationConfiguration.MethodInjections)
             {
                 if (variableExpression == null)
@@ -92,7 +113,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return activationExpressionResult;
         }
-        
+
         private IEnumerable<ActivationStrategyDependency> GetDependenciesForMethod(MethodInjectionInfo methodInjection, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
             var list = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
@@ -111,12 +132,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 list =
                     list.Add(new ActivationStrategyDependency(DependencyType.MethodParameter,
-                                                              configuration.ActivationStrategy, 
-                                                              parameter, 
-                                                              parameter.ParameterType, 
-                                                              parameter.Name, 
+                                                              configuration.ActivationStrategy,
+                                                              parameter,
+                                                              parameter.ParameterType,
+                                                              parameter.Name,
                                                               false,
-                                                              false, 
+                                                              false,
                                                               found));
             }
 

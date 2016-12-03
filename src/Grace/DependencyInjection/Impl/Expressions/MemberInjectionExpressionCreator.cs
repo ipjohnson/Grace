@@ -176,7 +176,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             foreach (var memberInjectionSelector in activationConfiguration.MemberInjectionSelectors)
             {
                 foreach (var memberInjectionInfo in
-                    memberInjectionSelector.GetMembers(activationConfiguration.ActivationType, scope, request))
+                    memberInjectionSelector.GetPropertiesAndFields(activationConfiguration.ActivationType, scope, request))
                 {
                     members[memberInjectionInfo.MemberInfo] = memberInjectionInfo;
                 }
