@@ -99,7 +99,10 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableLinkedList<T> Create<T>(params T[] values)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (values == null || values.Length == 0)
+            {
+                return ImmutableLinkedList<T>.Empty;
+            }
 
             return ImmutableLinkedList<T>.Empty.AddRange(values);
         }
