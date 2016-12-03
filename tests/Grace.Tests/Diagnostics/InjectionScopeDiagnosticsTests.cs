@@ -52,6 +52,8 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
+            Assert.Equal(1, missingDependencies.Length);
+
             var dependency = missingDependencies[0];
 
             Assert.Equal("basicService", dependency.MemberName);
@@ -74,6 +76,8 @@ namespace Grace.Tests.Diagnostics
             Assert.NotNull(diagnostic);
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
+
+            Assert.Equal(1, missingDependencies.Length);
 
             var dependency = missingDependencies[0];
 
@@ -99,11 +103,35 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
+            Assert.Equal(1, missingDependencies.Length);
+
             var dependency = missingDependencies[0];
 
             Assert.Equal("basicService", dependency.MemberName);
             Assert.Equal(DependencyType.MethodParameter, dependency.DependencyType);
             Assert.Equal(typeof(IBasicService), dependency.TypeBeingImported);
+        }
+
+        [Fact]
+        public void InjectionScopeDiagnostics_ImportMethod_With_Keyed_Value_Dependency()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<ImportIntMethodClass>().ImportMethod(m => m.SetValue(Arg.Any<int>())));
+
+            var diagnostic = container.Locate<InjectionScopeDiagnostics>();
+
+            Assert.NotNull(diagnostic);
+
+            var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
+
+            Assert.Equal(1, missingDependencies.Length);
+
+            var dependency = missingDependencies[0];
+
+            Assert.Equal("value", dependency.MemberName);
+            Assert.Equal(DependencyType.MethodParameter, dependency.DependencyType);
+            Assert.Equal(typeof(int), dependency.TypeBeingImported);
         }
     }
 }

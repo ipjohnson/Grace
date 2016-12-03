@@ -6,8 +6,6 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
 {
     public class MethodInjectionTests
     {
-
-
         [Fact]
         public void MethodInjection_OneArg()
         {
@@ -62,11 +60,27 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
 
             Assert.NotNull(instance);
             Assert.Null(instance.BasicService);
-            
+
             Assert.NotNull(instance.SecondService);
             Assert.IsType<BasicService>(instance.SecondService);
         }
 
+        [Fact]
+        public void MethodInjection_Inject_Int_To_Method()
+        {
+            var container = new DependencyInjectionContainer();
 
+            container.Configure(c =>
+            {
+                c.ExportInstance(5).AsKeyed<int>("value");
+                c.Export<ImportIntMethodClass>().ImportMethod(m => m.SetValue(Arg.Any<int>()));
+            });
+
+            var instance = container.Locate<ImportIntMethodClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Equal(5, instance.Value);
+        }
     }
 }
