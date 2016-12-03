@@ -1,4 +1,6 @@
-﻿using Grace.DependencyInjection;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -12,11 +14,38 @@ namespace Grace.Tests.DependencyInjection
             var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>());
-            
+
             var basicService = container.Locate<IBasicService>();
 
             Assert.NotNull(basicService);
             Assert.IsType<BasicService>(basicService);
+        }
+
+        public class TestModule : IConfigurationModule
+        {
+            public void Configure(IExportRegistrationBlock registrationBlock)
+            {
+                registrationBlock.Export<BasicService>().As<IBasicService>();
+            }
+        }
+
+        [Fact]
+        public void DependencyInjectionContainer_Add_Module()
+        {
+            var container = new DependencyInjectionContainer { new TestModule() };
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void DependencyInjectionContainer_Enumerable_Return_Empty()
+        {
+            var container = new DependencyInjectionContainer { new TestModule() };
+
+            Assert.Empty((IEnumerable<object>)container);
+            Assert.Empty((IEnumerable)container);
         }
     }
 }
