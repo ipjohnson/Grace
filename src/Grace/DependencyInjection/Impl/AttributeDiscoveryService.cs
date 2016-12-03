@@ -64,27 +64,18 @@ namespace Grace.DependencyInjection.Impl
                 }
                 else
                 {
-                    var fieldInfo = value as FieldInfo;
+                    var memberInfo = value as MemberInfo;
 
-                    if (fieldInfo != null)
+                    if (memberInfo != null)
                     {
-                        attributes = fieldInfo.GetCustomAttributes().ToArray();
+                        attributes = memberInfo.GetCustomAttributes<Attribute>().ToArray();
                     }
                     else
                     {
-                        var methodInfo = value as MethodInfo;
-
-                        if (methodInfo != null)
-                        {
-                            attributes = methodInfo.GetCustomAttributes().ToArray();
-                        }
-                        else
-                        {
-                            throw new NotSupportedException(
-                                $"Getting attributes on type {value.GetType().Name} is not supported");
-                        }
+                        throw new NotSupportedException(
+                            $"Getting attributes on type {value.GetType().Name} is not supported");
                     }
-                }
+               }
             }
 
             if (attributes.Length == 0)
