@@ -405,7 +405,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.ActivationType == typeof(StaticInjectionContext))
             {
-                var staticContext = request.GetStaticInjectionContext();
+                var staticContext = request.Parent != null ?
+                                    request.Parent.GetStaticInjectionContext() : 
+                                    request.GetStaticInjectionContext();
 
                 return request.Services.Compiler.CreateNewResult(request, Expression.Constant(staticContext));
             }
