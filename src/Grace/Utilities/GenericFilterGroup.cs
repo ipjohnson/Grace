@@ -1,7 +1,7 @@
 ﻿using System;
 using Grace.Data.Immutable;
 
-namespace Grace.DependencyInjection.Impl
+namespace Grace.Utilities
 {
     /// <summary>
     /// Generic filter group 

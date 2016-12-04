@@ -2,6 +2,7 @@
 using Grace.Data;
 using System.Reflection;
 using System.Linq;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {

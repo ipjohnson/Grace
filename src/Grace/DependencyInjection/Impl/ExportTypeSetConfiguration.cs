@@ -7,6 +7,7 @@ using Grace.Data;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
