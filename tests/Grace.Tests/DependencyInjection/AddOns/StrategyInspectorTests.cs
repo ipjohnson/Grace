@@ -53,7 +53,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
                 c.Export<PropertyInjectionService>().As<IPropertyInjectionService>();
             });
 
-            var instance = container.Locate<IPropertyInjectionService>(new { count = 5 });
+            var instance = container.Locate<IPropertyInjectionService>(new { Count = 5 });
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);

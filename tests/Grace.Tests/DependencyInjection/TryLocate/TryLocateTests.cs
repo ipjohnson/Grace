@@ -17,7 +17,7 @@ namespace Grace.Tests.DependencyInjection.TryLocate
 
             container.TryLocate(out service);
 
-            Assert.Null(service);
+            Assert.NotNull(service);
         }
 
         [Fact]
