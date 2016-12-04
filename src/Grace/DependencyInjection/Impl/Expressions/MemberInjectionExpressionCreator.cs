@@ -64,10 +64,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 returnValue =
                     returnValue.Add(new ActivationStrategyDependency(kvp.Key is PropertyInfo ? DependencyType.Property : DependencyType.Field,
                                                                      configuration.ActivationStrategy,
-                                                                     kvp.Key, 
-                                                                     kvp.Key.GetMemeberType(), 
-                                                                     kvp.Key.Name, 
-                                                                     false, 
+                                                                     kvp.Key,
+                                                                     kvp.Key.GetMemeberType(),
+                                                                     kvp.Key.Name,
+                                                                     false,
                                                                      false,
                                                                      found));
             }
@@ -130,6 +130,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     newRequest.SetIsRequired(memberKVP.Value.IsRequired);
                     newRequest.SetFilter(memberKVP.Value.Filter);
                     newRequest.SetLocateKey(memberKVP.Value.LocateKey);
+
+                    if (memberKVP.Value.DefaultValue != null)
+                    {
+                        newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = memberKVP.Value.DefaultValue });
+                    }
 
                     var memberResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
