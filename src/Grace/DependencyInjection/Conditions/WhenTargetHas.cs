@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection.Conditions
             {
                 foreach (var attribute in targetInfo.InjectionTargetAttributes)
                 {
-                    if (attribute.GetType() != _attributeType && _filter == null || _filter(attribute))
+                    if (attribute.GetType() == _attributeType && (_filter == null || _filter(attribute)))
                     {
                         return true;
                     }

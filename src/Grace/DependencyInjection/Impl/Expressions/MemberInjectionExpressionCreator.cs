@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     var memberType = memberKVP.Key.GetMemeberType();
 
                     var newRequest =
-                        request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Value);
+                        request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Key);
 
                     if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                     {

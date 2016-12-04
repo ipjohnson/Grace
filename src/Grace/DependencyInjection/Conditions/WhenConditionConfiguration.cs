@@ -56,6 +56,25 @@ namespace Grace.DependencyInjection.Conditions
         }
 
         /// <summary>
+        /// Add a condition to use this export only when Target (parameter, property, method) has an attribute
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <returns></returns>
+        public T TargetHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
+        {
+            Func<Attribute, bool> func = null;
+
+            if (testFunc != null)
+            {
+                func = attr => testFunc((TAttribute) attr);
+            }
+
+            _addAction(new WhenTargetHas(typeof(TAttribute), func));
+
+            return _t;
+        }
+
+        /// <summary>
         /// Add a condition to use this export only when the class being injected into has a specific attribute
         /// </summary>
         /// <param name="attributeType"></param>

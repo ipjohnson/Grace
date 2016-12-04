@@ -8,28 +8,32 @@ using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Conditions
 {
-    public class WhenMemberHasTests
+    public class WhenTargetHasTests
     {
-        public class AttributedMemberClass
+        public class AttributedTargetClass
         {
-            [SomeTest]
-            public IBasicService BasicService { get; set; }
+            public AttributedTargetClass([SomeTest]IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
         }
 
+
         [Fact]
-        public void WhenMemeberHas_Property_Attributed()
+        public void WhenTargetHas_Parameter_Attributed()
         {
             var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {
-                c.Export<BasicService>().As<IBasicService>().When.MemberHas<SomeTestAttribute>();
+                c.Export<BasicService>().As<IBasicService>().When.TargetHas<SomeTestAttribute>();
                 c.ExportFactory<IBasicService>(() => new BasicServiceDecorator(new BasicService()));
-                c.Export<AttributedMemberClass>().ImportProperty(m => m.BasicService);
             });
 
-            var instance = container.Locate<AttributedMemberClass>();
-            
+            var instance = container.Locate<AttributedTargetClass>();
+
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
             Assert.IsType<BasicService>(instance.BasicService);
