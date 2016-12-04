@@ -12,15 +12,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
 {
     public class WhenInjectedIntoTests
     {
-        [Fact]
-        public void WhenInjectedInto_Non_Runtime_Values()
-        {
-            var condition = new WhenInjectedInto();
-
-            Assert.False(condition.IsRequestTimeCondition);
-            Assert.False(condition.RequiresInjectionContext);
-        }
-
+        
         [Fact]
         public void WhenInjectedInto_Matches_Correctly()
         {

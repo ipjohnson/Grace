@@ -15,15 +15,6 @@ namespace Grace.Tests.DependencyInjection.Conditions
         #region non Generic
 
         [Fact]
-        public void WhenClassHas_Non_Runtime_Values()
-        {
-            var condition = new WhenClassHas(typeof(SomeTestAttribute));
-
-            Assert.False(condition.IsRequestTimeCondition);
-            Assert.False(condition.RequiresInjectionContext);
-        }
-
-        [Fact]
         public void WhenClassHas_Match_With_No_Filter()
         {
             var container = new DependencyInjectionContainer();

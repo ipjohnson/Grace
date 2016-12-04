@@ -11,14 +11,6 @@ namespace Grace.Tests.DependencyInjection.Conditions
 {
     public class FuncCompiledConditionTest
     {
-        [Fact]
-        public void FuncCompiledCondition_Non_Runtime_Values()
-        {
-            var condition = new FuncCompiledCondition((strategy, context) => context.ActivationType == typeof(IBasicService));
-
-            Assert.False(condition.IsRequestTimeCondition);
-            Assert.False(condition.RequiresInjectionContext);
-        }
 
         [Fact]
         public void FuncCompiledCondition_Calls_Func()
