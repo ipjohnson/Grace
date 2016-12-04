@@ -62,8 +62,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         test = true;
                     }
                 }
-
-
+                
                 if (test && _picker(declaredMember))
                 {
                     yield return new MemberInjectionInfo { MemberInfo = declaredMember, IsRequired = IsRequired, DefaultValue = DefaultValue };
@@ -84,7 +83,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var methodInfo = declaredMember as MethodInfo;
 
-                if (methodInfo != null && _picker(declaredMember))
+                if (methodInfo != null && 
+                    methodInfo.IsPublic && 
+                   !methodInfo.IsStatic &&
+                    _picker(declaredMember))
                 {
                     yield return new MethodInjectionInfo { Method = methodInfo };
                 }
