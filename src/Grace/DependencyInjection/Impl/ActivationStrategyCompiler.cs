@@ -415,12 +415,7 @@ namespace Grace.DependencyInjection.Impl
 
                     foreach (var condition in strategy.Conditions)
                     {
-                        if (condition.IsRequestTimeCondition && condition.RequiresInjectionContext && injectionContext == null)
-                        {
-                            injectionContext = scope.CreateContext();
-                        }
-
-                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType), injectionContext))
+                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType)))
                         {
                             pass = false;
                             break;

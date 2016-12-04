@@ -296,7 +296,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     foreach (var condition in strategy.Conditions)
                     {
-                        if (!condition.MeetsCondition(strategy, staticContext, null))
+                        if (!condition.MeetsCondition(strategy, staticContext))
                         {
                             pass = false;
                             break;

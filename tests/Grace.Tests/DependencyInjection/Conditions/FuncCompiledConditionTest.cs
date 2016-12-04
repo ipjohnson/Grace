@@ -25,7 +25,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
         {
             var condition = new FuncCompiledCondition((strategy, context) => context.ActivationType == typeof(IBasicService));
 
-            Assert.True(condition.MeetsCondition(null,new StaticInjectionContext(typeof(IBasicService)), null));
+            Assert.True(condition.MeetsCondition(null,new StaticInjectionContext(typeof(IBasicService))));
         }
 
         [Fact]

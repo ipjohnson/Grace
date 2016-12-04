@@ -603,7 +603,7 @@ namespace Grace.DependencyInjection.Impl
 
                         foreach (var condition in strategy.Conditions)
                         {
-                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type), null))
+                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
                             {
                                 pass = false;
                                 break;
