@@ -4,6 +4,7 @@
     {
         IBasicService BasicService { get; }
     }
+
     public class PropertyInjectionService : IPropertyInjectionService
     {
         public IBasicService BasicService { get; set; }

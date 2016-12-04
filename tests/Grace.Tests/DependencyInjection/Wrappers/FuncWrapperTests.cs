@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -51,6 +52,14 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.IsType<SimpleObjectC>(instances[2]);
             Assert.IsType<SimpleObjectD>(instances[3]);
             Assert.IsType<SimpleObjectE>(instances[4]);
+        }
+
+        [Fact]
+        public void FuncWrapper_Null_Test()
+        {
+            var instance = new FuncWrapperStrategy(null);
+
+            Assert.Null(instance.GetWrappedType(typeof(int)));
         }
     }
 }

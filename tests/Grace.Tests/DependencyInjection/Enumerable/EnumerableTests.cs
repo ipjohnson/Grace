@@ -109,7 +109,7 @@ namespace Grace.Tests.DependencyInjection.Enumerable
         }
 
         [Fact]
-        public void Contianer_IEnumerable_Sort()
+        public void Container_IEnumerable_Sort()
         {
             var container = new DependencyInjectionContainer();
 
@@ -137,5 +137,6 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             Assert.IsType<MultipleService4>(array[3]);
             Assert.IsType<MultipleService5>(array[4]);
         }
+        
     }
 }
