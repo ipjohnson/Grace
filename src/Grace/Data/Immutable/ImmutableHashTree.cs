@@ -356,6 +356,8 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             return GetValueOrDefault(key, key.GetHashCode(), defaultValue);
         }
 
@@ -369,8 +371,8 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-
+            // don't check for null as it's assumed if you calculated a hash then you have key
+            
             if (ReferenceEquals(Key, key))
             {
                 return Value;
