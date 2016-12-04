@@ -1,4 +1,6 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -44,25 +46,15 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             Assert.Same(basicService, childScope2.Locate<IBasicService>());
         }
 
-        //[Fact]
-        //public void SingletonPerScopeNamedMissingScopeExceptionTest()
-        //{
-        //    DependencyInjectionContainer container = new DependencyInjectionContainer();
+        [Fact]
+        public void SingletonPerScopeNamedMissingScopeExceptionTest()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
 
-        //    container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
-
-        //    try
-        //    {
-        //        container.Locate<IBasicService>();
-        //    }
-        //    catch (GeneralLocateException exp)
-        //    {
-        //        if (!(exp.InnerException is InjectionScopeCouldNotBeFoundException))
-        //        {
-        //            throw new Exception("Wrong inner exception should have been injection scope could not be found");
-        //        }
-        //    }
-        //}
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
+            
+            Assert.Throws<NamedScopeLocateException>(() => container.Locate<IBasicService>());
+        }
 
         [Fact]
         public void SingletonPerScopeNamedDifferentNamedScopes()
