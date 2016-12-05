@@ -1,4 +1,5 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -64,6 +65,25 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                     Assert.NotNull(instance2);
                     Assert.NotSame(instance1, instance2);
                 }
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_TryLocate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IBasicService basicService;
+
+                Assert.True(scope.TryLocate(out basicService));
+
+                IMultipleService multipleService;
+
+                Assert.False(scope.TryLocate(out multipleService));
             }
         }
     }

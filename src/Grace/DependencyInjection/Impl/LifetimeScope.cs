@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, null, true, false);
+            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, null,allowNull: false,isDynamic: false);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Grace.DependencyInjection.Impl
 
             return func != null ? 
                    func(this, this, extraData == null ? null : CreateContext(extraData)) : 
-                   LocateFromParent(type, null, null, null, true, false);
+                   LocateFromParent(type, null, null, null,allowNull: false,isDynamic: false);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            value = LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
+            value = LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
 
             return value != null;
         }
@@ -225,12 +225,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data</param>
         /// <param name="consider">filter for strategies</param>
         /// <param name="key">key to use for locate</param>
-        /// <param name="isRequired">is it required</param>
+        /// <param name="allowNull">is null allowed</param>
         /// <param name="isDynamic">is the request dynamic</param>
         /// <returns></returns>
-        protected virtual object LocateFromParent(Type type, object extraData, ActivationStrategyFilter consider, object key, bool isRequired, bool isDynamic)
+        protected virtual object LocateFromParent(Type type, object extraData, ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic)
         {
-            return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, isRequired, isDynamic);
+            return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, allowNull, isDynamic);
         }
     }
 }
