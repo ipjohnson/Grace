@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             if (_guaranteeOnlyOne)
             {
-                var openMethod = typeof(SingletonPerAncestor).GetRuntimeMethod("GetValueGuaranteeOnce",
+                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod("GetValueGuaranteeOnce",
                     new[]
                     {
                         typeof(IExportLocatorScope),
@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Lifestyle
             }
             else
             {
-                var openMethod = typeof(SingletonPerAncestor).GetRuntimeMethod("GetValue",
+                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod("GetValue",
                     new[]
                     {
                         typeof(IExportLocatorScope),
@@ -125,7 +125,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
         /// <returns></returns>
-        public T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
+        public static T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
             var value = context.SharedData.GetExtraData(uniqueId);
 
