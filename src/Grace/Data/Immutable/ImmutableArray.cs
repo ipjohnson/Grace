@@ -52,7 +52,7 @@ namespace Grace.Data.Immutable
         {
             if (ts == null) throw new ArgumentNullException(nameof(ts));
 
-            return new ImmutableArray<T>(CloneArray(ts,count));
+            return new ImmutableArray<T>(CloneArray(ts, count));
         }
 
         internal static T[] CloneArray<T>(T[] array, int length)
@@ -272,7 +272,7 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static explicit operator T[](ImmutableArray<T> list)
+        public static explicit operator T[] (ImmutableArray<T> list)
         {
             if (list._list != null)
             {
@@ -350,7 +350,27 @@ namespace Grace.Data.Immutable
         /// <param name="y">The second object of type T to compare.</param>
         public bool Equals(ImmutableArray<T> x, ImmutableArray<T> y)
         {
-            return x._list == y._list;
+            if (x._list.Length != y._list.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < x._list.Length; i++)
+            {
+                if (x._list[i] == null)
+                {
+                    if (y._list[i] != null)
+                    {
+                        return false;
+                    }
+                }
+                else if (!x._list[i].Equals(y._list[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>Returns a hash code for the specified object.</summary>
