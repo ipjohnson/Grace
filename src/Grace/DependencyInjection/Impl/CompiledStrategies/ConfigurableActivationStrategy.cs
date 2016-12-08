@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// Abstract class that most strategies are based off of
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "{DebuggerNameDisplayString,nq}")]
-    [DebuggerTypeProxy(typeof(ConfigurableActivationStrategyDiagnostic))]
+    [DebuggerTypeProxy(typeof(ConfigurableActivationStrategyDebuggerView))]
     public abstract class ConfigurableActivationStrategy : IConfigurableActivationStrategy
     {
         /// <summary>

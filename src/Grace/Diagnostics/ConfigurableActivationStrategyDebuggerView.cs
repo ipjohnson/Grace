@@ -9,7 +9,7 @@ namespace Grace.Diagnostics
     /// <summary>
     /// Diagnostic class for configurable strategies
     /// </summary>
-    public class ConfigurableActivationStrategyDiagnostic
+    public class ConfigurableActivationStrategyDebuggerView
     {
         private readonly IConfigurableActivationStrategy _configurableActivationStrategy;
 
@@ -17,7 +17,7 @@ namespace Grace.Diagnostics
         /// Default constructor
         /// </summary>
         /// <param name="configurableActivationStrategy"></param>
-        public ConfigurableActivationStrategyDiagnostic(IConfigurableActivationStrategy configurableActivationStrategy)
+        public ConfigurableActivationStrategyDebuggerView(IConfigurableActivationStrategy configurableActivationStrategy)
         {
             _configurableActivationStrategy = configurableActivationStrategy;
         }
