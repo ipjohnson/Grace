@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Impl
                 var elementType = type.GenericTypeArguments[0];
 
                 var method =
-                    typeof(DynamicArrayLocator).GetRuntimeMethods().FirstOrDefault(m => m.Name == "ArrayCreateMethod");
+                    typeof(DynamicIEnumerableLocator).GetRuntimeMethods().FirstOrDefault(m => m.Name == "EnumerableCreateMethod");
 
                 var closedMethod = method.MakeGenericMethod(elementType);
 
