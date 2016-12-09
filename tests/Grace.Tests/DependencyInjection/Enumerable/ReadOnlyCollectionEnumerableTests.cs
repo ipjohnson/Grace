@@ -1,14 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.EnumerableStrategies;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.Attributes;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable
 {
     public class ReadOnlyCollectionEnumerableTests
     {
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ReadOnlyCollection_Throws_Exception_For_Decorator([Locate]ReadOnlyCollectionStrategy strategy)
+        {
+            Assert.Throws<NotSupportedException>(() => strategy.GetDecoratorActivationExpression(null, null, null));
+        }
+
         [Fact]
         public void Locate_ReadOnlyCollection_Enumerable()
         {

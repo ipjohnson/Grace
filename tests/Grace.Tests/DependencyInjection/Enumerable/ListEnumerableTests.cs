@@ -1,12 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.EnumerableStrategies;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.Attributes;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable
 {
     public class ListEnumerableTests
     {
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ListStrategy_Throws_Exception([Locate]ListEnumerableStrategy strategy)
+        {
+            Assert.Throws<NotSupportedException>(() => strategy.GetDecoratorActivationExpression(null, null, null));
+        }
+
         [Fact]
         public void Locate_List_Enumerable()
         {

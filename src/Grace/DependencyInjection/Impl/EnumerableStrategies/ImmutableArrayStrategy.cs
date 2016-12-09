@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
-        public ImmutableArrayStrategy( IInjectionScope injectionScope) : base(typeof(ImmutableArray<>), injectionScope)
+        public ImmutableArrayStrategy(IInjectionScope injectionScope) : base(typeof(ImmutableArray<>), injectionScope)
         {
         }
 

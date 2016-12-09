@@ -2,12 +2,15 @@
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable
 {
     public class ObservableCollectionEnumerableTests
     {
+        
         [Fact]
         public void Locate_ObservableCollection_Enumerable()
         {

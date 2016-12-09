@@ -1,13 +1,26 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.EnumerableStrategies;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.Attributes;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable
 {
     public class ImmutableArrayEnumerableTests
     {
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ImmutableArrayStrategy_Decorator_Throws_Exception([Locate]ImmutableArrayStrategy strategy)
+        {
+            Assert.Throws<NotSupportedException>(() => strategy.GetDecoratorActivationExpression(null, null, null));
+        }
+
         [Fact]
         public void Locate_ImmutableArray_Create()
         {
