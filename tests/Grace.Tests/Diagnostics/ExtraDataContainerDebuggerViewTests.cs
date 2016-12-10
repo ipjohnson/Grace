@@ -45,7 +45,7 @@ namespace Grace.Tests.Diagnostics
                 new KeyValuePair<object, object>(1, "Hello"),
             });
 
-            var property = debugger.GetType().GetTypeInfo().GetProperty("DebuggerDisplayValue");
+            var property = debugger.GetType().GetTypeInfo().GetProperty("DebuggerDisplayValue", BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.Equal("Count: 2", property.GetValue(debugger));
         }

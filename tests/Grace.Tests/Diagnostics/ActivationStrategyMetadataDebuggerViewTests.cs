@@ -49,9 +49,10 @@ namespace Grace.Tests.Diagnostics
         public void ActivationStrategyMetadataDebuggerView_Data(ActivationStrategyMetadataDebuggerView debugger,
                                                                     IActivationStrategyMetadata metadata)
         {
-            var list = new[] { new KeyValuePair<object, object>(typeof(IBasicService), "Blah") };
+            var list = new List<KeyValuePair<object,object>> { new KeyValuePair<object, object>(typeof(IBasicService), "Blah") };
 
-            metadata.GetEnumerator().Returns(list.GetEnumerator());
+            var enumerator = list.GetEnumerator();
+            metadata.GetEnumerator().Returns(enumerator);
 
             var metaList = debugger.Data.ToArray();
 

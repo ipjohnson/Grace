@@ -106,6 +106,21 @@ namespace Grace.Tests.DependencyInjection.Keyed
             }
         }
 
+        [Fact]
+        public void AsKeyed_Override()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
 
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>('A');
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>('A');
+            });
+
+            var instance = container.Locate<ISimpleObject>(withKey: 'A');
+
+            Assert.NotNull(instance);
+            Assert.IsType<SimpleObjectB>(instance);
+        }
     }
 }

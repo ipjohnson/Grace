@@ -1,5 +1,7 @@
 ﻿using System;
+using Grace.Data;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -69,6 +71,41 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
         }
 
         [Fact]
+        public void LifetimeScope_Locate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IBasicService basicService = scope.Locate<IBasicService>();
+
+                Assert.NotNull(basicService);
+            }
+        }
+
+
+        [Fact]
+        public void LifetimeScope_Locate_Dynamic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                IBasicService basicService;
+
+                Assert.Throws<LocateException>(() => basicService = scope.Locate<IBasicService>(isDynamic: true));
+
+                container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+                basicService = scope.Locate<IBasicService>(isDynamic: true);
+
+                Assert.NotNull(basicService);
+            }
+        }
+
+        [Fact]
         public void LifetimeScope_TryLocate()
         {
             var container = new DependencyInjectionContainer();
@@ -84,6 +121,84 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                 IMultipleService multipleService;
 
                 Assert.False(scope.TryLocate(out multipleService));
+            }
+        }
+
+        [Fact]
+        public void Lifetimescope_CanLocate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                Assert.True(scope.CanLocate(typeof(IBasicService)));
+
+                Assert.False(scope.CanLocate(typeof(IMultipleService)));
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_CreateContext()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var context = scope.CreateContext(new { PropA = 5 });
+
+                Assert.NotNull(context);
+                Assert.Equal(5, context.GetExtraDataOrDefaultValue("PropA", 0));
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_LocateAll()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<MultipleService2>().As<IMultipleService>();
+                c.Export<MultipleService3>().As<IMultipleService>();
+                c.Export<MultipleService4>().As<IMultipleService>();
+                c.Export<MultipleService5>().As<IMultipleService>();
+            });
+
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var list = scope.LocateAll(typeof(IMultipleService));
+
+                Assert.NotNull(list);
+                Assert.Equal(5, list.Count);
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_LocateAll_Generic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<MultipleService2>().As<IMultipleService>();
+                c.Export<MultipleService3>().As<IMultipleService>();
+                c.Export<MultipleService4>().As<IMultipleService>();
+                c.Export<MultipleService5>().As<IMultipleService>();
+            });
+            
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var list = scope.LocateAll<IMultipleService>();
+
+                Assert.NotNull(list);
+                Assert.Equal(5, list.Count);
             }
         }
     }
