@@ -163,7 +163,7 @@ namespace Grace.DependencyInjection.Impl
         {
             bool notValue = GetNotAndingValue();
 
-            Add(t => t.GetTypeInfo().IsNotPublic == notValue);
+            Add(t => (t.GetTypeInfo().IsPublic == false) == notValue);
 
             return this;
         }

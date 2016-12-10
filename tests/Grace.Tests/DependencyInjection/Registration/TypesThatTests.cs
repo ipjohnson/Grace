@@ -142,5 +142,97 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.Equal(1, simpleObjects.Count());
         }
 
+
+        [Fact]
+        public void ComplexHaveAttributeNonGeneric()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(typeof(TypesThatTests).GetTypeInfo().Assembly.ExportedTypes).
+                ByInterface(typeof(IAttributedSimpleObject)).
+                Where(TypesThat.HaveAttribute(t => t == typeof(SomeTestAttribute))));
+
+            IEnumerable<IAttributedSimpleObject> simpleObjects = container.LocateAll<IAttributedSimpleObject>();
+
+            Assert.NotNull(simpleObjects);
+            Assert.Equal(3, simpleObjects.Count());
+        }
+
+        private class PrivateClass
+        {
+            
+        }
+
+        [Fact]
+        public void TypesThat_AreNotPublic()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.AreNotPublic();
+
+            Assert.True(testFunc(typeof(PrivateClass)));
+        }
+
+        [Fact]
+        public void TypesThat_AreGeneric()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.AreConstructedGeneric();
+
+            Assert.True(testFunc(typeof(DependentService<IBasicService>)));
+        }
+
+        [Fact]
+        public void TypesThat_AreOpenGeneric()
+        {
+            var testFunc = (Func<Type, bool>)TypesThat.AreOpenGeneric();
+
+            Assert.True(testFunc(typeof(DependentService<>)));
+        }
+
+        [Fact]
+        public void TypesThat_ArePublic()
+        {
+            var testFunc = (Func<Type, bool>)TypesThat.ArePublic();
+
+            Assert.True(testFunc(typeof(DependentService<>)));
+            Assert.False(testFunc(typeof(PrivateClass)));
+        }
+
+        [Fact]
+        public void TypesThat_Match()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.Match(t => t == typeof(DependentService<>));
+
+            Assert.True(testFunc(typeof(DependentService<>)));
+            Assert.False(testFunc(typeof(TypesThatTests)));
+        }
+
+        public class PropertyClass
+        {
+            public int PropertyA { get; set; }
+        }
+
+        [Fact]
+        public void TypesThat_HaveProperty()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.HaveProperty("PropertyA");
+
+            Assert.True(testFunc(typeof(PropertyClass)));
+        }
+
+        [Fact]
+        public void TypesThat_HaveProperty_Generic()
+        {
+            var testFunc = (Func<Type, bool>)TypesThat.HaveProperty<int>();
+
+            Assert.True(testFunc(typeof(PropertyClass)));
+        }
+
+
+        [Fact]
+        public void TypesThat_HaveProperty_Generic_With_Name()
+        {
+            var testFunc = (Func<Type, bool>)TypesThat.HaveProperty<int>("PropertyA");
+
+            Assert.True(testFunc(typeof(PropertyClass)));
+        }
     }
 }
