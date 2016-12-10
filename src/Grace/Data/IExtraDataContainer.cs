@@ -34,7 +34,7 @@ namespace Grace.Data
 	    /// </summary>
 	    /// <param name="key">object name</param>
 	    /// <param name="newValue">new object value</param>
-	    /// <param name="replaceIfExists"></param>
+	    /// <param name="replaceIfExists">replace value if key exists</param>
 	    /// <returns>the final value of key</returns>
 	    object SetExtraData(object key, object newValue, bool replaceIfExists = true);
 	}

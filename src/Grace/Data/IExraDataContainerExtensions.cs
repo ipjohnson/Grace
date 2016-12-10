@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace Grace.Data
 {
+    /// <summary>
+    /// C# extension class for IExtraDataContainer
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class IExraDataContainerExtensions
     {
         /// <summary>
