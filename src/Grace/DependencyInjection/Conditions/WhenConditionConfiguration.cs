@@ -136,7 +136,7 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (types == null) throw new ArgumentNullException(nameof(types));
 
-            if (types.Length < 0) throw new ArgumentException("You must provide at least one type to test against", nameof(types));
+            if (types.Length < 1) throw new ArgumentException("You must provide at least one type to test against", nameof(types));
 
             _addAction(new WhenInjectedInto(types));
 
