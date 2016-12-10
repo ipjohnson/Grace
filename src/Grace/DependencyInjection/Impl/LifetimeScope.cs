@@ -105,7 +105,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (isDynamic || withKey != null || consider != null)
             {
-                return LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
+                return LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
             }
 
             var hashCode = type.GetHashCode();
