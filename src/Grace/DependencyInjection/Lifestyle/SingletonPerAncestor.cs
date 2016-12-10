@@ -159,7 +159,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
         /// <returns></returns>
-        public T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
+        public static T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
             var value = context.SharedData.GetExtraData(uniqueId);
 
