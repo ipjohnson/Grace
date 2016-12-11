@@ -130,20 +130,19 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TParam"></typeparam>
-    public class FluentWithCtorConfiguration<T, TParam> : FluentExportStrategyConfiguration<T>, IFluentWithCtorConfiguration<T, TParam>
+    public class FluentWithCtorConfiguration<T, TParam> : ProxyFluentExportStrategyConfiguration<T>, IFluentWithCtorConfiguration<T, TParam>
     {
         private readonly ConstructorParameterInfo _constructorParameterInfo;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="exportConfiguration"></param>
-        /// <param name="exportFunc"></param>
-        public FluentWithCtorConfiguration(ICompiledExportStrategy exportConfiguration, Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> exportFunc) : base(exportConfiguration)
+        /// <param name="strategy"></param>
+        /// <param name="constructorParameterInfo"></param>
+        public FluentWithCtorConfiguration(IFluentExportStrategyConfiguration<T> strategy, ConstructorParameterInfo constructorParameterInfo) : base(strategy)
         {
-            exportConfiguration.ConstructorParameter(_constructorParameterInfo = new ConstructorParameterInfo(exportFunc) { ParameterType = typeof(TParam) });
+            _constructorParameterInfo = constructorParameterInfo;
         }
-
 
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor

@@ -430,7 +430,7 @@ namespace Grace.DependencyInjection.Impl
                 return WithCtorParam((locator, context, data) => paramValue());
             }
 
-            return new FluentWithCtorConfiguration<T, TParam>(_exportConfiguration, null);
+            return new FluentWithCtorConfiguration<T, TParam>(this, new ConstructorParameterInfo(null));
         }
 
         /// <summary>
@@ -456,7 +456,9 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> paramValue)
         {
-            return new FluentWithCtorConfiguration<T, TParam>(_exportConfiguration, paramValue);
+            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+
+            return new FluentWithCtorConfiguration<T, TParam>(this, new ConstructorParameterInfo(paramValue));
         }
 
         /// <summary>
