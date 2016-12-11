@@ -35,5 +35,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             strategyConfiguration.Received().As<IBasicService>();
         }
+        
+
     }
 }
