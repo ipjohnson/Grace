@@ -171,25 +171,32 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="context">context for call</param>
         /// <param name="key"></param>
         /// <param name="isRequired"></param>
+        /// <param name="hasDefault"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
-            IInjectionContext context, object key, bool isRequired)
+            IInjectionContext context, object key, bool isRequired, bool hasDefault, object defaultValue)
         {
             var injectionScope = scope.GetInjectionScope();
 
             var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, null, key, true, true);
 
-            if (value == null)
+            if (value != null)
             {
-                if (isRequired)
-                {
-                    throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
-                }
-
-                return default(T);
+                return (T) value;
             }
 
-            return (T)value;
+            if (hasDefault)
+            {
+                return (T) defaultValue;
+            }
+
+            if (isRequired)
+            {
+                throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
+            }
+                
+            return default(T);
         }
 
         /// <summary>
@@ -423,10 +430,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             typeof(StaticInjectionContext),
                             typeof(IInjectionContext),
                             typeof(object),
-                            typeof(bool)
+                            typeof(bool),
+                            typeof(bool),
+                            typeof(object)
                         });
 
                 var closedMethod = dynamicMethod.MakeGenericMethod(request.ActivationType);
+
+                Expression defaultExpression = 
+                    Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
 
                 var expression = Expression.Call(closedMethod,
                                                  request.Constants.ScopeParameter,
@@ -434,7 +446,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                                  Expression.Constant(request.GetStaticInjectionContext()),
                                                  request.Constants.InjectionContextParameter,
                                                  Expression.Constant(request.LocateKey, typeof(object)),
-                                                 Expression.Constant(request.IsRequired));
+                                                 Expression.Constant(request.IsRequired),
+                                                 Expression.Constant(request.DefaultValue != null),
+                                                 defaultExpression);
 
                 return request.Services.Compiler.CreateNewResult(request, expression);
             }
