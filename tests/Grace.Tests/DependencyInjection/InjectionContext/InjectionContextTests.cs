@@ -2,12 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
+using Grace.Tests.Classes.Simple;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.InjectionContext
 {
     public class InjectionContextTests
     {
+        [Fact]
+        public void Container_InjectionContext_Convert_Type()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>().ImportProperty(i => i.Count));
+
+            var instance = container.Locate<IBasicService>(new { Count = 5.0 });
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Count);
+        }
+
+        [Fact]
+        public void Container_InjectionContext_Convert_Mismatch_Type_Throws()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>().ImportProperty(i => i.Count));
+
+            IBasicService instance = null;
+
+            Assert.Throws<LocateException>(() => instance = container.Locate<IBasicService>(new { Count = "Hello" }));
+        }
+
         [Fact]
         public void InjectionContext_Keys_Empty()
         {
@@ -97,7 +125,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             Assert.Equal("World", context.GetExtraData(5));
         }
-        
+
         [Fact]
         public void InjectionContext_SetValue_Dont_Override()
         {
@@ -119,7 +147,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             context.SetExtraData(5, "Hello");
 
-            Assert.Equal("Hello",context.GetValueByType(typeof(string)));
+            Assert.Equal("Hello", context.GetValueByType(typeof(string)));
         }
     }
 }
