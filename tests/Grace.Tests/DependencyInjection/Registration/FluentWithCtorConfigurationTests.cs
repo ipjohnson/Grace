@@ -14,29 +14,30 @@ namespace Grace.Tests.DependencyInjection.Registration
     [SubFixtureInitialize]
     public class FluentWithCtorConfigurationTests
     {
+        #region Generic
         [Theory]
         [AutoData]
-        public void FluentWithCtorConfiguration_Named_Null(FluentWithCtorConfiguration<int> configuration)
+        public void FluentWithCtorConfiguration_Generic_Named_Null(FluentWithCtorConfiguration<int> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.Named(null));
         }
 
         [Theory]
         [AutoData]
-        public void FluentWithCtorConfiguration_Consider_Null(FluentWithCtorConfiguration<int> configuration)
+        public void FluentWithCtorConfiguration_Generic_Consider_Null(FluentWithCtorConfiguration<int> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.Consider(null));
         }
 
         [Theory]
         [AutoData]
-        public void FluentWithCtorConfiguration_LocateKey_Null(FluentWithCtorConfiguration<int> configuration)
+        public void FluentWithCtorConfiguration_Generic_LocateKey_Null(FluentWithCtorConfiguration<int> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.LocateWithKey(null));
         }
 
         [Fact]
-        public void FluentWithCtorConfiguration_DefaultValue()
+        public void FluentWithCtorConfiguration_Generic_DefaultValue()
         {
             var container = new DependencyInjectionContainer();
 
@@ -51,7 +52,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void FluentWithCtorConfiguration_DefaultValue_Func()
+        public void FluentWithCtorConfiguration_Generic_DefaultValue_Func()
         {
             var container = new DependencyInjectionContainer();
 
@@ -75,7 +76,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void FluentWithCtorConfiguration_LocateKey()
+        public void FluentWithCtorConfiguration_Generic_LocateKey()
         {
             var container = new DependencyInjectionContainer();
 
@@ -96,5 +97,6 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(service.Value);
             Assert.IsType<MultipleService3>(service.Value);
         }
+        #endregion
     }
 }

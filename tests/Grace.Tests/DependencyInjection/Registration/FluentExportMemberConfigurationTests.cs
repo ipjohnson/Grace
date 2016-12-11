@@ -15,9 +15,11 @@ namespace Grace.Tests.DependencyInjection.Registration
     [SubFixtureInitialize]
     public class FluentExportMemberConfigurationTests
     {
+
+        #region Generic
         [Theory]
         [AutoData]
-        public void FluentExportMemberConfiguration_As(FluentExportMemberConfiguration<BasicService> configuration, 
+        public void FluentExportMemberConfiguration_Generic_As(FluentExportMemberConfiguration<BasicService> configuration, 
                                                        IFluentExportStrategyConfiguration<BasicService> fluentConfiguration)
         {
             configuration.As(typeof(IBasicService));
@@ -27,7 +29,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
         [Theory]
         [AutoData]
-        public void FluentExportMemberConfiguration_AsGeneric(FluentExportMemberConfiguration<BasicService> configuration,
+        public void FluentExportMemberConfiguration_Generic_AsGeneric(FluentExportMemberConfiguration<BasicService> configuration,
                                                        IFluentExportStrategyConfiguration<BasicService> fluentConfiguration)
         {
             configuration.As<IBasicService>();
@@ -37,14 +39,14 @@ namespace Grace.Tests.DependencyInjection.Registration
         
         [Theory]
         [AutoData]
-        public void FluentExportMemberConfiguration_AsKeyed(FluentExportMemberConfiguration<BasicService> configuration,
+        public void FluentExportMemberConfiguration_Generic_AsKeyed(FluentExportMemberConfiguration<BasicService> configuration,
                                                             IFluentExportStrategyConfiguration<BasicService> fluentConfiguration)
         {
             configuration.AsKeyed<IBasicService>("Hello");
 
             fluentConfiguration.Received().AsKeyed<IBasicService>("Hello");
         }
-
+        #endregion
 
     }
 }
