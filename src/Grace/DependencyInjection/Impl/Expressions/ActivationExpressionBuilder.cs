@@ -269,7 +269,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (value != null)
             {
-                if (!value.GetType().GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+                if (!typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
                 {
                     try
                     {
