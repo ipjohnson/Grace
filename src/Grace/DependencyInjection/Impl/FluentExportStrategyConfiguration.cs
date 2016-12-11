@@ -357,7 +357,15 @@ namespace Grace.DependencyInjection.Impl
             var propertyInfo =
                 member.Member.DeclaringType.GetTypeInfo().GetDeclaredProperty(member.Member.Name);
 
-            var memberInfo = new MemberInjectionInfo { MemberInfo = propertyInfo };
+            var memberInfo = new MemberInjectionInfo
+            {
+                MemberInfo = propertyInfo
+            };
+            
+            if (_exportConfiguration.InjectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(member.Type))
+            {
+                memberInfo.LocateKey = member.Member.Name;
+            }
 
             _exportConfiguration.MemberInjectionSelector(new PropertyMemberInjectionSelector(memberInfo));
 

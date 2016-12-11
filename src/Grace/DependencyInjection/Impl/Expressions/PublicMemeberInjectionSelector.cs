@@ -42,7 +42,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
             {
                 var propertyInfo = declaredMember as PropertyInfo;
-                var test = false;
+                Type importType = null;
 
                 if (propertyInfo != null)
                 {
@@ -50,7 +50,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         propertyInfo.SetMethod.IsPublic &&
                        !propertyInfo.SetMethod.IsStatic)
                     {
-                        test = true;
+                        importType = propertyInfo.PropertyType;
                     }
                 }
                 else if (declaredMember is FieldInfo)
@@ -59,13 +59,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (fieldInfo.IsPublic && !fieldInfo.IsStatic)
                     {
-                        test = true;
+                        importType = fieldInfo.FieldType;
                     }
                 }
                 
-                if (test && _picker(declaredMember))
+                if (importType != null && _picker(declaredMember))
                 {
-                    yield return new MemberInjectionInfo { MemberInfo = declaredMember, IsRequired = IsRequired, DefaultValue = DefaultValue };
+                    object key = null;
+
+                    if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(importType))
+                    {
+                        key = declaredMember.Name;
+                    }
+
+                    yield return new MemberInjectionInfo
+                    {
+                        MemberInfo = declaredMember,
+                        IsRequired = IsRequired,
+                        DefaultValue = DefaultValue,
+                        LocateKey = key
+                    };
                 }
             }
         }
