@@ -361,7 +361,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 MemberInfo = propertyInfo
             };
-            
+
             if (_exportConfiguration.InjectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(member.Type))
             {
                 memberInfo.LocateKey = member.Member.Name;
@@ -430,7 +430,11 @@ namespace Grace.DependencyInjection.Impl
                 return WithCtorParam((locator, context, data) => paramValue());
             }
 
-            return new FluentWithCtorConfiguration<T, TParam>(this, new ConstructorParameterInfo(null));
+            var parameterInfo = new ConstructorParameterInfo(null) { ParameterType = typeof(TParam) };
+
+            _exportConfiguration.ConstructorParameter(parameterInfo);
+
+            return new FluentWithCtorConfiguration<T, TParam>(this, parameterInfo);
         }
 
         /// <summary>
@@ -458,7 +462,14 @@ namespace Grace.DependencyInjection.Impl
         {
             if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
 
-            return new FluentWithCtorConfiguration<T, TParam>(this, new ConstructorParameterInfo(paramValue));
+            var parameterInfo = new ConstructorParameterInfo(paramValue)
+            {
+                ParameterType = typeof(TParam)
+            };
+
+            _exportConfiguration.ConstructorParameter(parameterInfo);
+
+            return new FluentWithCtorConfiguration<T, TParam>(this, parameterInfo);
         }
 
         /// <summary>

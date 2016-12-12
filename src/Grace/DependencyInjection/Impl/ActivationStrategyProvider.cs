@@ -159,7 +159,7 @@ namespace Grace.DependencyInjection.Impl
     public class ActivationStrategyProvider : IActivationStrategyCreator
     {
         private readonly IInjectionScope _injectionScope;
-        private readonly ILifestyleExpressionBuilder _exportExpressionBuilder;
+        private readonly IDefaultStrategyExpressionBuilder _exportExpressionBuilder;
 
         /// <summary>
         /// Default constructor
@@ -167,7 +167,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="injectionScope"></param>
         /// <param name="exportExpressionBuilder"></param>
         public ActivationStrategyProvider(IInjectionScope injectionScope,
-                                          ILifestyleExpressionBuilder exportExpressionBuilder)
+                                          IDefaultStrategyExpressionBuilder exportExpressionBuilder)
         {
             _injectionScope = injectionScope;
             _exportExpressionBuilder = exportExpressionBuilder;

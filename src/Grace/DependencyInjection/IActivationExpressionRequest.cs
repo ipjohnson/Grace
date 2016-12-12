@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Expression builder that takes lifestyle into consideration
         /// </summary>
-        ILifestyleExpressionBuilder LifestyleExpressionBuilder { get; }
+        IDefaultStrategyExpressionBuilder LifestyleExpressionBuilder { get; }
 
         /// <summary>
         /// Injection context creator

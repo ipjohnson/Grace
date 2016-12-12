@@ -5,7 +5,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <summary>
     /// interface for building expressions for a activation type using lifestyles
     /// </summary>
-    public interface ILifestyleExpressionBuilder
+    public interface IDefaultStrategyExpressionBuilder
     {
         /// <summary>
         /// Type expression builder
@@ -26,13 +26,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <summary>
     /// class builds expressions for activation configurations using lifestyles
     /// </summary>
-    public class LifestyleExpressionBuilder : ILifestyleExpressionBuilder
+    public class DefaultStrategyExpressionBuilder : IDefaultStrategyExpressionBuilder
     {
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="typeExpressionBuilder"></param>
-        public LifestyleExpressionBuilder(ITypeExpressionBuilder typeExpressionBuilder)
+        public DefaultStrategyExpressionBuilder(ITypeExpressionBuilder typeExpressionBuilder)
         {
             TypeExpressionBuilder = typeExpressionBuilder;
         }

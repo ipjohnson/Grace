@@ -140,7 +140,7 @@ namespace Grace.DependencyInjection
                 f => new ActivationStrategyCompiler(f.InjectionScope.ScopeConfiguration,
                                                     f.Locate<IActivationExpressionBuilder>(),
                                                     f.Locate<IAttributeDiscoveryService>(),
-                                                    f.Locate<ILifestyleExpressionBuilder>(),
+                                                    f.Locate<IDefaultStrategyExpressionBuilder>(),
                                                     f.Locate<IInjectionContextCreator>(),
                                                     f.Locate<IExpressionConstants>()));
 
@@ -150,10 +150,10 @@ namespace Grace.DependencyInjection
                 f => new ExportRegistrationBlock(f.InjectionScope, f.Locate<IActivationStrategyCreator>()));
 
             DefaultImplementation.ExportInstance<IActivationStrategyCreator>(
-                f => new ActivationStrategyProvider(f.InjectionScope, f.Locate<ILifestyleExpressionBuilder>()));
+                f => new ActivationStrategyProvider(f.InjectionScope, f.Locate<IDefaultStrategyExpressionBuilder>()));
 
-            DefaultImplementation.ExportInstance<ILifestyleExpressionBuilder>(
-                f => new LifestyleExpressionBuilder(f.Locate<ITypeExpressionBuilder>()));
+            DefaultImplementation.ExportInstance<IDefaultStrategyExpressionBuilder>(
+                f => new DefaultStrategyExpressionBuilder(f.Locate<ITypeExpressionBuilder>()));
 
             DefaultImplementation.ExportInstance<ITypeExpressionBuilder>(
                 f => new TypeExpressionBuilder(f.Locate<IInstantiationExpressionCreator>(), 

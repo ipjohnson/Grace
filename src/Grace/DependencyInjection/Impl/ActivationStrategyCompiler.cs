@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Impl
         private readonly IInjectionScopeConfiguration _configuration;
         private readonly IActivationExpressionBuilder _builder;
         private readonly IAttributeDiscoveryService _attributeDiscoveryService;
-        private readonly ILifestyleExpressionBuilder _exportExpressionBuilder;
+        private readonly IDefaultStrategyExpressionBuilder _exportExpressionBuilder;
         private readonly IInjectionContextCreator _injectionContextCreator;
         private readonly IExpressionConstants _constants;
 
@@ -32,7 +32,7 @@ namespace Grace.DependencyInjection.Impl
         public ActivationStrategyCompiler(IInjectionScopeConfiguration configuration,
                                           IActivationExpressionBuilder builder,
                                           IAttributeDiscoveryService attributeDiscoveryService,
-                                          ILifestyleExpressionBuilder exportExpressionBuilder,
+                                          IDefaultStrategyExpressionBuilder exportExpressionBuilder,
                                           IInjectionContextCreator injectionContextCreator,
                                           IExpressionConstants constants)
         {

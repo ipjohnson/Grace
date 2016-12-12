@@ -12,7 +12,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// </summary>
     public class CompiledExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
     {
-        private readonly ILifestyleExpressionBuilder _builder;
+        private readonly IDefaultStrategyExpressionBuilder _builder;
         private ImmutableLinkedList<ICompiledExportStrategy> _secondaryStrategies = ImmutableLinkedList<ICompiledExportStrategy>.Empty;
         private ActivationStrategyDelegate _delegate;
 
@@ -22,7 +22,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
         /// <param name="builder"></param>
-        public CompiledExportStrategy(Type activationType, IInjectionScope injectionScope, ILifestyleExpressionBuilder builder) : base(activationType, injectionScope)
+        public CompiledExportStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) : base(activationType, injectionScope)
         {
             _builder = builder;
         }

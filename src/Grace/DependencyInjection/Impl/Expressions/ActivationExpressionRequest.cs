@@ -24,7 +24,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public ActivationServices(IActivationStrategyCompiler compiler,
                                   IActivationExpressionBuilder expressionBuilder,
                                   IAttributeDiscoveryService attributeDiscoveryService,
-                                  ILifestyleExpressionBuilder exportExpressionBuilder,
+                                  IDefaultStrategyExpressionBuilder exportExpressionBuilder,
                                   IInjectionContextCreator injectionContextCreator)
         {
             Compiler = compiler;
@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Expression builder that takes lifestyle into consideration
         /// </summary>
-        public ILifestyleExpressionBuilder LifestyleExpressionBuilder { get; }
+        public IDefaultStrategyExpressionBuilder LifestyleExpressionBuilder { get; }
 
         /// <summary>
         /// Injection context creator

@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// </summary>
     public class GenericCompiledWrapperStrategy : ConfigurableActivationStrategy, IConfigurableCompiledWrapperStrategy
     {
-        private readonly ILifestyleExpressionBuilder _builder;
+        private readonly IDefaultStrategyExpressionBuilder _builder;
         private int _wrappedGenericArgPosition;
         private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
 
@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
         /// <param name="builder"></param>
-        public GenericCompiledWrapperStrategy(Type activationType, IInjectionScope injectionScope, ILifestyleExpressionBuilder builder) : base(activationType, injectionScope)
+        public GenericCompiledWrapperStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) : base(activationType, injectionScope)
         {
             _builder = builder;
         }

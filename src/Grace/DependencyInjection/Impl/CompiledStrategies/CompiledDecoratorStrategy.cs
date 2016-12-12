@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// </summary>
     public class CompiledDecoratorStrategy : ConfigurableActivationStrategy, ICompiledDecoratorStrategy
     {
-        private readonly ILifestyleExpressionBuilder _builder;
+        private readonly IDefaultStrategyExpressionBuilder _builder;
         
         /// <summary>
         /// Default constructor
@@ -17,7 +17,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
         /// <param name="builder"></param>
-        public CompiledDecoratorStrategy(Type activationType, IInjectionScope injectionScope, ILifestyleExpressionBuilder builder) : base(activationType, injectionScope)
+        public CompiledDecoratorStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) : base(activationType, injectionScope)
         {
             _builder = builder;
         }
