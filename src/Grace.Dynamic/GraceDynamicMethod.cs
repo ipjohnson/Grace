@@ -61,7 +61,7 @@ namespace Grace.Dynamic
                 f => new DynamicMethodStrategyCompiler(f.InjectionScope.ScopeConfiguration,
                                                f.Locate<IActivationExpressionBuilder>(),
                                                f.Locate<IAttributeDiscoveryService>(),
-                                               f.Locate<ILifestyleExpressionBuilder>(),
+                                               f.Locate<IDefaultStrategyExpressionBuilder>(),
                                                f.Locate<IInjectionContextCreator>(),
                                                f.Locate<IExpressionConstants>(),
                                                f.Locate<ILinqToDynamicMethodConverter>())); 

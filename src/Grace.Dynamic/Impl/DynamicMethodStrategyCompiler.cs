@@ -27,7 +27,7 @@ namespace Grace.Dynamic.Impl
         /// <param name="injectionContextCreator"></param>
         /// <param name="constants"></param>
         /// <param name="linqToDynamicMethodConverter"></param>
-        public DynamicMethodStrategyCompiler(IInjectionScopeConfiguration configuration, IActivationExpressionBuilder builder, IAttributeDiscoveryService attributeDiscoveryService, ILifestyleExpressionBuilder exportExpressionBuilder, IInjectionContextCreator injectionContextCreator, IExpressionConstants constants, ILinqToDynamicMethodConverter linqToDynamicMethodConverter) : 
+        public DynamicMethodStrategyCompiler(IInjectionScopeConfiguration configuration, IActivationExpressionBuilder builder, IAttributeDiscoveryService attributeDiscoveryService, IDefaultStrategyExpressionBuilder exportExpressionBuilder, IInjectionContextCreator injectionContextCreator, IExpressionConstants constants, ILinqToDynamicMethodConverter linqToDynamicMethodConverter) : 
             base(configuration, builder, attributeDiscoveryService, exportExpressionBuilder, injectionContextCreator, constants)
         {
             _linqToDynamicMethodConverter = linqToDynamicMethodConverter;
