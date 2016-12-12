@@ -1,8 +1,4 @@
-﻿using Grace.DependencyInjection;
-using Grace.Tests.Classes.Simple;
-using Xunit;
-
-namespace Grace.Tests.DependencyInjection.Decorator
+﻿namespace Grace.Tests.DependencyInjection.Decorator
 {
     public class InitializerDecoratorTests
     {

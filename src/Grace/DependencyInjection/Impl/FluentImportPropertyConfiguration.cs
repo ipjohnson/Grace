@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Grace.DependencyInjection.Impl
+﻿namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
     /// Configuration class for importing a property

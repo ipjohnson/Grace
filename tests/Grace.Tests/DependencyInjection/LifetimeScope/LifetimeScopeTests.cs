@@ -1,5 +1,4 @@
-﻿using System;
-using Grace.Data;
+﻿using Grace.Data;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;

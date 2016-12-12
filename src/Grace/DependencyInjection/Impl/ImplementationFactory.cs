@@ -1,6 +1,5 @@
 ﻿using Grace.Data.Immutable;
 using System;
-using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl
 {

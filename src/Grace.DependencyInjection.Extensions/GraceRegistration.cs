@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Grace.DependencyInjection.Lifestyle;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Grace.DependencyInjection.Extensions

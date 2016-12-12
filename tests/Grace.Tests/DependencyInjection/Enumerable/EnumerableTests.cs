@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
-using NuGet.Frameworks;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable

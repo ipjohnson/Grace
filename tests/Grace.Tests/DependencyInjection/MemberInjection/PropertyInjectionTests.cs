@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
