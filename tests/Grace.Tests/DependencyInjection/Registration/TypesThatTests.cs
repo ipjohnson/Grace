@@ -9,7 +9,6 @@ using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Registration
 {
-
     public class TypesThatTests
     {
         [Fact]
@@ -233,5 +232,36 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.True(testFunc(typeof(PropertyClass)));
         }
+
+        [Fact]
+        public void TypesThat_AreBasedOn()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.AreBasedOn<IBasicService>();
+
+            Assert.True(testFunc(typeof(BasicService)));
+            Assert.False(testFunc(typeof(MultipleService1)));
+        }
+
+        [Fact]
+        public void TypesThat_AreBasedOn_Func()
+        {
+            var testFunc = (Func<Type, bool>) TypesThat.AreBasedOn(type => type == typeof(IBasicService));
+
+            Assert.True(testFunc(typeof(BasicService)));
+            Assert.False(testFunc(typeof(MultipleService1)));
+        }
+
+
+        [Fact]
+        public void TypesThat_AreBasedOn_Throws_Null()
+        {
+            Assert.Throws<ArgumentNullException>(() => TypesThat.AreBasedOn((Type) null));
+        }
+
+        [Fact]
+        public void TypesThat_AreBasedOn_Func_Throws_Null()
+        {
+            Assert.Throws<ArgumentNullException>(() => TypesThat.AreBasedOn((Func<Type,bool>)null));
+        }
     }
-}
+    }
