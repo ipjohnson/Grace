@@ -114,5 +114,7 @@ namespace Grace.Tests.DependencyInjection
             Assert.NotNull(basicInstance);
             Assert.Equal(5, basicInstance.Count);
         }
+
+        
     }
 }
