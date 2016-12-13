@@ -28,12 +28,7 @@ namespace Grace.Dynamic.Impl
         /// <returns></returns>
         public object CreateMethodTarget(DynamicMethodGenerationRequest request)
         {
-            if (request.Constants.Count == 0)
-            {
-                return new DynamicMethodTarget();
-            }
-            
-            return CreateConstantTarget(request);
+            return request.Constants.Count == 0 ? new DynamicMethodTarget() : CreateConstantTarget(request);
         }
 
         private object CreateConstantTarget(DynamicMethodGenerationRequest request)

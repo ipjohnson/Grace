@@ -1,14 +1,6 @@
 ﻿namespace Grace.Dynamic.Impl
 {
     /// <summary>
-    /// Default dynamic method target
-    /// </summary>
-    internal sealed class DynamicMethodTarget
-    {
-
-    }
-
-    /// <summary>
     /// dynamic method target that uses array
     /// </summary>
     internal sealed class ArrayDynamicMethodTarget
@@ -22,6 +14,14 @@
         /// array of constants
         /// </summary>
         public object[] Items;
+    }
+
+    /// <summary>
+    /// Default dynamic method target
+    /// </summary>
+    internal sealed class DynamicMethodTarget
+    {
+
     }
 
     /// <summary>
