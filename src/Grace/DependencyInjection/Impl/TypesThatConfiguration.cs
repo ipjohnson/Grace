@@ -76,6 +76,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public TypesThatConfiguration AreBasedOn(Type baseType)
         {
+            if (baseType == null) throw new ArgumentNullException(nameof(baseType));
+
             bool notValue = GetNotAndingValue();
 
             Func<Type, bool> basedOnFilter =
@@ -93,6 +95,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>type filter</returns>
         public TypesThatConfiguration AreBasedOn(Func<Type, bool> typeFilter)
         {
+            if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
+
             bool notValue = GetNotAndingValue();
 
             Func<Type, bool> basedOnFilter =
