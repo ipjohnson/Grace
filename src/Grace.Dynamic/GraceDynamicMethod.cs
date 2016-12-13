@@ -11,9 +11,12 @@ namespace Grace.Dynamic
     /// </summary>
     public class GraceDynamicMethod : InjectionScopeConfiguration
     {
-        public GraceDynamicMethod()
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GraceDynamicMethod() : base(DynamicImplementation.Clone())
         {
-            Implementation = DynamicImplementation.Clone();
+
         }
         
         /// <summary>
@@ -29,8 +32,7 @@ namespace Grace.Dynamic
 
             return config;
         }
-
-
+        
         /// <summary>
         /// Implementation factory for dynamic IL generation
         /// </summary>

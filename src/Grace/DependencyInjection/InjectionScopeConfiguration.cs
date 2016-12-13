@@ -13,9 +13,9 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// default constructor
         /// </summary>
-        public InjectionScopeConfiguration()
+        public InjectionScopeConfiguration(ImplementationFactory implementationFactory = null)
         {
-            Implementation = DefaultImplementation.Clone();
+            Implementation = implementationFactory ?? DefaultImplementation.Clone();
             Behaviors = new ExportCompilationBehavior();
 
             CacheArraySize = 64;
@@ -25,7 +25,6 @@ namespace Grace.DependencyInjection
 
             ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
-
 
         /// <summary>
         /// internal method used by the container
