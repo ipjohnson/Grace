@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -115,6 +116,54 @@ namespace Grace.Tests.DependencyInjection
             Assert.Equal(5, basicInstance.Count);
         }
 
+        [Fact]
+        public void DependencyInjectionContainer_Keys()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.SetExtraData(5, 10);
+
+            var keys = container.Keys.ToArray();
+
+            Assert.Equal(1, keys.Length);
+        }
         
+        [Fact]
+        public void DependencyInjectionContainer_Values()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.SetExtraData(5, 10);
+
+            var values = container.Values.ToArray();
+
+            Assert.Equal(1, values.Length);
+        }
+        
+        [Fact]
+        public void DependencyInjectionContainer_KeyValuePairs()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.SetExtraData(5, 10);
+
+            var values = container.KeyValuePairs.ToArray();
+
+            Assert.Equal(1, values.Length);
+        }
+
+
+        [Fact]
+        public void DependencyInjectionContainer_Clone_Strategies()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+
+            var collection = container.StrategyCollectionContainer.Clone();
+
+            Assert.NotNull(collection);
+            Assert.Equal(1, collection.GetAllStrategies().Count());
+        }
     }
 }
