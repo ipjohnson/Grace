@@ -192,7 +192,7 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (var keyValuePair in Collections[i])
                 {
-                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value);
+                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value.Clone());
                 }
             }
 
