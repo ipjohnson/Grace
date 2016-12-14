@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
-namespace Grace.Tests.DependencyInjection.ExportTypeSet
+namespace Grace.Tests.DependencyInjection.Registration
 {
-    public class ByInterfaceTests
+    public class ExportTypeSetTests
     {
         [Fact]
-        public void Export_Type_Set_By_Interface()
+        public void ExportTypeSet_ByInterface()
         {
             var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {
-                c.ExportAssemblyContaining<ByInterfaceTests>().ByInterface<IMultipleService>();
+                c.ExportAssemblyContaining<IMultipleService>().ByInterface<IMultipleService>();
             });
 
             var enumerable = container.Locate<IEnumerable<IMultipleService>>();

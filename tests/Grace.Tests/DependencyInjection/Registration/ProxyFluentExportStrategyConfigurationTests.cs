@@ -1,4 +1,6 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using System.Reflection;
+using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
 using NSubstitute;
@@ -19,6 +21,28 @@ namespace Grace.Tests.DependencyInjection.Registration
             configuration.As(typeof(IBasicService));
 
             strategyConfiguration.Received().As(typeof(IBasicService));
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ExternallyOwned(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            configuration.ExternallyOwned();
+
+            strategyConfiguration.Received().ExternallyOwned();
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ImportMembers(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            Func<MemberInfo, bool> memberFunc = info => true;
+
+            configuration.ImportMembers(memberFunc);
+
+            strategyConfiguration.Received().ImportMembers(memberFunc);
         }
     }
 }
