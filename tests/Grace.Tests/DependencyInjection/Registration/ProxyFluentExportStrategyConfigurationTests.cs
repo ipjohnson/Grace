@@ -2,6 +2,7 @@
 using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Lifestyle;
 using Grace.Tests.Classes.Simple;
 using NSubstitute;
 using SimpleFixture.NSubstitute;
@@ -19,7 +20,7 @@ namespace Grace.Tests.DependencyInjection.Registration
                                                               IFluentExportStrategyConfiguration strategyConfiguration)
         {
             configuration.As(typeof(IBasicService));
-
+            
             strategyConfiguration.Received().As(typeof(IBasicService));
         }
 
@@ -43,6 +44,40 @@ namespace Grace.Tests.DependencyInjection.Registration
             configuration.ImportMembers(memberFunc);
 
             strategyConfiguration.Received().ImportMembers(memberFunc);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_UsingLifestyle(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            ICompiledLifestyle lifestyle = new SingletonLifestyle();
+
+            configuration.UsingLifestyle(lifestyle);
+
+            strategyConfiguration.Received().UsingLifestyle(lifestyle);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            Func<int> func = () => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithMetadata(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            configuration.WithMetadata(5,10);
+
+            strategyConfiguration.Received().WithMetadata(5,10);
         }
     }
 }

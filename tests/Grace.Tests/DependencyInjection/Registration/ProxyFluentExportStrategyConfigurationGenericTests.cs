@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Lifestyle;
 using Grace.Tests.Classes.Simple;
 using NSubstitute;
 using SimpleFixture.Attributes;
@@ -69,8 +71,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             strategyConfiguration.Received().ImportMembers(func);
         }
-
-
+        
         [Theory]
         [AutoData]
         public void ProxyFluentExportStrategyConfiguration_ImportProperty([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
@@ -81,6 +82,144 @@ namespace Grace.Tests.DependencyInjection.Registration
             configuration.ImportProperty(func);
 
             strategyConfiguration.Received().ImportProperty(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ExportMember([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Expression<Func<BasicService, int>> func = service => service.Count;
+
+            configuration.ExportMember(func);
+
+            strategyConfiguration.Received().ExportMember(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ActivationMethod([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Expression<Action<BasicService>> func = service => service.TestMethod();
+
+            configuration.ActivationMethod(func);
+
+            strategyConfiguration.Received().ActivationMethod(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_Apply([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Action<BasicService> func = service => service.TestMethod();
+
+            configuration.Apply(func);
+
+            strategyConfiguration.Received().Apply(func);
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ByInterfaces([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<Type, bool> func = type => true;
+
+            configuration.ByInterfaces(func);
+
+            strategyConfiguration.Received().ByInterfaces(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_DisposalCleanup([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Action<BasicService> func = service => service.TestMethod();
+
+            configuration.DisposalCleanupDelegate(func);
+
+            strategyConfiguration.Received().DisposalCleanupDelegate(func);
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_EnrichWithDelegate([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, BasicService> enrichmentDelegate = (scope,staticonctext,context) => new BasicService();
+
+            configuration.EnrichWithDelegate(enrichmentDelegate);
+
+            strategyConfiguration.Received().EnrichWithDelegate(enrichmentDelegate);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_UsingLifestyle([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            var lifestyle = new SingletonLifestyle();
+
+            configuration.UsingLifestyle(lifestyle);
+
+            strategyConfiguration.Received().UsingLifestyle(lifestyle);
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<int> func = () => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope,StaticInjectionContext,IInjectionContext, int> func = (scope,staticContext,context) => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorCollectionParam([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            configuration.WithCtorCollectionParam<IEnumerable<int>,int>();
+
+            strategyConfiguration.Received().WithCtorCollectionParam<IEnumerable<int>,int>();
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithMetadata([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            configuration.WithMetadata(5, 10);
+
+            strategyConfiguration.Received().WithMetadata(5, 10);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithPriority([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            configuration.WithPriority(10);
+
+            strategyConfiguration.Received().WithPriority(10);
         }
     }
 }
