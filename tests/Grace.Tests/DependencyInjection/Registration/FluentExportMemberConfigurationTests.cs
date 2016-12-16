@@ -11,7 +11,6 @@ namespace Grace.Tests.DependencyInjection.Registration
     [SubFixtureInitialize]
     public class FluentExportMemberConfigurationTests
     {
-
         #region Generic
         [Theory]
         [AutoData]
@@ -43,6 +42,5 @@ namespace Grace.Tests.DependencyInjection.Registration
             fluentConfiguration.Received().AsKeyed<IBasicService>("Hello");
         }
         #endregion
-
     }
 }
