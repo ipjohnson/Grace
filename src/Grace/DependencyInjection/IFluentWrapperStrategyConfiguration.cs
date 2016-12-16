@@ -14,6 +14,12 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IFluentWrapperStrategyConfiguration As(Type type);
 
+
+        /// <summary>
+        /// Apply a condition on when to use strategy
+        /// </summary>
+        IWhenConditionConfiguration<IFluentWrapperStrategyConfiguration> When { get; }
+
         /// <summary>
         /// Set the type that is being wrapped
         /// </summary>

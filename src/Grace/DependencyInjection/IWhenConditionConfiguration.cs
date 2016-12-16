@@ -67,5 +67,12 @@ namespace Grace.DependencyInjection
         /// <param name="types"></param>
         /// <returns></returns>
         T InjectedInto(params Type[] types);
+
+        /// <summary>
+        /// Injected into type using test method
+        /// </summary>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        T InjectedInto(Func<Type, bool> consider);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Conditions;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -29,6 +30,12 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        /// <summary>
+        /// Apply a condition on when to use strategy
+        /// </summary>
+        public IWhenConditionConfiguration<IFluentWrapperStrategyConfiguration> When =>
+            new WhenConditionConfiguration<IFluentWrapperStrategyConfiguration>(c => _compiledWrapperStrategy.AddCondition(c), this);
 
         /// <summary>
         /// Set the type that is being wrapped
