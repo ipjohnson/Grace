@@ -19,6 +19,7 @@ namespace Grace.DependencyInjection
         /// <param name="injectionType"></param>
         /// <param name="requestingStrategy"></param>
         /// <param name="injectionTarget"></param>
+        /// <param name="injectionTargetName"></param>
         /// <param name="injectionDependencyType"></param>
         /// <param name="locatedType"></param>
         /// <param name="isRequired"></param>
@@ -28,6 +29,7 @@ namespace Grace.DependencyInjection
                                    Type injectionType,
                                    IActivationStrategy requestingStrategy,
                                    object injectionTarget,
+                                   string injectionTargetName,
                                    RequestType injectionDependencyType,
                                    Type locatedType,
                                    bool isRequired,
@@ -43,6 +45,7 @@ namespace Grace.DependencyInjection
             IsRequired = isRequired;
             DefaultValue = defaultValue;
             UniqueId = uniqueId;
+            InjectionTargetName = injectionTargetName;
         }
 
         /// <summary>
@@ -59,11 +62,16 @@ namespace Grace.DependencyInjection
         /// These are the attributes for the class that it's being injected into
         /// </summary>
         public IEnumerable<Attribute> InjectionTypeAttributes => _attributeDiscoveryService.GetAttributes(InjectionType);
-
+        
         /// <summary>
         /// The PropertyInfo or ParameterInfo that is being injected
         /// </summary>
         public object InjectionTarget { get; }
+
+        /// <summary>
+        /// Name of target being injected, parameter name, property name, or fieldName
+        /// </summary>
+        public string InjectionTargetName { get; }
 
         /// <summary>
         /// Type of injection being done, constructor, property, or method
