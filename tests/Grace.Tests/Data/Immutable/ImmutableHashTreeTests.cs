@@ -16,6 +16,89 @@ namespace Grace.Tests.Data.Immutable
             Assert.Throws<ArgumentNullException>(() => ImmutableHashTree<int?, int>.Empty.ContainsKey(null));
         }
 
+        [Fact]
+        public void ImmutableHashTree_ThreadsafeAdd_Null_Tree()
+        {
+            ImmutableHashTree<int, int> tree = null;
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableHashTree.ThreadSafeAdd(ref tree, 10, 10));
+        }
+
+        [Fact]
+        public void ImmutableHashTree_ThreadsafeAdd_Null_Key()
+        {
+            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+
+            Assert.Throws<ArgumentNullException>(() => ImmutableHashTree.ThreadSafeAdd(ref tree, null, 10));
+        }
+
+
+        [Fact]
+        public void ImmutableHashTree_TryGet_Null_Key()
+        {
+            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+
+            int value;
+
+            Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out value));
+        }
+
+        [Fact]
+        public void ImmutableHashTree_GetValue_Null_Key()
+        {
+            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+
+            Assert.Throws<ArgumentNullException>(() => tree.GetValueOrDefault(null));
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Index_Throws_KeyNotFound()
+        {
+            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+
+            Assert.Throws<KeyNotFoundException>(() => tree[5]);
+        }
+
+        [Fact]
+        public void ImmutableHashTree_IterateInOrder_Null_Throws()
+        {
+            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+
+            Assert.Throws<ArgumentNullException>(() => tree.IterateInOrder(null));
+        }
+
+        [Fact]
+        public void ImmutableHashTree_From()
+        {
+            var dictionary = new Dictionary<int, int> { { 5, 5 }, { 10, 10 }, { 15, 15 } };
+            var tree = ImmutableHashTree.From(dictionary);
+
+            Assert.Equal(3, tree.Count);
+
+            Assert.Equal(5, tree[5]);
+            Assert.Equal(10, tree[10]);
+            Assert.Equal(15, tree[15]);
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Throws_Key_Already_Exists()
+        {
+            var tree = ImmutableHashTree<int, int>.Empty.Add(10, 10);
+
+            Assert.Throws<KeyExistsException<int>>(() => tree.Add(10, 10));
+        }
+
+        [Fact]
+        public void ImmutableHashTree_TryGetValue_ReturnsValue()
+        {
+            var tree = ImmutableHashTree<int, int>.Empty.Add(10, 10);
+
+            int testValue;
+            Assert.False(tree.TryGetValue(5,out testValue));
+            Assert.Equal(0,testValue);
+        }
+        #region Thread test
+
         private ImmutableHashTree<int, int> _hashTree;
         private ManualResetEvent _startEvent;
         private int _addAmount = 10000;
@@ -69,5 +152,6 @@ namespace Grace.Tests.Data.Immutable
                 }
             }
         }
+        #endregion
     }
 }
