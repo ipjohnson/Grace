@@ -29,7 +29,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
         [AutoData]
         public void WhenConditionConfiguration_Null_InjectedInto(WhenConditionConfiguration<IFluentExportStrategyConfiguration> configuration)
         {
-            Assert.Throws<ArgumentNullException>(() => configuration.InjectedInto(null));
+            Assert.Throws<ArgumentNullException>(() => configuration.InjectedInto((Type[])null));
         }
         
         [Theory]

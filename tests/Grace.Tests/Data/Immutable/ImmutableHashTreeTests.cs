@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Grace.Data.Immutable;
@@ -31,7 +32,6 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Throws<ArgumentNullException>(() => ImmutableHashTree.ThreadSafeAdd(ref tree, null, 10));
         }
-
 
         [Fact]
         public void ImmutableHashTree_TryGet_Null_Key()
@@ -94,9 +94,116 @@ namespace Grace.Tests.Data.Immutable
             var tree = ImmutableHashTree<int, int>.Empty.Add(10, 10);
 
             int testValue;
-            Assert.False(tree.TryGetValue(5,out testValue));
-            Assert.Equal(0,testValue);
+            Assert.False(tree.TryGetValue(5, out testValue));
+            Assert.Equal(0, testValue);
         }
+        #region conflict tests
+
+        public class ConflictClass
+        {
+            public ConflictClass(int firstInt, int secondInt)
+            {
+                FirstInt = firstInt;
+                SecondInt = secondInt;
+            }
+
+            public int FirstInt { get; }
+
+            public int SecondInt { get; }
+
+            public override bool Equals(object obj)
+            {
+                var conflictClass = obj as ConflictClass;
+
+                if (conflictClass != null)
+                {
+                    return conflictClass.FirstInt == FirstInt && conflictClass.SecondInt == SecondInt;
+                }
+
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return FirstInt;
+            }
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Conflict_Index()
+        {
+            var tree = ImmutableHashTree<ConflictClass, int>.Empty;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                tree = tree.Add(new ConflictClass(i % 5, i), i);
+            }
+
+            Assert.Equal(1000, tree.Count);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var conflict = new ConflictClass(i % 5, i);
+
+                Assert.Equal(i, tree[conflict]);
+            }
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Conflict_GetValue()
+        {
+            var tree = ImmutableHashTree<ConflictClass, int>.Empty;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                tree = tree.Add(new ConflictClass(i % 5, i), i);
+            }
+
+            Assert.Equal(1000, tree.Count);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var conflict = new ConflictClass(i % 5, i);
+
+                Assert.Equal(i, tree.GetValueOrDefault(conflict));
+            }
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Conflict_IterateInOrder()
+        {
+            var tree = ImmutableHashTree<ConflictClass, int>.Empty;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                tree = tree.Add(new ConflictClass(i % 5, i), i);
+            }
+
+            Assert.Equal(1000, tree.Count);
+
+            var list = new List<int>();
+
+            tree.IterateInOrder((k, v) => list.Add(v));
+
+            Assert.Equal(1000, list.Count);
+        }
+
+        [Fact]
+        public void ImmutableHashTree_Conflict_IterateInOrder_Enumerable()
+        {
+            var tree = ImmutableHashTree<ConflictClass, int>.Empty;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                tree = tree.Add(new ConflictClass(i % 5, i), i);
+            }
+
+            Assert.Equal(1000, tree.Count);
+
+            Assert.Equal(1000, tree.IterateInOrder().Count());
+        }
+        #endregion
+
         #region Thread test
 
         private ImmutableHashTree<int, int> _hashTree;

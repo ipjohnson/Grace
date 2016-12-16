@@ -187,5 +187,23 @@ namespace Grace.Tests.DependencyInjection
             Assert.NotNull(instance.InjectionScope);
             Assert.Same(container, instance.InjectionScope);
         }
+
+        [Fact]
+        public void DependencyInjectionContainer_Locate_With_Filter()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<MultipleService2>().As<IMultipleService>();
+                c.Export<MultipleService3>().As<IMultipleService>();
+            });
+
+            var instance = container.Locate<IMultipleService>(consider: e => e.ActivationType.Name.EndsWith("2"));
+
+            Assert.NotNull(instance);
+            Assert.IsType<MultipleService2>(instance);
+        }
     }
 }
