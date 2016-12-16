@@ -19,6 +19,14 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration As(Type type);
 
         /// <summary>
+        /// Export as keyed interface
+        /// </summary>
+        /// <param name="type">type to export as</param>
+        /// <param name="key">key to export under</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration AsKeyed(Type type, object key);
+
+        /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
         /// <returns>configuraiton object</returns>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
@@ -470,7 +471,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
 
-            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, RequestType, ActivationType, false, null, UniqueId));
+            var targetName = "";
+
+            if (Info is ParameterInfo)
+            {
+                targetName = ((ParameterInfo) Info).Name;
+            }
+            else if (Info is MemberInfo)
+            {
+                targetName = ((MemberInfo) Info).Name;
+            }
+
+            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info,targetName, RequestType, ActivationType, false, null, UniqueId));
         }
 
         /// <summary>

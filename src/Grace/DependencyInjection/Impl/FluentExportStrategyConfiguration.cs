@@ -32,7 +32,25 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuraiton object</returns>
         public IFluentExportStrategyConfiguration As(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             _exportConfiguration.AddExportAs(type);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Export as keyed interface
+        /// </summary>
+        /// <param name="type">type to export as</param>
+        /// <param name="key">key to export under</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration AsKeyed(Type type, object key)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            _exportConfiguration.AddExportAsKeyed(type, key);
 
             return this;
         }
