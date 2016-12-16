@@ -31,7 +31,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         [AutoData]
         public void ExportTypeSet_ByInterface_Null_Throws(ExportTypeSetConfiguration configuration)
         {
-            Assert.Throws<ArgumentNullException>(() => configuration.BasedOn(null));
+            Assert.Throws<ArgumentNullException>(() => configuration.ByInterface(null));
         }
     
         [Theory]
