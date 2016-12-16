@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="strategyCreator"></param>
         /// <param name="typesToExport"></param>
         /// <param name="scopeConfiguration"></param>
-        public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport,IInjectionScopeConfiguration scopeConfiguration)
+        public ExportTypeSetConfiguration(IActivationStrategyCreator strategyCreator, IEnumerable<Type> typesToExport, IInjectionScopeConfiguration scopeConfiguration)
         {
             _strategyCreator = strategyCreator;
             _typesToExport = typesToExport;
@@ -332,15 +332,20 @@ namespace Grace.DependencyInjection.Impl
 
             strategy.Lifestyle = _lifestyleFunc?.Invoke(type);
 
-            if (_inspectors != ImmutableLinkedList<IActivationStrategyInspector>.Empty)
-            {
-                _inspectors.Visit(i => i.Inspect(strategy), true);
-            }
+            _inspectors.Visit(i => i.Inspect(strategy), true);
 
             if (_exportByAttributes)
             {
                 strategy.ProcessAttributeForStrategy();
             }
+
+            _conditions.Visit(func =>
+            {
+                foreach (var condition in func(type))
+                {
+                    strategy.AddCondition(condition);
+                }
+            }, true);
 
             return strategy;
         }
@@ -389,7 +394,7 @@ namespace Grace.DependencyInjection.Impl
                     _scopeConfiguration.ExportByInterfaceFilter(implementedInterface, type))
                 {
                     continue;
-                }   
+                }
 
                 foreach (Type exportInterface in _byInterface)
                 {
