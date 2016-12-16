@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Registration
 {
-    public class ExportTypeSetTests
+    public partial class ExportTypeSetTests
     {
         [Fact]
         public void ExportTypeSet_ByInterface()
