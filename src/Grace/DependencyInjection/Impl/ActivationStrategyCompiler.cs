@@ -58,6 +58,7 @@ namespace Grace.DependencyInjection.Impl
         public virtual IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth, IInjectionScope requestingScope)
         {
             if (activationType == null) throw new ArgumentNullException(nameof(activationType));
+            if (requestingScope == null) throw new ArgumentNullException(nameof(requestingScope));
 
             return new ActivationExpressionRequest(activationType,
                                                    RequestType.Root,
