@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Conditions
     /// </summary>
     public class WhenInjectedInto : ICompiledCondition
     {
-        private readonly Type[] _types;
+        private readonly Func<Type, bool> _typeTest;
 
         /// <summary>
         /// Default constructor takes list of types
@@ -18,9 +18,19 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (types == null) throw new ArgumentNullException(nameof(types));
 
-            _types = types;
+            _typeTest = type => TestTypes(type, types);
         }
-        
+
+        /// <summary>
+        /// Constructor that takes func to test with instead of array of types
+        /// </summary>
+        /// <param name="typeTest"></param>
+        public WhenInjectedInto(Func<Type, bool> typeTest)
+        {
+            if (typeTest == null) throw new ArgumentNullException(nameof(typeTest));
+
+            _typeTest = typeTest;
+        }
         /// <summary>
         /// Test if being injected into a specific type
         /// </summary>
@@ -31,14 +41,22 @@ namespace Grace.DependencyInjection.Conditions
         {
             var targetInfo = staticInjectionContext.TargetInfo;
 
-            if (targetInfo != null)
+            return targetInfo != null && _typeTest(targetInfo.InjectionType);
+        }
+
+        /// <summary>
+        /// Tests for if one type is based on another
+        /// </summary>
+        /// <param name="injectionType"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        protected bool TestTypes(Type injectionType, Type[] types)
+        {
+            foreach (var type in types)
             {
-                foreach (var type in _types)
+                if (ReflectionService.CheckTypeIsBasedOnAnotherType(injectionType, type))
                 {
-                    if (ReflectionService.CheckTypeIsBasedOnAnotherType(targetInfo.InjectionType, type))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 

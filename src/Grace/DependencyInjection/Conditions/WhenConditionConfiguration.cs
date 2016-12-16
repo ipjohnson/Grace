@@ -142,5 +142,19 @@ namespace Grace.DependencyInjection.Conditions
 
             return _t;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public T InjectedInto(Func<Type, bool> consider)
+        {
+            if (consider == null) throw new ArgumentNullException(nameof(consider));
+
+            _addAction(new WhenInjectedInto(consider));
+
+            return _t;
+        }
     }
 }
