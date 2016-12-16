@@ -32,6 +32,19 @@ namespace Grace.Tests.DependencyInjection.Dynamic
         }
 
         [Fact]
+        public void Dynamic_Constructor_Parameter_Not_Required()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<DependentService<int>>().As<IDependentService<int>>().WithCtorParam<int>().IsRequired(false).IsDynamic());
+
+            var instance = container.Locate<IDependentService<int>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(0, instance.Value);
+        }
+
+        [Fact]
         public void Dynamic_Constructor_Parameter_Returns_Default()
         {
             var container = new DependencyInjectionContainer();

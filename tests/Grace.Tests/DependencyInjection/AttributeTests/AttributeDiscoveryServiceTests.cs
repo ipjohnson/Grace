@@ -23,7 +23,7 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
         {
             var service = new AttributeDiscoveryService();
 
-            Assert.Throws<Exception>(() => service.GetAttributes(new BasicService()));
+            Assert.Throws<NotSupportedException>(() => service.GetAttributes(new BasicService()));
         }
     }
 }

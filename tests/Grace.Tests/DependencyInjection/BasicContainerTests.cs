@@ -165,5 +165,27 @@ namespace Grace.Tests.DependencyInjection
             Assert.NotNull(collection);
             Assert.Equal(1, collection.GetAllStrategies().Count());
         }
+
+        public class ImportInjectionScope
+        {
+            public ImportInjectionScope(IInjectionScope injectionScope)
+            {
+                InjectionScope = injectionScope;
+            }
+
+            public IInjectionScope InjectionScope { get; }
+        }
+
+        [Fact]
+        public void DependencyInjectionContainer_Import_InjectionScope()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.AllowInjectionScopeLocation = true);
+
+            var instance = container.Locate<ImportInjectionScope>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.InjectionScope);
+            Assert.Same(container, instance.InjectionScope);
+        }
     }
 }
