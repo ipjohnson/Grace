@@ -113,6 +113,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuraiton object</returns>
         public IFluentExportStrategyConfiguration WithMetadata(object key, object value)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             _exportConfiguration.SetMetadata(key, value);
 
             return this;
@@ -191,7 +193,10 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> As(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             _exportConfiguration.AddExportAs(type);
+
             return this;
         }
 
@@ -215,6 +220,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
             _exportConfiguration.AddExportAsKeyed(typeof(TInterface), key);
 
             return this;
@@ -224,7 +231,7 @@ namespace Grace.DependencyInjection.Impl
         /// Export the type by the interfaces it implements
         /// </summary>
         /// <returns>configuration object</returns>
-        public IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter)
+        public IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null)
         {
             if (_exportConfiguration.ActivationType.GetTypeInfo().IsInterface)
             {
