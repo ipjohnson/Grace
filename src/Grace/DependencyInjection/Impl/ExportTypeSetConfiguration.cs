@@ -158,6 +158,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate)
         {
+            if (keyedDelegate == null) throw new ArgumentNullException(nameof(keyedDelegate));
+
             _byKeyedType = _byKeyedType.Add(keyedDelegate);
 
             return this;
@@ -203,7 +205,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
         {
-            return UsingLifestyle(type => lifestyle.Clone());
+            return UsingLifestyle(type => lifestyle?.Clone());
         }
 
         /// <summary>
