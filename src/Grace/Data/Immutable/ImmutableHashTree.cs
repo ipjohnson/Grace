@@ -218,6 +218,14 @@ namespace Grace.Data.Immutable
 
             iterateAction(Key, Value);
 
+            if (Conflicts != ImmutableArray<KeyValuePair<TKey, TValue>>.Empty)
+            {
+                foreach (var pair in Conflicts)
+                {
+                    iterateAction(pair.Key, pair.Value);
+                }
+            }
+
             if (Right.Height > 0)
             {
                 Right.IterateInOrder(iterateAction);
@@ -393,11 +401,9 @@ namespace Grace.Data.Immutable
 
         private TValue GetConflictedValue(TKey key, ImmutableArray<KeyValuePair<TKey, TValue>> conflicts, TValue defaultValue)
         {
-            for (var i = 0; i < conflicts.Count; i++)
+            foreach (var kvp in conflicts)
             {
-                var kvp = conflicts[i];
-
-                if (ReferenceEquals(conflicts[i].Key, key) || key.Equals(Key))
+                if (ReferenceEquals(kvp.Key, key) || key.Equals(kvp.Key))
                 {
                     return kvp.Value;
                 }
