@@ -56,10 +56,11 @@ namespace Grace.DependencyInjection.Impl
         /// Import a specific member
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
+        /// <param name="injectMethods"></param>
         /// <returns>configuraiton object</returns>
-        public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null)
+        public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         {
-            return _strategy.ImportMembers(selector);
+            return _strategy.ImportMembers(selector,injectMethods);
         }
 
         /// <summary>
@@ -228,10 +229,11 @@ namespace Grace.DependencyInjection.Impl
         /// Mark specific members to be injected
         /// </summary>
         /// <param name="selector">select specific members, if null all public members will be injected</param>
+        /// <param name="injectMethod"></param>
         /// <returns>configuration object</returns>
-        public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null)
+        public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethod = false)
         {
-            return _strategy.ImportMembers(selector);
+            return _strategy.ImportMembers(selector, injectMethod);
         }
 
         /// <summary>

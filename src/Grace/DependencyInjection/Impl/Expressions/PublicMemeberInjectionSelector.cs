@@ -10,14 +10,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
     public class PublicMemeberInjectionSelector : IMemeberInjectionSelector
     {
         private readonly Func<MemberInfo, bool> _picker;
+        private readonly bool _injectMethods;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="picker"></param>
-        public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker)
+        /// <param name="injectMethods"></param>
+        public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker, bool injectMethods)
         {
             _picker = picker;
+            _injectMethods = injectMethods;
         }
 
         /// <summary>
@@ -63,7 +66,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                 }
                 
-                if (importType != null && _picker(declaredMember))
+                if (importType != null &&
+                    (_picker == null ||
+                     _picker(declaredMember)))
                 {
                     object key = null;
 
@@ -92,16 +97,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns>methods being injected</returns>
         public IEnumerable<MethodInjectionInfo> GetMethods(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
-            foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
+            if (_injectMethods)
             {
-                var methodInfo = declaredMember as MethodInfo;
-
-                if (methodInfo != null && 
-                    methodInfo.IsPublic && 
-                   !methodInfo.IsStatic &&
-                    _picker(declaredMember))
+                foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
                 {
-                    yield return new MethodInjectionInfo { Method = methodInfo };
+                    var methodInfo = declaredMember as MethodInfo;
+
+                    if (methodInfo != null &&
+                        methodInfo.IsPublic &&
+                        !methodInfo.IsStatic &&
+                        methodInfo.GetParameters().Length > 0 &&
+                        (_picker == null ||
+                         _picker(declaredMember)))
+                    {
+                        yield return new MethodInjectionInfo {Method = methodInfo};
+                    }
                 }
             }
         }

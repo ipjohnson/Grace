@@ -33,11 +33,12 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration ExternallyOwned();
 
         /// <summary>
-        /// Import a specific member
+        /// Import public members Fields, Properties, and Methods (not done by default) 
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
+        /// <param name="includeMethods">import all public methods that have parameters, false by default</param>
         /// <returns>configuraiton object</returns>
-        IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null);
+        IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool includeMethods = false);
         
         /// <summary>
         /// Apply a lifestlye to export strategy
@@ -154,8 +155,9 @@ namespace Grace.DependencyInjection
         /// Mark specific members to be injected
         /// </summary>
         /// <param name="selector">select specific members, if null all public members will be injected</param>
+        /// <param name="injectMethod"></param>
         /// <returns>configuration object</returns>
-        IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null);
+        IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethod = false);
 
         /// <summary>
         /// Import a specific property
