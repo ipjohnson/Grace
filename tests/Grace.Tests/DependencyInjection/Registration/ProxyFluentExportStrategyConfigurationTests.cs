@@ -34,7 +34,18 @@ namespace Grace.Tests.DependencyInjection.Registration
             strategyConfiguration.Received().AsKeyed(typeof(IBasicService),'A');
         }
 
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_ByInterfaces(FluentWithCtorConfiguration<int> configuration,
+                                                              IFluentExportStrategyConfiguration strategyConfiguration)
+        {
+            Func<Type, bool> func = t => true;
 
+            configuration.ByInterfaces(func);
+
+            strategyConfiguration.Received().ByInterfaces(func);
+        }
+        
         [Theory]
         [AutoData]
         public void ProxyFluentExportStrategyConfiguration_ExternallyOwned(FluentWithCtorConfiguration<int> configuration,

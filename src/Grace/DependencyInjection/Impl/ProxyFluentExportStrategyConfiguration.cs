@@ -44,6 +44,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export by interfaces
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ByInterfaces(Func<Type, bool> filter = null)
+        {
+            return _strategy.ByInterfaces(filter);
+        }
+
+        /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
         /// <returns>configuraiton object</returns>

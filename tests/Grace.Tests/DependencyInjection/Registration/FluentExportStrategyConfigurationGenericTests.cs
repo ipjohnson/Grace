@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
 using SimpleFixture.NSubstitute;
@@ -32,6 +33,43 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed<IBasicService>(null));
+        }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_As()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As(typeof(IBasicService)));
+
+            var instance = container.Locate<IBasicService>();
+            
+            Assert.NotNull(instance);
+            Assert.IsType<BasicService>(instance);
+        }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_ByIntefaces()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().ByInterfaces());
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_ByIntefaces_Generic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().ByInterfaces());
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
         }
     }
 }

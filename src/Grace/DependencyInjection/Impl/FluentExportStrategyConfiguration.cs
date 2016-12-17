@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.Data;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -51,6 +53,38 @@ namespace Grace.DependencyInjection.Impl
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             _exportConfiguration.AddExportAsKeyed(type, key);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Export by interfaces
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ByInterfaces(Func<Type, bool> filter = null)
+        {
+            if (filter == null)
+            {
+                filter = t => !InjectionScopeConfiguration.DefaultInterfaceFilter(t, _exportConfiguration.ActivationType);
+            }
+
+            foreach (Type interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
+            {
+                if (!filter(interfaceTypes))
+                {
+                    continue;
+                }
+
+                if (_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+                {
+                    _exportConfiguration.AddExportAs(interfaceTypes.GetGenericTypeDefinition());
+                }
+                else
+                {
+                    _exportConfiguration.AddExportAs(interfaceTypes);
+                }
+            }
 
             return this;
         }
@@ -234,31 +268,19 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null)
         {
-            if (_exportConfiguration.ActivationType.GetTypeInfo().IsInterface)
+            if (filter == null)
             {
-                if (filter == null || filter(_exportConfiguration.ActivationType))
-                {
-                    _exportConfiguration.AddExportAs(_exportConfiguration.ActivationType);
-                }
+                filter = t => !InjectionScopeConfiguration.DefaultInterfaceFilter(t, typeof(T));
             }
-            else
-            {
-                foreach (Type interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
-                {
-                    if (filter != null && !filter(interfaceTypes))
-                    {
-                        continue;
-                    }
 
-                    if (_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
-                    {
-                        _exportConfiguration.AddExportAs(interfaceTypes.GetGenericTypeDefinition());
-                    }
-                    else
-                    {
-                        _exportConfiguration.AddExportAs(interfaceTypes);
-                    }
+            foreach (Type interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
+            {
+                if (!filter(interfaceTypes))
+                {
+                    continue;
                 }
+
+                _exportConfiguration.AddExportAs(interfaceTypes);
             }
 
             return this;

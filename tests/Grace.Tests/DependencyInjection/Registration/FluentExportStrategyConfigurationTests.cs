@@ -47,6 +47,35 @@ namespace Grace.Tests.DependencyInjection.Registration
 
         #region Method
 
+        [Fact]
+        public void FluentExportStrategyConfiguration_ByInterfaces()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(typeof(BasicService)).ByInterfaces());
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<BasicService>(instance);
+        }
+        
+        [Fact]
+        public void FluentExportStrategyConfiguration_ByInterfaces_Generic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(DependentService<>)).ByInterfaces();
+                c.Export<BasicService>().As<IBasicService>();
+            });
+
+            var instance = container.Locate<IDependentService<IBasicService>>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+        }
 
         [Fact]
         public void FluentExportStrategyConfiguration_ExternallyOwned()
@@ -55,7 +84,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             container.Configure(c =>
             {
-                c.Export<DisposableService>().ExternallyOwned();
+                c.Export(typeof(DisposableService)).ExternallyOwned();
             });
 
             DisposableService disposableService;
