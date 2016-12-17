@@ -32,7 +32,7 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
             container.Configure(c =>
             {
                 c.Export<BasicService>().As<IBasicService>();
-                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod());
+                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(), injectMethod: true);
             });
 
             var instance = container.Locate<MethodInjectionClass>();
@@ -53,7 +53,7 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
             container.Configure(c =>
             {
                 c.Export<BasicService>().As<IBasicService>();
-                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(m => m.Name.StartsWith("Some")));
+                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(m => m.Name.StartsWith("Some")), true);
             });
 
             var instance = container.Locate<MethodInjectionClass>();

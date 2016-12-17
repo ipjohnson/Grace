@@ -7,7 +7,24 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
     public class PropertyInjectionTests
     {
         [Fact]
-        public void PropertyInjection_ImportMembers()
+        public void PropertyInjection_ImportMembers_Non_Generic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export(typeof(PropertyInjectionService)).As(typeof(IPropertyInjectionService)).ImportMembers();
+            });
+
+            var propertyInjectionService = container.Locate<IPropertyInjectionService>();
+
+            Assert.NotNull(propertyInjectionService);
+            Assert.NotNull(propertyInjectionService.BasicService);
+        }
+
+        [Fact]
+        public void PropertyInjection_ImportMembers_Generic()
         {
             var container = new DependencyInjectionContainer();
 

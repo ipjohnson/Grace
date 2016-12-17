@@ -40,7 +40,7 @@ namespace Grace.Tests.Diagnostics
 
             container.Configure(c =>
             {
-                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(m => m.Name.StartsWith("Some")));
+                c.Export<MethodInjectionClass>().ImportMembers(MembersThat.AreMethod(m => m.Name.StartsWith("Some")), true);
             });
 
             var diagnostic = container.Locate<InjectionScopeDiagnostics>();
