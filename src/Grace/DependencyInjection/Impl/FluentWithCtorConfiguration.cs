@@ -69,6 +69,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc)
         {
+            if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
+
             _constructorParameterInfo.DefaultValue = defaultValueFunc;
 
             return this;
@@ -81,6 +83,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
         {
+            if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
+
             _constructorParameterInfo.DefaultValue = defaultValueFunc;
 
             return this;
@@ -176,6 +180,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<TParam> defaultValueFunc)
         {
+            if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
+
             return DefaultValue((locator, staticContext, provider) => defaultValueFunc());
         }
 
@@ -186,6 +192,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
         {
+            if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
+
             _constructorParameterInfo.DefaultValue = defaultValueFunc;
 
             return this;
