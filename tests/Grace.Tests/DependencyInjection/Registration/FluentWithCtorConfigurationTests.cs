@@ -33,6 +33,20 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.Throws<ArgumentNullException>(() => configuration.LocateWithKey(null));
         }
 
+        [Theory]
+        [AutoData]
+        public void FluentWithCtorConfiguration_Generic_DefaultValue_Func_Null(FluentWithCtorConfiguration<int> configuration)
+        {
+            Assert.Throws<ArgumentNullException>(() => configuration.DefaultValue((Func<int>)null));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentWithCtorConfiguration_Generic_DefaultValue_Func_Multi_Arg_Null(FluentWithCtorConfiguration<int> configuration)
+        {
+            Assert.Throws<ArgumentNullException>(() => configuration.DefaultValue((Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, int>)null));
+        }
+
         [Fact]
         public void FluentWithCtorConfiguration_Generic_DefaultValue()
         {
@@ -48,7 +62,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance.Value);
         }
 
-        //[Fact]
+        [Fact]
         public void FluentWithCtorConfiguration_Generic_DefaultValue_Func()
         {
             var container = new DependencyInjectionContainer();
@@ -73,6 +87,46 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
+        public void FluentWithCtorConfiguration_Generic_DefaultValue_Func_Multi_Arg()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var i = 0;
+
+            var basicService = new Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, IBasicService>((scope, staticContext, context) => new BasicService { Count = ++i });
+
+            container.Configure(c => c.Export<DependentService<IBasicService>>().WithCtorParam<IBasicService>().DefaultValue(basicService));
+
+            var instance1 = container.Locate<DependentService<IBasicService>>();
+
+            Assert.NotNull(instance1);
+            Assert.NotNull(instance1.Value);
+            Assert.Equal(1, instance1.Value.Count);
+
+            var instance2 = container.Locate<DependentService<IBasicService>>();
+
+            Assert.NotNull(instance2);
+            Assert.NotNull(instance2.Value);
+            Assert.Equal(2, instance2.Value.Count);
+        }
+
+        [Fact]
+        public void FluentWithCtorConfiguration_Generic_Named()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var basicService = new BasicService();
+
+            container.Configure(c => c.Export<DependentService<IBasicService>>().WithCtorParam<object>().Named("value").DefaultValue(basicService));
+
+            var instance = container.Locate<DependentService<IBasicService>>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+            Assert.Same(basicService, instance.Value);
+        }
+
+        [Fact]
         public void FluentWithCtorConfiguration_Generic_LocateKey()
         {
             var container = new DependencyInjectionContainer();
@@ -94,6 +148,31 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(service.Value);
             Assert.IsType<MultipleService3>(service.Value);
         }
+
+        [Fact]
+        public void FluentWithCtorConfiguration_Generic_Consider()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<MultipleService2>().As<IMultipleService>();
+                c.Export<MultipleService3>().As<IMultipleService>();
+                c.Export<MultipleService4>().As<IMultipleService>();
+                c.Export<MultipleService5>().As<IMultipleService>();
+                c.Export<DependentService<IMultipleService>>().As<IDependentService<IMultipleService>>()
+                    .WithCtorParam<IMultipleService>().Consider(s => s.ActivationType.Name.EndsWith("3"));
+            });
+
+            var service = container.Locate<IDependentService<IMultipleService>>();
+
+            Assert.NotNull(service);
+            Assert.NotNull(service.Value);
+            Assert.IsType<MultipleService3>(service.Value);
+        }
+
+
         #endregion
     }
 }
