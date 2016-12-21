@@ -48,54 +48,19 @@ namespace Grace.Data.Immutable
         /// <returns>final value for key</returns>
         public static TValue ThreadSafeAdd<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value, bool updateIfExists = false)
         {
-            if (destination == null) throw new ArgumentNullException(nameof(destination));
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            TValue returnValue = value;
 
-            var returnValue = value;
-            var currentValue = destination;
-
-            var newValue = currentValue.Add(key, value, (o, n) =>
+            ThreadSafeAdd(ref destination, key, value, (currentValue, newValue) =>
             {
-                if (!updateIfExists)
+                if (updateIfExists)
                 {
-                    returnValue = o;
-
-                    return o;
+                    return newValue;
                 }
 
-                return n;
+                returnValue = currentValue;
+
+                return currentValue;
             });
-            
-            if (Interlocked.CompareExchange(ref destination, newValue, currentValue) == currentValue)
-            {
-                return returnValue;
-            }
-
-            var wait = new SpinWait();
-
-            while (true)
-            {
-                wait.SpinOnce();
-
-                currentValue = destination;
-
-                newValue = currentValue.Add(key, value, (o, n) =>
-                {
-                    if (!updateIfExists)
-                    {
-                        returnValue = o;
-
-                        return o;
-                    }
-
-                    return n;
-                });
-
-                if (Interlocked.CompareExchange(ref destination, newValue, currentValue) == currentValue)
-                {
-                    break;
-                }
-            }
 
             return returnValue;
         }
