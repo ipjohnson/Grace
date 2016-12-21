@@ -116,6 +116,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public void SetMetadata(object key, object value)
         {
             _metadata = _metadata.Add(key, value, (o, n) => n);
+
+            _metadataObject = null;
         }
 
         /// <summary>
