@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 arrayInit = CreateSortedArrayExpression(arrayInit, arrayElementType, request);
             }
-            
+
             var returnResult = request.Services.Compiler.CreateNewResult(request, arrayInit);
 
             foreach (var result in arrayExpressionList)
@@ -98,7 +98,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
         {
-            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, false);
+            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
 
             if (expressions.Count != 0)
             {
@@ -107,7 +107,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, true);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
 
                 if (expressions.Count != 0)
                 {
@@ -116,7 +116,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
 
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, true);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
             }
 
             return expressions;
@@ -128,10 +128,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        /// <param name="locked"></param>
         /// <returns></returns>
         protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
-            Type arrayElementType, bool locked)
+            Type arrayElementType)
         {
             var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(arrayElementType);
             var expressions = new List<IActivationExpressionResult>();
@@ -168,7 +167,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (expressions.Count == 0)
             {
-                ProcessWrappers(scope, arrayElementType, request, expressions, locked);
+                ProcessWrappers(scope, arrayElementType, request, expressions);
             }
 
             return expressions;
@@ -181,8 +180,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="arrayElementType"></param>
         /// <param name="request"></param>
         /// <param name="expressions"></param>
-        /// <param name="locked"></param>
-        protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, bool locked)
+        protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions)
         {
             Type wrappedType;
             var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, request, out wrappedType);
@@ -195,31 +193,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (expressions.Count == 0)
                 {
-                    if (locked)
+                    lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                     {
-                        lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
-                        {
-                            GetExpressionsFromCollections(scope, arrayElementType, request, expressions, wrappedType, wrappers);
-
-                            if (expressions.Count == 0)
-                            {
-                                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true);
-
-                                request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
-
-                                GetExpressionsFromCollections(scope, arrayElementType, request, expressions, wrappedType, wrappers);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType,
-                                    RequestType.Other, null, true);
-
-                        request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
-
                         GetExpressionsFromCollections(scope, arrayElementType, request, expressions, wrappedType, wrappers);
 
+                        if (expressions.Count == 0)
+                        {
+                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true);
+
+                            request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
+
+                            GetExpressionsFromCollections(scope, arrayElementType, request, expressions, wrappedType, wrappers);
+                        }
                     }
                 }
             }
