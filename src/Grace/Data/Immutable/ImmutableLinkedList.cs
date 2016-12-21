@@ -106,40 +106,6 @@ namespace Grace.Data.Immutable
 
             return ImmutableLinkedList<T>.Empty.AddRange(values);
         }
-
-        /// <summary>
-        /// Remove from list in a thread safe anner
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list">list to remove from</param>
-        /// <param name="value">value to remove from</param>
-        public static void ThreadSafeRemove<T>(ref ImmutableLinkedList<T> list, T value)
-        {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-
-            var listValue = list;
-            var newList = ImmutableLinkedList<T>.Empty.AddRange(listValue.Where(x => !value.Equals(x)).Reverse());
-
-            if (ReferenceEquals(Interlocked.CompareExchange(ref list, newList, listValue), listValue))
-            {
-                return;
-            }
-
-            var wait = new SpinWait();
-
-            while (true)
-            {
-                wait.SpinOnce();
-
-                listValue = list;
-                newList = ImmutableLinkedList<T>.Empty.AddRange(listValue.Where(x => !value.Equals(x)).Reverse());
-
-                if (ReferenceEquals(Interlocked.CompareExchange(ref list, newList, listValue), listValue))
-                {
-                    return;
-                }
-            }
-        }
     }
 
     /// <summary>

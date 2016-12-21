@@ -17,9 +17,7 @@ namespace Grace.Tests.Data.Immutable
             Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAdd(ref value,2));
 
             Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeEmpty(ref value));
-
-            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeRemove(ref value,5));
-
+            
             Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAddRange(ref value, new []{5}));
 
             value = ImmutableLinkedList<int>.Empty;
@@ -120,29 +118,7 @@ namespace Grace.Tests.Data.Immutable
             Assert.True(newList.Contains(10));
             Assert.True(newList.Contains(15));
         }
-
-        [Fact]
-        public void ImmutableLinkedList_ThreadSafeRemove()
-        {
-            var list = ImmutableLinkedList.Create(5, 10, 15);
-
-            var newList = new List<int>(list);
-
-            Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
-
-            ImmutableLinkedList.ThreadSafeRemove(ref list, 10);
-
-            newList = new List<int>(list);
-
-            Assert.Equal(2, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.False(newList.Contains(10));
-            Assert.True(newList.Contains(15));
-        }
-
+        
         [Fact]
         public void ImmutableLinkedList_ThreadSafeEmpty()
         {
