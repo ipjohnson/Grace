@@ -282,5 +282,32 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         }
         #endregion
 
+        #region Create Expression Helpers
+
+        /// <summary>
+        /// Create an array of expressions based off an array of types
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="resultType"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult[] CreateExpressionsForTypes(IInjectionScope scope,
+            IActivationExpressionRequest request,Type resultType, params Type[] types)
+        {
+            var resultArray = new IActivationExpressionResult[types.Length];
+
+            for (var i = 0; i < types.Length; i++)
+            {
+                var arg1Request = request.NewRequest(types[i], this, resultType, RequestType.Other, null, true);
+
+                resultArray[i] = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
+            }
+
+            return resultArray;
+        }
+
+        #endregion
+
     }
 }

@@ -18,7 +18,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         /// <param name="func"></param>
         /// <param name="injectionScope"></param>
-        public CompiledInitializationDecoratorStrategy( Func<T, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
+        public CompiledInitializationDecoratorStrategy(Func<T, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
         {
             _func = func;
         }
@@ -38,6 +38,23 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
+            if (lifestyle == null)
+            {
+                return InternalGetDecoratorActivationExpression(scope, request);
+            }
+
+            return lifestyle.ProvideLifestlyExpression(
+                scope, request, lifestyleRequest => InternalGetDecoratorActivationExpression(scope, lifestyleRequest));
+        }
+
+        /// <summary>
+        /// Internal method for creating acivation expression
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult InternalGetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        {
             var newRequest = request.NewRequest(typeof(T), this, ActivationType, RequestType.Other, null, true);
 
             var expression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
@@ -45,11 +62,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             var callExpression = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(), expression.Expression);
 
             var resultExpression = request.Services.Compiler.CreateNewResult(request, callExpression);
-
-            if (lifestyle != null)
-            {
-                resultExpression = lifestyle.ProvideLifestlyExpression(scope, request, resultExpression);
-            }
 
             return resultExpression;
         }

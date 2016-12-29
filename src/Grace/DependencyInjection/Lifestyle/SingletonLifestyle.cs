@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading;
 
@@ -39,16 +40,14 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
-        public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope,
-                                                                     IActivationExpressionRequest request,
-                                                                     IActivationExpressionResult activationExpression)
+        public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (ConstantExpression != null)
             {
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
             
-            var activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
+            var activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
 
             lock (_lockObject)
             {

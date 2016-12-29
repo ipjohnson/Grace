@@ -55,12 +55,11 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
-        public IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request,
-            IActivationExpressionResult activationExpression)
+        public IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (CompiledDelegate == null)
             {
-                var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
+                var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
 
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }

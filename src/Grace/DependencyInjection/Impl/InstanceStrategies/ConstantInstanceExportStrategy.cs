@@ -31,16 +31,23 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
+            if (lifestyle == null)
+            {
+                return CreateExpression(request);
+            }
+            return lifestyle.ProvideLifestlyExpression(scope, request, CreateExpression);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateExpression(IActivationExpressionRequest request)
+        {
             var expressionStatement = Expression.Constant(_constant);
 
-            var expressionResult = request.Services.Compiler.CreateNewResult(request, expressionStatement);
-
-            if (lifestyle != null)
-            {
-                expressionResult = lifestyle.ProvideLifestlyExpression(scope, request, expressionResult);
-            }
-
-            return expressionResult;
+            return request.Services.Compiler.CreateNewResult(request, expressionStatement);
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿namespace Grace.DependencyInjection.Lifestyle
+﻿using System;
+
+namespace Grace.DependencyInjection.Lifestyle
 {
     /// <summary>
     /// Represents a lifestyle that can be used for exports
     /// </summary>
     public interface ICompiledLifestyle
     {
-        /// <summary>
-        /// Root the request context when creating expression
-        /// </summary>
-        bool RootRequest { get; }
-
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
@@ -23,6 +20,6 @@
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
-        IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationExpressionResult activationExpression);
+        IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression);
     }
 }
