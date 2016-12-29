@@ -9,6 +9,13 @@ namespace Grace.DependencyInjection.Lifestyle
     public interface ILifestylePicker<T>
     {
         /// <summary>
+        /// Use custom lifestyle
+        /// </summary>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
+        T Custom(ICompiledLifestyle lifestyle);
+
+        /// <summary>
         /// Create one instance for the container including all child scopes and lifetime scopes
         /// </summary>
         /// <returns>configuration</returns>

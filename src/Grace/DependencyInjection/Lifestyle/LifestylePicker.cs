@@ -23,6 +23,21 @@ namespace Grace.DependencyInjection.Lifestyle
         }
 
         /// <summary>
+        /// Use custom lifestyle
+        /// </summary>
+        /// <param name="lifestyle"></param>
+        /// <returns></returns>
+        public T Custom(ICompiledLifestyle lifestyle)
+        {
+            if (lifestyle != null)
+            {
+                _addLifestyle(lifestyle);
+            }
+
+            return _returnValue;
+        }
+
+        /// <summary>
         /// Create one instance for the container including all child scopes and lifetime scopes
         /// </summary>
         /// <returns>configuration</returns>

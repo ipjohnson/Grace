@@ -57,6 +57,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="lifestyle"></param>
         /// <returns>configuraiton object</returns>
+        [Obsolete("Use Lifestyle.Custom instead")]
         IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
@@ -191,6 +192,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>
         /// <returns>configuration object</returns>
+        [Obsolete("Use Lifestyle.Custom instead")]
         IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
@@ -205,8 +207,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
-
-
+        
         /// <summary>
         /// Import a collection allowing you to specify a filter and a sort order
         /// </summary>

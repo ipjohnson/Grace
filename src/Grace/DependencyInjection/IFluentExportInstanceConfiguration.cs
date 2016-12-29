@@ -55,6 +55,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>
         /// <returns>configuration object</returns>
+        [Obsolete("Use Lifestyle.Custom instead")]
         IFluentExportInstanceConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
