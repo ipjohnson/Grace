@@ -84,14 +84,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Create enumerable method
         /// </summary>
-        protected MethodInfo CreateEnumerableMethod
-        {
-            get
-            {
-                return _createEnumerableMethod ??
-                       (_createEnumerableMethod = typeof(IEnumerableCreator).GetRuntimeMethods().First());
-            }
-        }
+        protected MethodInfo CreateEnumerableMethod => _createEnumerableMethod ??
+                                                       (_createEnumerableMethod = typeof(IEnumerableCreator).GetRuntimeMethods().First());
+
         #endregion
     }
 

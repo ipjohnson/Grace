@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// </summary>
 	public class WhenInjectedIntoAttribute : Attribute, IExportConditionAttribute
 	{
-		private readonly Type[] injectionType;
+		private readonly Type[] _injectionType;
 
 		/// <summary>
 		/// Default constructor
@@ -17,7 +17,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <param name="injectionType"></param>
 		public WhenInjectedIntoAttribute(params Type[] injectionType)
 		{
-			this.injectionType = injectionType;
+			_injectionType = injectionType;
 		}
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns></returns>
 		public ICompiledCondition ProvideCondition(Type attributedType)
 		{
-			return new WhenInjectedInto(injectionType);
+			return new WhenInjectedInto(_injectionType);
 		}
 	}
 }

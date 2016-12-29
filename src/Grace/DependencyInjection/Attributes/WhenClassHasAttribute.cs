@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// </summary>
 	public class WhenClassHasAttribute : Attribute, IExportConditionAttribute
 	{
-		private readonly Type attributeType;
+		private readonly Type _attributeType;
 
 		/// <summary>
 		/// Default Constructor
@@ -17,7 +17,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <param name="attributeType"></param>
 		public WhenClassHasAttribute(Type attributeType)
 		{
-			this.attributeType = attributeType;
+			_attributeType = attributeType;
 		}
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns></returns>
 		public ICompiledCondition ProvideCondition(Type attributedType)
 		{
-			return new WhenClassHas(attributeType);
+			return new WhenClassHas(_attributeType);
 		}
 	}
 }

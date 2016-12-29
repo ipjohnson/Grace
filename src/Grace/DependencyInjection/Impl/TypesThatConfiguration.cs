@@ -399,7 +399,7 @@ namespace Grace.DependencyInjection.Impl
         {
             get
             {
-                notLogicValue = false;
+                _notLogicValue = false;
 
                 return this;
             }
@@ -436,13 +436,13 @@ namespace Grace.DependencyInjection.Impl
             }
         }
 
-        private bool notLogicValue = true;
+        private bool _notLogicValue = true;
         
         private bool GetNotAndingValue()
         {
-            bool tempValue = notLogicValue;
+            bool tempValue = _notLogicValue;
 
-            notLogicValue = true;
+            _notLogicValue = true;
 
             return tempValue;
         }

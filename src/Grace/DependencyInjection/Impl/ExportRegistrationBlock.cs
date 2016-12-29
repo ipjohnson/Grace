@@ -469,6 +469,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (activationStrategy == null) throw new ArgumentNullException(nameof(activationStrategy));
 
+            // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (activationStrategy is ICompiledExportStrategy)
             {
                 _exportStrategyProviders.Add(new SimpleExportStrategyProvider((ICompiledExportStrategy)activationStrategy));

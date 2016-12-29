@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection
     /// Object used to configure a condition
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IWhenConditionConfiguration<T>
+    public interface IWhenConditionConfiguration<out T>
     {
         /// <summary>
         /// Use strategy when it meets condition

@@ -12,7 +12,6 @@ namespace Grace.Diagnostics
     /// <typeparam name="T"></typeparam>
     public class ActivationStrategyCollectionContainerDebuggerView<T> where T : IActivationStrategy
     {
-        private readonly IActivationStrategyCollectionContainer<T> _container;
         private readonly List<StrategyListDebuggerView<T>> _strategiesByType;
 
         /// <summary>
@@ -21,7 +20,6 @@ namespace Grace.Diagnostics
         /// <param name="container"></param>
         public ActivationStrategyCollectionContainerDebuggerView(IActivationStrategyCollectionContainer<T> container)
         {
-            _container = container;
             _strategiesByType = new List<StrategyListDebuggerView<T>>();
 
             foreach (var type in container.GetActivationTypes())

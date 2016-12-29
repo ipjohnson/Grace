@@ -8,8 +8,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// <summary>
 	/// This attribute is used to mark a type for export. 
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true,
-		Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true)]
 	public class ExportAttribute : Attribute, IExportAttribute
 	{
 		/// <summary>

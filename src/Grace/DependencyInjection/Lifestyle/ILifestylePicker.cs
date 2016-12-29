@@ -6,7 +6,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// Configuration object for picking a lifestyle
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ILifestylePicker<T>
+    public interface ILifestylePicker<out T>
     {
         /// <summary>
         /// Use custom lifestyle

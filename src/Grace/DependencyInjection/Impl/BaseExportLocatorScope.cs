@@ -32,7 +32,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parent">parent scope</param>
         /// <param name="name">name of scope</param>
         /// <param name="activationDelegates">activation delegates</param>
-        public BaseExportLocatorScope(IExportLocatorScope parent, 
+        protected BaseExportLocatorScope(IExportLocatorScope parent, 
                                       string name, 
                                       ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {

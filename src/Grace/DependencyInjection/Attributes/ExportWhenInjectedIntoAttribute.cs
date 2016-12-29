@@ -7,10 +7,10 @@ namespace Grace.DependencyInjection.Attributes
 	/// <summary>
 	/// Applies an condition on the export where it will be injected into specified types and only those types
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class ExportWhenInjectedIntoAttribute : Attribute, IExportConditionAttribute
 	{
-		private readonly Type[] injectedTypes;
+		private readonly Type[] _injectedTypes;
 
 		/// <summary>
 		/// Default constructor takes list of injected types
@@ -18,7 +18,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <param name="injectedTypes">types that this export can be used in</param>
 		public ExportWhenInjectedIntoAttribute(params Type[] injectedTypes)
 		{
-			this.injectedTypes = injectedTypes;
+			_injectedTypes = injectedTypes;
 		}
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns>new condition</returns>
 		public ICompiledCondition ProvideCondition(Type exportType)
 		{
-			return new WhenInjectedInto(injectedTypes);
+			return new WhenInjectedInto(_injectedTypes);
 		}
 	}
 }

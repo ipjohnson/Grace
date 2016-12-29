@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// </summary>
 	public class ExportPriorityAttribute : Attribute, IExportPriorityAttribute
 	{
-		private readonly int priority;
+		private readonly int _priority;
 
 		/// <summary>
 		/// Export priority cosntructor
@@ -17,7 +17,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <param name="priority">priority for export, ranked high to low</param>
 		public ExportPriorityAttribute(int priority)
 		{
-			this.priority = priority;
+			_priority = priority;
 		}
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Grace.DependencyInjection.Attributes
 		/// <returns>priority value</returns>
 		public int ProvidePriority(Type attributedType)
 		{
-			return priority;
+			return _priority;
 		}
 	}
 }

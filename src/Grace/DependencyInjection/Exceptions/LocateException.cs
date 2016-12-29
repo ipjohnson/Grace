@@ -11,8 +11,6 @@ namespace Grace.DependencyInjection.Exceptions
     /// </summary>
     public class LocateException : Exception
     {
-        private StaticInjectionContext _context;
-
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -22,7 +20,7 @@ namespace Grace.DependencyInjection.Exceptions
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            _context = context;
+            Context = context;
         }
 
         /// <summary>
@@ -33,22 +31,20 @@ namespace Grace.DependencyInjection.Exceptions
         /// <param name="message">message for exception</param>
         public LocateException(StaticInjectionContext context, Exception innerException, string message = null) : base(CreateMessage(context, message), innerException)
         {
-            _context = context;
+            Context = context;
         }
+
+        /// <summary>
+        /// Context information associated with the exception
+        /// </summary>
+        public StaticInjectionContext Context { get; }
 
         private static string CreateMessage(StaticInjectionContext context, string message = null)
         {
             var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
             var builder = new StringBuilder();
 
-            if (message == null)
-            {
-                builder.AppendLine($"Could not locate Type {context.ActivationType}");
-            }
-            else
-            {
-                builder.AppendLine(message);
-            }
+            builder.AppendLine(message ?? $"Could not locate Type {context.ActivationType}");
 
             for (int i = 0; i < infoStack.Count; i++)
             {
@@ -84,7 +80,5 @@ namespace Grace.DependencyInjection.Exceptions
 
             builder.AppendLine();
         }
-
-
     }
 }

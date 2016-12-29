@@ -190,6 +190,7 @@ namespace Grace.Utilities
                     // The check that is performed is that the GenericParameterAttributes
                     // has the DefaultConstructorConstraint set and the code must check to
                     // see if both are value types
+                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                     if (exported.GetTypeInfo().IsValueType)
                     {
                         meets = genericParameterType.GetTypeInfo().IsValueType;

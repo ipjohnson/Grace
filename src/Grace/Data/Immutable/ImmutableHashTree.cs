@@ -223,6 +223,7 @@ namespace Grace.Data.Immutable
 
                     if (currentNode.Conflicts.Count > 0)
                     {
+                        // ReSharper disable once ForCanBeConvertedToForeach
                         for (var i = 0; i < currentNode.Conflicts.Count; i++)
                         {
                             yield return currentNode.Conflicts[i];
@@ -302,6 +303,7 @@ namespace Grace.Data.Immutable
                     return true;
                 }
 
+                // ReSharper disable once ForCanBeConvertedToForeach
                 for (var i = 0; i < currenNode.Conflicts.Count; i++)
                 {
                     var kvp = currenNode.Conflicts[i];

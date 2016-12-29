@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, null,allowNull: false,isDynamic: false);
+            return func != null ? func(this, this, null) : LocateFromParent(type, null, null, null, allowNull: false, isDynamic: false);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace Grace.DependencyInjection.Impl
 
             var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
 
-            return func != null ? 
-                   func(this, this, extraData == null ? null : CreateContext(extraData)) : 
-                   LocateFromParent(type, null, null, null,allowNull: false,isDynamic: false);
+            return func != null ?
+                   func(this, this, extraData == null ? null : CreateContext(extraData)) :
+                   LocateFromParent(type, null, null, null, allowNull: false, isDynamic: false);
         }
 
         /// <summary>

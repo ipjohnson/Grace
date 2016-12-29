@@ -472,7 +472,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
 
             var targetName = "";
-
+            
             if (Info is ParameterInfo)
             {
                 targetName = ((ParameterInfo) Info).Name;

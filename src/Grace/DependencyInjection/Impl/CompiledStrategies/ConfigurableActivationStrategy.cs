@@ -277,13 +277,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         // ReSharper disable once UnusedMember.Local
-        private string DebuggerNameDisplayString
-        {
-            get
-            {
-                return ReflectionService.GetFriendlyNameForType(ActivationType, true);
-            }
-        }
+        private string DebuggerNameDisplayString => ReflectionService.GetFriendlyNameForType(ActivationType, true);
 
         private IActivationStrategyMetadata CreateMetadataObject()
         {
