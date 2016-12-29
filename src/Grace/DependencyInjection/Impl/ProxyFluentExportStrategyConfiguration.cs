@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuraiton object</returns>
         public IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
         {
-            return _strategy.UsingLifestyle(lifestyle);
+            return _strategy.Lifestyle.Custom(lifestyle);
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle)
         {
-            return _strategy.UsingLifestyle(lifestyle);
+            return _strategy.Lifestyle.Custom(lifestyle);
         }
 
         /// <summary>
