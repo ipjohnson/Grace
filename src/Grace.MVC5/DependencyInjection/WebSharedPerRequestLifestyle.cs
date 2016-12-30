@@ -69,7 +69,6 @@ namespace Grace.MVC.DependencyInjection
                                              Expression.Constant(UniqueId));
 
             return request.Services.Compiler.CreateNewResult(request, expression);
-
         }
 
         /// <summary>
