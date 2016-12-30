@@ -165,7 +165,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.UsingLifestyle(lifestyle);
 
-            strategyConfiguration.Received().UsingLifestyle(lifestyle);
+            strategyConfiguration.Lifestyle.Received().Custom(lifestyle);
         }
         
         [Theory]
