@@ -245,7 +245,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
                 if (_exportAs.Count > 0)
                 {
-                    string exportName = ReflectionService.GetFriendlyNameForType(_exportAs.First());
+                    var exportName = ReflectionService.GetFriendlyNameForType(_exportAs.First());
 
                     returnValue = "  as  " + exportName;
 
@@ -257,7 +257,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 else if (_exportAsKeyed.Count > 0)
                 {
                     var keyedType = _exportAsKeyed.First();
-                    string typeName = ReflectionService.GetFriendlyNameForType(keyedType.Key);
+                    var typeName = ReflectionService.GetFriendlyNameForType(keyedType.Key);
 
                     returnValue = $"  as  {typeName}({keyedType.Value}) ";
 

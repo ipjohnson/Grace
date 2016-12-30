@@ -85,7 +85,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             });
 
             DisposableService disposableService;
-            bool disposed = false;
+            var disposed = false;
 
             using (var scope = container.BeginLifetimeScope())
             {

@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Exceptions
 
             builder.AppendLine(message ?? $"Could not locate Type {context.ActivationType}");
 
-            for (int i = 0; i < infoStack.Count; i++)
+            for (var i = 0; i < infoStack.Count; i++)
             {
                 CreateMessageForTargetInfo(builder, infoStack[i], i + 1);
             }

@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             var list = ImmutableLinkedList<T>.Empty;
 
             // reversing the order so that itterating over immutable gives the same order
-            for (int i = elements.Length - 1; i >= 0; i--)
+            for (var i = elements.Length - 1; i >= 0; i--)
             {
                 list = list.Add(elements[i]);
             }

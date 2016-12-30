@@ -57,7 +57,7 @@ namespace Grace.Utilities
         {
             if (UseOr)
             {
-                foreach (Func<T, bool> typeFilter in _typeFilters)
+                foreach (var typeFilter in _typeFilters)
                 {
                     if (typeFilter(type))
                     {
@@ -68,7 +68,7 @@ namespace Grace.Utilities
                 return _typeFilters == ImmutableLinkedList<Func<T, bool>>.Empty;
             }
 
-            foreach (Func<T, bool> typeFilter in _typeFilters)
+            foreach (var typeFilter in _typeFilters)
             {
                 if (!typeFilter(type))
                 {

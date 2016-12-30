@@ -285,7 +285,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>returns tue if export found</returns>
         public bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            IInjectionContext context = CreateInjectionContextFromExtraData(type, extraData);
+            var context = CreateInjectionContextFromExtraData(type, extraData);
 
             value = InternalLocate(this, this, type, consider, withKey, context, true, isDynamic);
 
@@ -603,7 +603,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (strategy.HasConditions)
                     {
-                        bool pass = true;
+                        var pass = true;
 
                         foreach (var condition in strategy.Conditions)
                         {

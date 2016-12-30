@@ -9,7 +9,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         [Fact]
         public void Priority_Registration()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {

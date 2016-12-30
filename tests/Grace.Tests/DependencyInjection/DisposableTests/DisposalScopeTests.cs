@@ -10,7 +10,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         [Fact]
         public void DisposalScope_DisposeCalledTest()
         {
-            DisposalScope disposalScope = new DisposalScope();
+            var disposalScope = new DisposalScope();
             var disposableService = new DisposableService();
             var eventFired = false;
 
@@ -26,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         [Fact]
         public void DisposalScope_ThrowExceptionDuringCleanUp()
         {
-            DisposalScope disposalScope = new DisposalScope();
+            var disposalScope = new DisposalScope();
             var disposableService = new DisposableService();
             var eventFired = false;
 
@@ -40,7 +40,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         [Fact]
         public void DisposalScope_ThrowExceptionDuringDispose()
         {
-            DisposalScope disposalScope = new DisposalScope();
+            var disposalScope = new DisposalScope();
             var disposableService = new DisposableService();
             var eventFired = false;
 
@@ -58,7 +58,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         [Fact]
         public void DoubleDisposeTest()
         {
-            DisposalScope disposalScope = new DisposalScope();
+            var disposalScope = new DisposalScope();
             var disposableService = new DisposableService();
             var eventFired = false;
 
@@ -80,7 +80,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         [Fact]
         public void CleanUpDelegateTest()
         {
-            DisposalScope disposalScope = new DisposalScope();
+            var disposalScope = new DisposalScope();
             var disposableService = new DisposableService();
             var eventFired = false;
             var cleanUpCalled = false;

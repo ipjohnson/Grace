@@ -113,7 +113,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         [Fact]
         public void ComplexHaveAttribute()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export(typeof(TypesThatTests).GetTypeInfo().Assembly.ExportedTypes).
                 ByInterface(typeof(IAttributedSimpleObject)).
@@ -128,7 +128,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         [Fact]
         public void ComplexHaveAttributeFiltered()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export(typeof(TypesThatTests).GetTypeInfo().Assembly.ExportedTypes).
                 ByInterface(typeof(IAttributedSimpleObject)).
@@ -144,7 +144,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         [Fact]
         public void ComplexHaveAttributeNonGeneric()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export(typeof(TypesThatTests).GetTypeInfo().Assembly.ExportedTypes).
                 ByInterface(typeof(IAttributedSimpleObject)).

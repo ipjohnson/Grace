@@ -28,7 +28,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableHashTree_ThreadsafeAdd_Null_Key()
         {
-            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+            var tree = ImmutableHashTree<int?, int>.Empty;
 
             Assert.Throws<ArgumentNullException>(() => ImmutableHashTree.ThreadSafeAdd(ref tree, null, 10));
         }
@@ -36,7 +36,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableHashTree_TryGet_Null_Key()
         {
-            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+            var tree = ImmutableHashTree<int?, int>.Empty;
 
             int value;
 
@@ -46,7 +46,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableHashTree_GetValue_Null_Key()
         {
-            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+            var tree = ImmutableHashTree<int?, int>.Empty;
 
             Assert.Throws<ArgumentNullException>(() => tree.GetValueOrDefault(null));
         }
@@ -54,7 +54,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableHashTree_Index_Throws_KeyNotFound()
         {
-            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+            var tree = ImmutableHashTree<int?, int>.Empty;
 
             Assert.Throws<KeyNotFoundException>(() => tree[5]);
         }
@@ -62,7 +62,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableHashTree_IterateInOrder_Null_Throws()
         {
-            ImmutableHashTree<int?, int> tree = ImmutableHashTree<int?, int>.Empty;
+            var tree = ImmutableHashTree<int?, int>.Empty;
 
             Assert.Throws<ArgumentNullException>(() => tree.IterateInOrder(null));
         }
@@ -134,14 +134,14 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
             Assert.Equal(1000, tree.Count);
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var conflict = new ConflictClass(i % 5, i);
 
@@ -154,14 +154,14 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
             Assert.Equal(1000, tree.Count);
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var conflict = new ConflictClass(i % 5, i);
 
@@ -174,7 +174,7 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
@@ -193,7 +193,7 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
@@ -216,11 +216,11 @@ namespace Grace.Tests.Data.Immutable
             _startEvent = new ManualResetEvent(false);
             _hashTree = ImmutableHashTree<int, int>.Empty;
 
-            int threadCount = 4;
+            var threadCount = 4;
 
             var tasks = new List<Task>();
 
-            for (int i = 0; i < threadCount; i++)
+            for (var i = 0; i < threadCount; i++)
             {
                 var value = i;
 
@@ -231,7 +231,7 @@ namespace Grace.Tests.Data.Immutable
 
             Task.WaitAll(tasks.ToArray(), 60 * 1000);
 
-            List<int> values = new List<int>();
+            var values = new List<int>();
 
             _hashTree.IterateInOrder((key, value) => values.Add(key));
 
@@ -239,7 +239,7 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Equal(_addAmount * threadCount, values.Count);
 
-            for (int i = 0; i < (_addAmount * threadCount); i++)
+            for (var i = 0; i < (_addAmount * threadCount); i++)
             {
                 Assert.Equal(i, values[i]);
             }
@@ -249,7 +249,7 @@ namespace Grace.Tests.Data.Immutable
         {
             _startEvent.WaitOne();
 
-            for (int i = startValue; i < (_addAmount + startValue); i++)
+            for (var i = startValue; i < (_addAmount + startValue); i++)
             {
                 ImmutableHashTree.ThreadSafeAdd(ref _hashTree, i, i);
 

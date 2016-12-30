@@ -81,7 +81,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            IActivationExpressionResult result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
+            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
 
             return result ?? GetExpressionFromDependentStrategy(scope, request);
         }
@@ -110,8 +110,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             var instanceResult = _dependentStrategy.GetActivationExpression(scope, newRequest);
 
-            List<IActivationExpressionResult> results = new List<IActivationExpressionResult> { instanceResult };
-            List<Expression> parameterExpressions = new List<Expression>();
+            var results = new List<IActivationExpressionResult> { instanceResult };
+            var parameterExpressions = new List<Expression>();
 
             foreach (var parameterInfo in _methodInfo.GetParameters())
             {

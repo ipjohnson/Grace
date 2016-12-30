@@ -11,7 +11,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
         {
             var container = new DependencyInjectionContainer();
 
-            bool disposedDelegateCalled = false;
+            var disposedDelegateCalled = false;
 
             container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().DisposalCleanupDelegate(d => disposedDelegateCalled = true));
 

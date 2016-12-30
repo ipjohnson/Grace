@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual IEnumerable<ActivationStrategyDependency> GetDependenciesForConstructor(TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo constructor)
         {
-            ImmutableLinkedList<ActivationStrategyDependency> dependencies = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
+            var dependencies = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
             var injectionScope = request.RequestingScope;
 
             foreach (var parameter in constructor.GetParameters())
@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     key = parameter.Name;
                 }
 
-                bool dependencySatisified = parameter.IsOptional ||
+                var dependencySatisified = parameter.IsOptional ||
                     parameter.ParameterType.IsGenericParameter ||
                     CanGetValueFromInfo(configuration, parameter) ||
                     injectionScope.CanLocate(parameter.ParameterType,null, key);
@@ -196,11 +196,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected virtual ConstructorInfo MatchBestConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {
             ConstructorInfo returnConstructor = null;
-            List<MatchInfo> matchInfos = new List<MatchInfo>();
+            var matchInfos = new List<MatchInfo>();
 
             foreach (var constructor in constructors)
             {
-                MatchInfo matchInfo = new MatchInfo { ConstructorInfo = constructor };
+                var matchInfo = new MatchInfo { ConstructorInfo = constructor };
 
                 foreach (var parameter in constructor.GetParameters())
                 {

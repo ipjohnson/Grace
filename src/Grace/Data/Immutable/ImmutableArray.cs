@@ -356,7 +356,7 @@ namespace Grace.Data.Immutable
                 return false;
             }
 
-            for (int i = 0; i < x._list.Length; i++)
+            for (var i = 0; i < x._list.Length; i++)
             {
                 if (x._list[i] == null)
                 {

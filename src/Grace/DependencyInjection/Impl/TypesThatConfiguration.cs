@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration HaveProperty(Type propertyType, string propertyName = null)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             if (propertyType == null)
             {
@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                Type tempType = propertyType;
+                var tempType = propertyType;
 
                 Add(t => t.GetRuntimeProperties().Any(
                         x => ReflectionService.CheckTypeIsBasedOnAnotherType(x.PropertyType, tempType) &&
@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (baseType == null) throw new ArgumentNullException(nameof(baseType));
 
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Func<Type, bool> basedOnFilter =
                 type => ReflectionService.CheckTypeIsBasedOnAnotherType(type, baseType) == notValue;
@@ -97,7 +97,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
 
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Func<Type, bool> basedOnFilter =
                 type =>
@@ -114,7 +114,7 @@ namespace Grace.DependencyInjection.Impl
                         baseType = baseType.GetTypeInfo().BaseType;
                     }
 
-                    foreach (Type implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
+                    foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
                     {
                         if (typeFilter(implementedInterface))
                         {
@@ -137,7 +137,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>type filter</returns>
         public TypesThatConfiguration Match(Func<Type, bool> typeFilter)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => typeFilter(t) == notValue);
 
@@ -151,7 +151,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration ArePublic()
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.GetTypeInfo().IsPublic == notValue);
 
@@ -164,7 +164,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration AreNotPublic()
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => (t.GetTypeInfo().IsPublic == false) == notValue);
 
@@ -177,7 +177,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration AreConstructedGeneric()
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.IsConstructedGenericType == notValue);
 
@@ -190,7 +190,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration AreOpenGeneric()
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.GetTypeInfo().IsGenericTypeDefinition == notValue);
 
@@ -205,7 +205,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public TypesThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
             Func<Type, bool> newFilter;
 
             if (includeSubnamespaces)
@@ -255,12 +255,12 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public TypesThatConfiguration HaveAttribute(Type attributeType, Func<Attribute, bool> attributeFilter = null)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
             Func<Type, bool> newFilter;
 
             if (attributeFilter != null)
             {
-                Func<Attribute, bool> localFunc = attributeFilter;
+                var localFunc = attributeFilter;
 
                 newFilter = t => t.GetTypeInfo().GetCustomAttributes(true).
                                                  Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), attributeType)).
@@ -287,7 +287,7 @@ namespace Grace.DependencyInjection.Impl
         public TypesThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
             Func<Type, bool> newFilter;
 
             if (attributeFilter != null)
@@ -297,8 +297,8 @@ namespace Grace.DependencyInjection.Impl
                     Any(
                     x =>
                     {
-                        bool returnValue = false;
-                        TAttribute attribute =
+                        var returnValue = false;
+                        var attribute =
                             x as TAttribute;
 
                         if (attribute != null)
@@ -329,12 +329,12 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Func<Type, bool> newFilter =
                 type =>
                 {
-                    foreach (Attribute customAttribute in type.GetTypeInfo().GetCustomAttributes())
+                    foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
                     {
                         if (consider(customAttribute.GetType()))
                         {
@@ -357,7 +357,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public TypesThatConfiguration StartWith(string name)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.Name.StartsWith(name) == notValue);
 
@@ -371,7 +371,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration EndWith(string name)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.Name.EndsWith(name) == notValue);
 
@@ -385,7 +385,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public TypesThatConfiguration Contains(string name)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Add(t => t.Name.Contains(name) == notValue);
 
@@ -440,7 +440,7 @@ namespace Grace.DependencyInjection.Impl
         
         private bool GetNotAndingValue()
         {
-            bool tempValue = _notLogicValue;
+            var tempValue = _notLogicValue;
 
             _notLogicValue = true;
 

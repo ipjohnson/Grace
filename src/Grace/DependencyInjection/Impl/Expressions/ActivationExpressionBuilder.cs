@@ -670,7 +670,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             decorators.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
 
-            ImmutableLinkedList<IActivationPathNode> pathNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
+            var pathNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
 
             if (decorators.All(d => d.ApplyAfterLifestyle))
             {

@@ -29,7 +29,7 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
         {
             var container = new DependencyInjectionContainer();
 
-            Guid currentId = Guid.Empty;
+            var currentId = Guid.Empty;
 
             container.Configure(c =>
             {

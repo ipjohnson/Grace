@@ -18,12 +18,12 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
 
             container.Configure(c => c.Export<UniqueInstanceClass>().Lifestyle.WeakSingleton());
 
-            Guid instanceGuid = TestWeakLifestyle(container);
+            var instanceGuid = TestWeakLifestyle(container);
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            Guid instance2Guid = TestWeakLifestyle(container);
+            var instance2Guid = TestWeakLifestyle(container);
 
             Assert.NotEqual(instanceGuid, instance2Guid);
         }

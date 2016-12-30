@@ -37,7 +37,7 @@ namespace Grace.Data
         {
             if (type.IsConstructedGenericType)
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
                 if (includeNamespace)
                 {
@@ -57,13 +57,13 @@ namespace Grace.Data
         {
             if (currentType.IsConstructedGenericType)
             {
-                int tickIndex = currentType.Name.LastIndexOf('`');
+                var tickIndex = currentType.Name.LastIndexOf('`');
                 builder.Append(currentType.Name.Substring(0, tickIndex));
                 builder.Append('<');
 
-                Type[] types = currentType.GenericTypeArguments;
+                var types = currentType.GenericTypeArguments;
 
-                for (int i = 0; i < types.Length; i++)
+                for (var i = 0; i < types.Length; i++)
                 {
                     CreateFriendlyNameForType(types[i], builder);
 
@@ -100,7 +100,7 @@ namespace Grace.Data
             {
                 if (baseType.GetTypeInfo().IsGenericTypeDefinition)
                 {
-                    foreach (Type implementedInterface in checkType.GetTypeInfo().ImplementedInterfaces)
+                    foreach (var implementedInterface in checkType.GetTypeInfo().ImplementedInterfaces)
                     {
                         if (implementedInterface.IsConstructedGenericType &&
                             implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
@@ -123,7 +123,7 @@ namespace Grace.Data
             {
                 if (baseType.GetTypeInfo().IsGenericTypeDefinition)
                 {
-                    Type currentBaseType = checkType;
+                    var currentBaseType = checkType;
 
                     while (currentBaseType != null)
                     {

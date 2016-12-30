@@ -71,7 +71,7 @@ namespace Grace.Dynamic.Impl
         private bool ProcessConstantFromArrayTarget(DynamicMethodGenerationRequest request, ConstantExpression expression)
         {
 
-            int constantIndex = request.Constants.IndexOf(expression.Value);
+            var constantIndex = request.Constants.IndexOf(expression.Value);
 
             if (constantIndex < 0)
             {
@@ -98,7 +98,7 @@ namespace Grace.Dynamic.Impl
 
         private bool ProcessConstantFromTarget(DynamicMethodGenerationRequest request, ConstantExpression expression)
         {
-            int constantIndex = request.Constants.IndexOf(expression.Value);
+            var constantIndex = request.Constants.IndexOf(expression.Value);
 
             if (constantIndex < 0)
             {

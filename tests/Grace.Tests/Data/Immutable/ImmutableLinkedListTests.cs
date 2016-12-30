@@ -178,7 +178,7 @@ namespace Grace.Tests.Data.Immutable
         [Fact]
         public void ImmutableLinkedList_Multithreaded_Test()
         {
-            int writerCount = 4;
+            var writerCount = 4;
 
             _finalList = new List<int>();
             _linkedList = ImmutableLinkedList<int>.Empty;
@@ -187,7 +187,7 @@ namespace Grace.Tests.Data.Immutable
 
             var listOfTasks = new List<Task>();
 
-            for (int i = 0; i < writerCount; i++)
+            for (var i = 0; i < writerCount; i++)
             {
                 var value = i;
                 var task = Task.Run(() => AddRangeToList(value * _addAmount));
@@ -205,7 +205,7 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Equal(_finalList.Count, _addAmount * writerCount);
 
-            for (int i = 0; i < (_addAmount * writerCount); i++)
+            for (var i = 0; i < (_addAmount * writerCount); i++)
             {
                 Assert.Equal(i, _finalList[i]);
             }
@@ -215,7 +215,7 @@ namespace Grace.Tests.Data.Immutable
         {
             while (!_countdownEvent.WaitHandle.WaitOne(0))
             {
-                for (int i = 0; i < 500; i++)
+                for (var i = 0; i < 500; i++)
                 {
                     var list = ImmutableLinkedList.ThreadSafeEmpty(ref _linkedList);
 
@@ -232,7 +232,7 @@ namespace Grace.Tests.Data.Immutable
         {
             _startEvent.WaitOne();
 
-            for (int i = startValue; i < (startValue + _addAmount); i++)
+            for (var i = startValue; i < (startValue + _addAmount); i++)
             {
                 ImmutableLinkedList.ThreadSafeAdd(ref _linkedList, i);
 

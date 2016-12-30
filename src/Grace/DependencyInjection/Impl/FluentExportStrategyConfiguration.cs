@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Impl
                 filter = t => !InjectionScopeConfiguration.DefaultInterfaceFilter(t, _exportConfiguration.ActivationType);
             }
 
-            foreach (Type interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
+            foreach (var interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
             {
                 if (!filter(interfaceTypes))
                 {
@@ -288,7 +288,7 @@ namespace Grace.DependencyInjection.Impl
                 filter = t => !InjectionScopeConfiguration.DefaultInterfaceFilter(t, typeof(T));
             }
 
-            foreach (Type interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
+            foreach (var interfaceTypes in _exportConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces)
             {
                 if (!filter(interfaceTypes))
                 {

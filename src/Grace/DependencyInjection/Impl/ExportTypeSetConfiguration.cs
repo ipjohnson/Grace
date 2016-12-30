@@ -296,8 +296,8 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var type in types)
             {
-                ImmutableLinkedList<Type> exportTypes = GetExportedTypes(type);
-                ImmutableLinkedList<Tuple<Type, object>> keyedExports = GetKeyedExportTypes(type);
+                var exportTypes = GetExportedTypes(type);
+                var keyedExports = GetKeyedExportTypes(type);
 
                 if (exportTypes != ImmutableLinkedList<Type>.Empty ||
                     keyedExports != ImmutableLinkedList<Tuple<Type, object>>.Empty ||
@@ -386,7 +386,7 @@ namespace Grace.DependencyInjection.Impl
 
         private ImmutableLinkedList<Type> GetExportedInterfaceList(Type type)
         {
-            ImmutableLinkedList<Type> returnList = ImmutableLinkedList<Type>.Empty;
+            var returnList = ImmutableLinkedList<Type>.Empty;
 
             foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
             {
@@ -396,7 +396,7 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                foreach (Type exportInterface in _byInterface)
+                foreach (var exportInterface in _byInterface)
                 {
                     if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
                     {
@@ -436,7 +436,7 @@ namespace Grace.DependencyInjection.Impl
 
         private static bool ShouldSkipType(Type exportedType)
         {
-            bool skipType = exportedType.GetTypeInfo().IsInterface ||
+            var skipType = exportedType.GetTypeInfo().IsInterface ||
                      exportedType.GetTypeInfo().IsAbstract ||
                      typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) ||
                      typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());

@@ -13,7 +13,7 @@ namespace Grace.Tests.DependencyInjection.Extensions
     {
         protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
             
             return container.Populate(serviceCollection);
         }

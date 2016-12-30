@@ -17,7 +17,7 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
                 c.Export<DisposableService>().As<IDisposableService>();
             });
 
-            bool disposedCalled = false;
+            var disposedCalled = false;
 
             using (var childContianer = container.CreateChildScope())
             {
@@ -41,7 +41,7 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
                 c.Export<DisposableService>().As<IDisposableService>().Lifestyle.Singleton();
             });
 
-            bool disposedCalled = false;
+            var disposedCalled = false;
 
             using (var childContianer = container.CreateChildScope())
             {

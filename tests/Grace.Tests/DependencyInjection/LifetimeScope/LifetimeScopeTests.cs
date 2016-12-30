@@ -78,7 +78,7 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
 
             using (var scope = container.BeginLifetimeScope())
             {
-                IBasicService basicService = scope.Locate<IBasicService>();
+                var basicService = scope.Locate<IBasicService>();
 
                 Assert.NotNull(basicService);
             }

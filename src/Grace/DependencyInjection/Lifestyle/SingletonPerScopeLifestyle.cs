@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
 
-            MethodInfo getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod(ThreadSafe ? "GetValueFromScopeThreadSafe" : "GetValueFromScope", new[]
+            var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod(ThreadSafe ? "GetValueFromScopeThreadSafe" : "GetValueFromScope", new[]
             {
                 typeof(IExportLocatorScope),
                 typeof(ActivationStrategyDelegate),

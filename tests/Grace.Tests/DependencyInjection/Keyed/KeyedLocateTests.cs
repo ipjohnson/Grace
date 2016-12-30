@@ -71,7 +71,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         [Fact]
         public void AsKeyedStringTest()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {
@@ -86,7 +86,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         [Fact]
         public void AsKeyedBasicTest()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {
@@ -97,7 +97,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 c.Export<SimpleObjectE>().AsKeyed<ISimpleObject>('E');
             });
 
-            for (char locateChar = 'A'; locateChar < 'F'; locateChar++)
+            for (var locateChar = 'A'; locateChar < 'F'; locateChar++)
             {
                 var simpleObject = container.Locate<ISimpleObject>(withKey: locateChar);
 
@@ -109,7 +109,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         [Fact]
         public void AsKeyed_Override()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c =>
             {

@@ -148,7 +148,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             TypeActivationConfiguration activationConfiguration, IActivationExpressionResult activationExpressionResult,
             MethodInjectionInfo methodInjectionInfo, ParameterExpression variableExpression)
         {
-            List<IActivationExpressionResult> parameterResults = new List<IActivationExpressionResult>();
+            var parameterResults = new List<IActivationExpressionResult>();
 
             foreach (var parameter in methodInjectionInfo.Method.GetParameters())
             {

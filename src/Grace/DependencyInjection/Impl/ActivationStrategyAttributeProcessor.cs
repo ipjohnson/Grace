@@ -115,7 +115,7 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var attribute in strategy.ActivationType.GetTypeInfo().GetCustomAttributes())
             {
-                IExportAttribute exportAttribute = attribute as IExportAttribute;
+                var exportAttribute = attribute as IExportAttribute;
 
                 var types = exportAttribute?.ProvideExportTypes(strategy.ActivationType);
 
@@ -127,7 +127,7 @@ namespace Grace.DependencyInjection.Impl
                     }
                 }
 
-                IExportConditionAttribute conditionAttribute = attribute as IExportConditionAttribute;
+                var conditionAttribute = attribute as IExportConditionAttribute;
 
                 var condition = conditionAttribute?.ProvideCondition(strategy.ActivationType);
 
@@ -136,7 +136,7 @@ namespace Grace.DependencyInjection.Impl
                     strategy.AddCondition(condition);
                 }
 
-                IExportKeyedTypeAttribute keyedTypeAttribute = attribute as IExportKeyedTypeAttribute;
+                var keyedTypeAttribute = attribute as IExportKeyedTypeAttribute;
 
                 var tuple = keyedTypeAttribute?.ProvideKey(strategy.ActivationType);
 

@@ -40,9 +40,9 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         public static IExportTypeSetConfiguration ExportAssemblies(this IExportRegistrationBlock registrationBlock, IEnumerable<Assembly> assemblies)
         {
-            List<Type> types = new List<Type>();
+            var types = new List<Type>();
 
-            foreach (Assembly assembly in assemblies)
+            foreach (var assembly in assemblies)
             {
                 types.AddRange(assembly.ExportedTypes);
             }

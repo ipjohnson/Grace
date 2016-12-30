@@ -77,7 +77,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             foreach (var strategy in collection.GetStrategies())
                             {
-                                bool pass = true;
+                                var pass = true;
 
                                 if (strategy.HasConditions)
                                 {
@@ -142,7 +142,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     foreach (var s in wrapperCollection.GetStrategies())
                     {
-                        bool pass = true;
+                        var pass = true;
                         if (s.HasConditions)
                         {
                             foreach (var condition in s.Conditions)

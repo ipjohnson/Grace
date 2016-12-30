@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl
         {
             Inspectors.Visit(inspector => inspector.Inspect(strategy), true);
 
-            ImmutableHashTree<Type, bool> types = ImmutableHashTree<Type, bool>.Empty;
+            var types = ImmutableHashTree<Type, bool>.Empty;
 
             foreach (var type in strategy.ExportAs)
             {
@@ -91,7 +91,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            bool added = false;
+            var added = false;
 
 
             foreach (var pair in types)
@@ -186,7 +186,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArrayLengthMinusOne + 1];
 
-            for (int i = 0; i <= ArrayLengthMinusOne; i++)
+            for (var i = 0; i <= ArrayLengthMinusOne; i++)
             {
                 newArray[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
 

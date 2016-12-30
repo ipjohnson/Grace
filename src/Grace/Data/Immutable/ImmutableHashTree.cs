@@ -48,7 +48,7 @@ namespace Grace.Data.Immutable
         /// <returns>final value for key</returns>
         public static TValue ThreadSafeAdd<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value, bool updateIfExists = false)
         {
-            TValue returnValue = value;
+            var returnValue = value;
 
             ThreadSafeAdd(ref destination, key, value, (currentValue, newValue) =>
             {

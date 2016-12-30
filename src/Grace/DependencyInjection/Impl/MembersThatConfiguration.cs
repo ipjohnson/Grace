@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration AreNamed(string name)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             _filters.Add(m => (m.Name == name) == notValue);
 
@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration StartsWith(string prefix)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             _filters.Add(m => (m.Name.StartsWith(prefix)) == notValue);
 
@@ -48,7 +48,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration EndsWith(string postfix)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             _filters.Add(m => (m.Name.EndsWith(postfix)) == notValue);
 
@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration Match(Func<MemberInfo, bool> matchMethod)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             _filters.Add(m => matchMethod(m) == notValue);
 
@@ -76,7 +76,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration AreProperty(Func<PropertyInfo, bool> filter = null)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Func<MemberInfo, bool> newFilter = m =>
             {
@@ -103,7 +103,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public MembersThatConfiguration AreMethod(Func<MethodInfo, bool> filter = null)
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
 
             Func<MemberInfo, bool> newFilter = m =>
             {
@@ -131,7 +131,7 @@ namespace Grace.DependencyInjection.Impl
         public MembersThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {
-            bool notValue = GetNotAndingValue();
+            var notValue = GetNotAndingValue();
             Func<MemberInfo, bool> newFilter;
 
             if (attributeFilter != null)
@@ -141,8 +141,8 @@ namespace Grace.DependencyInjection.Impl
                     Any(
                     x =>
                     {
-                        bool returnValue = false;
-                        TAttribute attribute =
+                        var returnValue = false;
+                        var attribute =
                             x as TAttribute;
 
                         if (attribute != null)
@@ -213,7 +213,7 @@ namespace Grace.DependencyInjection.Impl
 
         private bool GetNotAndingValue()
         {
-            bool tempValue = _notLogicValue;
+            var tempValue = _notLogicValue;
 
             _notLogicValue = true;
 

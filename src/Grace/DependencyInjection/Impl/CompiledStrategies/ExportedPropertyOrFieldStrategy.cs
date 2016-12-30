@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope,
             IActivationExpressionRequest request)
         {
-            IActivationExpressionResult result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope,
+            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope,
                 request, this);
 
             return result ?? GetExpressionFromDependentStrategy(scope, request);

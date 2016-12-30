@@ -10,13 +10,13 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerNamedScopeBasicTest()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
 
             var childScope = container.BeginLifetimeScope("Test");
 
-            IBasicService basicService = childScope.Locate<IBasicService>();
+            var basicService = childScope.Locate<IBasicService>();
 
             Assert.NotNull(basicService);
 
@@ -26,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerNamedScopeNestedSameTest()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
 
@@ -36,7 +36,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
 
             var childScope2 = parentScope.BeginLifetimeScope(scopeName: "Child2");
 
-            IBasicService basicService = parentScope.Locate<IBasicService>();
+            var basicService = parentScope.Locate<IBasicService>();
 
             Assert.NotNull(basicService);
 
@@ -48,7 +48,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerScopeNamedMissingScopeExceptionTest()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
             
@@ -58,13 +58,13 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerScopeNamedDifferentNamedScopes()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerNamedScope("Test"));
 
             var child1 = container.BeginLifetimeScope(scopeName: "Test");
 
-            IBasicService baseService1 = child1.Locate<IBasicService>();
+            var baseService1 = child1.Locate<IBasicService>();
 
             Assert.NotNull(baseService1);
 
@@ -72,7 +72,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
 
             var child2 = container.BeginLifetimeScope(scopeName: "Test");
 
-            IBasicService baseService2 = child2.Locate<IBasicService>();
+            var baseService2 = child2.Locate<IBasicService>();
 
             Assert.NotNull(baseService2);
 
@@ -84,11 +84,11 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerNamedScopeDisposal()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.SingletonPerNamedScope("Test"));
 
-            bool disposed = false;
+            var disposed = false;
 
             using (var childScope = container.BeginLifetimeScope(scopeName: "Test"))
             {
@@ -101,11 +101,11 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         [Fact]
         public void SingletonPerNamedScopeNestedDisposal()
         {
-            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.SingletonPerNamedScope("Test"));
 
-            bool disposed = false;
+            var disposed = false;
 
             using (var childScope = container.BeginLifetimeScope(scopeName: "Test"))
             {

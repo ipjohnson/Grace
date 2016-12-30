@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection
             ActivationStrategyFilter consider = null)
         {
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             var locator = scope.GetInjectionScope();
 
@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection
 
                 builder.AppendLine("Export Type: " + exportStrategy.ActivationType.FullName);
 
-                foreach (Type exportType in exportStrategy.ExportAs)
+                foreach (var exportType in exportStrategy.ExportAs)
                 {
                     builder.AppendLine("As Type: " + exportType);
                 }
@@ -71,7 +71,7 @@ namespace Grace.DependencyInjection
                 
                 builder.AppendLine("Depends On");
 
-                bool hasDependency = false;
+                var hasDependency = false;
 
                 foreach (var exportStrategyDependency in exportStrategy.GetDependencies())
                 {

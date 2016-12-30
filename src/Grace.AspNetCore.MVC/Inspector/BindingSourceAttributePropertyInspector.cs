@@ -19,7 +19,7 @@ namespace Grace.AspNetCore.MVC.Inspector
         /// <param name="strategy"></param>
         public void Inspect<T>(T strategy) where T : class, IActivationStrategy
         {
-            ICompiledExportStrategy exportStrategy = strategy as ICompiledExportStrategy;
+            var exportStrategy = strategy as ICompiledExportStrategy;
 
             if (exportStrategy == null || 
                 exportStrategy.ActivationType.GetTypeInfo().IsAssignableFrom(typeof(Controller)))

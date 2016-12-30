@@ -290,7 +290,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            bool isGeneric = locateType.IsConstructedGenericType;
+            var isGeneric = locateType.IsConstructedGenericType;
 
             if (isGeneric)
             {
