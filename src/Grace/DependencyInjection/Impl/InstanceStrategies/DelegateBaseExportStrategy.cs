@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
@@ -56,23 +57,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         protected virtual IActivationExpressionResult CreateExpression(IInjectionScope scope,
             IActivationExpressionRequest request)
         {
-            var methodInfo = DelegateInstance.GetMethodInfo();
-
-            var resultsExpressions = CreateExpressionsForTypes(scope, request, methodInfo.ReturnType,
-                methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
-
-            Expression expression = Expression.Call(DelegateInstance.Target == null ? null : Expression.Constant(DelegateInstance.Target), methodInfo, resultsExpressions.Select(e => e.Expression));
-
-            expression = ApplyNullCheckAndAddDisposal(scope, request, expression);
-
-            var result = request.Services.Compiler.CreateNewResult(request, expression);
-
-            foreach (var expressionResult in resultsExpressions)
-            {
-                result.AddExpressionResult(expressionResult);
-            }
-
-            return result;
+            return ExpressionUtilities.CreateExpressionForDelegate(DelegateInstance, ExternallyOwned, scope, request);
         }
 
         /// <summary>

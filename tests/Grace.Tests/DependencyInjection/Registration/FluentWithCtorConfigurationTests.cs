@@ -174,5 +174,66 @@ namespace Grace.Tests.DependencyInjection.Registration
 
 
         #endregion
+
+
+        #region WithNamedCtorValue
+        [Fact]
+        public void WithNamedCtorValue()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            DateTime currentTime = DateTime.Now;
+
+            container.Configure(c => c.Export(typeof(DateTimeImport)).WithNamedCtorValue(() => currentTime));
+
+            DateTimeImport import = container.Locate<DateTimeImport>();
+
+            Assert.NotNull(import);
+            Assert.Equal(currentTime, import.CurrentTime);
+        }
+
+        [Fact]
+        public void WithNamedCtorValueGeneric()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            DateTime currentTime = DateTime.Now;
+
+            container.Configure(c => c.Export<DateTimeImport>().WithNamedCtorValue(() => currentTime));
+
+            DateTimeImport import = container.Locate<DateTimeImport>();
+
+            Assert.NotNull(import);
+            Assert.Equal(currentTime, import.CurrentTime);
+        }
+
+
+        [Fact]
+        public void WithNamedCtorValueGenericNow()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<NowDateTimeImport>().WithNamedCtorValue(() => DateTime.Now));
+
+            NowDateTimeImport import = container.Locate<NowDateTimeImport>();
+
+            Assert.NotNull(import);
+            Assert.Equal(import.CurrentTime.Date, DateTime.Now.Date);
+        }
+
+        [Fact]
+        public void ExportNamedValue()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer();
+            DateTime currentTime = DateTime.Now;
+
+            container.Configure(c => c.Export<DateTimeImport>());
+            container.Configure(c => c.ExportNamedValue(() => currentTime));
+
+            DateTimeImport import = container.Locate<DateTimeImport>();
+
+            Assert.NotNull(import);
+            Assert.Equal(currentTime, import.CurrentTime);
+        }
+        #endregion
+
     }
 }

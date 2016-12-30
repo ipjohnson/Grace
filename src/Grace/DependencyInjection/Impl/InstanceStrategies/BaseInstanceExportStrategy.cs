@@ -8,6 +8,7 @@ using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
@@ -117,171 +118,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="lifestyle"></param>
         /// <returns></returns>
         protected abstract IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle);
-
-        /// <summary>
-        /// Applies null check and disposal scope tracking logic to an expression
-        /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="request"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        protected Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression)
-        {
-            if (expression.Type != request.ActivationType &&
-               !ReflectionService.CheckTypeIsBasedOnAnotherType(expression.Type, request.ActivationType))
-            {
-                expression = Expression.Convert(expression, request.ActivationType);
-            }
-
-            if (ExternallyOwned)
-            {
-                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
-                {
-                    var closedMethod = CheckForNullMethodInfo.MakeGenericMethod(request.ActivationType);
-
-                    return Expression.Call(closedMethod,
-                                           Expression.Constant(request.GetStaticInjectionContext()),
-                                           expression);
-                }
-            }
-            else
-            {
-                if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
-                {
-                    var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
-
-                    return Expression.Call(closedMethod, request.DisposalScopeExpression, expression);
-                }
-                else
-                {
-                    var closedMethod =
-                        CheckForNullAndAddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
-
-                    return Expression.Call(closedMethod,
-                                           request.DisposalScopeExpression,
-                                           Expression.Constant(request.GetStaticInjectionContext()), expression);
-                }
-            }
-
-            return expression;
-        }
-
-        #region Check For Null
-        /// <summary>
-        /// Check value for null
-        /// </summary>
-        /// <typeparam name="T">type of value</typeparam>
-        /// <param name="context">static context</param>
-        /// <param name="value">value to check</param>
-        /// <returns>non null value</returns>
-        public static T CheckForNull<T>(StaticInjectionContext context, T value)
-        {
-            if (value == null)
-            {
-                throw new NullValueProvidedException(context);
-            }
-
-            return value;
-        }
-
-        private static MethodInfo _checkForNullMethodInfo;
-
-        /// <summary>
-        /// Method info for CheckForNull
-        /// </summary>
-        public static MethodInfo CheckForNullMethodInfo
-        {
-            get
-            {
-                return _checkForNullMethodInfo ??
-                       (_checkForNullMethodInfo =
-                           typeof(BaseInstanceExportStrategy).GetRuntimeMethods().First(m => m.Name == "CheckForNull"));
-            }
-        }
-
-        #endregion
-
-        #region AddToDisposalScope
-
-        /// <summary>
-        /// Add instance to disposal scope and return it
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="disposalScope"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static T AddToDisposalScope<T>(IDisposalScope disposalScope, T value)
-        {
-            var disposable = value as IDisposable;
-
-            if (disposable != null)
-            {
-                disposalScope.AddDisposable(disposable);
-            }
-
-            return value;
-        }
-
-        private static MethodInfo _addToDisposalScopeMethodInfo;
-
-        /// <summary>
-        /// Method info for AddToDisposalScope
-        /// </summary>
-        public static MethodInfo AddToDisposalScopeMethodInfo
-        {
-            get
-            {
-                return _addToDisposalScopeMethodInfo ??
-                       (_addToDisposalScopeMethodInfo =
-                           typeof(BaseInstanceExportStrategy).GetRuntimeMethods().First(m => m.Name == "AddToDisposalScope"));
-            }
-        }
-        #endregion
-
-        #region CheckForNullAndAddToDisposalScope
-
-        /// <summary>
-        /// Check for null and then add to disposal scope
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="disposalScope"></param>
-        /// <param name="context"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static T CheckForNullAndAddToDisposalScope<T>(IDisposalScope disposalScope,
-            StaticInjectionContext context, T value)
-        {
-            if (value == null)
-            {
-                throw new NullValueProvidedException(context);
-            }
-
-            var disposable = value as IDisposable;
-
-            if (disposable != null)
-            {
-                disposalScope.AddDisposable(disposable);
-            }
-
-            return value;
-        }
-
-        private static MethodInfo _checkForNullAndAddToDisposalScopeMethodInfo;
-
-        /// <summary>
-        /// Method info for CheckForNullAndAddToDisposalScope
-        /// </summary>
-        public static MethodInfo CheckForNullAndAddToDisposalScopeMethodInfo
-        {
-            get
-            {
-                return _checkForNullAndAddToDisposalScopeMethodInfo ??
-                       (_checkForNullAndAddToDisposalScopeMethodInfo =
-                           typeof(BaseInstanceExportStrategy).GetRuntimeMethods().First(m => m.Name == "CheckForNullAndAddToDisposalScope"));
-            }
-        }
-        #endregion
-
+        
         #region Create Expression Helpers
 
         /// <summary>
@@ -292,19 +129,10 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="resultType"></param>
         /// <param name="types"></param>
         /// <returns></returns>
-        protected virtual IActivationExpressionResult[] CreateExpressionsForTypes(IInjectionScope scope,
+        protected virtual IActivationExpressionResult[] CreateExpressionsForTypes( IInjectionScope scope,
             IActivationExpressionRequest request,Type resultType, params Type[] types)
         {
-            var resultArray = new IActivationExpressionResult[types.Length];
-
-            for (var i = 0; i < types.Length; i++)
-            {
-                var arg1Request = request.NewRequest(types[i], this, resultType, RequestType.Other, null, true);
-
-                resultArray[i] = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
-            }
-
-            return resultArray;
+            return ExpressionUtilities.CreateExpressionsForTypes(this, scope, request, resultType, types);
         }
 
         #endregion

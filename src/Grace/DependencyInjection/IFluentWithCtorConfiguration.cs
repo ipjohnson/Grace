@@ -6,9 +6,8 @@ namespace Grace.DependencyInjection
     /// configure constructor parameter
     /// </summary>
     /// <typeparam name="TParam"></typeparam>
-    public interface IFluentWithCtorConfiguration<in TParam>
+    public interface IFluentWithCtorConfiguration<in TParam> : IFluentExportStrategyConfiguration
     {
-
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
         /// It will be called each time the parameter is resolved
@@ -72,9 +71,8 @@ namespace Grace.DependencyInjection
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TParam"></typeparam>
-    public interface IFluentWithCtorConfiguration<T, in TParam>
+    public interface IFluentWithCtorConfiguration<T, in TParam> : IFluentExportStrategyConfiguration<T>
     {
-
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
         /// It will be called each time the parameter is resolved

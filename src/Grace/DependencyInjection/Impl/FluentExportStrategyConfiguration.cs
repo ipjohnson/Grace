@@ -489,12 +489,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
         {
-            if (paramValue != null)
-            {
-                return WithCtorParam((locator, context, data) => paramValue());
-            }
-
-            var parameterInfo = new ConstructorParameterInfo(null) { ParameterType = typeof(TParam) };
+            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
             _exportConfiguration.ConstructorParameter(parameterInfo);
 

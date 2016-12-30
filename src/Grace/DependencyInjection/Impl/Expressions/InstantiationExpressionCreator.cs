@@ -93,7 +93,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var dependencySatisified = parameter.IsOptional ||
                     parameter.ParameterType.IsGenericParameter ||
                     CanGetValueFromInfo(configuration, parameter) ||
-                    injectionScope.CanLocate(parameter.ParameterType,null, key);
+                    injectionScope.CanLocate(parameter.ParameterType, null, key);
 
                 var dependency = new ActivationStrategyDependency(DependencyType.ConstructorParameter,
                                                                   configuration.ActivationStrategy,
@@ -214,7 +214,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     if (parameter.IsOptional ||
                         parameter.ParameterType.IsGenericParameter ||
                         CanGetValueFromInfo(configuration, parameter) ||
-                        injectionScope.CanLocate(parameter.ParameterType,null, key))
+                        injectionScope.CanLocate(parameter.ParameterType, null, key))
                     {
                         matchInfo.Matched++;
                     }
@@ -316,6 +316,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
+            if (parameterInfo?.ExportFunc != null)
+            {
+                return CallExportFunc(configuration.ActivationStrategy, parameter, parameterInfo, injectionScope, request, configuration.ExternallyOwned);
+            }
 
             var newRequest = request.NewRequest(parameter.ParameterType, configuration.ActivationStrategy, configuration.ActivationType, RequestType.ConstructorParameter, parameter, true);
 
@@ -353,6 +357,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return newRequest.Services.ExpressionBuilder.GetActivationExpression(injectionScope, newRequest);
+        }
+
+        private IActivationExpressionResult CallExportFunc(IActivationStrategy strategy, ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, IActivationExpressionRequest request, bool configurationExternallyOwned)
+        {
+            Delegate exportDelegate = parameterInfo.ExportFunc as Delegate;
+
+            if (exportDelegate == null)
+            {
+                throw new ArgumentException($"Parameter Info {parameterInfo.ParameterName} is not delegate",nameof(parameterInfo));
+            }
+
+            var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,
+                RequestType.ConstructorParameter, parameter);
+
+            return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, configurationExternallyOwned, injectionScope, newRequest);
         }
     }
 }
