@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.MVC.Extensions;
@@ -14,7 +18,10 @@ namespace Grace.MVC.DependencyInjection
     /// </summary>
     public class WebSharedPerRequestLifestyle : ICompiledLifestyle
     {
-        private readonly string _uniqueId = Guid.NewGuid().ToString();
+        /// <summary>
+        /// Unique id for instance
+        /// </summary>
+        protected readonly string UniqueId = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Compiled delegate
@@ -40,7 +47,29 @@ namespace Grace.MVC.DependencyInjection
         public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request,
             Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
-            throw new NotImplementedException();
+            if (CompiledDelegate == null)
+            {
+                var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
+
+                Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
+            }
+
+            MethodInfo getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod("GetValueFromContext", new[]
+            {
+                typeof(IExportLocatorScope),
+                typeof(ActivationStrategyDelegate),
+                typeof(string)
+            });
+
+            var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
+
+            var expression = Expression.Call(closedMethod,
+                                             request.Constants.ScopeParameter,
+                                             Expression.Constant(CompiledDelegate),
+                                             Expression.Constant(UniqueId));
+
+            return request.Services.Compiler.CreateNewResult(request, expression);
+
         }
 
         /// <summary>
@@ -69,10 +98,8 @@ namespace Grace.MVC.DependencyInjection
 
                 return (T)value;
             }
-            else
-            {
-                return (T)creationDelegate(scope, scope, null);
-            }
+
+            return (T)creationDelegate(scope, scope, null);
         }
     }
 }
