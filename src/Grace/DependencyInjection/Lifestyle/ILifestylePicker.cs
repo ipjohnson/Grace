@@ -50,7 +50,14 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
         /// <returns></returns>
         T SingletonPerObjectGraph(bool locking = false);
-        
+
+        /// <summary>
+        /// Create one instance per request, usually a lock is not needed
+        /// </summary>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the request, set to true only if you believe there are multple threads accesing this export</param>
+        /// <returns></returns>
+        T SingletonPerRequest(bool locking = false);
+
         /// <summary>
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
         /// </summary>

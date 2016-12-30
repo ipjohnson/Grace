@@ -30,12 +30,27 @@ namespace Grace.MVC.DependencyInjection
             return new WebSharedPerRequestLifestyle();
         }
 
+        /// <summary>
+        /// Provide an expression that uses the lifestyle
+        /// </summary>
+        /// <param name="scope">scope for the strategy</param>
+        /// <param name="request">activation request</param>
+        /// <param name="activationExpression">expression to create strategy type</param>
+        /// <returns></returns>
         public virtual IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request,
             Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scope"></param>
+        /// <param name="creationDelegate"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public static T GetValueFromContext<T>(IExportLocatorScope scope,
             ActivationStrategyDelegate creationDelegate, string uniqueId)
         {

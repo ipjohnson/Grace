@@ -62,6 +62,18 @@ namespace Grace.DependencyInjection.Lifestyle
         }
 
         /// <summary>
+        /// Create one instance per request, usually a lock is not needed
+        /// </summary>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the request, set to true only if you believe there are multple threads accesing this export</param>
+        /// <returns></returns>
+        public T SingletonPerRequest(bool locking = false)
+        {
+            _addLifestyle(new SingletonPerRequestLifestyle());
+
+            return _returnValue;
+        }
+
+        /// <summary>
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
         /// </summary>
         /// <param name="locking">false by default, set to true if you have multiple threads resolving from the </param>
