@@ -30,9 +30,23 @@ namespace Grace.Tests.DependencyInjection.Registration
         
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Generic_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed<IBasicService>(null));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Type_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        {
+            Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(null,'C'));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        {
+            Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(typeof(IBasicService), null));
         }
 
         [Fact]

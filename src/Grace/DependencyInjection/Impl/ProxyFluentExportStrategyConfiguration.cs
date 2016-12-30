@@ -176,6 +176,17 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export as keyed type
+        /// </summary>
+        /// <param name="type">export type</param>
+        /// <param name="key">key</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> AsKeyed(Type type, object key)
+        {
+            return _strategy.AsKeyed(type, key);
+        }
+
+        /// <summary>
         /// Export as a keyed type
         /// </summary>
         /// <typeparam name="TInterface">export type</typeparam>

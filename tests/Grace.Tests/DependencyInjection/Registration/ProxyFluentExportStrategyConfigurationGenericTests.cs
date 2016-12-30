@@ -37,6 +37,27 @@ namespace Grace.Tests.DependencyInjection.Registration
             strategyConfiguration.Received().As<IBasicService>();
         }
 
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_AsKeyed_Generic(
+            [Locate] FluentWithCtorConfiguration<BasicService, int> configuration,
+            IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            configuration.AsKeyed<IBasicService>('C');
+
+            strategyConfiguration.Received().AsKeyed<IBasicService>('C');
+        }
+        
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_AsKeyed(
+            [Locate] FluentWithCtorConfiguration<BasicService, int> configuration,
+            IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            configuration.AsKeyed(typeof(IBasicService),'C');
+
+            strategyConfiguration.Received().AsKeyed(typeof(IBasicService), 'C');
+        }
 
         [Theory]
         [AutoData]

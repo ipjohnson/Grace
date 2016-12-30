@@ -249,6 +249,22 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export as keyed type
+        /// </summary>
+        /// <param name="type">export type</param>
+        /// <param name="key">key</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> AsKeyed(Type type, object key)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            _exportConfiguration.AddExportAsKeyed(type, key);
+
+            return this;
+        }
+
+        /// <summary>
         /// Export as a keyed type
         /// </summary>
         /// <typeparam name="TInterface">export type</typeparam>
