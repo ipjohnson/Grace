@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Wrapper strategy for Owned&lt;T&gt;
     /// </summary>
-    public class OwnedWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class OwnedWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// <summary>
 	/// Exports attribute with this attribute will be shared as a single instance for all scopes
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public class SingletonAttribute : Attribute, ILifestyleProviderAttribute
 	{
 		/// <summary>

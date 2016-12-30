@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Strategy for creating two argument Func
     /// </summary>
-    public class FuncTwoArgWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class FuncTwoArgWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

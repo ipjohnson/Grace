@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Wrapper for Meta&lt;T&gt;
     /// </summary>
-    public class MetaWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class MetaWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

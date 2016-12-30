@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Strategy for creating Func with one arguement
     /// </summary>
-    public class FuncOneArgWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class FuncOneArgWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Strategy for creating Func with 4 args
     /// </summary>
-    public class FuncFourArgWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class FuncFourArgWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

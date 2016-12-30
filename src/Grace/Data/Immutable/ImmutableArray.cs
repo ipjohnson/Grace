@@ -118,6 +118,7 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public bool Contains(T item)
         {
+            // ReSharper disable once ForCanBeConvertedToForeach
             // ReSharper disable once LoopCanBeConvertedToQuery
             for (var i = 0; i < _list.Length; i++)
             {

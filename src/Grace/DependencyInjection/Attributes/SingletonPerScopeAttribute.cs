@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// <summary>
 	/// Exports marked with this attribute will be shared per scope.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public class SingletonPerScopeAttribute : Attribute, ILifestyleProviderAttribute
 	{
 		/// <summary>

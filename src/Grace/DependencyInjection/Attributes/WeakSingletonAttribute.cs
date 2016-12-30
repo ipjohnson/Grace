@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// Exports attributed with this will be shared, the instance will be held with a weak reference so it will be GC'd when done
 	/// 
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public class WeakSingletonAttribute : Attribute, ILifestyleProviderAttribute
 	{
 		/// <summary>

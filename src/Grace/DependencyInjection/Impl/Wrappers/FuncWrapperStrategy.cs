@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Wrapper for Func&lt;T&gt;
     /// </summary>
-    public class FuncWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class FuncWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor

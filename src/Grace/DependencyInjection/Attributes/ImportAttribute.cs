@@ -7,8 +7,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// This attribute can be used to attribute properties, methods, constructors or parameters
 	/// </summary>
 	[AttributeUsage(
-		AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Parameter,
-		AllowMultiple = false, Inherited = true)]
+		AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Parameter)]
 	public class ImportAttribute : Attribute, IImportAttribute
 	{
 		/// <summary>

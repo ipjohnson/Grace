@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <summary>
     /// Wrapper strategy for Lazy&lt;T&gt;
     /// </summary>
-    public class LazyWrapperStrategy : BaseWrapperStrategy, ICompiledWrapperStrategy
+    public class LazyWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
         /// Default constructor
