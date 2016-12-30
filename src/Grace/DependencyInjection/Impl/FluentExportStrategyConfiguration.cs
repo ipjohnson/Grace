@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Grace.Data;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
-using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {

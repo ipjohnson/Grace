@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
-using System.Reflection;
-using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
 {

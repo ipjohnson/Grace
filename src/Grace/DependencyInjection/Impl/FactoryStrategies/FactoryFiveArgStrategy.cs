@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq.Expressions;
 using Grace.DependencyInjection.Impl.InstanceStrategies;
-using Grace.DependencyInjection.Lifestyle;
-using System.Reflection;
 
 namespace Grace.DependencyInjection.Impl.FactoryStrategies
 {

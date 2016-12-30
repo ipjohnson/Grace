@@ -2,7 +2,6 @@
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
-using NSubstitute;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Wrappers
