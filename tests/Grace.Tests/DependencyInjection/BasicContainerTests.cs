@@ -40,7 +40,28 @@ namespace Grace.Tests.DependencyInjection
 
             Assert.NotNull(instance);
         }
-        
+
+        [Fact]
+        public void DependencyInjectionContainer_Configure_Module()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(new TestModule());
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void DependencyInjectionContainer_Configure_Null_Module_Throws()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Assert.Throws<ArgumentNullException>(() => container.Configure((IConfigurationModule) null));
+        }
+
+
         [Fact]
         public void DependencyInjectionContainer_Add_Module_Throws_Exception_For_Null()
         {

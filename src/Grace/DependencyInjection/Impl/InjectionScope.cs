@@ -366,6 +366,17 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Configure with module
+        /// </summary>
+        /// <param name="module">configuration module</param>
+        public void Configure(IConfigurationModule module)
+        {
+            if (module == null) throw new ArgumentNullException(nameof(module));
+
+            Configure(module.Configure);
+        }
+
+        /// <summary>
         /// Scope configuration
         /// </summary>
         public IInjectionScopeConfiguration ScopeConfiguration { get; }

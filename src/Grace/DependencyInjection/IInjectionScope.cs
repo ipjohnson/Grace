@@ -15,6 +15,12 @@ namespace Grace.DependencyInjection
         void Configure(Action<IExportRegistrationBlock> registrationBlock);
 
         /// <summary>
+        /// Configure with module
+        /// </summary>
+        /// <param name="module">configuration module</param>
+        void Configure(IConfigurationModule module);
+
+        /// <summary>
         /// Scope configuration
         /// </summary>
         IInjectionScopeConfiguration ScopeConfiguration { get; }
