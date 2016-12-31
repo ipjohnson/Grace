@@ -50,7 +50,7 @@ namespace Grace.MVC.DependencyInjection
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
 
-            var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod("GetValueFromContext", new[]
+            var getValueFromScopeMethod = typeof(WebSharedPerRequestLifestyle).GetRuntimeMethod("GetValueFromContext", new[]
             {
                 typeof(IExportLocatorScope),
                 typeof(ActivationStrategyDelegate),
