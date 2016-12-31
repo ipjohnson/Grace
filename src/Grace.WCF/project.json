@@ -2,12 +2,22 @@
   "version": "5.0.0-*",
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0"
+    "Grace": "5.0.0-*",
+    "NETStandard.Library": "1.6.0",
   },
 
   "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "net45": {
+      "frameworkAssemblies": {
+        "System.ServiceModel": "4.0.0.0",
+        "System.ServiceModel.Activation": "4.0.0.0",
+        "System.ServiceModel.Web": "4.0.0.0",
+        "System.Web": "4.0.0.0",
+        "System.Web.Routing": "4.0.0.0"
+      }
     }
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }

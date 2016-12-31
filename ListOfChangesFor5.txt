@@ -30,6 +30,8 @@
 
 * WithKey and AsKeyed<TInterface,TKey>() have been consolidated into AsKeyed<TInterface>(object key)
 
+* WCF support no longer uses a custom disposal scope provider rather a lifetime scope is created for each request
+
 ---------- New Features
 
 * Decorators are now supported
