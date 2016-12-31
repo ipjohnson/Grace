@@ -31,6 +31,7 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
         private Func<Type, ICompiledLifestyle> _lifestyleFunc;
         private bool _exportByAttributes;
+        private bool _externallyOwned;
 
         /// <summary>
         /// Default constructor
@@ -250,6 +251,17 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        /// <summary>
+        /// Mark all types as externally owned
+        /// </summary>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ExternallyOwned()
+        {
+            _externallyOwned = true;
+
+            return this;
+        }
+
 
         /// <summary>
         /// Add condition to exports
@@ -346,6 +358,8 @@ namespace Grace.DependencyInjection.Impl
                     strategy.AddCondition(condition);
                 }
             }, true);
+
+            strategy.ExternallyOwned = _externallyOwned;
 
             return strategy;
         }

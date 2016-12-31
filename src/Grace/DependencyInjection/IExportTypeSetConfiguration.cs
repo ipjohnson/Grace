@@ -120,5 +120,11 @@ namespace Grace.DependencyInjection
         /// <param name="inspector"></param>
         /// <returns></returns>
         IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector);
+
+        /// <summary>
+        /// Mark all types as externally owned
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ExternallyOwned();
     }
 }
