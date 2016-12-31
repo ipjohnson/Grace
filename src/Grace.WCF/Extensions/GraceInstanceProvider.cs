@@ -59,7 +59,8 @@ namespace Grace.WCF.Extensions
 
         private IExportLocatorScope GetRequstScope()
         {
-            OperationCustomDataExtension extension = OperationContext.Current.Extensions.Find<OperationCustomDataExtension>();
+            OperationCustomDataExtension extension =
+                OperationContext.Current.Extensions.Find<OperationCustomDataExtension>();
 
             if (extension != null)
             {
@@ -75,3 +76,4 @@ namespace Grace.WCF.Extensions
             return extension.LocatorScope;
         }
     }
+}
