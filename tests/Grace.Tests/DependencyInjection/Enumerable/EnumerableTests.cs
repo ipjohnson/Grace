@@ -119,7 +119,7 @@ namespace Grace.Tests.DependencyInjection.Enumerable
                 c.ExportFactory(() => new MultipleService3 { Count = 3 }).As<IMultipleService>();
                 c.ExportFactory(() => new MultipleService2 { Count = 2 }).As<IMultipleService>();
                 c.ExportFactory(() => new MultipleService1 { Count = 1 }).As<IMultipleService>();
-                c.Export<ImportEnumberableService>().As<IImportEnumberableService>().WithCtorCollectionParam<IEnumerable<IMultipleService>,IMultipleService>().SortByProperty(m => m.Count);
+                c.Export<ImportEnumberableService>().As<IImportEnumberableService>().WithCtorCollectionParam<IEnumerable<IMultipleService>, IMultipleService>().SortByProperty(m => m.Count);
             });
 
             var importService = container.Locate<IImportEnumberableService>();
@@ -136,6 +136,47 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             Assert.IsType<MultipleService4>(array[3]);
             Assert.IsType<MultipleService5>(array[4]);
         }
-        
+
+        [Fact]
+        public void Container_IEnumerable_Locate_Key()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleCompositePattern1>().AsKeyed<ICompositePattern>(1);
+                c.Export<SimpleCompositePattern2>().AsKeyed<ICompositePattern>(2);
+                c.Export<CompositePattern>()
+                    .As<ICompositePattern>()
+                    .WithCtorParam<IEnumerable<ICompositePattern>>()
+                    .LocateWithKey(new[] { 1, 2 });
+            });
+
+            var value = container.Locate<ICompositePattern>();
+
+            Assert.NotNull(value);
+            Assert.IsType<CompositePattern>(value);
+            Assert.Equal(3, value.Count);
+        }
+
+        [Fact]
+        public void Container_IEnumerable_Composite_Pattern()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleCompositePattern1>().As<ICompositePattern>();
+                c.Export<SimpleCompositePattern2>().As<ICompositePattern>();
+                c.Export<CompositePattern>().As<ICompositePattern>();
+            });
+
+            var instance = container.Locate<ICompositePattern>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<CompositePattern>(instance);
+            Assert.Equal(3, instance.Count);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -132,17 +133,69 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
             Type arrayElementType)
         {
+            var parentStrategy = GetRequestingStrategy(request);
+
+            List<object> keys = null;
             var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(arrayElementType);
             var expressions = new List<IActivationExpressionResult>();
 
+            if (request.LocateKey != null)
+            {
+                var enumerableKey = request.LocateKey as IEnumerable;
+
+                if (enumerableKey != null && !(request.LocateKey is string))
+                {
+                    keys = new List<object>();
+
+                    foreach (var value in enumerableKey)
+                    {
+                        keys.Add(value);
+                    }
+                }
+                else
+                {
+                    keys = new List<object> { request.LocateKey };
+                }
+            }
+
             if (collection != null)
             {
-                foreach (var strategy in collection.GetStrategies())
+                if (keys != null)
                 {
-                    var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                        request.Info, true);
+                    for (int i = 0; i < keys.Count;)
+                    {
+                        var strategy = collection.GetKeyedStrategy(keys[i]);
 
-                    expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                        if (strategy != null && parentStrategy != strategy)
+                        {
+                            keys.RemoveAt(i);
+
+                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
+                                request.Info, true);
+
+                            expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var strategy in collection.GetStrategies())
+                    {
+                        // skip as part of the composite pattern
+                        if (strategy == parentStrategy)
+                        {
+                            continue;
+                        }
+
+                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
+                            request.Info, true);
+
+                        expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                    }
                 }
             }
 
@@ -155,12 +208,44 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (strategies != null)
                 {
-                    foreach (var strategy in strategies.GetStrategies())
+                    if (keys != null)
                     {
-                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                            request.Info, true);
+                        for (int i = 0; i < keys.Count;)
+                        {
+                            var strategy = strategies.GetKeyedStrategy(keys[i]);
 
-                        expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                            if (strategy != null && strategy != parentStrategy)
+                            {
+                                keys.RemoveAt(i);
+
+                                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                                    request.RequestingStrategy?.ActivationType, request.RequestType,
+                                    request.Info, true);
+
+                                expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var strategy in strategies.GetStrategies())
+                        {
+                            // skip as part of the composite pattern
+                            if (strategy == parentStrategy)
+                            {
+                                continue;
+                            }
+
+                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                                request.RequestingStrategy?.ActivationType, request.RequestType,
+                                request.Info, true);
+
+                            expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                        }
                     }
                 }
             }
@@ -171,6 +256,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return expressions;
+        }
+
+        private IActivationStrategy GetRequestingStrategy(IActivationExpressionRequest request)
+        {
+            if (request == null)
+            {
+                return null;
+            }
+
+            if (request.RequestingStrategy != null && 
+                request.RequestingStrategy.StrategyType == ActivationStrategyType.ExportStrategy)
+            {
+                return request.RequestingStrategy;
+            }
+
+            return GetRequestingStrategy(request.Parent);
         }
 
         /// <summary>
