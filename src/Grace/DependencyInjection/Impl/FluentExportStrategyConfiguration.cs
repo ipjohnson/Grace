@@ -160,6 +160,18 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Set the priority for the export
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration WithPriority(int priority)
+        {
+            _exportConfiguration.Priority = priority;
+
+            return this;
+        }
+
+        /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
         /// <returns>configuraiton object</returns>

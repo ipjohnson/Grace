@@ -84,6 +84,12 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration ExportAttributedTypes();
 
         /// <summary>
+        /// Mark all types as externally owned
+        /// </summary>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ExternallyOwned();
+
+        /// <summary>
         /// Lifestyle for set
         /// </summary>
         ILifestylePicker<IExportTypeSetConfiguration> Lifestyle { get; }
@@ -121,10 +127,5 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector);
 
-        /// <summary>
-        /// Mark all types as externally owned
-        /// </summary>
-        /// <returns></returns>
-        IExportTypeSetConfiguration ExternallyOwned();
     }
 }

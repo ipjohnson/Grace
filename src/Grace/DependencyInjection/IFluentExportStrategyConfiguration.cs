@@ -87,6 +87,13 @@ namespace Grace.DependencyInjection
         /// <param name="value">metadata value</param>
         /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration WithMetadata(object key, object value);
+
+        /// <summary>
+        /// Set the priority for the export
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration WithPriority(int priority);
     }
 
     /// <summary>
@@ -254,8 +261,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue);
-
-
+        
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>

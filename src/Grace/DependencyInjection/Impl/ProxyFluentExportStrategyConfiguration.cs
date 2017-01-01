@@ -124,6 +124,16 @@ namespace Grace.DependencyInjection.Impl
         {
             return _strategy.WithMetadata(key, value);
         }
+
+        /// <summary>
+        /// Set the priority for the export
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration WithPriority(int priority)
+        {
+            return _strategy.WithPriority(priority);
+        }
     }
 
     /// <summary>
