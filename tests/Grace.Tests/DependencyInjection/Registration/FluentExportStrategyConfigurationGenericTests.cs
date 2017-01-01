@@ -13,35 +13,40 @@ namespace Grace.Tests.DependencyInjection.Registration
     {
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_As_Null_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_As_Null_Throws(
+            FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.As(null));
         }
 
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_ActivationMethod_Null_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_ActivationMethod_Null_Throws(
+            FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.ActivationMethod(null));
         }
-        
+
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Generic_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Generic_Null_Key_Throws(
+            FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed<IBasicService>(null));
         }
 
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Type_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Type_Throws(
+            FluentExportStrategyConfiguration<BasicService> configuration)
         {
-            Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(null,'C'));
+            Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(null, 'C'));
         }
 
         [Theory]
         [AutoData]
-        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Key_Throws(FluentExportStrategyConfiguration<BasicService> configuration)
+        public void FluentExportStrategyConfigurationGeneric_AsKeyed_Null_Key_Throws(
+            FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(typeof(IBasicService), null));
         }
@@ -54,7 +59,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             container.Configure(c => c.Export<BasicService>().As(typeof(IBasicService)));
 
             var instance = container.Locate<IBasicService>();
-            
+
             Assert.NotNull(instance);
             Assert.IsType<BasicService>(instance);
         }
@@ -94,12 +99,11 @@ namespace Grace.Tests.DependencyInjection.Registration
             {
                 c.Export<BasicService>().ByInterfaces();
                 c.Export<ConstructorImportService>().As<IConstructorImportService>();
-                c.Export<MultipleConstructorImport>().ImportConstructor(() => new MultipleConstructorImport(Arg.Any<IBasicService>()));
+                c.Export<MultipleConstructorImport>()
+                    .ImportConstructor(() => new MultipleConstructorImport(Arg.Any<IBasicService>()));
             });
 
         }
 
-
-        MultipleConstructorImport
     }
 }
