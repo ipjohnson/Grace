@@ -40,6 +40,13 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration ExternallyOwned();
 
         /// <summary>
+        /// Use specific constructor for use
+        /// </summary>
+        /// <param name="constructorInfo">constructor to use</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo);
+
+        /// <summary>
         /// Import public members Fields, Properties, and Methods (not done by default) 
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
@@ -166,6 +173,20 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ExternallyOwned();
+        
+        /// <summary>
+        /// This method allows you to specify which constructor to use ( () => new MyTypeName("Specific", "Constructor") )
+        /// </summary>
+        /// <param name="constructorExpression">constructor expression ( () => new MyTypeName("Specific", "Constructor") )</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression);
+
+        /// <summary>
+        /// Use specific constructor for use
+        /// </summary>
+        /// <param name="constructorInfo">constructor to use</param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo);
 
         /// <summary>
         /// Mark specific members to be injected

@@ -1,6 +1,7 @@
 ﻿using Grace.Data.Immutable;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -76,6 +77,11 @@ namespace Grace.DependencyInjection.Impl
         /// Externally owned strategy
         /// </summary>
         public bool ExternallyOwned { get; set; }
+
+        /// <summary>
+        /// Constructor to use when creating instance
+        /// </summary>
+        public ConstructorInfo SelectedConstructor { get; set; }
 
         /// <summary>
         /// List of constructor parameters

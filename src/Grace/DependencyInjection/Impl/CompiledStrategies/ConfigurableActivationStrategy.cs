@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Grace.Data;
 using Grace.Data.Immutable;
@@ -234,6 +235,14 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             ActivationConfiguration.ConstructorParameter(info);
         }
 
+        /// <summary>
+        /// Constructor to use when creating
+        /// </summary>
+        public ConstructorInfo SelectedConstructor
+        {
+            get { return ActivationConfiguration.SelectedConstructor; }
+            set { ActivationConfiguration.SelectedConstructor = value; }
+        }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         // ReSharper disable once UnusedMember.Local

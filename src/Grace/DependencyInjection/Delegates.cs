@@ -10,7 +10,7 @@
     public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
 
     /// <summary>
-    /// USed to filter out exports at container configuration time
+    /// Used to filter out exports at container configuration time
     /// </summary>
     /// <param name="staticContext"></param>
     /// <param name="strategy"></param>

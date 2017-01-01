@@ -82,5 +82,24 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.NotNull(instance);
         }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_ImportConstructor()
+        {
+
+
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().ByInterfaces();
+                c.Export<ConstructorImportService>().As<IConstructorImportService>();
+                c.Export<MultipleConstructorImport>().ImportConstructor(() => new MultipleConstructorImport(Arg.Any<IBasicService>()));
+            });
+
+        }
+
+
+        MultipleConstructorImport
     }
 }

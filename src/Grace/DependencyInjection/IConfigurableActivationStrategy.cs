@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;
@@ -68,6 +69,11 @@ namespace Grace.DependencyInjection
         /// <param name="info"></param>
         void ConstructorParameter(ConstructorParameterInfo info);
         
+        /// <summary>
+        /// Constructor to use when creating
+        /// </summary>
+        ConstructorInfo SelectedConstructor { get; set; }
+
         /// <summary>
         /// IS strategy externally owned
         /// </summary>

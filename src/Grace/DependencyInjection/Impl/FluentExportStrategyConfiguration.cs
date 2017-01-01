@@ -88,6 +88,11 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        public IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Import a specific member
         /// </summary>
@@ -386,6 +391,37 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> ExternallyOwned()
         {
             _exportConfiguration.ExternallyOwned = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// This method allows you to specify which constructor to use ( () => new MyTypeName("Specific", "Constructor") )
+        /// </summary>
+        /// <param name="constructorExpression">constructor expression ( () => new MyTypeName("Specific", "Constructor") )</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression)
+        {
+            NewExpression newExpression = constructorExpression.Body as NewExpression;
+
+            if (newExpression != null)
+            {
+                _exportConfiguration.SelectedConstructor = newExpression.Constructor;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Use specific constructor for use
+        /// </summary>
+        /// <param name="constructorInfo">constructor to use</param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo)
+        {
+            if (constructorInfo == null) throw new ArgumentNullException(nameof(constructorInfo));
+
+            _exportConfiguration.SelectedConstructor = constructorInfo;
 
             return this;
         }

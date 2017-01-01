@@ -67,8 +67,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return CreateConstructorExpression(request, constructor, expressions);
         }
-
-
+        
         /// <summary>
         /// Get a list of dependencies for a constructor
         /// </summary>
@@ -140,6 +139,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
+            if (configuration.SelectedConstructor != null)
+            {
+                return configuration.SelectedConstructor;
+            }
+
             var constructors = configuration.ActivationType.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic && !c.IsStatic).OrderByDescending(c => c.GetParameters().Length).ToArray();
 
             if (constructors.Length == 0)
