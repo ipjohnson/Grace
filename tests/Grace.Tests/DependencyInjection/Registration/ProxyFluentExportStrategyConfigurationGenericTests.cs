@@ -203,7 +203,32 @@ namespace Grace.Tests.DependencyInjection.Registration
 
         [Theory]
         [AutoData]
-        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_1_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope, int> func = (scope) => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_2_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope, StaticInjectionContext, int> func = (scope, staticContext) => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_3_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
                                                                       IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
         {
             Func<IExportLocatorScope,StaticInjectionContext,IInjectionContext, int> func = (scope,staticContext,context) => 5;
@@ -212,7 +237,31 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             strategyConfiguration.Received().WithCtorParam(func);
         }
-        
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_4_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext,IBasicService, int> func = (scope, staticContext, context, basic) => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ProxyFluentExportStrategyConfiguration_WithCtorParam_Multi_5_Arg([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
+                                                                      IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
+        {
+            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext,IBasicService,IMultipleService, int> func = (scope, staticContext, context, basic, multiple) => 5;
+
+            configuration.WithCtorParam(func);
+
+            strategyConfiguration.Received().WithCtorParam(func);
+        }
+
         [Theory]
         [AutoData]
         public void ProxyFluentExportStrategyConfiguration_WithCtorCollectionParam([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,

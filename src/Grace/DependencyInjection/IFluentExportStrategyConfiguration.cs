@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        IFluentExportStrategyConfiguration ByInterfaces(Func<Type,bool> filter = null);
+        IFluentExportStrategyConfiguration ByInterfaces(Func<Type, bool> filter = null);
 
         /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
         /// <param name="includeMethods">import all public methods that have parameters, false by default</param>
         /// <returns>configuraiton object</returns>
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool includeMethods = false);
-        
+
         /// <summary>
         /// Apply a lifestlye to export strategy
         /// </summary>
@@ -73,7 +73,7 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null);
 
-            /// <summary>
+        /// <summary>
         /// Export with specific metadata
         /// </summary>
         /// <param name="key">metadata key</param>
@@ -182,7 +182,7 @@ namespace Grace.DependencyInjection
         /// <param name="property">property expression</param>
         /// <returns>configuration object</returns>
         IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property);
-        
+
         /// <summary>
         /// Import a specific method on the type
         /// </summary>
@@ -215,7 +215,7 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
-        
+
         /// <summary>
         /// Import a collection allowing you to specify a filter and a sort order
         /// </summary>
@@ -229,10 +229,58 @@ namespace Grace.DependencyInjection
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
+        /// <typeparam name="TArg1"></typeparam>
         /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
         /// <returns>configuration object</returns>
-        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> paramValue);
-        
+        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue);
+
+
+        /// <summary>
+        /// Add a specific value for a particuar parameter in the constructor
+        /// </summary>
+        /// <typeparam name="TParam">type of parameter</typeparam>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <typeparam name="TArg2"></typeparam>
+        /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue);
+
+        /// <summary>
+        /// Add a specific value for a particuar parameter in the constructor
+        /// </summary>
+        /// <typeparam name="TParam">type of parameter</typeparam>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <typeparam name="TArg2"></typeparam>
+        /// <typeparam name="TArg3"></typeparam>
+        /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue);
+
+        /// <summary>
+        /// Add a specific value for a particuar parameter in the constructor
+        /// </summary>
+        /// <typeparam name="TParam">type of parameter</typeparam>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <typeparam name="TArg2"></typeparam>
+        /// <typeparam name="TArg3"></typeparam>
+        /// <typeparam name="TArg4"></typeparam>
+        /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue);
+
+        /// <summary>
+        /// Add a specific value for a particuar parameter in the constructor
+        /// </summary>
+        /// <typeparam name="TParam">type of parameter</typeparam>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <typeparam name="TArg2"></typeparam>
+        /// <typeparam name="TArg3"></typeparam>
+        /// <typeparam name="TArg4"></typeparam>
+        /// <typeparam name="TArg5"></typeparam>
+        /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
+        /// <returns>configuration object</returns>
+        IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TArg5, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TParam> paramValue);
+
         /// <summary>
         /// Adds metadata to an export
         /// </summary>
