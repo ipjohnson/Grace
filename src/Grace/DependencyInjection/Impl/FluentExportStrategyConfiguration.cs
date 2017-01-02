@@ -88,9 +88,18 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        /// <summary>
+        /// Use specific constructor for use
+        /// </summary>
+        /// <param name="constructorInfo">constructor to use</param>
+        /// <returns></returns>
         public IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo)
         {
-            throw new NotImplementedException();
+            if (constructorInfo == null) throw new ArgumentNullException(nameof(constructorInfo));
+
+            _exportConfiguration.SelectedConstructor = constructorInfo;
+
+            return this;
         }
 
         /// <summary>
