@@ -168,12 +168,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                         if (strategy != null && parentStrategy != strategy)
                         {
-                            keys.RemoveAt(i);
-
+                            
                             var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
                                 request.Info, true);
 
-                            expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                            var expression = strategy.GetActivationExpression(scope, newRequest);
+
+                            if(expression != null)
+                            {
+                                expressions.Add(expression);
+                                keys.RemoveAt(i);
+                            }
+                            else
+                            {
+                                i++;
+                            }
                         }
                         else
                         {
@@ -194,7 +203,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
                             request.Info, true);
 
-                        expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                        var expression = strategy.GetActivationExpression(scope, newRequest);
+
+                        if (expression != null)
+                        {
+                            expressions.Add(expression);
+                        }
                     }
                 }
             }
@@ -216,13 +230,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                             if (strategy != null && strategy != parentStrategy)
                             {
-                                keys.RemoveAt(i);
-
                                 var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
                                     request.RequestingStrategy?.ActivationType, request.RequestType,
                                     request.Info, true);
 
-                                expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                                var expression = strategy.GetActivationExpression(scope, newRequest);
+
+                                if (expression != null)
+                                {
+                                    expressions.Add(expression);
+                                    keys.RemoveAt(i);
+                                }
+                                else
+                                {
+                                    i++;
+                                }
                             }
                             else
                             {
@@ -244,7 +266,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                 request.RequestingStrategy?.ActivationType, request.RequestType,
                                 request.Info, true);
 
-                            expressions.Add(strategy.GetActivationExpression(scope, newRequest));
+                            var expression = strategy.GetActivationExpression(scope, newRequest);
+
+                            if (expression != null)
+                            {
+                                expressions.Add(expression);
+                            }
                         }
                     }
                 }
