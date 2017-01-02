@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection.Lifestyle
             return injectionInfoTarget.UniqueId;
         }
 
-        private string DebuggerDisplayValue => $"Singleton Per Ancestor ({_ancestorType.FullName})";
+        private string DebuggerDisplayValue => $"Singleton Per Ancestor ({_ancestorType.Name})";
 
         /// <summary>
         /// Get value without locking
