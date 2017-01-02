@@ -37,6 +37,27 @@ namespace Grace.Tests.DependencyInjection.Generics
             container.Configure(c =>
             {
                 c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export(typeof(GenericConstraintServiceA<>)).As(typeof(IGenericConstraintService<>));
+                c.Export(typeof(GenericConstraintBasicService<>)).As(typeof(IGenericConstraintService<>));
+            });
+
+            var instance = container.Locate<DependentService<IGenericConstraintService<IMultipleService>>>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+            Assert.IsType<GenericConstraintServiceA<IMultipleService>>(instance.Value);
+        }
+
+
+        [Fact]
+        public void Generic_Dependent_IEnumerable_Constraints()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
                 c.Export(typeof(GenericConstraintServiceA<>)).As(typeof(IGenericConstraintService<>));
                 c.Export(typeof(GenericConstraintBasicService<>)).As(typeof(IGenericConstraintService<>));
             });
@@ -47,5 +68,7 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.NotNull(instance.Value);
             Assert.Equal(1, instance.Value.Count());
         }
+
+
     }
 }

@@ -50,7 +50,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Wrapper expression creator
         /// </summary>
         protected readonly IWrapperExpressionCreator WrapperExpressionCreator;
-        
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -183,19 +183,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (value != null)
             {
-                return (T) value;
+                return (T)value;
             }
 
             if (hasDefault)
             {
-                return (T) defaultValue;
+                return (T)defaultValue;
             }
 
             if (isRequired)
             {
                 throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
             }
-                
+
             return default(T);
         }
 
@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new []
+            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new[]
             {
                 typeof(IExportLocatorScope),
                 typeof(StaticInjectionContext),
@@ -408,7 +408,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             if (request.ActivationType == typeof(StaticInjectionContext))
             {
                 var staticContext = request.Parent != null ?
-                                    request.Parent.GetStaticInjectionContext() : 
+                                    request.Parent.GetStaticInjectionContext() :
                                     request.GetStaticInjectionContext();
 
                 return request.Services.Compiler.CreateNewResult(request, Expression.Constant(staticContext));
@@ -432,7 +432,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var closedMethod = dynamicMethod.MakeGenericMethod(request.ActivationType);
 
-                Expression defaultExpression = 
+                Expression defaultExpression =
                     Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
 
                 var expression = Expression.Call(closedMethod,
@@ -513,15 +513,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                         if (strategy != null && request.Filter == null)
                         {
-                            return ActivationExpressionForStrategy(scope, request, strategy);
+                            var result = ActivationExpressionForStrategy(scope, request, strategy);
+
+                            if (result != null)
+                            {
+                                return result;
+                            }
                         }
 
-                        strategy = SelectStrategyFromCollection(collection, scope, request);
-
-                        if (strategy != null)
-                        {
-                            return ActivationExpressionForStrategy(scope, request, strategy);
-                        }
+                        return SelectStrategyFromCollection(collection, scope, request);
                     }
                 }
             }
@@ -557,15 +557,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (strategy != null)
                     {
-                        return ActivationExpressionForStrategy(scope, request, strategy);
+                        var result = ActivationExpressionForStrategy(scope, request, strategy);
+
+                        if (result != null)
+                        {
+                            return result;
+                        }
                     }
 
-                    strategy = SelectStrategyFromCollection(collection, scope, request);
-
-                    if (strategy != null)
-                    {
-                        return ActivationExpressionForStrategy(scope, request, strategy);
-                    }
+                    return SelectStrategyFromCollection(collection, scope, request);
                 }
             }
 
@@ -579,9 +579,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual ICompiledExportStrategy SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
+        protected virtual IActivationExpressionResult SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
         {
             var filter = request.Filter;
+            IActivationExpressionResult result = null;
 
             foreach (var strategy in collection.GetStrategies())
             {
@@ -590,22 +591,25 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     continue;
                 }
 
-                if (!strategy.HasConditions)
+                if (strategy.HasConditions)
                 {
-                    return strategy;
+                    var context = request.GetStaticInjectionContext();
+
+                    if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
+                    {
+                        continue;
+                    }
                 }
 
-                var context = request.GetStaticInjectionContext();
+                result = strategy.GetActivationExpression(scope, request);
 
-                if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
+                if (result != null)
                 {
-                    continue;
+                    break;
                 }
-
-                return strategy;
             }
 
-            return null;
+            return result;
         }
 
         /// <summary>
