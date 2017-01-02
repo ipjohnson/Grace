@@ -74,7 +74,6 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                 if (_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
                 {
                     _exportConfiguration.AddExportAs(interfaceTypes.GetGenericTypeDefinition());
