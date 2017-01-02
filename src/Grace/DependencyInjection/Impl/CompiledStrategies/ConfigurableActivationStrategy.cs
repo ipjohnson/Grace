@@ -43,6 +43,18 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// Dispose of strategy
+        /// </summary>
+        public virtual void Dispose()
+        {
+            var disposable = Lifestyle as IDisposable;
+
+            disposable?.Dispose();
+
+            Lifestyle = null;
+        }
+        
+        /// <summary>
         /// Injection scope for strategy
         /// </summary>
         public IInjectionScope InjectionScope { get; }

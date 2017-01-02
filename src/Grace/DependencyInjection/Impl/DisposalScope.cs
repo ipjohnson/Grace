@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Dispose of scope
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             var disposables = ImmutableLinkedList.ThreadSafeEmpty(ref _disposable);
 

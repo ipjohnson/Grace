@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection
@@ -7,7 +8,7 @@ namespace Grace.DependencyInjection
     /// Represents a collection of activation strategies
     /// </summary>
     /// <typeparam name="T">strategy type</typeparam>
-    public interface IActivationStrategyCollection<T> where T : IActivationStrategy
+    public interface IActivationStrategyCollection<T> : IDisposable where T : IActivationStrategy
     {
         /// <summary>
         /// Add a new strategy to collection

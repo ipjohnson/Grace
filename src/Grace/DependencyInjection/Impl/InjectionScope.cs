@@ -102,10 +102,10 @@ namespace Grace.DependencyInjection.Impl
             ActivationStrategyCompiler = configuration.Implementation.Locate<IActivationStrategyCompiler>();
 
             StrategyCollectionContainer =
-                configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledExportStrategy>>();
+                AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledExportStrategy>>());
 
             DecoratorCollectionContainer =
-                configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>();
+                AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>());
 
             for (var i = 0; i <= ArrayLengthMinusOne; i++)
             {
@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl
 
             DisposalScope = DisposalScopeProvider == null ? this : null;
         }
-
+        
         #endregion
 
         #region Public members
@@ -599,7 +599,10 @@ namespace Grace.DependencyInjection.Impl
 
             var wrapperCollectionProvider = ScopeConfiguration.Implementation.Locate<IDefaultWrapperCollectionProvider>();
 
-            Interlocked.CompareExchange(ref _wrappers, wrapperCollectionProvider.ProvideCollection(this), null);
+            if (Interlocked.CompareExchange(ref _wrappers, wrapperCollectionProvider.ProvideCollection(this), null) == null)
+            {
+                AddDisposable(_wrappers);
+            }
 
             return _wrappers;
         }

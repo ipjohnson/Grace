@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -121,6 +122,29 @@ namespace Grace.DependencyInjection.Impl
                 _keyedStrategies = _keyedStrategies,
                 _primary = _primary
             };
+        }
+
+        /// <summary>
+        /// Dispose of collection
+        /// </summary>
+        public void Dispose()
+        {
+            var strategies = _strategies;
+            var keyedStrategies = _keyedStrategies;
+
+            _primary = null;
+            _strategies = ImmutableArray<T>.Empty;
+            _keyedStrategies = ImmutableHashTree<object, T>.Empty;
+
+            foreach (var strategy in strategies)
+            {
+                strategy.Dispose();
+            }
+
+            foreach (var keyedStrategy in keyedStrategies)
+            {
+                keyedStrategy.Value.Dispose();
+            }
         }
     }
 }

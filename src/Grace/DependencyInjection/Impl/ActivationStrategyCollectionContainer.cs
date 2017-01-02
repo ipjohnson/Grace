@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Grace.Data.Immutable;
 using Grace.Diagnostics;
 
@@ -267,5 +268,24 @@ namespace Grace.DependencyInjection.Impl
         }
 
         private string DebugDisplayString => "Count: " + GetAllStrategies().Count();
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            var collections = Interlocked.Exchange(ref Collections, null);
+
+            if (collections == null)
+            {
+                return;
+            }
+
+            foreach (var collection in collections)
+            {
+                foreach (var strategyCollection in collection.Values)
+                {
+                    strategyCollection.Dispose();
+                }
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection
     /// Represents a collection of strategy collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IActivationStrategyCollectionContainer<T> where T : IActivationStrategy
+    public interface IActivationStrategyCollectionContainer<T> : IDisposable where T : IActivationStrategy
     {
         /// <summary>
         /// Add strategy to container

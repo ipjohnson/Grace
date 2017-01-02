@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Activation strategy
     /// </summary>
-    public interface IActivationStrategy
+    public interface IActivationStrategy : IDisposable
     {
         /// <summary>
         /// Injection scope for strategy

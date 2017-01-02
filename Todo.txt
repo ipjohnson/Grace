@@ -1,11 +1,5 @@
 
-MVC4, MVC5, WCF
-
 Feature parity between old registration and new registration
-
-improve logic for ProcessWrappers, look at locked logic
-
-Tests
 
 ------- RC ------------- 12/18/2016
 

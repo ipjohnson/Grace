@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -9,10 +10,12 @@ namespace Grace.DependencyInjection.Lifestyle
     /// Singleton lifestyle
     /// </summary>
     [DebuggerDisplay("Singleton Lifestyle")]
-    public class SingletonLifestyle : ICompiledLifestyle
+    public class SingletonLifestyle : ICompiledLifestyle, IDisposable
     {
         private object _singleton;
         private readonly object _lockObject = new object();
+        private DisposalScope _disposalScope = new DisposalScope();
+        private ActivationStrategyDelegate _activationDelegate;
 
         /// <summary>
         /// Constant expression
@@ -47,19 +50,29 @@ namespace Grace.DependencyInjection.Lifestyle
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
             
-            var activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
+            _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
 
             lock (_lockObject)
             {
                 if (_singleton == null)
                 {
-                    _singleton = activationDelegate(scope, scope, null);
+                    _singleton = _activationDelegate(scope, _disposalScope, null);
                 }
             }
 
             Interlocked.CompareExchange(ref ConstantExpression, Expression.Constant(_singleton), null);
 
             return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            var disposalScope = Interlocked.CompareExchange(ref _disposalScope, null, _disposalScope);
+
+            disposalScope?.Dispose();
         }
     }
 }
