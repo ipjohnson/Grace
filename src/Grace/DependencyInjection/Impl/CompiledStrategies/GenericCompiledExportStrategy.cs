@@ -71,6 +71,11 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             var expression = GetActivationExpression(scope, request);
 
+            if (expression == null)
+            {
+                return null;
+            }
+
             objectDelegate = compiler.CompileDelegate(scope, expression);
 
             ImmutableHashTree.ThreadSafeAdd(ref _delegates, activationType, objectDelegate);
@@ -108,7 +113,13 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
 
+            if (closedType == null)
+            {
+                return null;
+            }
+
             var activation = GetActivationConfiguration(closedType);
+
 
             var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
 

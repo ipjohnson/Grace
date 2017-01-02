@@ -11,7 +11,7 @@ namespace Grace.Tests.DependencyInjection.Generics
 {
     public class ConstraintTests
     {
-        //[Fact]
+        [Fact]
         public void Generic_Resolve_All_With_Constraint_Failing()
         {
             var container = new DependencyInjectionContainer();

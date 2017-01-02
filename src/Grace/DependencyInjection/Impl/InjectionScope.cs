@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl
 
             DisposalScope = DisposalScopeProvider == null ? this : null;
         }
-        
+
         #endregion
 
         #region Public members
@@ -440,13 +440,23 @@ namespace Grace.DependencyInjection.Impl
 
             var context = CreateInjectionContextFromExtraData(typeof(T), extraData);
 
-            LocateEnumerablesFromStrategyCollection(scope, disposalScope, type, context, consider, returnList);
+            var collection = StrategyCollectionContainer.GetActivationStrategyCollection(type);
+
+            if (collection != null)
+            {
+                LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, context, consider, returnList);
+            }
 
             if (type.IsConstructedGenericType)
             {
                 var genericType = type.GetGenericTypeDefinition();
 
-                LocateEnumerablesFromStrategyCollection(scope, disposalScope, genericType, context, consider, returnList);
+                collection = StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
+
+                if (collection != null)
+                {
+                    LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, context, consider, returnList);
+                }
             }
 
             var injectionParent = Parent as IInjectionScope;
@@ -532,7 +542,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key,injectionContext, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
+            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
 
             if (compiledDelegate != null)
             {
@@ -607,45 +617,40 @@ namespace Grace.DependencyInjection.Impl
             return _wrappers;
         }
 
-        private void LocateEnumerablesFromStrategyCollection<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<T> returnList)
+        private void LocateEnumerablesFromStrategyCollection<TStrategy,TValue>(IActivationStrategyCollection<TStrategy> collection, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList) where TStrategy : IWrapperOrExportActivationStrategy
         {
-            var collection = StrategyCollectionContainer.GetActivationStrategyCollection(type);
-
-            if (collection != null)
+            foreach (var strategy in collection.GetStrategies())
             {
-                foreach (var strategy in collection.GetStrategies())
+                if (strategy.HasConditions)
                 {
-                    if (strategy.HasConditions)
+                    var pass = true;
+
+                    foreach (var condition in strategy.Conditions)
                     {
-                        var pass = true;
-
-                        foreach (var condition in strategy.Conditions)
+                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
                         {
-                            if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
-                            {
-                                pass = false;
-                                break;
-                            }
-                        }
-
-                        if (!pass)
-                        {
-                            continue;
+                            pass = false;
+                            break;
                         }
                     }
 
-                    if (filter != null && !filter(strategy))
+                    if (!pass)
                     {
                         continue;
                     }
+                }
 
-                    var activationDelegate = strategy.GetActivationStrategyDelegate(this, ActivationStrategyCompiler, type);
+                if (filter != null && !filter(strategy))
+                {
+                    continue;
+                }
 
-                    if (activationDelegate != null)
-                    {
-                        returnList.Add(
-                            (T)activationDelegate(scope, disposalScope, context?.Clone()));
-                    }
+                var activationDelegate = strategy.GetActivationStrategyDelegate(this, ActivationStrategyCompiler, type);
+
+                if (activationDelegate != null)
+                {
+                    returnList.Add(
+                        (TValue)activationDelegate(scope, disposalScope, context?.Clone()));
                 }
             }
         }
