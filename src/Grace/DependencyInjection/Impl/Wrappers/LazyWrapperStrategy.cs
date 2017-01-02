@@ -61,7 +61,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <typeparam name="TResult"></typeparam>
         public class LazyExpression<TResult>
         {
-            private readonly ActivationStrategyDelegate _delegate;
+            private ActivationStrategyDelegate _delegate;
+            private IActivationExpressionRequest _request;
+            private IInjectionScope _scope;
+            private IActivationStrategy _activationStrategy;
+            private readonly object _lock = new object();
 
             /// <summary>
             /// Default constructor
@@ -71,15 +75,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="activationStrategy"></param>
             public LazyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy)
             {
-                var requestType = request.ActivationType.GenericTypeArguments[0];
-
-                var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Lazy<TResult>), RequestType.Other, null, true);
-
-                newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
-
-                var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
-
-                _delegate = request.Services.Compiler.CompileDelegate(scope, activationExpression);
+                _scope = scope;
+                _request = request;
+                _activationStrategy = activationStrategy;
             }
 
             /// <summary>
@@ -92,7 +90,42 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             public Lazy<TResult> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
                 IInjectionContext injectionContext)
             {
-                return new Lazy<TResult>(() => (TResult)_delegate(scope,disposalScope,injectionContext));
+                return new Lazy<TResult>(() =>
+                {
+                    if (_delegate == null)
+                    {
+                        _delegate = CompileDelegate();
+                    }
+
+                    return (TResult) _delegate(scope, disposalScope, injectionContext);
+                });
+            }
+
+            private ActivationStrategyDelegate CompileDelegate()
+            {
+                lock (_lock)
+                {
+                    if (_delegate == null)
+                    {
+                        var requestType = _request.ActivationType.GenericTypeArguments[0];
+
+                        var newRequest = _request.NewRequest(requestType, _activationStrategy, typeof(Lazy<TResult>),
+                            RequestType.Other, null, true);
+
+                        newRequest.DisposalScopeExpression = _request.Constants.RootDisposalScope;
+
+                        var activationExpression = _request.Services.ExpressionBuilder.GetActivationExpression(_scope,
+                            newRequest);
+
+                        _delegate = _request.Services.Compiler.CompileDelegate(_scope, activationExpression);
+
+                        _scope = null;
+                        _request = null;
+                        _activationStrategy = null;
+                    }
+                }
+
+                return _delegate;
             }
         }
     }
