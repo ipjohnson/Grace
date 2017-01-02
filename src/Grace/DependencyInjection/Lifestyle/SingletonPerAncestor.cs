@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -112,8 +113,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             if (injectionInfoTarget == null)
             {
-                // todo fix ancestor exception
-                throw new Exception("Could not find ancestor type");
+                throw new LocateException(context, $"Could not find ancestor type {_ancestorType.Name}");
             }
 
             return injectionInfoTarget.UniqueId;
