@@ -1,8 +1,8 @@
-﻿using Grace.DependencyInjection.Lifestyle;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {

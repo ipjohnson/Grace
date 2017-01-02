@@ -38,7 +38,7 @@ namespace Grace.DependencyInjection.Lifestyle
         T SingletonPerAncestor<TAncestor>(bool locking = false);
 
         /// <summary>
-        /// Create one instance per named scope, 
+        /// Create one instance per named scope, an exception is thrown if a scope by that name can't be found
         /// </summary>
         /// <param name="scopeName">scope name</param>
         /// <returns></returns>
@@ -59,9 +59,9 @@ namespace Grace.DependencyInjection.Lifestyle
         T SingletonPerRequest(bool locking = false);
 
         /// <summary>
-        /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
+        /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve this from the same scope then set to true
         /// </summary>
-        /// <param name="locking">false by default, set to true if you have multiple threads resolving from the smae scope </param>
+        /// <param name="locking">false by default, set to true if you have multiple threads resolving from the same scope </param>
         /// <returns></returns>
         T SingletonPerScope(bool locking = false);
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grace.Data.Immutable;
 using System.Reflection;
 using Grace.Data;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Lifestyle;

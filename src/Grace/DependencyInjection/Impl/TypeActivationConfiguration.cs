@@ -1,7 +1,7 @@
-﻿using Grace.Data.Immutable;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl

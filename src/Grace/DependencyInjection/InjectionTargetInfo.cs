@@ -1,7 +1,7 @@
-﻿using Grace.DependencyInjection.Impl;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {

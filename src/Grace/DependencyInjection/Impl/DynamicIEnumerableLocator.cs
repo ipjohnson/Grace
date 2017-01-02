@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Grace.Data.Immutable;
 using System.Reflection;
+using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {

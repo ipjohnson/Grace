@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Grace.Data.Immutable;
 using System.Reflection;
+using Grace.Data.Immutable;
 using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl

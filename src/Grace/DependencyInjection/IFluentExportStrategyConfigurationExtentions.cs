@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection
         /// <returns>configuration object</returns>
         public static IFluentWithCtorConfiguration<TValue> WithNamedCtorValue<TValue>(this IFluentExportStrategyConfiguration strategy, Expression<Func<TValue>> valueExpression)
         {
-            MemberExpression memberExpression = valueExpression.Body as MemberExpression;
+            var memberExpression = valueExpression.Body as MemberExpression;
             string exportName = null;
 
             if (memberExpression != null)
@@ -79,7 +79,7 @@ namespace Grace.DependencyInjection
         /// <returns>configuration object</returns>
         public static IFluentWithCtorConfiguration<T, TValue> WithNamedCtorValue<T, TValue>(this IFluentExportStrategyConfiguration<T> strategy, Expression<Func<TValue>> valueExpression)
         {
-            MemberExpression memberExpression = valueExpression.Body as MemberExpression;
+            var memberExpression = valueExpression.Body as MemberExpression;
             string exportName = null;
 
             if (memberExpression != null)

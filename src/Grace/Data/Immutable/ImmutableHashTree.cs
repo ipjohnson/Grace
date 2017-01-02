@@ -1,5 +1,4 @@
-﻿using Grace.Utilities;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Diagnostics;
-
+using Grace.Utilities;
 
 namespace Grace.Data.Immutable
 {

@@ -302,12 +302,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var decorators = FindDecoratorsForStrategy(scope, request);
 
-            if (decorators.Count == 0)
-            {
-                return null;
-            }
-
-            return CreateDecoratedActivationStrategy(scope, request, strategy, decorators);
+            return decorators.Count != 0 ? CreateDecoratedActivationStrategy(scope, request, strategy, decorators) : null;
         }
 
         #region protected methods

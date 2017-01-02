@@ -89,7 +89,7 @@ namespace Grace.DependencyInjection
             this IExportRegistrationBlock registrationBlock,
             Expression<Func<T>> valueExpression)
         {
-            MemberExpression memberExpression = valueExpression.Body as MemberExpression;
+            var memberExpression = valueExpression.Body as MemberExpression;
             string exportName = null;
 
             if (memberExpression != null)
@@ -99,7 +99,7 @@ namespace Grace.DependencyInjection
 
             if (exportName != null)
             {
-                Func<T> func = valueExpression.Compile();
+                var func = valueExpression.Compile();
 
                 return registrationBlock.ExportInstance((s, c) => func()).AsKeyed(typeof(T), exportName);
             }

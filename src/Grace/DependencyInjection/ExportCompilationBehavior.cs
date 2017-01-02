@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection
     public interface IEnumerableCreator
     {
         /// <summary>
-        /// Construct enumerable
+        /// Construct enumerable given a scope and an array
         /// </summary>
         /// <typeparam name="T">Type to enumerate</typeparam>
         /// <param name="scope">export locator scope</param>
@@ -75,22 +75,23 @@ namespace Grace.DependencyInjection
         public int MaxObjectGraphDepth { get; set; } = 100;
 
         /// <summary>
-        /// Allow IInjectionScope to be injected, false by default because you normally wnt IExportLocatorScope
+        /// Allow IInjectionScope to be injected, false by default because you normally want IExportLocatorScope
         /// </summary>
         public bool AllowInjectionScopeLocation { get; set; } = false;
 
         /// <summary>
-        /// Constructor selection algorithm 
+        /// Constructor selection algorithm, best match by default
         /// </summary>
         public ConstructorSelectionMethod ConstructorSelection { get; set; } = ConstructorSelectionMethod.BestMatch;
 
         /// <summary>
-        /// customize enumerable creation
+        /// customize IEnumerable&lt;T&gt; creation
         /// </summary>
         public IEnumerableCreator CustomEnumerableCreator { get; set; }
 
         /// <summary>
         /// Allows you to override the default behavior for what is located by key and what's not 
+        /// Note: By default string, primitive and DateTime are true, everything else is false
         /// </summary>
         public Func<Type, bool> KeyedTypeSelector
         {
@@ -99,7 +100,7 @@ namespace Grace.DependencyInjection
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException(nameof(KeyedTypeSelector), "Keyed must not be null");
+                    throw new ArgumentNullException(nameof(KeyedTypeSelector), "value must not be null");
                 }
 
                 _keyedTypeSelector = value;

@@ -276,7 +276,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             foreach (var parameter in constructor.GetParameters())
             {
-                IActivationExpressionResult expression = null;
                 ConstructorParameterInfo parameterInfo = null;
 
                 if (!ReferenceEquals(configuration.ConstructorParameters, ImmutableLinkedList<ConstructorParameterInfo>.Empty))
@@ -284,8 +283,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     parameterInfo = FindParameterInfoExpression(parameter, configuration);
                 }
 
-                expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request);
-
+                var expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request);
 
                 returnList.Add(expression);
             }
@@ -365,7 +363,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private IActivationExpressionResult CallExportFunc(IActivationStrategy strategy, ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, IActivationExpressionRequest request, bool configurationExternallyOwned)
         {
-            Delegate exportDelegate = parameterInfo.ExportFunc as Delegate;
+            var exportDelegate = parameterInfo.ExportFunc as Delegate;
 
             if (exportDelegate == null)
             {

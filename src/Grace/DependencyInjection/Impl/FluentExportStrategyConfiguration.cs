@@ -414,7 +414,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression)
         {
-            NewExpression newExpression = constructorExpression.Body as NewExpression;
+            var newExpression = constructorExpression.Body as NewExpression;
 
             if (newExpression != null)
             {

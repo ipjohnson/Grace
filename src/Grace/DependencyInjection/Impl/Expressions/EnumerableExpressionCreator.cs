@@ -36,47 +36,73 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var enumerableCreator = scope.ScopeConfiguration.Behaviors.CustomEnumerableCreator;
 
-            if (enumerableCreator == null)
-            {
-                var enumerableType = request.ActivationType.GenericTypeArguments[0];
+            return enumerableCreator != null
+                ? CreateEnumerableExpressionUsingCustomCreator(scope, request, arrayExpressionCreator, enumerableCreator)
+                : CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator);
+        }
 
-                var arrayType = enumerableType.MakeArrayType();
+        /// <summary>
+        /// Create enumerable expression that is an array
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="arrayExpressionCreator"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(IInjectionScope scope,
+            IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator)
+        {
+            var enumerableType = request.ActivationType.GenericTypeArguments[0];
 
-                var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
+            var arrayType = enumerableType.MakeArrayType();
 
-                newRequest.SetFilter(request.Filter);
-                newRequest.SetEnumerableComparer(request.EnumerableComparer);
-                newRequest.SetLocateKey(request.LocateKey);
+            var newRequest = request.NewRequest(arrayType, request.RequestingStrategy,
+                request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
 
-                var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
+            newRequest.SetFilter(request.Filter);
+            newRequest.SetEnumerableComparer(request.EnumerableComparer);
+            newRequest.SetLocateKey(request.LocateKey);
 
-                return arrayExpression;
-            }
-            else
-            {
-                var enumerableType = request.ActivationType.GenericTypeArguments[0];
+            var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 
-                var arrayType = enumerableType.MakeArrayType();
+            return arrayExpression;
+        }
 
-                var newRequest = request.NewRequest(arrayType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType, request.Info,
-                    true);
+        /// <summary>
+        /// Create enumerable expression using a custom creator
+        /// </summary>
+        /// <param name="scope">injection scope</param>
+        /// <param name="request">expression request</param>
+        /// <param name="arrayExpressionCreator">array creator</param>
+        /// <param name="enumerableCreator">custom enumerable creator</param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(IInjectionScope scope,
+            IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator,
+            IEnumerableCreator enumerableCreator)
+        {
+            var enumerableType = request.ActivationType.GenericTypeArguments[0];
 
-                newRequest.SetFilter(request.Filter);
-                newRequest.SetEnumerableComparer(request.EnumerableComparer);
+            var arrayType = enumerableType.MakeArrayType();
 
-                var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
+            var newRequest =
+                request.NewRequest(arrayType, request.RequestingStrategy,
+                    request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
 
-                var enumerableExpression = Expression.Call(Expression.Constant(enumerableCreator),
+            newRequest.SetFilter(request.Filter);
+            newRequest.SetEnumerableComparer(request.EnumerableComparer);
+
+            var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
+
+            var enumerableExpression = 
+                Expression.Call(Expression.Constant(enumerableCreator),
                     CreateEnumerableMethod.MakeGenericMethod(enumerableType),
                     request.Constants.ScopeParameter,
                     arrayExpression.Expression);
 
-                var returnResult = request.Services.Compiler.CreateNewResult(request, enumerableExpression);
+            var returnResult = request.Services.Compiler.CreateNewResult(request, enumerableExpression);
 
-                returnResult.AddExpressionResult(returnResult);
+            returnResult.AddExpressionResult(returnResult);
 
-                return returnResult;
-            }
+            return returnResult;
         }
 
         #region CreateEnumerableMethod

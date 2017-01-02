@@ -162,7 +162,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 if (keys != null)
                 {
-                    for (int i = 0; i < keys.Count;)
+                    for (var i = 0; i < keys.Count;)
                     {
                         var strategy = collection.GetKeyedStrategy(keys[i]);
 
@@ -210,7 +210,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     if (keys != null)
                     {
-                        for (int i = 0; i < keys.Count;)
+                        for (var i = 0; i < keys.Count;)
                         {
                             var strategy = strategies.GetKeyedStrategy(keys[i]);
 
