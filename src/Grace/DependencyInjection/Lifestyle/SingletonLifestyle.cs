@@ -49,8 +49,11 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
-            
-            _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
+
+            // Create new request as we shouldn't carry over anything from the previous request
+            var newRequest = request.Services.Compiler.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth, scope);
+
+            _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
             lock (_lockObject)
             {

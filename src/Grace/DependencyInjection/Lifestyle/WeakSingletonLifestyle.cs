@@ -41,7 +41,10 @@ namespace Grace.DependencyInjection.Lifestyle
         {
             if (_delegate == null)
             {
-                var newDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
+                // new request as we don't want to carry any info over from parent request
+                var newRequest = request.Services.Compiler.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth, scope);
+
+                var newDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
                 Interlocked.CompareExchange(ref _delegate, newDelegate, null);
             }
