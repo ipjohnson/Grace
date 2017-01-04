@@ -39,5 +39,21 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             Assert.NotSame(instance1, instance2);
             Assert.Same(instance1.Value, instance2.Value);
         }
+
+        [Fact]
+        public void Singleton_Import_ExportLocatorScope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export(typeof(DependentService<>)).As(typeof(IDependentService<>)).Lifestyle.Singleton());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var instance = container.Locate<IDependentService<IExportLocatorScope>>();
+
+                Assert.NotNull(instance);
+                Assert.Same(container, instance.Value);
+            }
+        }
     }
 }
