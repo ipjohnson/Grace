@@ -59,6 +59,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 return _delegate;
             }
 
+            scope.ScopeConfiguration.Trace?.Invoke($"Activating {ActivationType.FullName} with lifestyle '{Lifestyle}' for request type {activationType.FullName}");
+
             var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
 
             var compiledDelegate = compiler.CompileDelegate(scope, request);

@@ -120,6 +120,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             var activation = GetActivationConfiguration(closedType);
 
+            scope.ScopeConfiguration.Trace?.Invoke($"Activating {closedType.FullName} with lifestyle '{Lifestyle}' for request type {activationType.FullName}");
 
             var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
 

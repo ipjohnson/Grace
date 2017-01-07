@@ -81,6 +81,11 @@ namespace Grace.DependencyInjection
         public Func<Type, Type, bool> ExportByInterfaceFilter { get; set; }
 
         /// <summary>
+        /// Provide action that will be called for tracing purposes
+        /// </summary>
+        public Action<string> Trace { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>

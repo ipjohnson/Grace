@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -63,11 +64,45 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var constructor = PickConstructor(scope, activationConfiguration, request);
 
+            scope.ScopeConfiguration.Trace?.Invoke(CreateTraceMessageForConstructor(constructor, activationConfiguration));
+
             var expressions = GetParameterExpressionsForConstructor(scope, activationConfiguration, request, constructor);
 
             return CreateConstructorExpression(request, constructor, expressions);
         }
-        
+
+        /// <summary>
+        /// Creates trace message for specific constructor
+        /// </summary>
+        /// <param name="constructor"></param>
+        /// <param name="activationConfiguration"></param>
+        /// <returns></returns>
+        protected virtual string CreateTraceMessageForConstructor(ConstructorInfo constructor, TypeActivationConfiguration activationConfiguration)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append(activationConfiguration.ActivationType.Name);
+            builder.Append('(');
+
+            var parameters = constructor.GetParameters();
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (i > 0)
+                {
+                    builder.Append(',');
+                }
+
+                builder.Append(parameters[i].ParameterType.Name);
+                builder.Append(' ');
+                builder.Append(parameters[i].Name);
+            }
+
+            builder.Append(')');
+
+            return "Using " + builder;
+        }
+
         /// <summary>
         /// Get a list of dependencies for a constructor
         /// </summary>

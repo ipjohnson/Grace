@@ -1,9 +1,10 @@
 ﻿using System;
 using Grace.DependencyInjection.Impl;
+using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection
 {
-   
+
     /// <summary>
     /// Represents a configuration information needed to construct an injection scope
     /// </summary>
@@ -60,9 +61,14 @@ namespace Grace.DependencyInjection
         /// First type arg is interface, second type arg is implementing, return true if should filter out
         /// Note: by default IDisposable and _Attribute are filter out
         /// </summary>
-        Func<Type,Type,bool> ExportByInterfaceFilter { get; }
+        Func<Type, Type, bool> ExportByInterfaceFilter { get; }
 
         /// <summary>
+        /// Method that can be called to trace the container
+        /// </summary>
+        Action<string> Trace { get; }
+
+            /// <summary>
         /// Clone configuration
         /// </summary>
         /// <returns></returns>
