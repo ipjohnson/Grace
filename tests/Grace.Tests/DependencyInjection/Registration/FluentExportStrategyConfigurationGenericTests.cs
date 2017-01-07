@@ -2,9 +2,11 @@
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
+using NSubstitute;
 using SimpleFixture.NSubstitute;
 using SimpleFixture.xUnit;
 using Xunit;
+using Arg = Grace.DependencyInjection.Arg;
 
 namespace Grace.Tests.DependencyInjection.Registration
 {
@@ -49,6 +51,117 @@ namespace Grace.Tests.DependencyInjection.Registration
             FluentExportStrategyConfiguration<BasicService> configuration)
         {
             Assert.Throws<ArgumentNullException>(() => configuration.AsKeyed(typeof(IBasicService), null));
+        }
+        
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_One_Arg(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<IMultipleService, IDependentService<IMultipleService>> func = service => null;
+
+            configuration.WithCtorParam(func);
+
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+        }
+        
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_One_Arg_Null(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<IMultipleService, IDependentService<IMultipleService>> func = null;
+
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+        }
+        
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Two_Arg(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1,MultipleService2, IDependentService<IMultipleService>> func = (service,service2) => null;
+
+            configuration.WithCtorParam(func);
+
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Two_Arg_Null(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, IDependentService<IMultipleService>> func = null;
+
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Three_Arg(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, MultipleService3, IDependentService<IMultipleService>> func = (service, service2, service3) => null;
+
+            configuration.WithCtorParam(func);
+
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Three_Arg_Null(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2,MultipleService3, IDependentService<IMultipleService>> func = null;
+
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+        }
+
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Four_Arg(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, MultipleService3, MultipleService4, IDependentService<IMultipleService>> func = (service, service2, service3, service4) => null;
+
+            configuration.WithCtorParam(func);
+
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Four_Arg_Null(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, MultipleService3,MultipleService4, IDependentService<IMultipleService>> func = null;
+
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Five_Arg(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, MultipleService3, MultipleService4,MultipleService5, IDependentService<IMultipleService>> func = (service, service2, service3, service4, service5) => null;
+
+            configuration.WithCtorParam(func);
+
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+        }
+
+        [Theory]
+        [AutoData]
+        public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Five_Arg_Null(
+            FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
+        {
+            Func<MultipleService1, MultipleService2, MultipleService3, MultipleService4,MultipleService5, IDependentService<IMultipleService>> func = null;
+
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
         }
 
         [Fact]
