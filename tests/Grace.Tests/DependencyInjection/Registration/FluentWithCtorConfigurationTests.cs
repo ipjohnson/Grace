@@ -175,7 +175,6 @@ namespace Grace.Tests.DependencyInjection.Registration
 
         #endregion
 
-
         #region WithNamedCtorValue
         [Fact]
         public void WithNamedCtorValue()
