@@ -113,24 +113,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="lifestyle"></param>
         /// <returns></returns>
         protected abstract IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle);
-        
-        #region Create Expression Helpers
-
-        /// <summary>
-        /// Create an array of expressions based off an array of types
-        /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="request"></param>
-        /// <param name="resultType"></param>
-        /// <param name="types"></param>
-        /// <returns></returns>
-        protected virtual IActivationExpressionResult[] CreateExpressionsForTypes( IInjectionScope scope,
-            IActivationExpressionRequest request,Type resultType, params Type[] types)
-        {
-            return ExpressionUtilities.CreateExpressionsForTypes(this, scope, request, resultType, types);
-        }
-
-        #endregion
 
     }
 }
