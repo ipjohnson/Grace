@@ -200,6 +200,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             continue;
                         }
 
+                        // filter strategies
+                        if (request.Filter != null && !request.Filter(strategy))
+                        {
+                            continue;
+                        }
+
                         var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
                             request.Info, true);
 
@@ -258,6 +264,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             // skip as part of the composite pattern
                             if (strategy == parentStrategy)
+                            {
+                                continue;
+                            }
+                            
+                            // filter strategies
+                            if (request.Filter != null && !request.Filter(strategy))
                             {
                                 continue;
                             }
