@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
@@ -172,6 +174,36 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.IsType<MultipleService3>(service.Value);
         }
 
+
+        [Fact]
+        public void FluentWithCtorConfiguration_Generic_Consider_IEnumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<MultipleService2>().As<IMultipleService>();
+                c.Export<MultipleService3>().As<IMultipleService>();
+                c.Export<MultipleService4>().As<IMultipleService>();
+                c.Export<MultipleService5>().As<IMultipleService>();
+                c.Export<DependentService<IEnumerable<IMultipleService>>>().As<IDependentService<IEnumerable<IMultipleService>>>()
+                    .WithCtorParam<IEnumerable<IMultipleService>>().Consider(s => !s.ActivationType.Name.EndsWith("3"));
+            });
+
+            var service = container.Locate<IDependentService<IEnumerable<IMultipleService>>>();
+
+            Assert.NotNull(service);
+            Assert.NotNull(service.Value);
+
+            var array = service.Value.ToArray();
+
+            Assert.Equal(4, array.Length);
+            Assert.IsType<MultipleService1>(array[0]);
+            Assert.IsType<MultipleService2>(array[1]);
+            Assert.IsType<MultipleService4>(array[2]);
+            Assert.IsType<MultipleService5>(array[3]);
+        }
 
         #endregion
 
