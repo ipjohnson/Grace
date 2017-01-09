@@ -42,7 +42,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             Assert.NotNull(instanceA);
             Assert.NotNull(instanceB);
-            
+
             Assert.IsType<SimpleObjectA>(instanceA.SimpleObject);
             Assert.IsType<SimpleObjectB>(instanceB.SimpleObject);
         }
@@ -121,6 +121,22 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             Assert.NotNull(instance);
             Assert.IsType<SimpleObjectB>(instance);
+        }
+
+        [Fact]
+        public void Value_Parameter_Uses_Key()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportInstance(5).AsKeyed<int>("value");
+            });
+
+            var instance = container.Locate<DependentService<int>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Value);
         }
     }
 }
