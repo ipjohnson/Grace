@@ -1,0 +1,716 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Grace.Data.Immutable;
+using Grace.DependencyInjection.Exceptions;
+
+namespace Grace.DependencyInjection.Impl.Expressions
+{
+    /// <summary>
+    /// interface for building Linq Expression tree for strategy activation
+    /// </summary>
+    public interface IActivationExpressionBuilder
+    {
+        /// <summary>
+        /// Get a linq expression to satisfy the request
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
+        IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
+
+        /// <summary>
+        /// Decorate an export strategy with decorators
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="strategy">strategy being decorated</param>
+        /// <returns></returns>
+        IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy);
+    }
+
+    /// <summary>
+    /// builder creates linq expression to satify request
+    /// </summary>
+    public class ActivationExpressionBuilder : IActivationExpressionBuilder
+    {
+        /// <summary>
+        /// Enumerable expression creator
+        /// </summary>
+        protected readonly IEnumerableExpressionCreator EnumerableExpressionCreator;
+
+        /// <summary>
+        /// Array expression creator
+        /// </summary>
+        protected readonly IArrayExpressionCreator ArrayExpressionCreator;
+
+        /// <summary>
+        /// Wrapper expression creator
+        /// </summary>
+        protected readonly IWrapperExpressionCreator WrapperExpressionCreator;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="arrayExpressionCreator"></param>
+        /// <param name="enumerableExpressionCreator"></param>
+        /// <param name="wrapperExpressionCreator"></param>
+        public ActivationExpressionBuilder(IArrayExpressionCreator arrayExpressionCreator,
+                                           IEnumerableExpressionCreator enumerableExpressionCreator,
+                                           IWrapperExpressionCreator wrapperExpressionCreator)
+        {
+            EnumerableExpressionCreator = enumerableExpressionCreator;
+            ArrayExpressionCreator = arrayExpressionCreator;
+            WrapperExpressionCreator = wrapperExpressionCreator;
+        }
+
+
+        /// <summary>
+        /// Get a linq expression to satisfy the request
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <returns></returns>
+        public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
+
+            if (activationExpressionResult != null)
+            {
+                return activationExpressionResult;
+            }
+
+            activationExpressionResult = GetValueFromInjectionValueProviders(scope, request);
+
+            if (activationExpressionResult != null)
+            {
+                return activationExpressionResult;
+            }
+
+            activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+
+            if (activationExpressionResult != null)
+            {
+                return activationExpressionResult;
+            }
+
+            if (request.ActivationType.IsArray)
+            {
+                return ArrayExpressionCreator.GetArrayExpression(scope, request);
+            }
+
+            if (request.ActivationType.IsConstructedGenericType &&
+                request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator);
+            }
+
+            var wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
+
+            if (wrapperResult != null)
+            {
+                return wrapperResult;
+            }
+
+            if (scope.MissingExportStrategyProviders.Any())
+            {
+                lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
+                {
+                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+
+                    if (activationExpressionResult != null)
+                    {
+                        return activationExpressionResult;
+                    }
+
+                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
+
+                    if (wrapperResult != null)
+                    {
+                        return wrapperResult;
+                    }
+
+                    request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
+
+                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+
+                    if (activationExpressionResult != null)
+                    {
+                        return activationExpressionResult;
+                    }
+
+                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
+
+                    if (wrapperResult != null)
+                    {
+                        return wrapperResult;
+                    }
+                }
+            }
+
+            var parent = scope.Parent as IInjectionScope;
+
+            if (parent != null)
+            {
+                return GetActivationExpression(parent, request);
+            }
+
+            return GetValueFromInjectionContext(scope, request);
+        }
+
+
+        /// <summary>
+        /// Get a value dynamically
+        /// </summary>
+        /// <typeparam name="T">value to get</typeparam>
+        /// <param name="scope">scope</param>
+        /// <param name="disposalScope">disposal scope to use</param>
+        /// <param name="staticInjectionContext">static injection context </param>
+        /// <param name="context">context for call</param>
+        /// <param name="key"></param>
+        /// <param name="isRequired"></param>
+        /// <param name="hasDefault"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
+            IInjectionContext context, object key, bool isRequired, bool hasDefault, object defaultValue)
+        {
+            var injectionScope = scope.GetInjectionScope();
+
+            var value = injectionScope.LocateFromChildScope(scope, disposalScope, typeof(T), context, null, key, true, true);
+
+            if (value != null)
+            {
+                return (T)value;
+            }
+
+            if (hasDefault)
+            {
+                return (T)defaultValue;
+            }
+
+            if (isRequired)
+            {
+                throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Creates expression for calling method GetValueFromInjectionContext
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new[]
+            {
+                typeof(IExportLocatorScope),
+                typeof(StaticInjectionContext),
+                typeof(object),
+                typeof(IInjectionContext),
+                typeof(object),
+                typeof(bool),
+                typeof(bool)
+            });
+
+            var closedMethod = valueMethod.MakeGenericMethod(request.ActivationType);
+
+            var expresion = Expression.Call(closedMethod,
+                                            request.Constants.ScopeParameter,
+                                            Expression.Constant(request.GetStaticInjectionContext()),
+                                            Expression.Constant(request.LocateKey, typeof(object)),
+                                            request.Constants.InjectionContextParameter,
+                                            Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
+                                            Expression.Constant(request.DefaultValue != null),
+                                            Expression.Constant(request.IsRequired));
+
+            return request.Services.Compiler.CreateNewResult(request, expresion);
+        }
+
+        /// <summary>
+        /// Gets value from injection context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="locator"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="key"></param>
+        /// <param name="dataProvider"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="useDefault"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public static T GetValueFromInjectionContext<T>(
+            IExportLocatorScope locator,
+            StaticInjectionContext staticContext,
+            object key,
+            IInjectionContext dataProvider,
+            object defaultValue,
+            bool useDefault,
+            bool isRequired)
+        {
+            object value = null;
+
+            if (dataProvider != null && key != null)
+            {
+                value = dataProvider.GetExtraData(key);
+            }
+
+            if (value == null && useDefault)
+            {
+                var defaultFunc = defaultValue as Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>;
+
+                value = defaultFunc != null ? defaultFunc(locator, staticContext, dataProvider) : defaultValue;
+            }
+
+            if (value != null)
+            {
+                if (!typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
+                {
+                    try
+                    {
+                        value = Convert.ChangeType(value, typeof(T));
+                    }
+                    catch (Exception exp)
+                    {
+                        // to do fix up exception
+                        throw new LocateException(staticContext, exp);
+                    }
+                }
+            }
+            else if (isRequired && !useDefault)
+            {
+                throw new LocateException(staticContext);
+            }
+
+            return (T)value;
+        }
+
+        /// <summary>
+        /// Decorate an export strategy with decorators
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="strategy">strategy being decorated</param>
+        /// <returns></returns>
+        public IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request,
+            ICompiledExportStrategy strategy)
+        {
+            var decorators = FindDecoratorsForStrategy(scope, request);
+
+            return decorators.Count != 0 ? CreateDecoratedActivationStrategy(scope, request, strategy, decorators) : null;
+        }
+
+        #region protected methods
+
+        /// <summary>
+        /// Get IInjectionValueProviders for expression result for request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetValueFromInjectionValueProviders(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            if (!ReferenceEquals(scope.InjectionValueProviders, ImmutableLinkedList<IInjectionValueProvider>.Empty))
+            {
+                foreach (var valueProvider in scope.InjectionValueProviders)
+                {
+                    var result = valueProvider.GetExpressionResult(scope, request);
+
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            var parent = scope.Parent as IInjectionScope;
+
+            return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
+        }
+
+        /// <summary>
+        /// Get expression result from request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationType"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
+                                                               IActivationExpressionRequest request,
+                                                               Type activationType,
+                                                               object key)
+        {
+            var knownValue =
+                request.KnownValueExpressions.FirstOrDefault(
+                    v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo()));
+
+            if (knownValue != null)
+            {
+                return knownValue.ValueExpression(request);
+            }
+
+            if (request.WrapperPathNode != null)
+            {
+                var configuration = request.WrapperPathNode.Strategy.GetActivationConfiguration(activationType);
+
+                if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+                {
+                    var wrapper = request.PopWrapperPathNode();
+
+                    return ProcessPathNode(scope, request, activationType, wrapper);
+                }
+            }
+            else if (request.DecoratorPathNode != null)
+            {
+                var configuration = request.DecoratorPathNode.Strategy.GetActivationConfiguration(activationType);
+
+                if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+                {
+                    var decorator = request.PopDecoratorPathNode();
+
+                    return ProcessPathNode(scope, request, activationType, decorator);
+                }
+            }
+
+            if (request.ActivationType == typeof(IInjectionScope))
+            {
+                if (!scope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+                {
+                    throw new ImportInjectionScopeException(request.GetStaticInjectionContext());
+                }
+
+                var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod("GetInjectionScope", new[] { typeof(IExportLocatorScope) });
+
+                var expression = Expression.Call(method, request.Constants.ScopeParameter);
+
+                return request.Services.Compiler.CreateNewResult(request, expression);
+            }
+
+            if (request.ActivationType == typeof(IExportLocatorScope) ||
+                request.ActivationType == typeof(ILocatorService))
+            {
+                return request.Services.Compiler.CreateNewResult(request, request.Constants.ScopeParameter);
+            }
+
+            if (request.ActivationType == typeof(IInjectionContext))
+            {
+                request.RequireInjectionContext();
+
+                return request.Services.Compiler.CreateNewResult(request, request.Constants.InjectionContextParameter);
+            }
+
+            if (request.ActivationType == typeof(StaticInjectionContext))
+            {
+                var staticContext = request.Parent != null ?
+                                    request.Parent.GetStaticInjectionContext() :
+                                    request.GetStaticInjectionContext();
+
+                return request.Services.Compiler.CreateNewResult(request, Expression.Constant(staticContext));
+            }
+
+            if (request.IsDynamic)
+            {
+                var dynamicMethod =
+                    typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetDynamicValue",
+                        new[]
+                        {
+                            typeof(IExportLocatorScope),
+                            typeof(IDisposalScope),
+                            typeof(StaticInjectionContext),
+                            typeof(IInjectionContext),
+                            typeof(object),
+                            typeof(bool),
+                            typeof(bool),
+                            typeof(object)
+                        });
+
+                var closedMethod = dynamicMethod.MakeGenericMethod(request.ActivationType);
+
+                Expression defaultExpression =
+                    Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
+
+                var expression = Expression.Call(closedMethod,
+                                                 request.Constants.ScopeParameter,
+                                                 request.DisposalScopeExpression,
+                                                 Expression.Constant(request.GetStaticInjectionContext()),
+                                                 request.Constants.InjectionContextParameter,
+                                                 Expression.Constant(request.LocateKey, typeof(object)),
+                                                 Expression.Constant(request.IsRequired),
+                                                 Expression.Constant(request.DefaultValue != null),
+                                                 defaultExpression);
+
+                return request.Services.Compiler.CreateNewResult(request, expression);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get expression from decorator
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationType"></param>
+        /// <param name="decorator"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult ProcessPathNode(IInjectionScope scope, IActivationExpressionRequest request, Type activationType, IActivationPathNode decorator)
+        {
+            return decorator.GetActivationExpression(scope, request);
+        }
+
+        /// <summary>
+        /// Get expression for non generic strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetActivationExpressionFromStrategies(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var expressionResult = GetExpressionFromStrategyCollection(scope, request);
+
+            if (expressionResult != null)
+            {
+                return expressionResult;
+            }
+
+            return GetExpressionFromGenericStrategies(scope, request);
+        }
+
+        /// <summary>
+        /// Get expression for generic strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetExpressionFromGenericStrategies(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            if (request.ActivationType.IsConstructedGenericType)
+            {
+                var genericType = request.ActivationType.GetGenericTypeDefinition();
+
+                var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
+
+                if (collection != null)
+                {
+                    if (request.LocateKey != null)
+                    {
+                        var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
+
+                        if (keyedStrategy != null)
+                        {
+                            return ActivationExpressionForStrategy(scope, request, keyedStrategy);
+                        }
+                    }
+                    else
+                    {
+                        var strategy = collection.GetPrimary();
+
+                        if (strategy != null && request.Filter == null)
+                        {
+                            var result = ActivationExpressionForStrategy(scope, request, strategy);
+
+                            if (result != null)
+                            {
+                                return result;
+                            }
+                        }
+
+                        return SelectStrategyFromCollection(collection, scope, request);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Get expression from strategy collections (export and wrapper)
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult GetExpressionFromStrategyCollection(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
+
+            if (collection != null)
+            {
+                if (request.LocateKey != null)
+                {
+                    var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
+
+                    if (keyedStrategy != null)
+                    {
+                        return ActivationExpressionForStrategy(scope, request, keyedStrategy);
+                    }
+                }
+                else
+                {
+                    var strategy = request.Filter == null ? collection.GetPrimary() : null;
+
+                    if (strategy != null)
+                    {
+                        var result = ActivationExpressionForStrategy(scope, request, strategy);
+
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+
+                    return SelectStrategyFromCollection(collection, scope, request);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Select the best strategy from collection to satisfy request
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var filter = request.Filter;
+            IActivationExpressionResult result = null;
+
+            foreach (var strategy in collection.GetStrategies())
+            {
+                if (filter != null && !filter(strategy))
+                {
+                    continue;
+                }
+
+                if (strategy.HasConditions)
+                {
+                    var context = request.GetStaticInjectionContext();
+
+                    if (!strategy.Conditions.All(condition => condition.MeetsCondition(strategy, context)))
+                    {
+                        continue;
+                    }
+                }
+
+                result = strategy.GetActivationExpression(scope, request);
+
+                if (result != null)
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets an activation expression for a given strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="strategy"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult ActivationExpressionForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
+        {
+            return strategy.GetActivationExpression(scope, request);
+        }
+
+        /// <summary>
+        /// Finds decorators for a strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            var decorators = new List<ICompiledDecoratorStrategy>();
+
+            var collection =
+                scope.DecoratorCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
+
+            if (collection != null)
+            {
+                decorators.AddRange(collection.GetStrategies());
+            }
+
+            if (request.ActivationType.IsConstructedGenericType)
+            {
+                var generic = request.ActivationType.GetGenericTypeDefinition();
+
+                collection = scope.DecoratorCollectionContainer.GetActivationStrategyCollection(generic);
+
+                if (collection != null)
+                {
+                    decorators.AddRange(collection.GetStrategies());
+                }
+            }
+
+            return decorators;
+        }
+
+        /// <summary>
+        /// Creates decorated expression for activation strategy
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="strategy"></param>
+        /// <param name="decorators"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateDecoratedActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy, List<ICompiledDecoratorStrategy> decorators)
+        {
+            decorators.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
+
+            var pathNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
+
+            if (decorators.All(d => d.ApplyAfterLifestyle))
+            {
+                pathNodes = pathNodes.Add(new DecoratorActivationPathNode(strategy, request.ActivationType, strategy.Lifestyle));
+
+                foreach (var decorator in decorators)
+                {
+                    pathNodes = pathNodes.Add(new DecoratorActivationPathNode(decorator, request.ActivationType, null));
+                }
+            }
+            else
+            {
+                pathNodes = pathNodes.Add(new DecoratorActivationPathNode(strategy, request.ActivationType, null));
+
+                DecoratorActivationPathNode currentNode = null;
+
+                foreach (var decorator in decorators.Where(d => !d.ApplyAfterLifestyle))
+                {
+                    currentNode = new DecoratorActivationPathNode(decorator, request.ActivationType, null);
+
+                    pathNodes = pathNodes.Add(currentNode);
+                }
+
+                if (currentNode != null)
+                {
+                    currentNode.Lifestyle = strategy.Lifestyle;
+                }
+
+                foreach (var decorator in decorators.Where(d => d.ApplyAfterLifestyle))
+                {
+                    pathNodes = pathNodes.Add(new DecoratorActivationPathNode(decorator, request.ActivationType, null));
+                }
+            }
+
+            request.SetDecoratorPath(pathNodes);
+
+            var pathNode = request.PopDecoratorPathNode();
+
+            return pathNode.GetActivationExpression(scope, request);
+        }
+        #endregion
+    }
+}
+

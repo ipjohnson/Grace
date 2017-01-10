@@ -1,0 +1,526 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
+using Grace.Data.Immutable;
+using Grace.DependencyInjection.Exceptions;
+using Grace.DependencyInjection.Lifestyle;
+
+namespace Grace.DependencyInjection.Impl.Expressions
+{
+    /// <summary>
+    /// Services for request
+    /// </summary>
+    public class ActivationServices : IActivationServices
+    {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="compiler"></param>
+        /// <param name="expressionBuilder"></param>
+        /// <param name="attributeDiscoveryService"></param>
+        /// <param name="exportExpressionBuilder"></param>
+        /// <param name="injectionContextCreator"></param>
+        public ActivationServices(IActivationStrategyCompiler compiler,
+                                  IActivationExpressionBuilder expressionBuilder,
+                                  IAttributeDiscoveryService attributeDiscoveryService,
+                                  IDefaultStrategyExpressionBuilder exportExpressionBuilder,
+                                  IInjectionContextCreator injectionContextCreator)
+        {
+            Compiler = compiler;
+            ExpressionBuilder = expressionBuilder;
+            LifestyleExpressionBuilder = exportExpressionBuilder;
+            InjectionContextCreator = injectionContextCreator;
+            AttributeDiscoveryService = attributeDiscoveryService;
+        }
+
+        /// <summary>
+        /// Service for locating attributes
+        /// </summary>
+        public IAttributeDiscoveryService AttributeDiscoveryService { get; }
+
+        /// <summary>
+        /// activation compiler for request
+        /// </summary>
+        public IActivationStrategyCompiler Compiler { get; }
+
+        /// <summary>
+        /// Expression builder that takes lifestyle into consideration
+        /// </summary>
+        public IDefaultStrategyExpressionBuilder LifestyleExpressionBuilder { get; }
+
+        /// <summary>
+        /// Injection context creator
+        /// </summary>
+        public IInjectionContextCreator InjectionContextCreator { get; }
+
+        /// <summary>
+        /// Expression builder
+        /// </summary>
+        public IActivationExpressionBuilder ExpressionBuilder { get; }
+    }
+
+    /// <summary>
+    /// Node in decorator path
+    /// </summary>
+    public class DecoratorActivationPathNode : IActivationPathNode
+    {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="strategy"></param>
+        /// <param name="activationType"></param>
+        /// <param name="lifestyle"></param>
+        public DecoratorActivationPathNode(IDecoratorOrExportActivationStrategy strategy, Type activationType, ICompiledLifestyle lifestyle)
+        {
+            Strategy = strategy;
+            ActivationType = activationType;
+            Lifestyle = lifestyle;
+        }
+
+        /// <summary>
+        /// Strategy to use when activating
+        /// </summary>
+        public IActivationStrategy Strategy { get; set; }
+
+        /// <summary>
+        /// Type the strategy satisfies
+        /// </summary>
+        public Type ActivationType { get; set; }
+
+        /// <summary>
+        /// Lifestyle for activation node
+        /// </summary>
+        public ICompiledLifestyle Lifestyle { get; set; }
+
+        /// <summary>
+        /// Get activation expression
+        /// </summary>
+        /// <param name="scope">scope for node</param>
+        /// <param name="request">request for activation</param>
+        /// <returns></returns>
+        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            return ((IDecoratorOrExportActivationStrategy)Strategy).GetDecoratorActivationExpression(scope, request, Lifestyle);
+        }
+    }
+
+    /// <summary>
+    /// Node in wrapper path
+    /// </summary>
+    public class WrapperActivationPathNode : IActivationPathNode
+    {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="strategy"></param>
+        /// <param name="activationType"></param>
+        /// <param name="lifestyle"></param>
+        public WrapperActivationPathNode(IWrapperOrExportActivationStrategy strategy, Type activationType,
+            ICompiledLifestyle lifestyle)
+        {
+            Strategy = strategy;
+            ActivationType = activationType;
+            Lifestyle = lifestyle;
+        }
+
+        /// <summary>
+        /// Strategy to use when activating
+        /// </summary>
+        public IActivationStrategy Strategy { get; set; }
+
+        /// <summary>
+        /// Type the strategy satisfies
+        /// </summary>
+        public Type ActivationType { get; set; }
+
+        /// <summary>
+        /// Lifestyle for activation node
+        /// </summary>
+        public ICompiledLifestyle Lifestyle { get; set; }
+
+        /// <summary>
+        /// Get activation expression
+        /// </summary>
+        /// <param name="scope">scope for node</param>
+        /// <param name="request">request for activation</param>
+        /// <returns></returns>
+        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            return ((IWrapperOrExportActivationStrategy)Strategy).GetActivationExpression(scope, request);
+        }
+    }
+
+    /// <summary>
+    /// Expression request object
+    /// </summary>
+    public class ActivationExpressionRequest : IActivationExpressionRequest
+    {
+        private bool _injectionContextRequired;
+        private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
+        private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
+        private string _uniqueId;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="requestedType"></param>
+        /// <param name="services"></param>
+        /// <param name="constants"></param>
+        /// <param name="objectGraphDepth"></param>
+        /// <param name="requestingScope"></param>
+        public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth, IInjectionScope requestingScope)
+        {
+            ActivationType = activationType;
+
+            RequestType = requestedType;
+            Services = services;
+            Constants = constants;
+
+            KnownValueExpressions = ImmutableLinkedList<IKnownValueExpression>.Empty;
+            DisposalScopeExpression = constants.RootDisposalScope;
+
+            Parent = null;
+            IsRequired = true;
+            ObjectGraphDepth = objectGraphDepth;
+            RequestingScope = requestingScope;
+        }
+
+        /// <summary>
+        /// Type being requested
+        /// </summary>
+        public Type ActivationType { get; }
+
+        /// <summary>
+        /// Key to use for locating
+        /// </summary>
+        public object LocateKey { get; set; }
+
+        /// <summary>
+        /// Type being injected into
+        /// </summary>
+        public Type InjectedType { get; private set; }
+
+        /// <summary>
+        /// Requesting strategy
+        /// </summary>
+        public IActivationStrategy RequestingStrategy { get; private set; }
+
+        /// <summary>
+        /// Type of request
+        /// </summary>
+        public RequestType RequestType { get; }
+
+        /// <summary>
+        /// Parent request
+        /// </summary>
+        public IActivationExpressionRequest Parent { get; private set; }
+
+        /// <summary>
+        /// Export strategy filter to use
+        /// </summary>
+        public ActivationStrategyFilter Filter { get; set; }
+
+        /// <summary>
+        /// IComparer to be used when locating array or 
+        /// </summary>
+        public object EnumerableComparer { get; set; }
+
+        /// <summary>
+        /// Services for request
+        /// </summary>
+        public IActivationServices Services { get; }
+
+        /// <summary>
+        /// Constants for request
+        /// </summary>
+        public IExpressionConstants Constants { get; }
+
+        /// <summary>
+        /// Is request required
+        /// </summary>
+        public bool IsRequired { get; private set; }
+
+        /// <summary>
+        /// Disposal scope expression to use
+        /// </summary>
+        public ParameterExpression DisposalScopeExpression { get; set; }
+
+        /// <summary>
+        /// Info object for request (MethodInfo, FieldInfo, ParameterInfo)
+        /// </summary>
+        public object Info { get; private set; }
+
+        /// <summary>
+        /// Current object graph depth
+        /// </summary>
+        public int ObjectGraphDepth { get; }
+
+        /// <summary>
+        /// Unique Id for request
+        /// </summary>
+        public string UniqueId
+        {
+            get
+            {
+                if (_uniqueId != null)
+                {
+                    return _uniqueId;
+                }
+
+                return Interlocked.CompareExchange(ref _uniqueId, Guid.NewGuid().ToString(), null) ?? _uniqueId;
+            }
+        }
+
+        /// <summary>
+        /// Current decorator path if decorating
+        /// </summary>
+        public IActivationPathNode DecoratorPathNode => _decoratorNodes == ImmutableLinkedList<IActivationPathNode>.Empty ? null : _decoratorNodes.Value;
+
+        /// <summary>
+        /// Wrapper path if in the middel of wrapping
+        /// </summary>
+        public IActivationPathNode WrapperPathNode => _wrapperNodes == ImmutableLinkedList<IActivationPathNode>.Empty ? null : _wrapperNodes.Value;
+
+        /// <summary>
+        /// Default value for request if not found
+        /// </summary>
+        public IDefaultValueInformation DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Pop wrapper node off path
+        /// </summary>
+        /// <returns></returns>
+        public IActivationPathNode PopWrapperPathNode()
+        {
+            if (_wrapperNodes == ImmutableLinkedList<IActivationPathNode>.Empty)
+            {
+                return null;
+            }
+
+            var currentNode = _wrapperNodes;
+
+            _wrapperNodes = currentNode.Next;
+
+            return currentNode.Value;
+        }
+
+        /// <summary>
+        /// Pop decorator node off path
+        /// </summary>
+        /// <returns></returns>
+        public IActivationPathNode PopDecoratorPathNode()
+        {
+            if (_decoratorNodes == ImmutableLinkedList<IActivationPathNode>.Empty)
+            {
+                return null;
+            }
+
+            var currentNode = _decoratorNodes;
+
+            _decoratorNodes = currentNode.Next;
+
+            return currentNode.Value;
+        }
+
+        /// <summary>
+        /// Set filter
+        /// </summary>
+        /// <param name="filter"></param>
+        public void SetFilter(ActivationStrategyFilter filter)
+        {
+            Filter = filter;
+        }
+
+        /// <summary>
+        /// Set the comparer for this request
+        /// </summary>
+        /// <param name="comparer"></param>
+        public void SetEnumerableComparer(object comparer)
+        {
+            EnumerableComparer = comparer;
+        }
+
+        /// <summary>
+        /// Set the decorator path for request
+        /// </summary>
+        /// <param name="path">node path</param>
+        public void SetDecoratorPath(ImmutableLinkedList<IActivationPathNode> path)
+        {
+            _decoratorNodes = path;
+        }
+
+        /// <summary>
+        /// Set wrapper path for request
+        /// </summary>
+        /// <param name="wrappers">node path</param>
+        public void SetWrapperPath(ImmutableLinkedList<IActivationPathNode> wrappers)
+        {
+            _wrapperNodes = wrappers;
+        }
+
+        /// <summary>
+        /// Set is required value for request
+        /// </summary>
+        /// <param name="isRequired">is value required</param>
+        public void SetIsRequired(bool isRequired)
+        {
+            IsRequired = isRequired;
+
+            if (isRequired)
+            {
+                Parent?.SetIsRequired(true);
+            }
+        }
+
+        /// <summary>
+        /// Set key for request
+        /// </summary>
+        /// <param name="key">key to use for request</param>
+        public void SetLocateKey(object key)
+        {
+            LocateKey = key;
+        }
+
+        /// <summary>
+        /// Set default value for request
+        /// </summary>
+        /// <param name="defaultValue">default value</param>
+        public void SetDefaultValue(IDefaultValueInformation defaultValue)
+        {
+            DefaultValue = defaultValue;
+        }
+
+        /// <summary>
+        /// Get wrapped strategy
+        /// </summary>
+        /// <returns></returns>
+        public ICompiledExportStrategy GetWrappedExportStrategy()
+        {
+            var pathNode = _wrapperNodes?.LastOrDefault();
+
+            return pathNode?.Strategy as ICompiledExportStrategy;
+        }
+
+        /// <summary>
+        /// Create new request from this request
+        /// </summary>
+        /// <param name="activationType">request type</param>
+        /// <param name="requestingStrategy">requesting strategy</param>
+        /// <param name="injectedType">type being injected into</param>
+        /// <param name="requestType">request type</param>
+        /// <param name="info">info for request</param>
+        /// <param name="maintainPath">maintain wrapper and decorator path</param>
+        /// <returns>new request</returns>
+        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPath = false)
+        {
+            if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
+            {
+                throw new RecursiveLocateException(GetStaticInjectionContext());
+            }
+
+            var returnValue = new ActivationExpressionRequest(activationType, requestType, Services, Constants, ObjectGraphDepth + 1, RequestingScope)
+            {
+                Parent = this,
+                InjectedType = injectedType,
+                RequestingStrategy = requestingStrategy,
+                Info = info,
+                DisposalScopeExpression = DisposalScopeExpression,
+                KnownValueExpressions = KnownValueExpressions
+            };
+
+            if (Filter != null && RequestingStrategy != null &&
+                RequestingStrategy.StrategyType == ActivationStrategyType.WrapperStrategy)
+            {
+                returnValue.Filter = Filter;
+            }
+
+            if (maintainPath)
+            {
+                returnValue._wrapperNodes = _wrapperNodes;
+                returnValue._decoratorNodes = _decoratorNodes;
+            }
+
+            return returnValue;
+        }
+        
+        /// <summary>
+        /// Original requesting scope
+        /// </summary>
+        public IInjectionScope RequestingScope { get; }
+
+        /// <summary>
+        /// Get static injection context for request
+        /// </summary>
+        /// <returns></returns>
+        public StaticInjectionContext GetStaticInjectionContext()
+        {
+            var currentTargetInfo = CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo>.Empty);
+
+            return new StaticInjectionContext(ActivationType, currentTargetInfo);
+        }
+
+        /// <summary>
+        /// Create target info for request
+        /// </summary>
+        /// <param name="targetInfos">child targets</param>
+        /// <returns></returns>
+        public ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo> targetInfos)
+        {
+            targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
+
+            var targetName = "";
+            
+            if (Info is ParameterInfo)
+            {
+                targetName = ((ParameterInfo) Info).Name;
+            }
+            else if (Info is MemberInfo)
+            {
+                targetName = ((MemberInfo) Info).Name;
+            }
+
+            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info,targetName, RequestType, ActivationType, false, null, UniqueId));
+        }
+
+        /// <summary>
+        /// Known values that can be used in request
+        /// </summary>
+        public ImmutableLinkedList<IKnownValueExpression> KnownValueExpressions { get; private set; }
+
+        /// <summary>
+        /// Is the request dynamic
+        /// </summary>
+        public bool IsDynamic { get; set; }
+
+        /// <summary>
+        /// Add known value expression to request
+        /// </summary>
+        /// <param name="knownValueExpression">known value expression</param>
+        public void AddKnownValueExpression(IKnownValueExpression knownValueExpression)
+        {
+            KnownValueExpressions = KnownValueExpressions.Add(knownValueExpression);
+        }
+
+        /// <summary>
+        /// Require injection context for request
+        /// </summary>
+        public void RequireInjectionContext()
+        {
+            _injectionContextRequired = true;
+
+            Parent?.RequireInjectionContext();
+        }
+
+        /// <summary>
+        /// Is injection context required
+        /// </summary>
+        /// <returns></returns>
+        public bool InjectionContextRequired()
+        {
+            return _injectionContextRequired;
+        }
+    }
+}

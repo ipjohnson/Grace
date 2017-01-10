@@ -18,9 +18,9 @@ build/
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
 
-# MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+# test Results
+tests/Grace.Tests/Coverage.xml
+tests/Grace.Tests/Coverage/
 
 
 *_i.c
@@ -46,6 +46,10 @@ build/
 *.pidb
 *.log
 *.scc
+*.lock.json
+
+#VS restore
+*/restore.dg
 
 # Visual C++ cache files
 ipch/
@@ -173,3 +177,4 @@ $RECYCLE.BIN/
 /Source/packages
 /NuGet/lib
 /Source/.vs/config/applicationhost.config
+/.vs/config/applicationhost.config

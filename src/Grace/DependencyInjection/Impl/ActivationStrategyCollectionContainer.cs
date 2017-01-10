@@ -1,0 +1,291 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using Grace.Data.Immutable;
+using Grace.Diagnostics;
+
+namespace Grace.DependencyInjection.Impl
+{
+    /// <summary>
+    /// Container of activation strategy collection
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    [DebuggerDisplay("{DebugDisplayString,nq}")]
+    [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDebuggerView<>))]
+    public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
+    {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="arraySize"></param>
+        /// <param name="exportAsBase"></param>
+        public ActivationStrategyCollectionContainer(int arraySize, bool exportAsBase)
+        {
+            ArrayLengthMinusOne = arraySize - 1;
+            Collections = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[arraySize];
+
+            for (var i = 0; i < arraySize; i++)
+            {
+                Collections[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
+            }
+
+            ExportAsBase = exportAsBase;
+        }
+
+        /// <summary>
+        /// Protected constructor to be used internally
+        /// </summary>
+        /// <param name="collections"></param>
+        protected ActivationStrategyCollectionContainer(
+            ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] collections)
+        {
+            ArrayLengthMinusOne = collections.Length - 1;
+            Collections = collections;
+        }
+        
+        /// <summary>
+        /// Export type as their base
+        /// </summary>
+        protected bool ExportAsBase;
+
+        /// <summary>
+        /// Array length of Collections minus one 
+        /// </summary>
+        protected int ArrayLengthMinusOne;
+
+        /// <summary>
+        /// Array of hash trees
+        /// </summary>
+        protected ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] Collections;
+
+        /// <summary>
+        /// Inspectors to apply to strategies
+        /// </summary>
+        protected ImmutableLinkedList<IActivationStrategyInspector> Inspectors =
+            ImmutableLinkedList<IActivationStrategyInspector>.Empty;
+
+        /// <summary>
+        /// Add strategy to container
+        /// </summary>
+        /// <param name="strategy">strategy</param>
+        public void AddStrategy(T strategy)
+        {
+            Inspectors.Visit(inspector => inspector.Inspect(strategy), true);
+
+            var types = ImmutableHashTree<Type, bool>.Empty;
+
+            foreach (var type in strategy.ExportAs)
+            {
+                if (ExportAsBase)
+                {
+                    foreach (var exportType in GetTypes(type))
+                    {
+                        types = types.Add(exportType, true, (value, newValue) => value);
+                    }
+                }
+                else
+                {
+                    types = types.Add(type, true, (value, newValue) => value);
+                }
+            }
+
+            var added = false;
+
+
+            foreach (var pair in types)
+            {
+                added = true;
+
+                AddStrategyByAs(strategy, pair.Key, null);
+            }
+
+            foreach (var keyedPair in strategy.ExportAsKeyed)
+            {
+                added = true;
+
+                if (ExportAsBase)
+                {
+                    foreach (var exportType in GetTypes(keyedPair.Key))
+                    {
+                        AddStrategyByAs(strategy, exportType, keyedPair.Value);
+                    }
+                }
+                else
+                {
+                    AddStrategyByAs(strategy, keyedPair.Key, keyedPair.Value);
+                }
+            }
+
+            if (!added)
+            {
+                if (ExportAsBase)
+                {
+                    foreach (var exportType in GetTypes(strategy.ActivationType))
+                    {
+                        AddStrategyByAs(strategy, exportType, null);
+                    }
+                }
+                else
+                {
+                    AddStrategyByAs(strategy, strategy.ActivationType, null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get all strategies
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<T> GetAllStrategies()
+        {
+            var returnList = new List<T>();
+
+            foreach (var hashEntry in Collections)
+            {
+                hashEntry.IterateInOrder((type, export) => returnList.AddRange(export.GetStrategies()));
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// Get collection for a specific type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type)
+        {
+            var hashCode = type.GetHashCode();
+
+            return Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+        }
+
+        /// <summary>
+        /// Get all activation types
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Type> GetActivationTypes()
+        {
+            var returnList = ImmutableLinkedList<Type>.Empty;
+
+            foreach (var hashEntry in Collections)
+            {
+                hashEntry.IterateInOrder((type, collection) => returnList = returnList.Add(type));
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// Clone the container
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategyCollectionContainer<T> Clone()
+        {
+            var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArrayLengthMinusOne + 1];
+
+            for (var i = 0; i <= ArrayLengthMinusOne; i++)
+            {
+                newArray[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
+
+                foreach (var keyValuePair in Collections[i])
+                {
+                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value.Clone());
+                }
+            }
+
+            return new ActivationStrategyCollectionContainer<T>(newArray);
+        }
+
+        /// <summary>
+        /// Add strategy inspector
+        /// </summary>
+        /// <param name="inspector">inspector</param>
+        public void AddInspector(IActivationStrategyInspector inspector)
+        {
+            ImmutableLinkedList.ThreadSafeAdd(ref Inspectors, inspector);
+
+            foreach (var strategy in GetAllStrategies())
+            {
+                inspector.Inspect(strategy);
+            }
+        }
+
+        /// <summary>
+        /// Create a collection of activation strategy
+        /// </summary>
+        /// <param name="exportType"></param>
+        /// <returns></returns>
+        protected virtual IActivationStrategyCollection<T> CreateCollection(Type exportType)
+        {
+            return new ActivationStrategyCollection<T>(exportType);
+        }
+
+        private IEnumerable<Type> GetTypes(Type type)
+        {
+            if (type.GetTypeInfo().IsInterface)
+            {
+                yield return type;
+
+                foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
+                {
+                    foreach (var iType in GetTypes(implementedInterface))
+                    {
+                        yield return iType;
+                    }
+                }
+            }
+            else
+            {
+                // test for generic to see if you can construct from base
+                while (type != null && type != typeof(object))
+                {
+                    yield return type;
+
+                    type = type.GetTypeInfo().BaseType;
+                }
+            }
+        }
+        
+        private void AddStrategyByAs(T strategy, Type exportAs, object withKey)
+        {
+            var hashCode = exportAs.GetHashCode();
+
+            var collection = Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(exportAs);
+
+            if (collection == null)
+            {
+                collection = CreateCollection(exportAs);
+
+                Collections[hashCode & ArrayLengthMinusOne] =
+                Collections[hashCode & ArrayLengthMinusOne].Add(exportAs, collection);
+            }
+
+            collection.AddStrategy(strategy, withKey);
+        }
+
+        private string DebugDisplayString => "Count: " + GetAllStrategies().Count();
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            var collections = Interlocked.Exchange(ref Collections, null);
+
+            if (collections == null)
+            {
+                return;
+            }
+
+            foreach (var collection in collections)
+            {
+                foreach (var strategyCollection in collection.Values)
+                {
+                    strategyCollection.Dispose();
+                }
+            }
+        }
+    }
+}

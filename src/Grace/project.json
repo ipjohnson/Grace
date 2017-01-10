@@ -1,0 +1,84 @@
+{
+  "version": "5.0.0-*",
+  "authors": [ "Ian Johnson" ],
+  "description": "Grace is a feature rich Dependency Injection Container",
+  "dependencies": {
+  },
+
+  "frameworks": {
+    "netstandard1.0": {
+      "dependencies": {
+        "System.Collections": "4.3.0",
+        "System.Diagnostics.Debug": "4.3.0",
+        "System.Linq": "4.3.0",
+        "System.Linq.Expressions": "4.3.0",
+        "System.Runtime": "4.3.0",
+        "System.Runtime.Extensions": "4.3.0",
+        "System.Reflection": "4.3.0",
+        "System.Reflection.Extensions": "4.3.0",
+        "System.Threading": "4.3.0"
+      }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Data": "",
+        "System.Numerics": "",
+        "System.Runtime.Serialization": "",
+        "System.Xml": "",
+        "System.Xml.Linq": ""
+      }
+    },
+    ".NETPortable,Version=v4.5,Profile=Profile259": {
+      "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
+        "System": "",
+        "System.Collections": "",
+        "System.Core": "",
+        "System.Diagnostics.Debug": "",
+        "System.Dynamic.Runtime": "",
+        "System.Globalization": "",
+        "System.IO": "",
+        "System.Linq": "",
+        "System.Linq.Expressions": "",
+        "System.ObjectModel": "",
+        "System.Reflection": "",
+        "System.Reflection.Extensions": "",
+        "System.Resources.ResourceManager": "",
+        "System.Runtime": "",
+        "System.Runtime.Extensions": "",
+        "System.Reflection.Primitives": "",
+        "System.Runtime.Serialization": "",
+        "System.Runtime.Serialization.Primitives": "",
+        "System.Text.Encoding": "",
+        "System.Text.Encoding.Extensions": "",
+        "System.Text.RegularExpressions": "",
+        "System.Threading": "",
+        "System.Threading.Tasks": "",
+        "System.Xml": "",
+        "System.Xml.Linq": "",
+        "System.Xml.ReaderWriter": "",
+        "System.Xml.XDocument": ""
+      }
+    }
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  },
+  "packOptions": {
+    "licenseUrl": "https://github.com/ipjohnson/Grace/blob/master/License.md",
+    "projectUrl": "https://github.com/ipjohnson/Grace",
+    "releaseNotes": "5.0 is a major rewrite and some features may not be there",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ipjohnson/Grace"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "Grace is a feature rich dependency injection container for .Net 4.5, .Net Standard 1.0, and PCL",
+    "tags": [
+      "Grace",
+      "di",
+      "ioc",
+      "dependencyinjection"
+    ]
+  }
+}

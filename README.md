@@ -18,7 +18,7 @@ It's as easy as create, configure, and locate.
 Getting Grace
 =====
 
-[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, Windows Phone 8 and WinRT.
+[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, .Net Standard 1.0, and PCL Profile 259.
 
 
 Documented Grace
@@ -43,7 +43,7 @@ Features in Grace
    * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
-* Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC & WCF out of the box), SingletonPerAncestor&lt;T&gt;, WeakSingleton and more. If none of the provided life styles meet your need you can always implement your own ILifeStyle class.
+* Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerAncestor&lt;T&gt;, WeakSingleton and more. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
 
 
 
@@ -52,14 +52,4 @@ Builds of Grace
 
 Grace has public builds at AppVeyor
 
-[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace)
-
-
-
-Metrics by Ohloh:
-
-[
-![Ohloh project report for Grace IoC](https://www.ohloh.net/p/Grace-IoC/widgets/project_thin_badge.gif)
-](http://www.ohloh.net/p/Grace-IoC?ref=sample)
-
-<div style="background: #00578e url('http://www.jetbrains.com/img/banners/Codebetter300x250.png') no-repeat 0 50%; margin:0;padding:0;text-decoration:none;text-indent:0;letter-spacing:-0.001em; width:300px; height:250px"> <a href="http://www.jetbrains.com/youtrack" title="YouTrack by JetBrains" style="margin: 52px 0 0 58px;padding: 0; float: left;font-size: 14px; background-image:none;border:0;color: #acc4f9; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">keyboard-centric bug tracker</a> <a href="http://www.jetbrains.com/teamcity" title="TeamCity by JetBrains" style="margin:0 0 0 58px;padding:122px 0 0 0;font-size:14px; background-image:none;border:0;display:block; color: #acc4f9; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">continuous integration server</a> </div>
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg?branch=5.0)](https://coveralls.io/github/ipjohnson/Grace?branch=5.0)
