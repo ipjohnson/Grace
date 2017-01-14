@@ -77,7 +77,8 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">decorator logic</param>
-        void ExportDecorator<T>(Func<T, T> apply);
+        /// <param name="applyAfterLifestyle"></param>
+        void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true);
 
         /// <summary>
         /// Export a specific type
