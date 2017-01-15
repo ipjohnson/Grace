@@ -14,6 +14,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// </summary>
     public class SimpleFuncExportStrategy<T> : ConfigurableActivationStrategy, ICompiledExportStrategy
     {
+        private readonly Func<IExportLocatorScope, T> _func;
         private readonly ActivationStrategyDelegate _delegate;
 
         /// <summary>
@@ -23,6 +24,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="injectionScope">owning injection scope</param>
         public SimpleFuncExportStrategy(Func<IExportLocatorScope, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
         {
+            _func = func;
             _delegate = (scope, disposalScope, context) => func(injectionScope);
         }
 
@@ -65,9 +67,17 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var expression = Expression.Call(Expression.Constant(_delegate.Target), _delegate.GetMethodInfo(),
-                request.Constants.ScopeParameter);
+            Expression expression;
 
+            if(_func.Target != null)
+            {
+                expression = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(),
+                    request.Constants.ScopeParameter);
+            }
+            else
+            {
+                expression = Expression.Call(_func.GetMethodInfo(), request.Constants.ScopeParameter);
+            }
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
 
