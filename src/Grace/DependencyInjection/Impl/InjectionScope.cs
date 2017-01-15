@@ -47,17 +47,18 @@ namespace Grace.DependencyInjection.Impl
         protected ICanLocateTypeService CanLocateTypeService;
 
         /// <summary>
-        /// Disposal scope providers, can be null
+        /// Disposal scope providers, this or DisposalScope must be set
         /// </summary>
         protected IDisposalScopeProvider DisposalScopeProvider;
 
         /// <summary>
-        /// Default disposal scope, null if DisposalScopeProvider is set
+        /// Default disposal scope, this or DisposalScopeProdiver must be set
         /// </summary>
         protected IDisposalScope DisposalScope;
 
         /// <summary>
         /// string constant that is used to locate a lock for adding strategies to the container
+        /// Note: Do not use this unless you are working on container internals
         /// </summary>
         public const string ActivationStrategyAddLockName = "ActivationStrategyAddLock";
         #endregion
