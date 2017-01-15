@@ -53,7 +53,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
             Assert.NotNull(instance);
             Assert.Equal(5, instance.Count);
         }
-        
+
         [Fact]
         public void FuncDecorator_ApplyAfterLifestyle()
         {
@@ -110,6 +110,27 @@ namespace Grace.Tests.DependencyInjection.Decorator
             Assert.Equal(1, instance2.Count);
 
             Assert.Same(instance, instance2);
+        }
+
+        [Fact]
+        public void FuncDecorator_ExportFactory()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportFactory(() => new BasicService { Count = 5 }).As<IBasicService>();
+                c.ExportDecorator<IBasicService>(service =>
+                {
+                    service.Count += 5;
+                    return service;
+                });
+            });
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(10, instance.Count);
         }
     }
 }
