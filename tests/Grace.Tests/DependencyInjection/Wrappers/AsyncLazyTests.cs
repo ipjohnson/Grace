@@ -42,6 +42,13 @@ namespace Grace.Tests.DependencyInjection.Wrappers
                 return _completionSource.Task;
             }
         }
+
+        public bool IsFinished => _completionSource != null &&
+                                   (_completionSource.Task.IsCompleted || _completionSource.Task.IsCompleted);
+
+        public bool IsCreated => _completionSource != null && _completionSource.Task.IsCompleted;
+
+        public bool IsStarted => _completionSource != null;
     }
 
     public class AsyncLazyTests
