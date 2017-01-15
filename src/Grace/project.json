@@ -67,7 +67,7 @@
   "packOptions": {
     "licenseUrl": "https://github.com/ipjohnson/Grace/blob/master/License.md",
     "projectUrl": "https://github.com/ipjohnson/Grace",
-    "releaseNotes": "5.0 is a major rewrite and some features may not be there",
+    "releaseNotes": "https://github.com/ipjohnson/Grace/blob/master/Changes%20For%205.0.md",
     "repository": {
       "type": "git",
       "url": "https://github.com/ipjohnson/Grace"
