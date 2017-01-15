@@ -2,8 +2,7 @@
   "version": "5.0.0-*",
 
   "dependencies": {
-    "Grace": "5.0.0-*",
-    "NETStandard.Library": "1.6.0"
+    "Grace": "5.0.0-*"
   },
 
   "frameworks": {
