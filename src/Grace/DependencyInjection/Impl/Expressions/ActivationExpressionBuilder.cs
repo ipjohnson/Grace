@@ -300,7 +300,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledExportStrategy strategy)
         {
-            var decorators = FindDecoratorsForStrategy(scope, request);
+            var decorators = FindDecoratorsForStrategy(scope, request, strategy);
 
             return decorators.Count != 0 ? CreateDecoratedActivationStrategy(scope, request, strategy, decorators) : null;
         }
@@ -629,22 +629,46 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
+        /// <param name="strategy"></param>
         /// <returns></returns>
-        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request)
+        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
-            var decorators = new List<ICompiledDecoratorStrategy>();
+            var decorators = FindDecoratorsForType(scope, request.ActivationType);
+
+            if (request.ActivationType != strategy.ActivationType)
+            {
+                var activationTypeDecorators = FindDecoratorsForType(scope, strategy.ActivationType);
+
+                foreach (var decorator in activationTypeDecorators)
+                {
+                    if (decorators.Contains(decorator))
+                    {
+                        continue;
+                    }
+
+                    decorators.Add(decorator);
+                }
+            }
+
+            return decorators;
+        }
+
+        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForType(IInjectionScope scope,
+            Type type)
+        {
+            List<ICompiledDecoratorStrategy> decorators = new List<ICompiledDecoratorStrategy>();
 
             var collection =
-                scope.DecoratorCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
+                scope.DecoratorCollectionContainer.GetActivationStrategyCollection(type);
 
             if (collection != null)
             {
                 decorators.AddRange(collection.GetStrategies());
             }
 
-            if (request.ActivationType.IsConstructedGenericType)
+            if (type.IsConstructedGenericType)
             {
-                var generic = request.ActivationType.GetGenericTypeDefinition();
+                var generic = type.GetGenericTypeDefinition();
 
                 collection = scope.DecoratorCollectionContainer.GetActivationStrategyCollection(generic);
 

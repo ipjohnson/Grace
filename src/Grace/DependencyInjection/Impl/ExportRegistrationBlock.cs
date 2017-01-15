@@ -402,11 +402,14 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">decorator logic</param>
-        public void ExportDecorator<T>(Func<T, T> apply)
+        /// <param name="applyAfterLifestyle"></param>
+        public void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true)
         {
             if (apply == null) throw new ArgumentNullException(nameof(apply));
 
             var strategy = _strategyCreator.GetFuncDecoratorStrategy(apply);
+
+            strategy.ApplyAfterLifestyle = applyAfterLifestyle;
 
             _decoratorStrategyProviders = _decoratorStrategyProviders.Add(new SimpleDecoratorStrategyProvider(strategy));
         }
@@ -416,17 +419,17 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">apply logic</param>
-        public void ExportInitialize<T>(Action<T> apply)
-        {
-            if (apply == null) throw new ArgumentNullException(nameof(apply));
+        //public void ExportInitialize<T>(Action<T> apply)
+        //{
+        //    if (apply == null) throw new ArgumentNullException(nameof(apply));
 
-            ExportDecorator<T>(x =>
-            {
-                apply(x);
+        //    ExportDecorator<T>(x =>
+        //    {
+        //        apply(x);
 
-                return x;
-            });
-        }
+        //        return x;
+        //    });
+        //}
 
         /// <summary>
         /// Add injection inspector that will be called to inspect all exports, wrappers and decorators (apply cross cutting configuration with an inspector)

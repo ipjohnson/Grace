@@ -43,8 +43,12 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 return InternalGetDecoratorActivationExpression(scope, request);
             }
 
+            if(ApplyAfterLifestyle)
             return lifestyle.ProvideLifestlyExpression(
                 scope, request, lifestyleRequest => InternalGetDecoratorActivationExpression(scope, lifestyleRequest));
+
+            return lifestyle.ProvideLifestlyExpression(
+                scope, request, lifestyleRequest => InternalGetDecoratorActivationExpression(scope, request));
         }
 
         /// <summary>
