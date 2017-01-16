@@ -11,12 +11,6 @@ namespace Grace.Tests.DependencyInjection
     public class BasicContainerTests
     {
         [Fact]
-        public void FailTest()
-        {
-            Assert.True(false);
-        }
-
-        [Fact]
         public void DependencyInjectionContainer_Create()
         {
             var container = new DependencyInjectionContainer();
