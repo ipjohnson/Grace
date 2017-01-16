@@ -14,7 +14,7 @@ nuget install coveralls.net -Version 0.412.0 -OutputDirectory ..\..\tools
 
 REM Run code coverage analysis  
 set EXIT_CODE=
-%opencover% -oldStyle -register:user -target:%dotnet% -output:%coveragefile% -targetargs:%targetargs% -filter:%filter% -skipautoprops -hideskipped:All
+%opencover% -oldStyle -returntargetcode -register:user -target:%dotnet% -output:%coveragefile% -targetargs:%targetargs% -filter:%filter% -skipautoprops -hideskipped:All
 
 
 REM publish
