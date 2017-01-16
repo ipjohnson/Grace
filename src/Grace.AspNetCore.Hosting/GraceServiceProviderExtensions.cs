@@ -19,9 +19,9 @@ namespace Grace.AspNetCore.Hosting
         /// </summary>
         /// <param name="collection"></param>
         /// <param name="configuration"></param>
-        public static void AddGrace(this IServiceCollection collection, IInjectionScopeConfiguration configuration = null)
+        public static IServiceCollection AddGrace(this IServiceCollection collection, IInjectionScopeConfiguration configuration = null)
         {
-            collection.AddSingleton<IServiceProviderFactory<IInjectionScope>>(new GraceServiceProviderFactory(configuration));
+            return collection.AddSingleton<IServiceProviderFactory<IInjectionScope>>(new GraceServiceProviderFactory(configuration));
         }
 
         /// <summary>
@@ -29,9 +29,9 @@ namespace Grace.AspNetCore.Hosting
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="configuration"></param>
-        public static void UseGrace(this IWebHostBuilder builder, IInjectionScopeConfiguration configuration = null)
+        public static IWebHostBuilder UseGrace(this IWebHostBuilder builder, IInjectionScopeConfiguration configuration = null)
         {
-            builder.ConfigureServices(c => c.AddGrace(configuration));
+            return builder.ConfigureServices(c => c.AddGrace(configuration));
         }
 
         private class GraceServiceProviderFactory : IServiceProviderFactory<IInjectionScope>
