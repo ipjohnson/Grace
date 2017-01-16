@@ -21,7 +21,7 @@ namespace Grace.AspNetCore.Hosting
         /// <param name="configuration"></param>
         public static void AddGrace(this IServiceCollection collection, IInjectionScopeConfiguration configuration = null)
         {
-            collection.AddSingleton<IServiceProviderFactory<DependencyInjectionContainer>>(new GraceServiceProviderFactory(configuration));
+            collection.AddSingleton<IServiceProviderFactory<IInjectionScope>>(new GraceServiceProviderFactory(configuration));
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Grace.AspNetCore.Hosting
             builder.ConfigureServices(c => c.AddGrace(configuration));
         }
 
-        private class GraceServiceProviderFactory : IServiceProviderFactory<DependencyInjectionContainer>
+        private class GraceServiceProviderFactory : IServiceProviderFactory<IInjectionScope>
         {
             private readonly IInjectionScopeConfiguration _configuration;
 
@@ -52,7 +52,7 @@ namespace Grace.AspNetCore.Hosting
             /// </summary>
             /// <param name="services">The collection of services</param>
             /// <returns>A container builder that can be used to create an <see cref="T:System.IServiceProvider" />.</returns>
-            public DependencyInjectionContainer CreateBuilder(IServiceCollection services)
+            public IInjectionScope CreateBuilder(IServiceCollection services)
             {
                 return new DependencyInjectionContainer(_configuration);
             }
@@ -62,7 +62,7 @@ namespace Grace.AspNetCore.Hosting
             /// </summary>
             /// <param name="containerBuilder">The container builder</param>
             /// <returns>An <see cref="T:System.IServiceProvider" /></returns>
-            public IServiceProvider CreateServiceProvider(DependencyInjectionContainer containerBuilder)
+            public IServiceProvider CreateServiceProvider(IInjectionScope containerBuilder)
             {
                 return containerBuilder.Populate(new ServiceDescriptor[0]);
             }
