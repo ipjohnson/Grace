@@ -20,6 +20,7 @@ build:
 after_build:
 - cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.AspNetCore.Hosting/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.MVC4/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 - cmd: dotnet pack src/Grace.MVC5/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
