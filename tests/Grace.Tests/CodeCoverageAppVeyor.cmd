@@ -15,9 +15,8 @@ nuget install coveralls.net -Version 0.412.0 -OutputDirectory ..\..\tools
 REM Run code coverage analysis  
 %opencover% -oldStyle -returntargetcode -register:user -target:%dotnet% -output:%coveragefile% -targetargs:%targetargs% -filter:%filter% -skipautoprops -hideskipped:All
 
-Echo unit tests %ERRORLEVEL%
-
 IF %ERRORLEVEL% NEQ 0 (
+    Echo Unit tests failed
 	EXIT /B %ERRORLEVEL%
 )
 
