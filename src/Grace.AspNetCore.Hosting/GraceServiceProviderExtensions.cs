@@ -54,7 +54,11 @@ namespace Grace.AspNetCore.Hosting
             /// <returns>A container builder that can be used to create an <see cref="T:System.IServiceProvider" />.</returns>
             public IInjectionScope CreateBuilder(IServiceCollection services)
             {
-                return new DependencyInjectionContainer(_configuration);
+                var container = new DependencyInjectionContainer(_configuration);
+
+                container.Populate(services);
+
+                return container;
             }
 
             /// <summary>
@@ -64,7 +68,7 @@ namespace Grace.AspNetCore.Hosting
             /// <returns>An <see cref="T:System.IServiceProvider" /></returns>
             public IServiceProvider CreateServiceProvider(IInjectionScope containerBuilder)
             {
-                return containerBuilder.Populate(new ServiceDescriptor[0]);
+                return containerBuilder.Locate<IServiceProvider>();
             }
         }
     }
