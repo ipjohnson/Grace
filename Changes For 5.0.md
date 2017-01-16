@@ -44,8 +44,8 @@ Changes for 5.0
 
 * When____ condition methods moved to When.______ this was to clean up the interface
 
-* Func<Type,Object> is not supported out of the box. It's easy to add by hand and very few projects need support for it.
+* Func&lt;Type,Object&gt; is not supported out of the box. It's easy to add by hand and very few projects need support for it.
 
-* WithKey and AsKeyed<TInterface,TKey>() have been consolidated into AsKeyed<TInterface>(object key)
+* WithKey and AsKeyed&lt;TInterface,TKey&gt;() have been consolidated into AsKeyed&gt;TInterface&lt;(object key)
 
 * WCF support no longer uses a custom disposal scope provider rather a lifetime scope is created for each request
