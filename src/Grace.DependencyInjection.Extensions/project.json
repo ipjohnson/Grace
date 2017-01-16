@@ -9,11 +9,10 @@
   },
 
   "frameworks": {
-    "netstandard1.5": {
-      "imports": [
-        "dotnet5.6",
-        "dnxcore50"
-      ]
+    "netstandard1.0": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
     },
     "net451": {
       "frameworkAssemblies": {
