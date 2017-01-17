@@ -25,11 +25,6 @@
     },
     "net45": {
       "frameworkAssemblies": {
-        "System.Linq": "",
-        "System.Linq.Expressions": "",
-        "System.Runtime": "",
-        "System.Reflection": "",
-        "System.Reflection.Emit": ""
       }
     }
   },
