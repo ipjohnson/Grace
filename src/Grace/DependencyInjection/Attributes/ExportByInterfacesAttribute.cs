@@ -12,16 +12,6 @@ namespace Grace.DependencyInjection.Attributes
 	public class ExportByInterfacesAttribute : Attribute, IExportAttribute
 	{
 		/// <summary>
-		/// Provides a list of export name
-		/// </summary>
-		/// <param name="attributedType"></param>
-		/// <returns></returns>
-		public IEnumerable<string> ProvideExportNames(Type attributedType)
-		{
-			return ImmutableArray<string>.Empty;
-		}
-
-		/// <summary>
 		/// Provides a list of export types (i.e. implemented interfaces)
 		/// </summary>
 		/// <param name="attributedType"></param>
