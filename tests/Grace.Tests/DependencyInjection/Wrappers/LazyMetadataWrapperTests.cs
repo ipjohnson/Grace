@@ -28,11 +28,18 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
             Assert.NotNull(array);
             Assert.Equal(5, array.Length);
+            
             Assert.Equal(1, array[0].Metadata["Name"]);
             Assert.Equal(2, array[1].Metadata["Name"]);
             Assert.Equal(3, array[2].Metadata["Name"]);
             Assert.Equal(4, array[3].Metadata["Name"]);
             Assert.Equal(5, array[4].Metadata["Name"]);
+
+            Assert.IsType<MultipleService1>(array[0].Value);
+            Assert.IsType<MultipleService2>(array[1].Value);
+            Assert.IsType<MultipleService3>(array[2].Value);
+            Assert.IsType<MultipleService4>(array[3].Value);
+            Assert.IsType<MultipleService5>(array[4].Value);
         }
     }
 }
