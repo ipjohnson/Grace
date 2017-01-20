@@ -35,7 +35,6 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.IsType<MultipleService5>(array[4].Value);
         }
 
-
         public class LazyType1
         {
             private Lazy<LazyType2> _lazy;

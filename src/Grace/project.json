@@ -21,6 +21,7 @@
     },
     "net45": {
       "frameworkAssemblies": {
+        "System.ComponentModel.Composition": "",
         "System.Data": "",
         "System.Numerics": "",
         "System.Runtime.Serialization": "",

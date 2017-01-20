@@ -16,6 +16,7 @@
                     .Locate<IActivationStrategyCollectionContainer<ICompiledWrapperStrategy>>();
 
             collection.AddStrategy(new LazyWrapperStrategy(scope));
+            collection.AddStrategy(new LazyMetadataWrapperStrategy(scope));
             collection.AddStrategy(new OwnedWrapperStrategy(scope));
             collection.AddStrategy(new MetaWrapperStrategy(scope));
 

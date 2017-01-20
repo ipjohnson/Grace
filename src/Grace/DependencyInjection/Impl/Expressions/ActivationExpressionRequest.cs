@@ -362,6 +362,25 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
+        /// Get the currently wrapped strategy if one exists
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategy GetWrappedStrategy()
+        {
+            IActivationStrategy returnStrategy = null;
+
+            _wrapperNodes?.Visit(p =>
+            {
+                if (p.Strategy.StrategyType == ActivationStrategyType.ExportStrategy)
+                {
+                    returnStrategy = p.Strategy;
+                }
+            });
+
+            return returnStrategy;
+        }
+
+        /// <summary>
         /// Set is required value for request
         /// </summary>
         /// <param name="isRequired">is value required</param>
@@ -445,7 +464,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return returnValue;
         }
-        
+
         /// <summary>
         /// Original requesting scope
         /// </summary>
@@ -472,17 +491,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
             targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
 
             var targetName = "";
-            
+
             if (Info is ParameterInfo)
             {
-                targetName = ((ParameterInfo) Info).Name;
+                targetName = ((ParameterInfo)Info).Name;
             }
             else if (Info is MemberInfo)
             {
-                targetName = ((MemberInfo) Info).Name;
+                targetName = ((MemberInfo)Info).Name;
             }
 
-            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info,targetName, RequestType, ActivationType, false, null, UniqueId));
+            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, targetName, RequestType, ActivationType, false, null, UniqueId));
         }
 
         /// <summary>
