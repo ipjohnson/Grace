@@ -1,5 +1,6 @@
 environment:
   build_version: 5.0.0   
+  CI_BUILD_NUMBER: $(build_version).{build}
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
 version: $(build_version)-{build}
@@ -9,7 +10,7 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '$(build_version).0'
   assembly_file_version: '$(build_version).{build}'
-  assembly_informational_version: '$(build_version)-Beta{build}'
+  assembly_informational_version: '$(build_version)-RC{build}'
 before_build:
  - cmd: c:\Projects\Grace\nuget\nuget.exe restore Grace.sln
 build:
