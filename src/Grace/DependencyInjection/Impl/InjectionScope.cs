@@ -301,7 +301,7 @@ namespace Grace.DependencyInjection.Impl
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
             return LifetimeScopeProvider == null
-                ? new LifetimeScope(this, scopeName, ActivationDelegates)
+                ? new LifetimeScope(this, this, scopeName, ActivationDelegates)
                 : LifetimeScopeProvider.CreateScope(this, scopeName, ActivationDelegates);
         }
 
@@ -618,7 +618,7 @@ namespace Grace.DependencyInjection.Impl
             return _wrappers;
         }
 
-        private void LocateEnumerablesFromStrategyCollection<TStrategy,TValue>(IActivationStrategyCollection<TStrategy> collection, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList) where TStrategy : IWrapperOrExportActivationStrategy
+        private void LocateEnumerablesFromStrategyCollection<TStrategy, TValue>(IActivationStrategyCollection<TStrategy> collection, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList) where TStrategy : IWrapperOrExportActivationStrategy
         {
             foreach (var strategy in collection.GetStrategies())
             {

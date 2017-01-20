@@ -6,6 +6,7 @@ using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Utilities;
 
@@ -311,21 +312,32 @@ namespace Grace.DependencyInjection.Impl
                 var exportTypes = GetExportedTypes(type);
                 var keyedExports = GetKeyedExportTypes(type);
 
+                if (_exportByAttributes)
+                {
+                    foreach (var attribute in type.GetTypeInfo().GetCustomAttributes())
+                    {
+                        var exportAttribute = attribute as IExportAttribute;
+
+                        if (exportAttribute != null)
+                        {
+                            exportTypes = exportTypes.AddRange(exportAttribute.ProvideExportTypes(type));
+                        }
+
+                        var value = (attribute as IExportKeyedTypeAttribute)?.ProvideKey(type);
+
+                        if (value != null)
+                        {
+                            keyedExports = keyedExports.Add(value);
+                        }
+                    }
+                }
+
                 if (exportTypes != ImmutableLinkedList<Type>.Empty ||
-                    keyedExports != ImmutableLinkedList<Tuple<Type, object>>.Empty ||
-                    (_exportByAttributes && HasExportAttribute(type)))
+                    keyedExports != ImmutableLinkedList<Tuple<Type, object>>.Empty)
                 {
                     yield return CreateExportStrategyForType(type, exportTypes, keyedExports);
                 }
             }
-        }
-
-        private bool HasExportAttribute(Type type)
-        {
-            return
-                type.GetTypeInfo()
-                    .GetCustomAttributes()
-                    .Any(a => a is IExportAttribute || a is IExportKeyedTypeAttribute);
         }
 
         private ICompiledExportStrategy CreateExportStrategyForType(Type type, ImmutableLinkedList<Type> exportTypes, ImmutableLinkedList<Tuple<Type, object>> keyedExports)
@@ -361,7 +373,81 @@ namespace Grace.DependencyInjection.Impl
 
             strategy.ExternallyOwned = _externallyOwned;
 
+            if (_exportByAttributes)
+            {
+                ProcessAttributes(type, strategy);
+            }
+
             return strategy;
+        }
+
+        private void ProcessAttributes(Type type, ICompiledExportStrategy strategy)
+        {
+            foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
+            {
+                var lifestyleAttribute = customAttribute as ILifestyleProviderAttribute;
+
+                if (lifestyleAttribute != null)
+                {
+                    strategy.Lifestyle = lifestyleAttribute.ProvideLifestyle(type);
+                }
+
+                var condition = (customAttribute as IExportConditionAttribute)?.ProvideCondition(type);
+
+                if (condition != null)
+                {
+                    strategy.AddCondition(condition);
+                }
+
+                var metadata = (customAttribute as IExportMetadataAttribute)?.ProvideMetadata(type);
+
+                if (metadata != null)
+                {
+                    foreach (var keyValuePair in metadata)
+                    {
+                        strategy.SetMetadata(keyValuePair.Key, keyValuePair.Value);
+                    }
+                }
+            }
+
+            foreach (var property in type.GetRuntimeProperties())
+            {
+                foreach (var attribute in property.GetCustomAttributes())
+                {
+                    var importAttribute = attribute as IImportAttribute;
+
+                    if (importAttribute != null)
+                    {
+                        var injecitonInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
+
+                        if (injecitonInfo != null)
+                        {
+                            strategy.MemberInjectionSelector(new PropertyMemberInjectionSelector(
+                                    new MemberInjectionInfo
+                                    {
+                                        MemberInfo = property,
+                                        IsRequired = injecitonInfo.IsRequired,
+                                        LocateKey = injecitonInfo.ImportKey
+                                    }));
+                        }
+                    }
+                }
+            }
+
+            foreach (var method in type.GetRuntimeMethods())
+            {
+                foreach (var attribute in method.GetCustomAttributes())
+                {
+                    var importAttribute = attribute as IImportAttribute;
+
+                    var injectionInfo = importAttribute?.ProvideImportInfo(null, method.Name);
+
+                    if (injectionInfo != null)
+                    {
+                        strategy.MethodInjectionInfo(new MethodInjectionInfo { Method = method });
+                    }
+                }
+            }
         }
 
         private ImmutableLinkedList<Tuple<Type, object>> GetKeyedExportTypes(Type type)

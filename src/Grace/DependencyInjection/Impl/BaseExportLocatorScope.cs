@@ -36,7 +36,6 @@ namespace Grace.DependencyInjection.Impl
                                       string name, 
                                       ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {
-            ActivationDelegates = activationDelegates;
             Parent = parent;
             ScopeName = name ?? "";
 
@@ -121,6 +120,5 @@ namespace Grace.DependencyInjection.Impl
             return _lockObjects.GetValueOrDefault(lockName) ??
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
         }
-
     }
 }

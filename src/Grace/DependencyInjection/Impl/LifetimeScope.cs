@@ -16,23 +16,12 @@ namespace Grace.DependencyInjection.Impl
         /// Default Constructor
         /// </summary>
         /// <param name="parent">parent for scope</param>
+        /// <param name="injectionScope"></param>
         /// <param name="name">name of scope</param>
         /// <param name="activationDelegates">activation delegate cache</param>
-        public LifetimeScope(IExportLocatorScope parent, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates) : base(parent, name, activationDelegates)
+        public LifetimeScope(IExportLocatorScope parent, IInjectionScope injectionScope, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates) : base(parent, name, activationDelegates)
         {
-            var currentScope = parent;
-
-            while (currentScope != null && !(currentScope is IInjectionScope))
-            {
-                currentScope = currentScope.Parent;
-            }
-
-            _injectionScope = currentScope as IInjectionScope;
-
-            if (_injectionScope == null)
-            {
-                throw new ArgumentException("Parent must have IInjectionScope", nameof(parent));
-            }
+            _injectionScope = injectionScope;
         }
 
         /// <summary>
@@ -42,7 +31,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new scope</returns>
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return new LifetimeScope(this, scopeName, ActivationDelegates);
+            return new LifetimeScope(this,_injectionScope, scopeName, ActivationDelegates);
         }
 
         /// <summary>

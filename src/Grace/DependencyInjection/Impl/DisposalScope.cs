@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -23,11 +24,16 @@ namespace Grace.DependencyInjection.Impl
         {
             var disposables = ImmutableLinkedList.ThreadSafeEmpty(ref _disposable);
 
-            if (disposables == ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty)
+            if (ReferenceEquals(disposables, ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty))
             {
                 return;
             }
 
+            InternalDispose(disposables);
+        }
+
+        private void InternalDispose(IEnumerable<Tuple<IDisposable, Action>> disposables)
+        {
             var exceptions = ImmutableLinkedList<Exception>.Empty;
 
             foreach (var disposable in disposables)
@@ -37,7 +43,6 @@ namespace Grace.DependencyInjection.Impl
                     disposable.Item2?.Invoke();
 
                     disposable.Item1.Dispose();
-
                 }
                 catch (Exception exp)
                 {
@@ -48,7 +53,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            if (!ReferenceEquals(exceptions,ImmutableLinkedList<Exception>.Empty))
+            if (!ReferenceEquals(exceptions, ImmutableLinkedList<Exception>.Empty))
             {
                 throw new AggregateException("Exceptions thrown while disposing scope", exceptions.Reverse());
             }
