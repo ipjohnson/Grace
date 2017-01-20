@@ -285,6 +285,12 @@ namespace Grace.DependencyInjection
         void SetWrapperPath(ImmutableLinkedList<IActivationPathNode> wrappers);
 
         /// <summary>
+        /// Get the currently wrapped strategy if one exists
+        /// </summary>
+        /// <returns></returns>
+        IActivationStrategy GetWrappedStrategy();
+
+        /// <summary>
         /// Set is required value for request
         /// </summary>
         /// <param name="isRequired">is value required</param>
