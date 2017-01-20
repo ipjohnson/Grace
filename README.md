@@ -52,4 +52,4 @@ Builds of Grace
 
 Grace has public builds at AppVeyor
 
-[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg?branch=5.0)](https://coveralls.io/github/ipjohnson/Grace?branch=5.0)
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace)
