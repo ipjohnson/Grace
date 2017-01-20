@@ -191,13 +191,29 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                 c.Export<MultipleService4>().As<IMultipleService>();
                 c.Export<MultipleService5>().As<IMultipleService>();
             });
-            
+
             using (var scope = container.BeginLifetimeScope())
             {
                 var list = scope.LocateAll<IMultipleService>();
 
                 Assert.NotNull(list);
                 Assert.Equal(5, list.Count);
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_Locate_Non_Generic()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var instance1 = scope.Locate(typeof(IBasicService), null);
+                var instance2 = scope.Locate(typeof(IBasicService), null);
+
+                Assert.Same(instance1, instance2);
             }
         }
     }
