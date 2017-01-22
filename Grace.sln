@@ -13,6 +13,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Grace.Tests", "tests\Grace.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77C4F22F-AFC9-4307-A94F-519FF2DA89B7}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
 		global.json = global.json
 	EndProjectSection
 EndProject
