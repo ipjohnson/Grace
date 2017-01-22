@@ -13,10 +13,8 @@ namespace Grace.Tests.DependencyInjection
         [Fact]
         public void DependencyInjectionContainer_Create()
         {
-            var container = new DependencyInjectionContainer();
-
-            container.Configure(c => c.Export<BasicService>().As<IBasicService>());
-
+            var container = new DependencyInjectionContainer { c => c.Export<BasicService>().As<IBasicService>() };
+            
             var basicService = container.Locate<IBasicService>();
 
             Assert.NotNull(basicService);
@@ -60,16 +58,23 @@ namespace Grace.Tests.DependencyInjection
 
             Assert.Throws<ArgumentNullException>(() => container.Configure((IConfigurationModule) null));
         }
-
-
+        
         [Fact]
         public void DependencyInjectionContainer_Add_Module_Throws_Exception_For_Null()
         {
             var container = new DependencyInjectionContainer();
 
-            Assert.Throws<ArgumentNullException>(() => container.Add(null));
+            Assert.Throws<ArgumentNullException>(() => container.Add((IConfigurationModule)null));
         }
 
+        [Fact]
+        public void DependencyInjectionContainer_Add_Registration_Throws_Exception_For_Null()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Assert.Throws<ArgumentNullException>(() => container.Add((Action<IExportRegistrationBlock>)null));
+        }
+        
         [Fact]
         public void DependencyInjectionContainer_Enumerable_Return_Empty()
         {

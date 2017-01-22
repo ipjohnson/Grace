@@ -40,6 +40,17 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
+        /// Add registration delegate to container
+        /// </summary>
+        /// <param name="registrationAction"></param>
+        public void Add(Action<IExportRegistrationBlock> registrationAction)
+        {
+            if (registrationAction == null) throw new ArgumentNullException(nameof(registrationAction));
+
+            Configure(registrationAction);
+        }
+
+        /// <summary>
         /// This is here to allow adding configuration modules through object initialization. Always returns empty
         /// </summary>
         /// <returns></returns>
