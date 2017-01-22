@@ -18,6 +18,18 @@
       }
     }
   },
+  "packOptions": {
+    "licenseUrl": "https://github.com/ipjohnson/Grace/blob/master/License.md",
+    "projectUrl": "https://github.com/ipjohnson/Grace",
+    "releaseNotes": "https://github.com/ipjohnson/Grace/blob/master/Changes-For-5.0.md",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ipjohnson/Grace"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "Grace.AspNetCore.MVC is a companion library for using Grace with AspNetCore.MVC",
+    "tags": []
+  },
   "buildOptions": {
     "xmlDoc": true
   }
