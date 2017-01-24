@@ -37,5 +37,25 @@ namespace Grace.Tests.DependencyInjection.Enrichment
             Assert.IsType<BasicService>(instance.BasicService);
 
         }
+
+        [Fact]
+        public void Encrichment_Executes()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>().EnrichWithDelegate((scope, context, service) =>
+                {
+                    service.Count = 5;
+                    return service;
+                });
+            });
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Count);
+        }
     }
 }

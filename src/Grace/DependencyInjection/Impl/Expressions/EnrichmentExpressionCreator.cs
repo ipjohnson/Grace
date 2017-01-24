@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -37,13 +38,33 @@ namespace Grace.DependencyInjection.Impl.Expressions
             TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {
             var expression = result.Expression;
-
+           
             foreach (var enrichmentDelegate in activationConfiguration.EnrichmentDelegates.Reverse())
             {
                 var invokeMethod = enrichmentDelegate.GetType().GetRuntimeMethods().First(m => m.Name == "Invoke");
 
+                var expressions = new List<Expression>();
+
+                foreach (var parameter in invokeMethod.GetParameters())
+                {
+                    if (parameter.ParameterType == expression.Type)
+                    {
+                        expressions.Add(expression);
+                    }
+                    else
+                    {
+                        var arg1Request = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy, expression.Type, RequestType.Other, null, true);
+
+                        var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
+
+                        result.AddExpressionResult(activationExpression);
+
+                        expressions.Add(activationExpression.Expression);
+                    }
+                }
+
                 expression = Expression.Call(Expression.Constant(enrichmentDelegate), invokeMethod,
-                    request.Constants.ScopeParameter, expression);
+                    expressions);
             }
 
             result.Expression = expression;

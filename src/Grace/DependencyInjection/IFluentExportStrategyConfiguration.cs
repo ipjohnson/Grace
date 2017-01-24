@@ -165,7 +165,7 @@ namespace Grace.DependencyInjection
         /// <param name="enrichmentDelegate">enrichment delegate</param>
         /// <returns></returns>
         IFluentExportStrategyConfiguration<T> EnrichWithDelegate(
-            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> enrichmentDelegate);
+            Func<IExportLocatorScope, StaticInjectionContext, T, T> enrichmentDelegate);
 
         /// <summary>
         /// Export a public member of the type (property, field or method with return value)

@@ -170,7 +170,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void ProxyFluentExportStrategyConfiguration_EnrichWithDelegate([Locate]FluentWithCtorConfiguration<BasicService, int> configuration,
                                                                       IFluentExportStrategyConfiguration<BasicService> strategyConfiguration)
         {
-            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, BasicService> enrichmentDelegate = (scope,staticonctext,context) => new BasicService();
+            Func<IExportLocatorScope, StaticInjectionContext, BasicService, BasicService> enrichmentDelegate = (scope,staticonctext,context) => new BasicService();
 
             configuration.EnrichWithDelegate(enrichmentDelegate);
 

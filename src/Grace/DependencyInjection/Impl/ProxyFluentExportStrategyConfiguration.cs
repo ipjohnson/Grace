@@ -241,7 +241,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="enrichmentDelegate">enrichment delegate</param>
         /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> enrichmentDelegate)
+        public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, T, T> enrichmentDelegate)
         {
             return _strategy.EnrichWithDelegate(enrichmentDelegate);
         }
