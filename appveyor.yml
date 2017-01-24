@@ -1,6 +1,5 @@
 environment:
   build_version: 5.0.0   
-  CI_BUILD_NUMBER: $(build_version).{build}
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
 version: $(build_version)-{build}
@@ -10,7 +9,7 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '$(build_version).0'
   assembly_file_version: '$(build_version).{build}'
-  assembly_informational_version: '$(build_version)'
+  assembly_informational_version: '$(build_version)-RC{build}'
 before_build:
  - cmd: c:\Projects\Grace\nuget\nuget.exe restore Grace.sln
 build:
@@ -19,14 +18,14 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: dotnet pack src/Grace/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.AspNetCore.Hosting/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.MVC4/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.MVC5/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.WCF/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release
+- cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.DependencyInjection.Extensions/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.AspNetCore.Hosting/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.AspNetCore.MVC/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.MVC4/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.MVC5/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.WCF/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
+- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release --version-suffix RC%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: cd tests/Grace.Tests/
 - cmd: CodeCoverageAppVeyor.cmd
