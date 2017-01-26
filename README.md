@@ -35,7 +35,7 @@ Features in Grace
 * Supports child containers and light weight lifetime scopes
 * Contextual binding support (similar to NInject)
 * IDisposable objects created by the container will be tracked and disposed by the container unless configured otherwise.
-* Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. ([Benchmarks](http://www.palmmedia.de/blog/2011/8/30/ioc-container-benchmark-performance-comparison))
+* Performance characteristics that make it one of the fastest containers availabl. ([Benchmarks](http://www.palmmedia.de/blog/2011/8/30/ioc-container-benchmark-performance-comparison))
 * Supports special types
    * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable&lt;T&gt; as well as most other types of collections List&lt;T&gt;, ReadOnlyCollection&lt;T&gt;, T[] and any collection that implements ICollection&lt;T&gt;
    * Func&lt;T&gt; - supports resolving Func<T&gt; automatically
