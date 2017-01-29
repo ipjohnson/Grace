@@ -35,7 +35,7 @@ Features in Grace
 * Supports child containers and light weight lifetime scopes
 * Contextual binding support (similar to NInject)
 * IDisposable objects created by the container will be tracked and disposed by the container unless configured otherwise.
-* Performance characteristics that make it faster than most of the containers out there inluding Autofac, Castle Windsor, MEF, NInject, StructureMap and Unity. ([Benchmarks](http://www.palmmedia.de/blog/2011/8/30/ioc-container-benchmark-performance-comparison))
+* Performance characteristics that make it one of the fastest containers available. ([Benchmarks](http://www.palmmedia.de/blog/2011/8/30/ioc-container-benchmark-performance-comparison))
 * Supports special types
    * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable&lt;T&gt; as well as most other types of collections List&lt;T&gt;, ReadOnlyCollection&lt;T&gt;, T[] and any collection that implements ICollection&lt;T&gt;
    * Func&lt;T&gt; - supports resolving Func<T&gt; automatically
@@ -43,7 +43,7 @@ Features in Grace
    * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
-* Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerAncestor&lt;T&gt;, WeakSingleton and more. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
+* Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerObjectGraph, SingletonPerAncestor&lt;T&gt;, and WeakSingleton. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
 
 
 
