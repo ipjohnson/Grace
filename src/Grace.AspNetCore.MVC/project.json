@@ -1,5 +1,5 @@
 {
-  "version": "5.0.0-*",
+  "version": "5.0.1-*",
   "authors": [ "Ian Johnson" ],
   "description": "MVC extensions for Grace DI container",
 
