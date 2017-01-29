@@ -18,6 +18,10 @@ namespace Grace.Data
 
         private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _propertyDelegates =
             ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
+        private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _lowerCasePropertyDelegates =
+            ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
+        private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _upperCasePropertyDelegates =
+            ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
 
         /// <summary>
         /// Delegate for creating dictionaries from object properties
@@ -145,14 +149,35 @@ namespace Grace.Data
             return false;
         }
 
+        /// <summary>
+        /// Casing for property names
+        /// </summary>
+        public enum PropertyCasing
+        {
+            /// <summary>
+            /// Lower case all properties 
+            /// </summary>
+            Lower,
+            /// <summary>
+            /// Upper case all properties
+            /// </summary>
+            Upper,
+
+            /// <summary>
+            /// Default casing of property names
+            /// </summary>
+            Default,
+        }
 
         /// <summary>
         /// Get dictionary of property values from an object
         /// </summary>
         /// <param name="annonymousObject">object to get properties from</param>
         /// <param name="values">collection to add to</param>
+        /// <param name="casing">lowercase property names</param>
         /// <returns></returns>
-        public static ImmutableHashTree<string, object> GetPropertiesFromObject(object annonymousObject, ImmutableHashTree<string, object> values = null)
+        public static ImmutableHashTree<string, object> GetPropertiesFromObject(object annonymousObject,
+            ImmutableHashTree<string, object> values = null, PropertyCasing casing = PropertyCasing.Default)
         {
             values = values ?? ImmutableHashTree<string, object>.Empty;
 
@@ -163,24 +188,51 @@ namespace Grace.Data
 
             if (annonymousObject.GetType() == typeof(IDictionary<string, object>))
             {
-                return ((IDictionary<string, object>)annonymousObject).Aggregate(values, (v, kvp) => v.Add(kvp.Key, kvp.Value));
+                return ((IDictionary<string, object>)annonymousObject).Aggregate(values,
+                    (v, kvp) => v.Add(kvp.Key, kvp.Value));
             }
 
             var objectType = annonymousObject.GetType();
 
-            var propertyDelegate = _propertyDelegates.GetValueOrDefault(objectType);
+            PropertyDictionaryDelegate propertyDelegate = null;
 
-            if (propertyDelegate == null)
+            switch (casing)
             {
-                propertyDelegate = CreateDelegateForType(objectType);
+                case PropertyCasing.Default:
+                    propertyDelegate = _propertyDelegates.GetValueOrDefault(objectType);
+                    break;
+                case PropertyCasing.Lower:
+                    propertyDelegate = _lowerCasePropertyDelegates.GetValueOrDefault(objectType);
+                    break;
+                case PropertyCasing.Upper:
+                    propertyDelegate = _upperCasePropertyDelegates.GetValueOrDefault(objectType);
+                    break;
+            }
 
-                _propertyDelegates = _propertyDelegates.Add(objectType, propertyDelegate);
+            if (propertyDelegate != null)
+            {
+                return propertyDelegate(annonymousObject, values);
+            }
+
+            propertyDelegate = CreateDelegateForType(objectType, casing);
+
+            switch (casing)
+            {
+                case PropertyCasing.Default:
+                    _propertyDelegates = _propertyDelegates.Add(objectType, propertyDelegate);
+                    break;
+                case PropertyCasing.Lower:
+                    _lowerCasePropertyDelegates = _lowerCasePropertyDelegates.Add(objectType, propertyDelegate);
+                    break;
+                case PropertyCasing.Upper:
+                    _upperCasePropertyDelegates = _upperCasePropertyDelegates.Add(objectType, propertyDelegate);
+                    break;
             }
 
             return propertyDelegate(annonymousObject, values);
         }
 
-        private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType)
+        private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType, PropertyCasing casing)
         {
             // the parameter to call the method on
             var inputObject = Expression.Parameter(typeof(object), "inputObject");
@@ -195,7 +247,6 @@ namespace Grace.Data
 
             // assign the cast value to the tVaraible variable
             Expression assignmentExpression = Expression.Assign(tVariable, castExpression);
-            
 
             // keep a list of the variable we declare for use when we define the body
             var variableList = new List<ParameterExpression> { tVariable };
@@ -219,7 +270,19 @@ namespace Grace.Data
 
                     var propertyCast = Expression.Convert(propertyAccess, typeof(object));
 
-                    tree = Expression.Call(tree, ImmutableTreeAdd, Expression.Constant(property.Name), propertyCast, updateDelegate);
+                    var propertyName = property.Name;
+
+                    switch (casing)
+                    {
+                        case PropertyCasing.Lower:
+                            propertyName = propertyName.ToLowerInvariant();
+                            break;
+                        case PropertyCasing.Upper:
+                            propertyName = propertyName.ToUpperInvariant();
+                            break;
+                    }
+
+                    tree = Expression.Call(tree, ImmutableTreeAdd, Expression.Constant(propertyName), propertyCast, updateDelegate);
                 }
             }
 
