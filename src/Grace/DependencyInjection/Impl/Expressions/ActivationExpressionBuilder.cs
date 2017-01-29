@@ -220,10 +220,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var closedMethod = valueMethod.MakeGenericMethod(request.ActivationType);
 
+            var key = request.LocateKey;
+
+            if (key is string)
+            {
+                key = ((string) key).ToLowerInvariant();
+            }
+
             var expresion = Expression.Call(closedMethod,
                                             request.Constants.ScopeParameter,
                                             Expression.Constant(request.GetStaticInjectionContext()),
-                                            Expression.Constant(request.LocateKey, typeof(object)),
+                                            Expression.Constant(key, typeof(object)),
                                             request.Constants.InjectionContextParameter,
                                             Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
                                             Expression.Constant(request.DefaultValue != null),

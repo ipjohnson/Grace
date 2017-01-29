@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection.Impl
             SharedData = new InjectionContextSharedData();
 
             _extraDataProperties = extraData != null ?
-                ReflectionService.GetPropertiesFromObject(extraData) :
+                ReflectionService.GetPropertiesFromObject(extraData, casing: ReflectionService.PropertyCasing.Lower) :
                 ImmutableHashTree<string, object>.Empty;
         }
 

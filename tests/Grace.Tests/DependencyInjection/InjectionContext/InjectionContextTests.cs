@@ -9,6 +9,17 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
     public class InjectionContextTests
     {
         [Fact]
+        public void Container_InjectionContext_Value_Name_Casing_Mismatch()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<DependentService<int>>(new { Value = 5 });
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Value);
+        }
+
+        [Fact]
         public void Container_InjectionContext_Convert_Type()
         {
             var container = new DependencyInjectionContainer();
