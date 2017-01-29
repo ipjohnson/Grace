@@ -150,7 +150,7 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                 var context = scope.CreateContext(new { PropA = 5 });
 
                 Assert.NotNull(context);
-                Assert.Equal(5, context.GetExtraDataOrDefaultValue("PropA", 0));
+                Assert.Equal(5, context.GetExtraDataOrDefaultValue("propa", 0));
             }
         }
 
