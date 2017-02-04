@@ -10,6 +10,15 @@
     public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
 
     /// <summary>
+    /// Delegate for injecting value
+    /// </summary>
+    /// <param name="scope">injection scope</param>
+    /// <param name="disposalScope">disposal scope</param>
+    /// <param name="injectionContext">injection context</param>
+    /// <param name="injectedInstance">instance to inject</param>
+    public delegate void InjectionStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext, object injectedInstance);
+    
+    /// <summary>
     /// Used to filter out exports at container configuration time
     /// </summary>
     /// <param name="staticContext"></param>

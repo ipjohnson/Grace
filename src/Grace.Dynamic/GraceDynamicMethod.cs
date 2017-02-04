@@ -63,6 +63,7 @@ namespace Grace.Dynamic
                                                f.Locate<IDefaultStrategyExpressionBuilder>(),
                                                f.Locate<IInjectionContextCreator>(),
                                                f.Locate<IExpressionConstants>(),
+                                               f.Locate<IInjectionStrategyDelegateCreator>(),
                                                f.Locate<ILinqToDynamicMethodConverter>())); 
         }
     }

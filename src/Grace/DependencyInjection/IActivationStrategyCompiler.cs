@@ -51,6 +51,14 @@ namespace Grace.DependencyInjection
         ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext);
 
         /// <summary>
+        /// Create injection delegate 
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="locateType"></param>
+        /// <returns></returns>
+        InjectionStrategyDelegate CreateInjectionDelegate(IInjectionScope scope, Type locateType);
+
+        /// <summary>
         /// Process missing strategy providers
         /// </summary>
         /// <param name="scope"></param>

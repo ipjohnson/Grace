@@ -99,5 +99,6 @@ namespace Grace.DependencyInjection
         /// <param name="isDynamic"></param>
         /// <returns></returns>
         bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
+        
     }
 }

@@ -63,9 +63,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Add extra expression to result 
         /// </summary>
         /// <param name="expression">expression for delegate</param>
-        public void AddExtraExpression(Expression expression)
+        /// <param name="insertBeginning"></param>
+        public void AddExtraExpression(Expression expression, bool insertBeginning = false)
         {
-            _extraExpressions = _extraExpressions.Add(expression);
+            if (insertBeginning)
+            {
+                var expressions = _extraExpressions;
+
+                _extraExpressions = ImmutableLinkedList<Expression>.Empty.Add(expression);
+
+                expressions.Visit(e => _extraExpressions = _extraExpressions.Add(e), startAtEnd: true);
+            }
+            else
+            {
+                _extraExpressions = _extraExpressions.Add(expression);
+            }
         }
 
         /// <summary>

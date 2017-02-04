@@ -40,7 +40,8 @@ namespace Grace.DependencyInjection
         /// Add extra expression to result 
         /// </summary>
         /// <param name="expression">expression for delegate</param>
-        void AddExtraExpression(Expression expression);
+        /// <param name="insertBeginning">by default expressions are added to the end, set this to true to insert at beginning</param>
+        void AddExtraExpression(Expression expression, bool insertBeginning = false);
 
         /// <summary>
         /// Extra expressions for result

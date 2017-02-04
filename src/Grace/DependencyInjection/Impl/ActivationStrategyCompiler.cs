@@ -17,6 +17,7 @@ namespace Grace.DependencyInjection.Impl
         private readonly IAttributeDiscoveryService _attributeDiscoveryService;
         private readonly IDefaultStrategyExpressionBuilder _exportExpressionBuilder;
         private readonly IInjectionContextCreator _injectionContextCreator;
+        private readonly IInjectionStrategyDelegateCreator _injectionStrategyDelegateCreator;
         private readonly IExpressionConstants _constants;
 
         /// <summary>
@@ -28,17 +29,20 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportExpressionBuilder">expression builder</param>
         /// <param name="injectionContextCreator">injection context creator</param>
         /// <param name="constants">expression constants</param>
+        /// <param name="injectionStrategyDelegateCreator">injection strategy creator</param>
         public ActivationStrategyCompiler(IInjectionScopeConfiguration configuration,
                                           IActivationExpressionBuilder builder,
                                           IAttributeDiscoveryService attributeDiscoveryService,
                                           IDefaultStrategyExpressionBuilder exportExpressionBuilder,
                                           IInjectionContextCreator injectionContextCreator,
-                                          IExpressionConstants constants)
+                                          IExpressionConstants constants,
+                                          IInjectionStrategyDelegateCreator injectionStrategyDelegateCreator)
         {
             _configuration = configuration;
             _builder = builder;
             _attributeDiscoveryService = attributeDiscoveryService;
             _constants = constants;
+            _injectionStrategyDelegateCreator = injectionStrategyDelegateCreator;
             _exportExpressionBuilder = exportExpressionBuilder;
             _injectionContextCreator = injectionContextCreator;
         }
@@ -151,6 +155,38 @@ namespace Grace.DependencyInjection.Impl
             var finalExpression = ProcessExpressionResultForCompile(expressionContext, out parameters, out extraExpressions);
 
             var compiled = CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
+
+            return compiled;
+        }
+
+        /// <summary>
+        /// Create injection delegate 
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="locateType"></param>
+        /// <returns></returns>
+        public InjectionStrategyDelegate CreateInjectionDelegate(IInjectionScope scope, Type locateType)
+        {
+            var request = CreateNewRequest(locateType, 1, scope);
+
+            var objectParameter = Expression.Parameter(typeof(object));
+
+            var result = 
+                _injectionStrategyDelegateCreator.CreateInjectionDelegate(scope, locateType, request, objectParameter);
+
+            if (request.InjectionContextRequired())
+            {
+                AddInjectionContextExpression(result);
+            }
+            
+            var methodBlock = Expression.Block(result.ExtraParameters(),result.ExtraExpressions());
+
+            var compiled =
+                Expression.Lambda<InjectionStrategyDelegate>(methodBlock,
+                        request.Constants.ScopeParameter,
+                        request.Constants.RootDisposalScope,
+                        request.Constants.InjectionContextParameter,
+                        objectParameter).Compile();
 
             return compiled;
         }
@@ -378,8 +414,7 @@ namespace Grace.DependencyInjection.Impl
 
             return strategy?.GetActivationStrategyDelegate(scope, this, locateType);
         }
-
-
+        
         private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
         {
             var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
@@ -387,8 +422,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         typeof(object)
                     });
-
-
+            
             var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
                                                 method,
                                                 Expression.Constant(null, typeof(object)));
@@ -402,7 +436,7 @@ namespace Grace.DependencyInjection.Impl
                         Expression.Constant(null, typeof(IInjectionContext))),
                     assign);
 
-            expressionContext.AddExtraExpression(ifThen);
+            expressionContext.AddExtraExpression(ifThen, insertBeginning: true);
         }
 
         private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType, IInjectionContext injectionContext) where T : IActivationStrategy

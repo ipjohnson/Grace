@@ -146,7 +146,8 @@ namespace Grace.DependencyInjection
                                                     f.Locate<IAttributeDiscoveryService>(),
                                                     f.Locate<IDefaultStrategyExpressionBuilder>(),
                                                     f.Locate<IInjectionContextCreator>(),
-                                                    f.Locate<IExpressionConstants>()));
+                                                    f.Locate<IExpressionConstants>(),
+                                                    f.Locate<IInjectionStrategyDelegateCreator>()));
 
             DefaultImplementation.ExportInstance<ICanLocateTypeService>(f => new CanLocateTypeService());
 
@@ -200,6 +201,8 @@ namespace Grace.DependencyInjection
 
             DefaultImplementation.ExportInstance<IDynamicArrayLocator>(f => new DynamicArrayLocator());
             DefaultImplementation.ExportInstance<IDynamicIEnumerableLocator>(f => new DynamicIEnumerableLocator());
+
+            DefaultImplementation.ExportInstance<IInjectionStrategyDelegateCreator>(f => new InjectionStrategyDelegateCreator());
         }
 
         #endregion

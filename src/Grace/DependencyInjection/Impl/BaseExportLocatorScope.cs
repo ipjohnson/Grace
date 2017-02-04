@@ -99,7 +99,7 @@ namespace Grace.DependencyInjection.Impl
         }
         
         /// <summary>
-        /// Sets extra data on the injection context
+        /// Sets extra data on the locator scope
         /// </summary>
         /// <param name="key">object name</param>
         /// <param name="newValue">new object value</param>
