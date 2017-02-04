@@ -14,6 +14,7 @@ assembly_info:
 before_build:
  - cmd: dotnet restore src/Grace/project.json
  - cmd: dotnet restore src/Grace.Dynamic/project.json
+ - cmd: dotnet restore tests/Grace.Dynamic.Console/project.json
  - cmd: dotnet restore tests/Grace.Tests/project.json
 build:
   project: Grace.sln
