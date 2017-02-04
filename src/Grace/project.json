@@ -68,7 +68,7 @@
   "packOptions": {
     "licenseUrl": "https://github.com/ipjohnson/Grace/blob/master/License.md",
     "projectUrl": "https://github.com/ipjohnson/Grace",
-    "releaseNotes": "https://github.com/ipjohnson/Grace/blob/master/Changes-For-5.0.md",
+    "releaseNotes": "https://github.com/ipjohnson/Grace/blob/master/Release-Notes.md",
     "repository": {
       "type": "git",
       "url": "https://github.com/ipjohnson/Grace"
