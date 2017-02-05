@@ -24,7 +24,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// list of member injection selectors
         /// </summary>
-        protected ImmutableLinkedList<IMemeberInjectionSelector> MemberInjectorList = ImmutableLinkedList<IMemeberInjectionSelector>.Empty;
+        protected ImmutableLinkedList<IMemberInjectionSelector> MemberInjectorList = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
 
         /// <summary>
         /// list of method injection info
@@ -114,13 +114,13 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// List of member injection selectors
         /// </summary>
-        public IEnumerable<IMemeberInjectionSelector> MemberInjectionSelectors => MemberInjectorList;
+        public IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors => MemberInjectorList;
 
         /// <summary>
         /// Add member injection selector to configuration
         /// </summary>
         /// <param name="selector"></param>
-        public void MemberInjectionSelector(IMemeberInjectionSelector selector)
+        public void MemberInjectionSelector(IMemberInjectionSelector selector)
         {
             MemberInjectorList = MemberInjectorList.Add(selector);
         }

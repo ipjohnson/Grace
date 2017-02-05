@@ -7,7 +7,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <summary>
     /// Select public members that can be injected
     /// </summary>
-    public class PublicMemeberInjectionSelector : IMemeberInjectionSelector
+    public class PublicMemeberInjectionSelector : IMemberInjectionSelector
     {
         private readonly Func<MemberInfo, bool> _picker;
         private readonly bool _injectMethods;

@@ -42,5 +42,11 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <returns></returns>
         IEnumerable<IInjectionValueProvider> GetValueProviders();
+
+        /// <summary>
+        /// Get member injection selectors
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IMemberInjectionSelector> GetMemberInjectionSelectors();
     }
 }

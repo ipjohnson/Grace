@@ -6,7 +6,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Selects properties that should be injected
     /// </summary>
-    public class PropertyMemberInjectionSelector : IMemeberInjectionSelector
+    public class KnownMemberInjectionSelector : IMemberInjectionSelector
     {
         private readonly MemberInjectionInfo _memberInfo;
 
@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection.Impl
         /// Default constructor
         /// </summary>
         /// <param name="memberInfo"></param>
-        public PropertyMemberInjectionSelector(MemberInjectionInfo memberInfo)
+        public KnownMemberInjectionSelector(MemberInjectionInfo memberInfo)
         {
             _memberInfo = memberInfo;
         }

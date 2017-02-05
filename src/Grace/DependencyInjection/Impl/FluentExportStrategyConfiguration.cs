@@ -487,7 +487,7 @@ namespace Grace.DependencyInjection.Impl
                 memberInfo.LocateKey = member.Member.Name;
             }
 
-            _exportConfiguration.MemberInjectionSelector(new PropertyMemberInjectionSelector(memberInfo));
+            _exportConfiguration.MemberInjectionSelector(new KnownMemberInjectionSelector(memberInfo));
 
             return new FluentImportPropertyConfiguration<T, TProp>(this, memberInfo);
         }

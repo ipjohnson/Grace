@@ -215,7 +215,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// Add member injection selector
         /// </summary>
         /// <param name="selector">member selector</param>
-        public void MemberInjectionSelector(IMemeberInjectionSelector selector)
+        public void MemberInjectionSelector(IMemberInjectionSelector selector)
         {
             ActivationConfiguration.MemberInjectionSelector(selector);
         }

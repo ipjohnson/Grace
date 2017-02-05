@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {
@@ -107,5 +108,16 @@ namespace Grace.DependencyInjection
             throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
         }
 
+        /// <summary>
+        /// Import all members of a specific type and can be filtered
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <param name="filter"></param>
+        public static void ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo,bool> filter = null)
+        {
+            registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));    
+        }
+        
     }
 }

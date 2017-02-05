@@ -77,6 +77,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         protected virtual IEnumerable<IActivationExpressionResult> CreatePropertyInjectionExpressions(IInjectionScope scope, Type locateType, ParameterExpression instanceValue, InjectionStrategy strategy, IActivationExpressionRequest request)
         {
+            var properties = new Dictionary<string, bool>();
+
             foreach (var property in locateType.GetRuntimeProperties())
             {
                 if (!property.CanWrite || !property.SetMethod.IsPublic || property.SetMethod.IsStatic)
@@ -93,31 +95,62 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                var propertyRequest = request.NewRequest(property.PropertyType, strategy, locateType,
-                    RequestType.Member, property);
-
-                propertyRequest.SetIsRequired(importInfo.IsRequired);
-                propertyRequest.SetEnumerableComparer(importInfo.Comparer);
-
-                if (importInfo.ImportKey != null)
-                {
-                    propertyRequest.SetLocateKey(importInfo.ImportKey);
-                }
-                else if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(property.PropertyType))
-                {
-                    propertyRequest.SetLocateKey(property.Name);
-                }
-
-                var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, propertyRequest);
-
-                var setExpression = Expression.Assign(Expression.Property(instanceValue, property.SetMethod),
-                    result.Expression);
-
-                result.AddExtraExpression(setExpression);
-                result.Expression = null;
-
-                yield return result;
+                yield return CreatePropertyImportStatement(scope, locateType, instanceValue, strategy, request, property, importInfo);
+                
+                properties[property.Name] = true;
             }
+
+            var currentScope = scope;
+
+            while (currentScope != null)
+            {
+                foreach (var selector in currentScope.MemberInjectionSelectors)
+                {
+                    foreach (var propertyMember in selector.GetPropertiesAndFields(locateType, scope, request))
+                    {
+                        if (properties.ContainsKey(propertyMember.MemberInfo.Name))
+                        {
+                            continue;
+                        }
+
+
+
+                        properties[propertyMember.MemberInfo.Name] = true;
+                    }
+                }
+
+                currentScope = currentScope.Parent as IInjectionScope;
+            }
+        }
+
+        private static IActivationExpressionResult CreatePropertyImportStatement(IInjectionScope scope, Type locateType,
+            ParameterExpression instanceValue, InjectionStrategy strategy, IActivationExpressionRequest request,
+            PropertyInfo property, ImportAttributeInfo importInfo)
+        {
+            var propertyRequest = request.NewRequest(property.PropertyType, strategy, locateType,
+                RequestType.Member, property);
+
+            propertyRequest.SetIsRequired(importInfo.IsRequired);
+            propertyRequest.SetEnumerableComparer(importInfo.Comparer);
+
+            if (importInfo.ImportKey != null)
+            {
+                propertyRequest.SetLocateKey(importInfo.ImportKey);
+            }
+            else if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(property.PropertyType))
+            {
+                propertyRequest.SetLocateKey(property.Name);
+            }
+
+            var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, propertyRequest);
+
+            var setExpression = Expression.Assign(Expression.Property(instanceValue, property.SetMethod),
+                result.Expression);
+
+            result.AddExtraExpression(setExpression);
+            result.Expression = null;
+
+            return result;
         }
 
         /// <summary>

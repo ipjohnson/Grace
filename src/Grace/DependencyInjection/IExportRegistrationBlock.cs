@@ -45,6 +45,12 @@ namespace Grace.DependencyInjection
         void AddInjectionValueProvider(IInjectionValueProvider provider);
 
         /// <summary>
+        /// Add IMemberInjectionSelctor that selects 
+        /// </summary>
+        /// <param name="selector"></param>
+        void AddMemberInjectionSelector(IMemberInjectionSelector selector);
+
+        /// <summary>
         /// Export a specific type
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>

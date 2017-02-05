@@ -422,7 +422,7 @@ namespace Grace.DependencyInjection.Impl
 
                         if (injecitonInfo != null)
                         {
-                            strategy.MemberInjectionSelector(new PropertyMemberInjectionSelector(
+                            strategy.MemberInjectionSelector(new KnownMemberInjectionSelector(
                                     new MemberInjectionInfo
                                     {
                                         MemberInfo = property,

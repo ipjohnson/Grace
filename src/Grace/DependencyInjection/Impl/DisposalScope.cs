@@ -12,7 +12,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Should disposal scope catch exceptions, false by default
         /// </summary>
-        protected bool CatchDisposalException = false;
+        public static bool CatchDisposalException = false;
 
         private ImmutableLinkedList<Tuple<IDisposable, Action>> _disposable =
             ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty;

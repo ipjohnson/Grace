@@ -24,13 +24,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
                         {
                             var injectionInfo = new MemberInjectionInfo {MemberInfo = propertyInfo};
 
-                            if (strategy.InjectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(
-                                    propertyInfo.PropertyType))
-                            {
-                                injectionInfo.LocateKey = propertyInfo.Name;
-                            }
-                            
-                            exportStrategy.MemberInjectionSelector(new PropertyMemberInjectionSelector(injectionInfo));
+                            exportStrategy.MemberInjectionSelector(new KnownMemberInjectionSelector(injectionInfo));
                         }
                     }
                 }

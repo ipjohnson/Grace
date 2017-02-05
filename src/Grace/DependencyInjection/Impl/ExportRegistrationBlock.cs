@@ -15,6 +15,7 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
         private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
         private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+        private ImmutableLinkedList<IMemberInjectionSelector> _globalSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
         private readonly IActivationStrategyCreator _strategyCreator;
 
         /// <summary>
@@ -115,6 +116,26 @@ namespace Grace.DependencyInjection.Impl
             return _valueProviders;
         }
 
+        /// <summary>
+        /// Get member injection selectors
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IMemberInjectionSelector> GetMemberInjectionSelectors()
+        {
+            return _globalSelectors;
+        }
+
+
+        /// <summary>
+        /// Add IMemberInjectionSelctor that selects 
+        /// </summary>
+        /// <param name="selector"></param>
+        public void AddMemberInjectionSelector(IMemberInjectionSelector selector)
+        {
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+            
+            _globalSelectors = _globalSelectors.Add(selector);
+        }
 
         /// <summary>
         /// Export a specific type

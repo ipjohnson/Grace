@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// interface for selecting members that should be injected on a type
     /// </summary>
-    public interface IMemeberInjectionSelector
+    public interface IMemberInjectionSelector
     {
         /// <summary>
         /// Get a list of member injection info for a specific type

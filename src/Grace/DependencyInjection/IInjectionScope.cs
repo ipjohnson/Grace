@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {
@@ -41,6 +42,11 @@ namespace Grace.DependencyInjection
         IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer { get; }
 
         /// <summary>
+        /// Member
+        /// </summary>
+        IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors { get; }
+
+            /// <summary>
         /// List of missing export strategy providers
         /// </summary>
         IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders { get; }

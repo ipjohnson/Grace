@@ -19,6 +19,7 @@ namespace Grace.DependencyInjection.Impl
     {
         #region Fields
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> _wrappers;
+        private ImmutableLinkedList<IMemberInjectionSelector> _memberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
         private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
         private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
             ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
@@ -363,6 +364,11 @@ namespace Grace.DependencyInjection.Impl
                         StrategyCollectionContainer.AddStrategy(secondaryStrategy);
                     }
                 }
+
+                foreach (var selector in provider.GetMemberInjectionSelectors())
+                {
+                    _memberInjectionSelectors = _memberInjectionSelectors.Add(selector);
+                }
             }
         }
 
@@ -396,6 +402,11 @@ namespace Grace.DependencyInjection.Impl
         /// Decorators associated with this scope
         /// </summary>
         public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer { get; }
+
+        /// <summary>
+        /// Member
+        /// </summary>
+        public IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors => _memberInjectionSelectors;
 
         /// <summary>
         /// List of missing export strategy providers

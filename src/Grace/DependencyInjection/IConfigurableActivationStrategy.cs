@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection
         /// Add member injection selector
         /// </summary>
         /// <param name="selector">member selector</param>
-        void MemberInjectionSelector(IMemeberInjectionSelector selector);
+        void MemberInjectionSelector(IMemberInjectionSelector selector);
 
         /// <summary>
         /// Add method injection info

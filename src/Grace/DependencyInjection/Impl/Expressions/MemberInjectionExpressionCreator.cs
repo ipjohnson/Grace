@@ -121,15 +121,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     var newRequest =
                         request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Key);
 
-                    if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
+                    if (memberKVP.Value.LocateKey == null && 
+                        scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                     {
                         newRequest.SetLocateKey(memberKVP.Key.Name);
+                    }
+                    else
+                    {
+                        newRequest.SetLocateKey(memberKVP.Value.LocateKey);
                     }
 
                     newRequest.IsDynamic = memberKVP.Value.IsDynamic;
                     newRequest.SetIsRequired(memberKVP.Value.IsRequired);
                     newRequest.SetFilter(memberKVP.Value.Filter);
-                    newRequest.SetLocateKey(memberKVP.Value.LocateKey);
 
                     if (memberKVP.Value.DefaultValue != null)
                     {
@@ -177,17 +181,33 @@ namespace Grace.DependencyInjection.Impl.Expressions
             IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var members = new Dictionary<MemberInfo, MemberInjectionInfo>();
+            
+            var currentScope = scope;
 
-            foreach (var memberInjectionSelector in activationConfiguration.MemberInjectionSelectors)
+            while (currentScope != null)
+            {
+                ProcessMemberSelectors(scope, request, activationConfiguration.ActivationType, currentScope.MemberInjectionSelectors, members);
+
+                currentScope = currentScope.Parent as IInjectionScope;
+            }
+            
+            ProcessMemberSelectors(scope, request, activationConfiguration.ActivationType,activationConfiguration.MemberInjectionSelectors, members);
+
+            return members;
+        }
+
+        private static void ProcessMemberSelectors(IInjectionScope scope, IActivationExpressionRequest request,
+            Type activationType, IEnumerable<IMemberInjectionSelector> selectors,
+            Dictionary<MemberInfo, MemberInjectionInfo> members)
+        {
+            foreach (var memberInjectionSelector in selectors)
             {
                 foreach (var memberInjectionInfo in
-                    memberInjectionSelector.GetPropertiesAndFields(activationConfiguration.ActivationType, scope, request))
+                    memberInjectionSelector.GetPropertiesAndFields(activationType, scope, request))
                 {
                     members[memberInjectionInfo.MemberInfo] = memberInjectionInfo;
                 }
             }
-
-            return members;
         }
     }
 }
