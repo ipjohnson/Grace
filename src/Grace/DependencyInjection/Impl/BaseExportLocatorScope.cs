@@ -11,10 +11,13 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public abstract class BaseExportLocatorScope : DisposalScope, IExtraDataContainer
     {
-        private string _scopeIdString;
-        private Guid _scopeId = Guid.Empty;
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
+
+        /// <summary>
+        /// Scope id and name
+        /// </summary>
+        protected readonly ScopeIdAndNameClass ScopeIdAndName;
 
         /// <summary>
         /// length of the activation delegates array minus one
@@ -32,17 +35,17 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parent">parent scope</param>
         /// <param name="name">name of scope</param>
         /// <param name="activationDelegates">activation delegates</param>
-        protected BaseExportLocatorScope(IExportLocatorScope parent, 
-                                      string name, 
+        protected BaseExportLocatorScope(IExportLocatorScope parent,
+                                      string name,
                                       ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {
             Parent = parent;
-            ScopeName = name ?? "";
+            ScopeIdAndName = new ScopeIdAndNameClass { ScopeName = name };
 
             ActivationDelegates = activationDelegates;
             ArrayLengthMinusOne = activationDelegates.Length - 1;
         }
-        
+
         /// <summary>
         /// Parent for scope
         /// </summary>
@@ -51,27 +54,12 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Name of scope
         /// </summary>
-        public string ScopeName { get; }
+        public string ScopeName => ScopeIdAndName.ScopeName;
 
         /// <summary>
         /// Scope id
         /// </summary>
-        public Guid ScopeId
-        {
-            get
-            {
-                if (_scopeId != Guid.Empty)
-                {
-                    return _scopeId;
-                }
-
-                Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
-
-                _scopeId = new Guid(_scopeIdString);
-
-                return _scopeId;
-            }
-        }
+        public Guid ScopeId => ScopeIdAndName.ScopeId;
 
         /// <summary>
         /// Keys for data
@@ -97,7 +85,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _extraData.GetValueOrDefault(key);
         }
-        
+
         /// <summary>
         /// Sets extra data on the locator scope
         /// </summary>
@@ -120,5 +108,40 @@ namespace Grace.DependencyInjection.Impl
             return _lockObjects.GetValueOrDefault(lockName) ??
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
         }
+
+        /// <summary>
+        /// SCope Id and Name
+        /// </summary>
+        public class ScopeIdAndNameClass
+        {
+            private string _scopeIdString;
+            private Guid _scopeId = Guid.Empty;
+
+            /// <summary>
+            /// Scope name
+            /// </summary>
+            public string ScopeName;
+
+            /// <summary>
+            /// Scope Id
+            /// </summary>
+            public Guid ScopeId
+            {
+                get
+                {
+                    if (_scopeId != Guid.Empty)
+                    {
+                        return _scopeId;
+                    }
+
+                    Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
+
+                    _scopeId = new Guid(_scopeIdString);
+
+                    return _scopeId;
+                }
+            }
+        }
+
     }
 }
