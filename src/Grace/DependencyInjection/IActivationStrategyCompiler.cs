@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
 {
@@ -64,5 +65,10 @@ namespace Grace.DependencyInjection
         /// <param name="scope"></param>
         /// <param name="request"></param>
         void ProcessMissingStrategyProviders(IInjectionScope scope, IActivationExpressionRequest request);
+
+        /// <summary>
+        /// Default strategy expression builder
+        /// </summary>
+        IDefaultStrategyExpressionBuilder DefaultStrategyExpressionBuilder { get; }
     }
 }

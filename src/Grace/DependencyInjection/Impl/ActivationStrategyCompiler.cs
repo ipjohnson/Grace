@@ -53,6 +53,11 @@ namespace Grace.DependencyInjection.Impl
         public int MaxObjectGraphDepth => _configuration.Behaviors.MaxObjectGraphDepth;
 
         /// <summary>
+        /// Default strategy expression builder
+        /// </summary>
+        public IDefaultStrategyExpressionBuilder DefaultStrategyExpressionBuilder => _exportExpressionBuilder;
+
+        /// <summary>
         /// Creates a new expression request
         /// </summary>
         /// <param name="activationType">activation type</param>
