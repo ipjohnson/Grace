@@ -51,8 +51,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var memberType = kvp.Key.GetMemeberType();
                 object key = null;
-
-
+                
                 if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                 {
                     key = kvp.Key.Name;
