@@ -1,4 +1,6 @@
-﻿namespace Grace.DependencyInjection.Impl.Wrappers
+﻿using Grace.DependencyInjection.Impl.CompiledStrategies;
+
+namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
     /// Provides a collection of default wrappers
@@ -19,6 +21,8 @@
             collection.AddStrategy(new LazyMetadataWrapperStrategy(scope));
             collection.AddStrategy(new OwnedWrapperStrategy(scope));
             collection.AddStrategy(new MetaWrapperStrategy(scope));
+
+            collection.AddStrategy(new GenericCompiledWrapperStrategy(typeof(Scoped<>), scope, scope.StrategyCompiler.DefaultStrategyExpressionBuilder) { ExternallyOwned = false });
 
             collection.AddStrategy(new FuncWrapperStrategy(scope));
             collection.AddStrategy(new FuncOneArgWrapperStrategy(scope));
