@@ -124,8 +124,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _globalSelectors;
         }
-
-
+        
         /// <summary>
         /// Add IMemberInjectionSelctor that selects 
         /// </summary>
