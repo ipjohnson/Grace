@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Diagnostics;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -18,35 +20,83 @@ namespace Grace.DependencyInjection.Impl
     public class InjectionScope : BaseExportLocatorScope, IInjectionScope
     {
         #region Fields
-        private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> _wrappers;
-        private ImmutableLinkedList<IMemberInjectionSelector> _memberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
-        private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
-        private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders =
-            ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+        /// <summary>
+        /// Class for storing fields for injection scope
+        /// </summary>
+        protected class InternalFieldStorageClass
+        {
+            /// <summary>
+            /// List of member injection selectors
+            /// </summary>
+            public ImmutableLinkedList<IMemberInjectionSelector> MemberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
 
-        private IDynamicArrayLocator _dynamicArrayLocator;
-        private IDynamicIEnumerableLocator _dynamicIEnumerableLocator;
+            /// <summary>
+            /// Dynamic array locator
+            /// </summary>
+            public IDynamicArrayLocator DynamicArrayLocator;
+
+            /// <summary>
+            /// dynamic ienumerable locator
+            /// </summary>
+            public IDynamicIEnumerableLocator DynamicIEnumerableLocator;
+
+            /// <summary>
+            /// Wrappers for scope
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> Wrappers;
+
+            /// <summary>
+            /// Value providers
+            /// </summary>
+            public ImmutableLinkedList<IInjectionValueProvider> ValueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
+
+            /// <summary>
+            /// Missing export strategy providers
+            /// </summary>
+            public ImmutableLinkedList<IMissingExportStrategyProvider> MissingExportStrategyProviders =
+                ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+
+            /// <summary>
+            /// activation strategy compiler
+            /// </summary>
+            public IActivationStrategyCompiler ActivationStrategyCompiler;
+
+            /// <summary>
+            /// Strategy collection
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledExportStrategy> StrategyCollectionContainer;
+
+            /// <summary>
+            /// Decorators
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer;
+
+            /// <summary>
+            /// Scope configuration
+            /// </summary>
+            public IInjectionScopeConfiguration ScopeConfiguration;
+
+            /// <summary>
+            /// Provides IExportLocatorScope when requested
+            /// </summary>
+            public ILifetimeScopeProvider LifetimeScopeProvider;
+
+            /// <summary>
+            /// Creates injection context when needed
+            /// </summary>
+            public IInjectionContextCreator InjectionContextCreator;
+
+            /// <summary>
+            /// Implementation to tell if a type can be located
+            /// </summary>
+            public ICanLocateTypeService CanLocateTypeService;
+        }
 
         /// <summary>
-        /// Activation strategy compiler
+        /// Internal field storage
         /// </summary>
-        protected IActivationStrategyCompiler ActivationStrategyCompiler;
-
-        /// <summary>
-        /// Provides IExportLocatorScope when requested
-        /// </summary>
-        protected ILifetimeScopeProvider LifetimeScopeProvider;
-
-        /// <summary>
-        /// Creates injection context when needed
-        /// </summary>
-        protected IInjectionContextCreator InjectionContextCreator;
-
-        /// <summary>
-        /// Implementation to tell if a type can be located
-        /// </summary>
-        protected ICanLocateTypeService CanLocateTypeService;
-
+        protected InternalFieldStorageClass InternalFieldStorage = new InternalFieldStorageClass();
+        
         /// <summary>
         /// Disposal scope providers, this or DisposalScope must be set
         /// </summary>
@@ -95,18 +145,18 @@ namespace Grace.DependencyInjection.Impl
         {
             configuration.SetInjectionScope(this);
 
-            ScopeConfiguration = configuration;
+            InternalFieldStorage.ScopeConfiguration = configuration;
 
-            InjectionContextCreator = configuration.Implementation.Locate<IInjectionContextCreator>();
+            InternalFieldStorage.InjectionContextCreator = configuration.Implementation.Locate<IInjectionContextCreator>();
 
-            CanLocateTypeService = configuration.Implementation.Locate<ICanLocateTypeService>();
+            InternalFieldStorage.CanLocateTypeService = configuration.Implementation.Locate<ICanLocateTypeService>();
 
-            ActivationStrategyCompiler = configuration.Implementation.Locate<IActivationStrategyCompiler>();
+            InternalFieldStorage.ActivationStrategyCompiler = configuration.Implementation.Locate<IActivationStrategyCompiler>();
 
-            StrategyCollectionContainer =
+            InternalFieldStorage.StrategyCollectionContainer =
                 AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledExportStrategy>>());
 
-            DecoratorCollectionContainer =
+            InternalFieldStorage.DecoratorCollectionContainer =
                 AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>());
 
             for (var i = 0; i <= ArrayLengthMinusOne; i++)
@@ -116,8 +166,8 @@ namespace Grace.DependencyInjection.Impl
 
             if (configuration.AutoRegisterUnknown && Parent == null)
             {
-                _missingExportStrategyProviders =
-                    _missingExportStrategyProviders.Add(
+                InternalFieldStorage.MissingExportStrategyProviders =
+                    InternalFieldStorage.MissingExportStrategyProviders.Add(
                         configuration.Implementation.Locate<IMissingExportStrategyProvider>());
             }
 
@@ -131,9 +181,14 @@ namespace Grace.DependencyInjection.Impl
         #region Public members
 
         /// <summary>
+        /// Scope configuration
+        /// </summary>
+        public IInjectionScopeConfiguration ScopeConfiguration => InternalFieldStorage.ScopeConfiguration;
+
+        /// <summary>
         /// Compiler that produces Activation Strategy Delegates
         /// </summary>
-        IActivationStrategyCompiler IInjectionScope.StrategyCompiler => ActivationStrategyCompiler;
+        IActivationStrategyCompiler IInjectionScope.StrategyCompiler => InternalFieldStorage.ActivationStrategyCompiler;
 
         /// <summary>
         /// Can Locator type
@@ -144,7 +199,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
         {
-            return CanLocateTypeService.CanLocate(this, type, consider, key);
+            return InternalFieldStorage.CanLocateTypeService.CanLocate(this, type, consider, key);
         }
 
         /// <summary>
@@ -301,9 +356,9 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new scope</returns>
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return LifetimeScopeProvider == null
+            return InternalFieldStorage.LifetimeScopeProvider == null
                 ? new LifetimeScope(this, this, scopeName, ActivationDelegates)
-                : LifetimeScopeProvider.CreateScope(this, scopeName, ActivationDelegates);
+                : InternalFieldStorage.LifetimeScopeProvider.CreateScope(this, scopeName, ActivationDelegates);
         }
 
         /// <summary>
@@ -313,7 +368,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IInjectionContext CreateContext(object extraData = null)
         {
-            return InjectionContextCreator.CreateContext(extraData);
+            return InternalFieldStorage.InjectionContextCreator.CreateContext(extraData);
         }
 
         /// <summary>
@@ -337,12 +392,12 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (var missingExportStrategyProvider in provider.GetMissingExportStrategyProviders())
                 {
-                    _missingExportStrategyProviders = _missingExportStrategyProviders.Add(missingExportStrategyProvider);
+                    InternalFieldStorage.MissingExportStrategyProviders = InternalFieldStorage.MissingExportStrategyProviders.Add(missingExportStrategyProvider);
                 }
 
                 foreach (var injectionValueProvider in provider.GetValueProviders())
                 {
-                    _valueProviders = _valueProviders.Add(injectionValueProvider);
+                    InternalFieldStorage.ValueProviders = InternalFieldStorage.ValueProviders.Add(injectionValueProvider);
                 }
 
                 foreach (var compiledWrapperStrategy in provider.GetWrapperStrategies())
@@ -367,7 +422,7 @@ namespace Grace.DependencyInjection.Impl
 
                 foreach (var selector in provider.GetMemberInjectionSelectors())
                 {
-                    _memberInjectionSelectors = _memberInjectionSelectors.Add(selector);
+                    InternalFieldStorage.MemberInjectionSelectors = InternalFieldStorage.MemberInjectionSelectors.Add(selector);
                 }
             }
         }
@@ -383,40 +438,39 @@ namespace Grace.DependencyInjection.Impl
             Configure(module.Configure);
         }
 
-        /// <summary>
-        /// Scope configuration
-        /// </summary>
-        public IInjectionScopeConfiguration ScopeConfiguration { get; }
 
         /// <summary>
         /// Strategies associated with this scope
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledExportStrategy> StrategyCollectionContainer { get; }
+        public IActivationStrategyCollectionContainer<ICompiledExportStrategy> StrategyCollectionContainer
+            => InternalFieldStorage.StrategyCollectionContainer;
 
         /// <summary>
         /// Wrappers associated with this scope
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer => _wrappers ?? GetWrappers();
+        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer => 
+            InternalFieldStorage.Wrappers ?? GetWrappers();
 
         /// <summary>
         /// Decorators associated with this scope
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer { get; }
+        public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer
+            => InternalFieldStorage.DecoratorCollectionContainer;
 
         /// <summary>
         /// Member
         /// </summary>
-        public IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors => _memberInjectionSelectors;
+        public IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors => InternalFieldStorage.MemberInjectionSelectors;
 
         /// <summary>
         /// List of missing export strategy providers
         /// </summary>
-        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders => _missingExportStrategyProviders;
+        public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders => InternalFieldStorage.MissingExportStrategyProviders;
 
         /// <summary>
         /// List of value providers that can be used during construction of linq expression
         /// </summary>
-        public IEnumerable<IInjectionValueProvider> InjectionValueProviders => _valueProviders;
+        public IEnumerable<IInjectionValueProvider> InjectionValueProviders => InternalFieldStorage.ValueProviders;
 
         /// <summary>
         /// Locate an export from a child scope
@@ -554,7 +608,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var compiledDelegate = ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, _missingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
+            var compiledDelegate = InternalFieldStorage.ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, InternalFieldStorage.MissingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
 
             if (compiledDelegate != null)
             {
@@ -583,24 +637,24 @@ namespace Grace.DependencyInjection.Impl
 
         private object DynamicIEnumerable(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
         {
-            if (_dynamicIEnumerableLocator == null)
+            if (InternalFieldStorage.DynamicIEnumerableLocator == null)
             {
-                Interlocked.CompareExchange(ref _dynamicIEnumerableLocator,
+                Interlocked.CompareExchange(ref InternalFieldStorage.DynamicIEnumerableLocator,
                     ScopeConfiguration.Implementation.Locate<IDynamicIEnumerableLocator>(), null);
             }
 
-            return _dynamicIEnumerableLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
+            return InternalFieldStorage.DynamicIEnumerableLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
         }
 
         private object DynamicArray(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
         {
-            if (_dynamicArrayLocator == null)
+            if (InternalFieldStorage.DynamicArrayLocator == null)
             {
-                Interlocked.CompareExchange(ref _dynamicArrayLocator,
+                Interlocked.CompareExchange(ref InternalFieldStorage.DynamicArrayLocator,
                     ScopeConfiguration.Implementation.Locate<IDynamicArrayLocator>(), null);
             }
 
-            return _dynamicArrayLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
+            return InternalFieldStorage.DynamicArrayLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
         }
 
         private ActivationStrategyDelegate AddObjectFactory(Type type, ActivationStrategyDelegate activationStrategyDelegate)
@@ -614,19 +668,19 @@ namespace Grace.DependencyInjection.Impl
 
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> GetWrappers()
         {
-            if (_wrappers != null)
+            if (InternalFieldStorage.Wrappers != null)
             {
-                return _wrappers;
+                return InternalFieldStorage.Wrappers;
             }
 
             var wrapperCollectionProvider = ScopeConfiguration.Implementation.Locate<IDefaultWrapperCollectionProvider>();
 
-            if (Interlocked.CompareExchange(ref _wrappers, wrapperCollectionProvider.ProvideCollection(this), null) == null)
+            if (Interlocked.CompareExchange(ref InternalFieldStorage.Wrappers, wrapperCollectionProvider.ProvideCollection(this), null) == null)
             {
-                AddDisposable(_wrappers);
+                AddDisposable(InternalFieldStorage.Wrappers);
             }
 
-            return _wrappers;
+            return InternalFieldStorage.Wrappers;
         }
 
         private void LocateEnumerablesFromStrategyCollection<TStrategy, TValue>(IActivationStrategyCollection<TStrategy> collection, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList) where TStrategy : IWrapperOrExportActivationStrategy
@@ -657,7 +711,7 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                var activationDelegate = strategy.GetActivationStrategyDelegate(this, ActivationStrategyCompiler, type);
+                var activationDelegate = strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
 
                 if (activationDelegate != null)
                 {
@@ -669,6 +723,10 @@ namespace Grace.DependencyInjection.Impl
 
         private string DebugDisplayString => "Exports: " + StrategyCollectionContainer.GetAllStrategies().Count();
 
+        #endregion
+
+        #region Internal storage class
+        
         #endregion
 
     }
