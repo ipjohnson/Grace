@@ -346,7 +346,6 @@ namespace Grace.Data.Immutable
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
             // don't check for null as it's assumed if you calculated a hash then you have key
-            
             if (ReferenceEquals(Key, key))
             {
                 return Value;
@@ -360,7 +359,7 @@ namespace Grace.Data.Immutable
             }
 
             return currenNode.Height != 0 &&
-                   (ReferenceEquals(currenNode.Key, key) || key.Equals(currenNode.Key))
+                   key.Equals(currenNode.Key)
                     ? currenNode.Value
                     : GetConflictedValue(key, currenNode.Conflicts, defaultValue);
         }
