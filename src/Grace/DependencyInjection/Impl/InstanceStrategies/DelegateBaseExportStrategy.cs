@@ -54,7 +54,18 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         protected virtual IActivationExpressionResult CreateExpression(IInjectionScope scope,
             IActivationExpressionRequest request)
         {
-            return ExpressionUtilities.CreateExpressionForDelegate(DelegateInstance, ExternallyOwned, scope, request);
+            return ExpressionUtilities.CreateExpressionForDelegate(DelegateInstance, ShouldTrackDisposable(scope), scope, request);
+        }
+        
+        private bool ShouldTrackDisposable(IInjectionScope scope)
+        {
+            if (ExternallyOwned)
+            {
+                return false;
+            }
+
+            return scope.ScopeConfiguration.TrackDisposableTransients ||
+                   (Lifestyle != null && Lifestyle.LifestyleType != LifestyleType.Transient);
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -19,7 +20,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns>dependencies</returns>
         IEnumerable<ActivationStrategyDependency> GetDependencies(TypeActivationConfiguration configuration, IActivationExpressionRequest request);
 
-            /// <summary>
+        /// <summary>
         /// Get activation expression
         /// </summary>
         /// <param name="scope">scope</param>
@@ -49,8 +50,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="enrichmentExpressionCreator"></param>
         /// <param name="methodInvokeExpressionCreator"></param>
         public TypeExpressionBuilder(IInstantiationExpressionCreator instantiationExpressionCreator,
-                                     IDisposalScopeExpressionCreator disposalScopeExpressionCreator, 
-                                     IMemberInjectionExpressionCreator memberInjectionExpressionCreator, 
+                                     IDisposalScopeExpressionCreator disposalScopeExpressionCreator,
+                                     IMemberInjectionExpressionCreator memberInjectionExpressionCreator,
                                      IMethodInvokeExpressionCreator methodInvokeExpressionCreator,
                                      IEnrichmentExpressionCreator enrichmentExpressionCreator)
         {
@@ -91,11 +92,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var currentExpression = _instantiationExpressionCreator.CreateExpression(scope, request, activationConfiguration);
 
             currentExpression = _memberInjectionExpressionCreator.CreateExpression(scope, request, activationConfiguration, currentExpression);
-            
+
             currentExpression = _methodInvokeExpressionCreator.CreateExpression(scope, request, activationConfiguration, currentExpression);
 
-            if (activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IDisposable)) && 
-                activationConfiguration.ExternallyOwned == false)
+            if (ShouldTrackForDisposable(scope, activationConfiguration))
             {
                 currentExpression = _disposalScopeExpressionCreator.CreateExpression(scope, request,
                     activationConfiguration, currentExpression);
@@ -104,6 +104,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
             currentExpression = _enrichmentExpressionCreator.CreateExpression(scope, request, activationConfiguration, currentExpression);
 
             return currentExpression;
+        }
+
+        private bool ShouldTrackForDisposable(IInjectionScope scope, TypeActivationConfiguration activationConfiguration)
+        {
+            if (activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IDisposable)) == false)
+            {
+                return false;
+            }
+
+            if (activationConfiguration.ExternallyOwned)
+            {
+                return false;
+            }
+
+            return scope.ScopeConfiguration.TrackDisposableTransients ||
+                 (activationConfiguration.Lifestyle != null && 
+                  activationConfiguration.Lifestyle.LifestyleType != LifestyleType.Transient);
         }
     }
 }

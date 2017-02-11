@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -408,7 +409,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,
                 RequestType.ConstructorParameter, parameter);
 
-            return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, configurationExternallyOwned, injectionScope, newRequest);
+            return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned,injectionScope,strategy), injectionScope, newRequest);
+        }
+
+        private bool ShouldTrackDisposable(bool configurationExternallyOwned, IInjectionScope scope,
+            IActivationStrategy strategy)
+        {
+            if (configurationExternallyOwned)
+            {
+                return false;
+            }
+
+            return scope.ScopeConfiguration.TrackDisposableTransients ||
+                   (strategy.Lifestyle != null && strategy.Lifestyle.LifestyleType != LifestyleType.Transient);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Grace.DependencyInjection
             ExportStrategyArraySize = 16;
             AutoRegisterUnknown = true;
             ExportAsBase = false;
+            TrackDisposableTransients = true;
 
             ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
@@ -84,6 +85,11 @@ namespace Grace.DependencyInjection
         /// Provide action that will be called for tracing purposes
         /// </summary>
         public Action<string> Trace { get; set; }
+
+        /// <summary>
+        /// Should the container track disposable transients
+        /// </summary>
+        public bool TrackDisposableTransients { get; set; }
 
         /// <summary>
         /// 

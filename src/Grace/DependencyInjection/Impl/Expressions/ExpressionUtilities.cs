@@ -43,11 +43,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Create an expression to call delegate and apply null check and disposal logic
         /// </summary>
         /// <param name="delegateInstance"></param>
-        /// <param name="externallyOwned"></param>
+        /// <param name="allowDisposableTracking"></param>
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static IActivationExpressionResult CreateExpressionForDelegate(Delegate delegateInstance, bool externallyOwned, IInjectionScope scope,
+        public static IActivationExpressionResult CreateExpressionForDelegate(Delegate delegateInstance, bool allowDisposableTracking, IInjectionScope scope,
             IActivationExpressionRequest request)
         {
             var methodInfo = delegateInstance.GetMethodInfo();
@@ -60,7 +60,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 : Expression.Call(Expression.Constant(delegateInstance.Target),
                     methodInfo, resultsExpressions.Select(e => e.Expression));
 
-            expression = ApplyNullCheckAndAddDisposal(scope, request, expression, externallyOwned);
+            expression = ApplyNullCheckAndAddDisposal(scope, request, expression, allowDisposableTracking);
 
             var result = request.Services.Compiler.CreateNewResult(request, expression);
 
@@ -80,9 +80,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="expression"></param>
-        /// <param name="externallyOwned"></param>
+        /// <param name="allowDisposableTracking"></param>
         /// <returns></returns>
-        public static Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression, bool externallyOwned)
+        public static Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression, bool allowDisposableTracking)
         {
             if (expression.Type != request.ActivationType &&
                !ReflectionService.CheckTypeIsBasedOnAnotherType(expression.Type, request.ActivationType))
@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 expression = Expression.Convert(expression, request.ActivationType);
             }
 
-            if (externallyOwned)
+            if (!allowDisposableTracking)
             {
                 if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
                 {

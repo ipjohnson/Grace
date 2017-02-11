@@ -68,6 +68,11 @@ namespace Grace.DependencyInjection
         /// </summary>
         Action<string> Trace { get; }
 
+        /// <summary>
+        /// Should the container track disposable transients
+        /// </summary>
+        bool TrackDisposableTransients { get; }
+
             /// <summary>
         /// Clone configuration
         /// </summary>
