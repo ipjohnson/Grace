@@ -22,11 +22,11 @@ namespace Grace.DependencyInjection.Lifestyle
         {
             _guaranteeOnlyOne = guaranteeOnlyOne;
         }
-
+        
         /// <summary>
-        /// Root the request context when creating expression
+        /// Generalization for lifestyle
         /// </summary>
-        public bool RootRequest { get; } = false;
+        public LifestyleType LifestyleType { get; } = LifestyleType.Transient;
 
         /// <summary>
         /// Clone the lifestyle

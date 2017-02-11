@@ -21,11 +21,11 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Constant expression
         /// </summary>
         protected Expression ConstantExpression;
-
+        
         /// <summary>
-        /// Root the request context when creating expression
+        /// Generalization for lifestyle
         /// </summary>
-        public virtual bool RootRequest { get; protected set; } = true;
+        public LifestyleType LifestyleType { get; } = LifestyleType.Singleton;
 
         /// <summary>
         /// Clone lifestyle

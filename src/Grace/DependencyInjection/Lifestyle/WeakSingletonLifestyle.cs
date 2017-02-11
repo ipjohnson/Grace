@@ -15,11 +15,11 @@ namespace Grace.DependencyInjection.Lifestyle
         private readonly WeakReference _weakReference = new WeakReference(null);
         private ActivationStrategyDelegate _delegate;
         private readonly object _lockObject = new object();
-
+        
         /// <summary>
-        /// Root the request context when creating expression
+        /// Generalization for lifestyle
         /// </summary>
-        public bool RootRequest { get; } = true;
+        public LifestyleType LifestyleType { get; } = LifestyleType.Singleton;
 
         /// <summary>
         /// Clone the lifestyle

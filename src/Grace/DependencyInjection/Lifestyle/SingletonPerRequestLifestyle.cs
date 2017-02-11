@@ -11,6 +11,11 @@ namespace Grace.DependencyInjection.Lifestyle
         private ICompiledLifestyle _compiledLifestyle;
 
         /// <summary>
+        /// Generalization for lifestyle
+        /// </summary>
+        public LifestyleType LifestyleType { get; } = LifestyleType.Scoped;
+
+        /// <summary>
         /// Clone the lifestyle
         /// </summary>
         /// <returns></returns>

@@ -2,11 +2,38 @@
 
 namespace Grace.DependencyInjection.Lifestyle
 {
+
+    /// <summary>
+    /// Generalized type for lifestyle
+    /// </summary>
+    public enum LifestyleType
+    {
+        /// <summary>
+        /// Lifestyle is roughly transient (PerObjectGraph, PerAncestorType)
+        /// </summary>
+        Transient,
+
+        /// <summary>
+        /// Singleton that is tied to a scope
+        /// </summary>
+        Scoped,
+
+        /// <summary>
+        /// Singleton for the whole container
+        /// </summary>
+        Singleton
+    }
+
     /// <summary>
     /// Represents a lifestyle that can be used for exports
     /// </summary>
     public interface ICompiledLifestyle
     {
+        /// <summary>
+        /// Generalization for lifestyle
+        /// </summary>
+        LifestyleType LifestyleType { get; }
+
         /// <summary>
         /// Clone the lifestyle
         /// </summary>

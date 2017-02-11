@@ -33,11 +33,11 @@ namespace Grace.DependencyInjection.Lifestyle
         {
             _scopeName = scopeName;
         }
-
+        
         /// <summary>
-        /// Root the request context when creating expression
+        /// Generalization for lifestyle
         /// </summary>
-        public bool RootRequest { get; } = true;
+        public LifestyleType LifestyleType { get; } = LifestyleType.Scoped;
 
         /// <summary>
         /// Clone the lifestyle
