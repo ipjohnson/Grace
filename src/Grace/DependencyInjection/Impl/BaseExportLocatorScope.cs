@@ -40,7 +40,7 @@ namespace Grace.DependencyInjection.Impl
                                       ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {
             Parent = parent;
-            ScopeIdAndName = new ScopeIdAndNameClass { ScopeName = name };
+            ScopeIdAndName = new ScopeIdAndNameClass(name);
 
             ActivationDelegates = activationDelegates;
             ArrayLengthMinusOne = activationDelegates.Length - 1;
@@ -118,10 +118,19 @@ namespace Grace.DependencyInjection.Impl
             private Guid _scopeId = Guid.Empty;
 
             /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="scopeName"></param>
+            public ScopeIdAndNameClass(string scopeName)
+            {
+                ScopeName = scopeName ?? "";
+            }
+
+            /// <summary>
             /// Scope name
             /// </summary>
-            public string ScopeName;
-
+            public string ScopeName { get; }
+                
             /// <summary>
             /// Scope Id
             /// </summary>
@@ -142,6 +151,5 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
         }
-
     }
 }
