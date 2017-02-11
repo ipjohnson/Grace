@@ -26,12 +26,12 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
-        public IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request,
+        public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request,
             Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (_compiledLifestyle != null)
             {
-                return _compiledLifestyle.ProvideLifestlyExpression(scope, request, activationExpression);
+                return _compiledLifestyle.ProvideLifestyleExpression(scope, request, activationExpression);
             }
 
             IPerRequestLifestyleProvider provider;
@@ -42,7 +42,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             Interlocked.CompareExchange(ref _compiledLifestyle, lifestyle, null);
 
-            return _compiledLifestyle.ProvideLifestlyExpression(scope, request, activationExpression);
+            return _compiledLifestyle.ProvideLifestyleExpression(scope, request, activationExpression);
         }
     }
 }

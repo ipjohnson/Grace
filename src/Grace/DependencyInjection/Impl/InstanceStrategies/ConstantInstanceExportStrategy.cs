@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             {
                 return CreateExpression(request);
             }
-            return lifestyle.ProvideLifestlyExpression(scope, request, CreateExpression);
+            return lifestyle.ProvideLifestyleExpression(scope, request, CreateExpression);
         }
 
         /// <summary>

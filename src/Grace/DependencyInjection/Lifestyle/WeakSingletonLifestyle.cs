@@ -37,7 +37,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
         /// <returns></returns>
-        public IActivationExpressionResult ProvideLifestlyExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
+        public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (_delegate == null)
             {

@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return TypeExpressionBuilder.GetActivationExpression(scope, request, activationConfiguration);
             }
 
-            return lifestyle.ProvideLifestlyExpression(scope, request,
+            return lifestyle.ProvideLifestyleExpression(scope, request,
                 lifestyleRequest => TypeExpressionBuilder.GetActivationExpression(scope, lifestyleRequest, activationConfiguration));
         }
     }
