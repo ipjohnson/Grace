@@ -21,78 +21,6 @@ namespace Grace.DependencyInjection.Impl
     {
         #region Fields
         /// <summary>
-        /// Class for storing fields for injection scope
-        /// </summary>
-        protected class InternalFieldStorageClass
-        {
-            /// <summary>
-            /// List of member injection selectors
-            /// </summary>
-            public ImmutableLinkedList<IMemberInjectionSelector> MemberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
-
-            /// <summary>
-            /// Dynamic array locator
-            /// </summary>
-            public IDynamicArrayLocator DynamicArrayLocator;
-
-            /// <summary>
-            /// dynamic ienumerable locator
-            /// </summary>
-            public IDynamicIEnumerableLocator DynamicIEnumerableLocator;
-
-            /// <summary>
-            /// Wrappers for scope
-            /// </summary>
-            public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> Wrappers;
-
-            /// <summary>
-            /// Value providers
-            /// </summary>
-            public ImmutableLinkedList<IInjectionValueProvider> ValueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
-
-            /// <summary>
-            /// Missing export strategy providers
-            /// </summary>
-            public ImmutableLinkedList<IMissingExportStrategyProvider> MissingExportStrategyProviders =
-                ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
-
-            /// <summary>
-            /// activation strategy compiler
-            /// </summary>
-            public IActivationStrategyCompiler ActivationStrategyCompiler;
-
-            /// <summary>
-            /// Strategy collection
-            /// </summary>
-            public IActivationStrategyCollectionContainer<ICompiledExportStrategy> StrategyCollectionContainer;
-
-            /// <summary>
-            /// Decorators
-            /// </summary>
-            public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer;
-
-            /// <summary>
-            /// Scope configuration
-            /// </summary>
-            public IInjectionScopeConfiguration ScopeConfiguration;
-
-            /// <summary>
-            /// Provides IExportLocatorScope when requested
-            /// </summary>
-            public ILifetimeScopeProvider LifetimeScopeProvider;
-
-            /// <summary>
-            /// Creates injection context when needed
-            /// </summary>
-            public IInjectionContextCreator InjectionContextCreator;
-
-            /// <summary>
-            /// Implementation to tell if a type can be located
-            /// </summary>
-            public ICanLocateTypeService CanLocateTypeService;
-        }
-
-        /// <summary>
         /// Internal field storage
         /// </summary>
         protected InternalFieldStorageClass InternalFieldStorage = new InternalFieldStorageClass();
@@ -726,7 +654,80 @@ namespace Grace.DependencyInjection.Impl
         #endregion
 
         #region Internal storage class
-        
+
+        /// <summary>
+        /// Class for storing fields for injection scope,
+        /// Fields that are not on the fast path are put in this class to keep the injection scope as light as possible
+        /// </summary>
+        protected class InternalFieldStorageClass
+        {
+            /// <summary>
+            /// List of member injection selectors
+            /// </summary>
+            public ImmutableLinkedList<IMemberInjectionSelector> MemberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
+
+            /// <summary>
+            /// Dynamic array locator
+            /// </summary>
+            public IDynamicArrayLocator DynamicArrayLocator;
+
+            /// <summary>
+            /// dynamic ienumerable locator
+            /// </summary>
+            public IDynamicIEnumerableLocator DynamicIEnumerableLocator;
+
+            /// <summary>
+            /// Wrappers for scope
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> Wrappers;
+
+            /// <summary>
+            /// Value providers
+            /// </summary>
+            public ImmutableLinkedList<IInjectionValueProvider> ValueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
+
+            /// <summary>
+            /// Missing export strategy providers
+            /// </summary>
+            public ImmutableLinkedList<IMissingExportStrategyProvider> MissingExportStrategyProviders =
+                ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+
+            /// <summary>
+            /// activation strategy compiler
+            /// </summary>
+            public IActivationStrategyCompiler ActivationStrategyCompiler;
+
+            /// <summary>
+            /// Strategy collection
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledExportStrategy> StrategyCollectionContainer;
+
+            /// <summary>
+            /// Decorators
+            /// </summary>
+            public IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy> DecoratorCollectionContainer;
+
+            /// <summary>
+            /// Scope configuration
+            /// </summary>
+            public IInjectionScopeConfiguration ScopeConfiguration;
+
+            /// <summary>
+            /// Provides IExportLocatorScope when requested
+            /// </summary>
+            public ILifetimeScopeProvider LifetimeScopeProvider;
+
+            /// <summary>
+            /// Creates injection context when needed
+            /// </summary>
+            public IInjectionContextCreator InjectionContextCreator;
+
+            /// <summary>
+            /// Implementation to tell if a type can be located
+            /// </summary>
+            public ICanLocateTypeService CanLocateTypeService;
+        }
+
         #endregion
 
     }
