@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -640,11 +641,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
-            var decorators = FindDecoratorsForType(scope, request.ActivationType);
+            var decorators = FindDecoratorsForType(scope,request, request.ActivationType, strategy);
 
             if (request.ActivationType != strategy.ActivationType)
             {
-                var activationTypeDecorators = FindDecoratorsForType(scope, strategy.ActivationType);
+                var activationTypeDecorators = FindDecoratorsForType(scope,request, strategy.ActivationType, strategy);
 
                 foreach (var decorator in activationTypeDecorators)
                 {
@@ -660,17 +661,41 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return decorators;
         }
 
-        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForType(IInjectionScope scope,
-            Type type)
+        /// <summary>
+        /// Find decorators for a given type
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="type"></param>
+        /// <param name="strategy"></param>
+        /// <returns></returns>
+        protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForType(IInjectionScope scope, IActivationExpressionRequest request, Type type, ICompiledExportStrategy strategy)
         {
             List<ICompiledDecoratorStrategy> decorators = new List<ICompiledDecoratorStrategy>();
-
+            StaticInjectionContext staticInjectionContext = null;
             var collection =
                 scope.DecoratorCollectionContainer.GetActivationStrategyCollection(type);
 
             if (collection != null)
             {
-                decorators.AddRange(collection.GetStrategies());
+                foreach (var decorator in collection.GetStrategies())
+                {
+                    if (decorator.HasConditions)
+                    {
+                        if (staticInjectionContext == null)
+                        {
+                            staticInjectionContext = request.GetStaticInjectionContext();
+                        }
+
+                        if (!decorator.Conditions.All(
+                                condition => condition.MeetsCondition(strategy, staticInjectionContext)))
+                        {
+                            continue;
+                        }
+                    }
+
+                    decorators.Add(decorator);
+                }
             }
 
             if (type.IsConstructedGenericType)
@@ -681,7 +706,24 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (collection != null)
                 {
-                    decorators.AddRange(collection.GetStrategies());
+                    foreach (var decorator in collection.GetStrategies())
+                    {
+                        if (decorator.HasConditions)
+                        {
+                            if (staticInjectionContext == null)
+                            {
+                                staticInjectionContext = request.GetStaticInjectionContext();
+                            }
+
+                            if (!decorator.Conditions.All(
+                                    condition => condition.MeetsCondition(strategy, staticInjectionContext)))
+                            {
+                                continue;
+                            }
+                        }
+
+                        decorators.Add(decorator);
+                    }
                 }
             }
 
