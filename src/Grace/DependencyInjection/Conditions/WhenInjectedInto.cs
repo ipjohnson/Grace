@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Conditions
         {
             var targetInfo = staticInjectionContext.TargetInfo;
 
-            return targetInfo != null && _typeTest(targetInfo.InjectionType);
+            return targetInfo?.InjectionType != null && _typeTest(targetInfo.InjectionType);
         }
 
         /// <summary>
