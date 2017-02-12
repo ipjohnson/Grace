@@ -23,6 +23,7 @@ namespace Grace.DependencyInjection
             AutoRegisterUnknown = true;
             ExportAsBase = false;
             TrackDisposableTransients = true;
+            SupportFuncType = true;
 
             ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
@@ -80,6 +81,11 @@ namespace Grace.DependencyInjection
         /// Filter interfaces to be exported
         /// </summary>
         public Func<Type, Type, bool> ExportByInterfaceFilter { get; set; }
+
+        /// <summary>
+        /// Support Func&lt;Type,object&gt; out of the box
+        /// </summary>
+        public bool SupportFuncType { get; set; }
 
         /// <summary>
         /// Provide action that will be called for tracing purposes

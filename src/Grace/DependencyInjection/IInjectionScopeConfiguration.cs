@@ -62,6 +62,11 @@ namespace Grace.DependencyInjection
         /// Note: by default IDisposable and _Attribute are filter out
         /// </summary>
         Func<Type, Type, bool> ExportByInterfaceFilter { get; }
+        
+        /// <summary>
+        /// Support Func&lt;Type,object&gt; out of the box
+        /// </summary>
+        bool SupportFuncType { get; }
 
         /// <summary>
         /// Method that can be called to trace the container

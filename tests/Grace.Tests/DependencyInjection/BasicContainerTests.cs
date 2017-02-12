@@ -182,7 +182,8 @@ namespace Grace.Tests.DependencyInjection
         [Fact]
         public void DependencyInjectionContainer_Clone_Strategies()
         {
-            var container = new DependencyInjectionContainer();
+            // turn off func support so no strategies
+            var container = new DependencyInjectionContainer(c => c.SupportFuncType = false);
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>());
 

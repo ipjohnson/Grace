@@ -53,7 +53,7 @@ namespace Grace.Tests.Diagnostics
         }
         private DependencyInjectionContainer ConfigureContainer()
         {
-            var container = new DependencyInjectionContainer();
+            var container = new DependencyInjectionContainer(c => c.SupportFuncType = false);
 
             container.Configure(c =>
             {

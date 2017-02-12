@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
+using Grace.DependencyInjection.Impl.FactoryStrategies;
+using Grace.DependencyInjection.Impl.KnownTypeStrategies;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Diagnostics;
 using Grace.Utilities;
@@ -97,6 +99,11 @@ namespace Grace.DependencyInjection.Impl
                 InternalFieldStorage.MissingExportStrategyProviders =
                     InternalFieldStorage.MissingExportStrategyProviders.Add(
                         configuration.Implementation.Locate<IMissingExportStrategyProvider>());
+            }
+
+            if (configuration.SupportFuncType)
+            {
+                StrategyCollectionContainer.AddStrategy(new FuncTypeStrategy(this));
             }
 
             DisposalScopeProvider = configuration.DisposalScopeProvider;
