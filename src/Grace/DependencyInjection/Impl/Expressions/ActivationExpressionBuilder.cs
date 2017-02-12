@@ -263,9 +263,37 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             object value = null;
 
-            if (dataProvider != null && key != null)
+            if (dataProvider != null )
             {
-                value = dataProvider.GetExtraData(key);
+                if (key != null)
+                {
+                    value = dataProvider.GetExtraData(key);
+                }
+
+                if (value == null)
+                {
+                    value = dataProvider.Values.FirstOrDefault(o => o is T);
+                }
+            }
+
+            if (value == null)
+            {
+                var currentLocator = locator;
+
+                while (currentLocator != null && value == null)
+                {
+                    if (key != null)
+                    {
+                        value = currentLocator.GetExtraData(key);
+                    }
+
+                    if (value == null)
+                    {
+                        value = currentLocator.Values.FirstOrDefault(o => o is T);
+                    }
+
+                    currentLocator = currentLocator.Parent;
+                }
             }
 
             if (value == null && useDefault)

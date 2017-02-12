@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Grace.Data;
 
 namespace Grace.DependencyInjection
 {
@@ -22,6 +23,31 @@ namespace Grace.DependencyInjection
             }
 
             return (IInjectionScope)scope;
+        }
+
+        /// <summary>
+        /// Creates a new lifetime scope and sets extra data into it before returning
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="scopeName">new scope name</param>
+        /// <param name="extraData">extra data to add to scope</param>
+        /// <returns></returns>
+        public static IExportLocatorScope BeginLifetimeScope(this IExportLocatorScope scope, string scopeName = "",
+            object extraData = null)
+        {
+            var lifetimeScope = scope.BeginLifetimeScope(scopeName);
+
+            if (extraData == null)
+            {
+                return lifetimeScope;
+            }
+
+            foreach (var pair in ReflectionService.GetPropertiesFromObject(extraData, casing: ReflectionService.PropertyCasing.Lower))
+            {
+                lifetimeScope.SetExtraData(pair.Key, pair.Value);
+            }
+
+            return lifetimeScope;
         }
 
         /// <summary>
@@ -55,7 +81,7 @@ namespace Grace.DependencyInjection
                 {
                     builder.AppendLine("As Type: " + exportType);
                 }
-                
+
                 builder.AppendLine("Priority: " + exportStrategy.Priority);
 
                 builder.AppendLine("Externally Owned: " + exportStrategy.ExternallyOwned);
@@ -68,7 +94,7 @@ namespace Grace.DependencyInjection
                 {
                     builder.AppendLine("Lifestyle: Transient");
                 }
-                
+
                 builder.AppendLine("Depends On");
 
                 var hasDependency = false;
@@ -80,7 +106,7 @@ namespace Grace.DependencyInjection
                     builder.AppendLine("\tMember Name: " + exportStrategyDependency.MemberName);
 
                     builder.AppendLine("\tImport Type: " + exportStrategyDependency.TypeBeingImported.FullName);
-                    
+
                     builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
 
                     builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);

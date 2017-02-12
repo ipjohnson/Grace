@@ -84,7 +84,6 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
             }
         }
 
-
         [Fact]
         public void LifetimeScope_Locate_Dynamic()
         {
@@ -214,6 +213,34 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                 var instance2 = scope.Locate(typeof(IBasicService), null);
 
                 Assert.Same(instance1, instance2);
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_Backup_Resolution_Source_With_Name()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope(extraData: new { value = 5 }))
+            {
+                var instance = scope.Locate<DependentService<int>>();
+
+                Assert.NotNull(instance);
+                Assert.Equal(5, instance.Value);
+            }
+        }
+        
+        [Fact]
+        public void LifetimeScope_Backup_Resolution_Source_By_Type()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope(extraData: new { SomeValue = 5 }))
+            {
+                var instance = scope.Locate<DependentService<int>>();
+
+                Assert.NotNull(instance);
+                Assert.Equal(5, instance.Value);
             }
         }
     }
