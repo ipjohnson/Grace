@@ -20,13 +20,7 @@ Getting Grace
 
 [NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, .Net Standard 1.0, and PCL Profile 259.
 
-
-Documented Grace
-====
-
 [Getting Started](https://github.com/ipjohnson/Grace/wiki/Getting-Started)  - A getting started guide for Grace as well as documentation for more complex topics 
-
-[API Documentation](http://www.nudoq.org/#!/Packages/Grace/Grace/DependencyInjectionContainer) - API document is hosted on NuDoq
 
 Features in Grace
 =====
