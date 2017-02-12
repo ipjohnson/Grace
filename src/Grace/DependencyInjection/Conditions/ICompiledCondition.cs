@@ -6,7 +6,7 @@
     public interface ICompiledCondition
     {
         /// <summary>
-        /// Test if strategy meets condition
+        /// Test if strategy meets condition at configuration time
         /// </summary>
         /// <param name="strategy">strategy to test</param>
         /// <param name="staticInjectionContext">static injection context</param>
