@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Conditions;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -41,5 +42,11 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        /// <summary>
+        /// Condition for decorator strategy
+        /// </summary>
+        public IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When 
+            => new WhenConditionConfiguration<IFluentDecoratorStrategyConfiguration>(_strategy.AddCondition, this);
     }
 }

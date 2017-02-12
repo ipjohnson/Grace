@@ -19,5 +19,10 @@ namespace Grace.DependencyInjection
         /// <param name="type"></param>
         /// <returns></returns>
         IFluentDecoratorStrategyConfiguration As(Type type);
+
+        /// <summary>
+        /// Condition for decorator strategy
+        /// </summary>
+        IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When { get; }
     }
 }
