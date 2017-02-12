@@ -8,8 +8,15 @@ namespace Grace.DependencyInjection.Conditions
     /// <typeparam name="T"></typeparam>
     public class WhenConditionConfiguration<T> : IWhenConditionConfiguration<T>
     {
-        private readonly Action<ICompiledCondition> _addAction;
-        private readonly T _t;
+        /// <summary>
+        /// Add action
+        /// </summary>
+        protected readonly Action<ICompiledCondition> AddAction;
+
+        /// <summary>
+        /// TValue to return
+        /// </summary>
+        protected readonly T TValue;
 
         /// <summary>
         /// Default constructor that takes action to add condition and T to return
@@ -22,9 +29,9 @@ namespace Grace.DependencyInjection.Conditions
 
             if (t == null) throw new ArgumentNullException(nameof(t));
 
-            _addAction = addAction;
+            AddAction = addAction;
 
-            _t = t;
+            TValue = t;
         }
 
         /// <summary>
@@ -36,9 +43,9 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (condition == null) throw new ArgumentNullException(nameof(condition));
 
-            _addAction(condition);
+            AddAction(condition);
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -50,9 +57,9 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (condition == null) throw new ArgumentNullException(nameof(condition));
 
-            _addAction(new FuncCompiledCondition(condition));
+            AddAction(new FuncCompiledCondition(condition));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -69,9 +76,9 @@ namespace Grace.DependencyInjection.Conditions
                 func = attr => testFunc((TAttribute) attr);
             }
 
-            _addAction(new WhenTargetHas(typeof(TAttribute), func));
+            AddAction(new WhenTargetHas(typeof(TAttribute), func));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -84,9 +91,9 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
 
-            _addAction(new WhenClassHas(attributeType, testFunc));
+            AddAction(new WhenClassHas(attributeType, testFunc));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -97,9 +104,9 @@ namespace Grace.DependencyInjection.Conditions
         /// <returns></returns>
         public T ClassHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
-            _addAction(new WhenClassHas<TAttribute>(testFunc));
+            AddAction(new WhenClassHas<TAttribute>(testFunc));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -110,9 +117,9 @@ namespace Grace.DependencyInjection.Conditions
         /// <returns></returns>
         public T MemberHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
-            _addAction(new WhenMemberHas<TAttribute>(testFunc));
+            AddAction(new WhenMemberHas<TAttribute>(testFunc));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -122,9 +129,9 @@ namespace Grace.DependencyInjection.Conditions
         /// <returns></returns>
         public T InjectedInto<TInjectedType>()
         {
-            _addAction(new WhenInjectedInto(typeof(TInjectedType)));
+            AddAction(new WhenInjectedInto(typeof(TInjectedType)));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -138,9 +145,9 @@ namespace Grace.DependencyInjection.Conditions
 
             if (types.Length < 1) throw new ArgumentException("You must provide at least one type to test against", nameof(types));
 
-            _addAction(new WhenInjectedInto(types));
+            AddAction(new WhenInjectedInto(types));
 
-            return _t;
+            return TValue;
         }
 
         /// <summary>
@@ -152,9 +159,9 @@ namespace Grace.DependencyInjection.Conditions
         {
             if (consider == null) throw new ArgumentNullException(nameof(consider));
 
-            _addAction(new WhenInjectedInto(consider));
+            AddAction(new WhenInjectedInto(consider));
 
-            return _t;
+            return TValue;
         }
     }
 }
