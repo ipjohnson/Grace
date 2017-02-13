@@ -262,7 +262,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             get
             {
-                string returnValue = null;
+                string returnValue;
 
                 if (_exportAs.Count > 0)
                 {

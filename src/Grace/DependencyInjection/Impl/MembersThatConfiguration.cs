@@ -226,7 +226,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="configuration"></param>
         public static implicit operator Func<MemberInfo, bool>(MembersThatConfiguration configuration)
         {
-            return (Func<MemberInfo, bool>)configuration._filters;
+            return configuration._filters;
         }
     }
 }

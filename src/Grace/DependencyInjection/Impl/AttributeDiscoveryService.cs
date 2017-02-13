@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Impl
                 return values;
             }
 
-            Attribute[] attributes = null;
+            Attribute[] attributes;
 
             var type = value as Type;
 

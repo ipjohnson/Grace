@@ -264,7 +264,8 @@ namespace Grace.DependencyInjection.Impl
 
                 newFilter = t => t.GetTypeInfo().GetCustomAttributes(true).
                                                  Where(a => ReflectionService.CheckTypeIsBasedOnAnotherType(a.GetType(), attributeType)).
-                                                 Any(a => localFunc(a) == notValue);
+                                                 Any(a => localFunc(a)) 
+                                                 == notValue;
             }
             else
             {
