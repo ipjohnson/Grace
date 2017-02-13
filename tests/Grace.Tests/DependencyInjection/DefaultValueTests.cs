@@ -40,21 +40,6 @@ namespace Grace.Tests.DependencyInjection
             Assert.NotNull(instance);
             Assert.Equal(10, instance.Value);
         }
-
-        //[Fact]
-        //public void DefaulValueBulkRegisterConstructorDefaultValue()
-        //{
-        //    var container = new DependencyInjectionContainer();
-
-        //    container.Configure(c => c.ExportAs<SimpleObjectA, ISimpleObject>());
-        //    container.Configure(c => c.Export(Types.FromThisAssembly(TypesThat.StartWith("Optional"))).
-        //                               ByInterfaces().
-        //                               WithCtorParam<int>().DefaultValue(t => 5));
-
-        //    var instance = container.Locate<IOptionalIntServiceConstructor>();
-
-        //    Assert.NotNull(instance);
-        //    Assert.Equal(5, instance.Value);
-        //}
+        
     }
 }

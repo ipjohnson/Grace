@@ -182,7 +182,9 @@ namespace Grace.DependencyInjection.Impl
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
 
-            return DefaultValue((locator, staticContext, provider) => defaultValueFunc());
+            _constructorParameterInfo.DefaultValue = defaultValueFunc;
+
+            return this;
         }
 
         /// <summary>

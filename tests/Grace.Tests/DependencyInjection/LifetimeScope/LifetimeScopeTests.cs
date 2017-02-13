@@ -1,4 +1,5 @@
-﻿using Grace.Data;
+﻿using System;
+using Grace.Data;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
@@ -229,13 +230,42 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
                 Assert.Equal(5, instance.Value);
             }
         }
-        
+
+
+        [Fact]
+        public void LifetimeScope_Backup_Resolution_Source_With_Name_Func()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope(extraData: new { value = new Func<int>(() => 5) }))
+            {
+                var instance = scope.Locate<DependentService<int>>();
+
+                Assert.NotNull(instance);
+                Assert.Equal(5, instance.Value);
+            }
+        }
+
         [Fact]
         public void LifetimeScope_Backup_Resolution_Source_By_Type()
         {
             var container = new DependencyInjectionContainer();
 
             using (var scope = container.BeginLifetimeScope(extraData: new { SomeValue = 5 }))
+            {
+                var instance = scope.Locate<DependentService<int>>();
+
+                Assert.NotNull(instance);
+                Assert.Equal(5, instance.Value);
+            }
+        }
+
+        [Fact]
+        public void LifetimeScope_Backup_Resolution_Source_By_Type_Func()
+        {
+            var container = new DependencyInjectionContainer();
+
+            using (var scope = container.BeginLifetimeScope(extraData: new { SomeValue = new Func<int>(() => 5) }))
             {
                 var instance = scope.Locate<DependentService<int>>();
 

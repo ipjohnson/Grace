@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Exceptions;
@@ -225,7 +226,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (key is string)
             {
-                key = ((string) key).ToLowerInvariant();
+                key = ((string)key).ToLowerInvariant();
             }
 
             var expresion = Expression.Call(closedMethod,
@@ -263,17 +264,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             object value = null;
 
-            if (dataProvider != null )
+            if (dataProvider != null)
             {
-                if (key != null)
-                {
-                    value = dataProvider.GetExtraData(key);
-                }
-
-                if (value == null)
-                {
-                    value = dataProvider.Values.FirstOrDefault(o => o is T);
-                }
+                value = GetValueFromExtraDataProvider<T>(key, dataProvider);
             }
 
             if (value == null)
@@ -282,15 +275,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 while (currentLocator != null && value == null)
                 {
-                    if (key != null)
-                    {
-                        value = currentLocator.GetExtraData(key);
-                    }
-
-                    if (value == null)
-                    {
-                        value = currentLocator.Values.FirstOrDefault(o => o is T);
-                    }
+                    value = GetValueFromExtraDataProvider<T>(key, currentLocator);
 
                     currentLocator = currentLocator.Parent;
                 }
@@ -298,13 +283,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (value == null && useDefault)
             {
-                var defaultFunc = defaultValue as Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>;
-
-                value = defaultFunc != null ? defaultFunc(locator, staticContext, dataProvider) : defaultValue;
+                value = defaultValue;
             }
 
             if (value != null)
             {
+                if (value is Delegate)
+                {
+                    value = 
+                        ReflectionService.InjectAndExecuteDelegate(locator, staticContext, dataProvider, value as Delegate);
+                }
+
                 if (!typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
                 {
                     try
@@ -324,6 +313,33 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return (T)value;
+        }
+
+        private static object GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider)
+        {
+            object value = null;
+
+            if (key != null)
+            {
+                value = dataProvider.GetExtraData(key);
+            }
+
+            return value ?? dataProvider.Values.FirstOrDefault(o =>
+                   {
+                       if (o is T)
+                       {
+                           return true;
+                       }
+
+                       var delegateInstance = o as Delegate;
+
+                       if (delegateInstance != null)
+                       {
+                           return delegateInstance.GetMethodInfo().ReturnType == typeof(T);
+                       }
+
+                       return false;
+                   });
         }
 
         /// <summary>
@@ -669,11 +685,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
-            var decorators = FindDecoratorsForType(scope,request, request.ActivationType, strategy);
+            var decorators = FindDecoratorsForType(scope, request, request.ActivationType, strategy);
 
             if (request.ActivationType != strategy.ActivationType)
             {
-                var activationTypeDecorators = FindDecoratorsForType(scope,request, strategy.ActivationType, strategy);
+                var activationTypeDecorators = FindDecoratorsForType(scope, request, strategy.ActivationType, strategy);
 
                 foreach (var decorator in activationTypeDecorators)
                 {

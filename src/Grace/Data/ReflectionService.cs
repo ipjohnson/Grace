@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection;
 
 namespace Grace.Data
 {
@@ -23,6 +24,9 @@ namespace Grace.Data
         private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _upperCasePropertyDelegates =
             ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
 
+        private static ImmutableHashTree<Type, ExecuteDelegateWithInjection> _executeDelegateWithInjections =
+            ImmutableHashTree<Type, ExecuteDelegateWithInjection>.Empty;
+
         /// <summary>
         /// Delegate for creating dictionaries from object properties
         /// </summary>
@@ -30,6 +34,18 @@ namespace Grace.Data
         /// <param name="values"></param>
         /// <returns></returns>
         public delegate ImmutableHashTree<string, object> PropertyDictionaryDelegate(object instance, ImmutableHashTree<string, object> values);
+
+        /// <summary>
+        /// Delegate for executing a delegate injecting parameters
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="context"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public delegate object ExecuteDelegateWithInjection(
+            IExportLocatorScope scope, StaticInjectionContext context, IInjectionContext injectionContext,
+            Delegate @delegate);
 
         /// <summary>
         /// Method to get friendly version of a type name for display purposes
@@ -292,5 +308,86 @@ namespace Grace.Data
 
             return Expression.Lambda<PropertyDictionaryDelegate>(body, inputObject, treeParameter).Compile();
         }
+
+        /// <summary>
+        /// Execute delegate by injecting parameters then executing
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="context"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public static object InjectAndExecuteDelegate(IExportLocatorScope scope, StaticInjectionContext context,
+            IInjectionContext injectionContext, Delegate @delegate)
+        {
+            var executeFunc = _executeDelegateWithInjections.GetValueOrDefault(@delegate.GetType());
+
+            if (executeFunc == null)
+            {
+                executeFunc = CreateExecuteDelegate(@delegate);
+
+                _executeDelegateWithInjections = _executeDelegateWithInjections.Add(@delegate.GetType(), executeFunc);
+            }
+
+            return executeFunc(scope, context, injectionContext, @delegate);
+        }
+
+        private static ExecuteDelegateWithInjection CreateExecuteDelegate(Delegate @delegate)
+        {
+            var scopeParameter = Expression.Parameter(typeof(IExportLocatorScope));
+            var staticParameter = Expression.Parameter(typeof(StaticInjectionContext));
+            var injectionParameter = Expression.Parameter(typeof(IInjectionContext));
+            var delegateParameter  = Expression.Parameter(typeof(Delegate));
+
+            var method = @delegate.GetType().GetRuntimeMethods().First(m => m.Name == "Invoke");
+
+            var expressions = new List<Expression>();
+
+            foreach (var parameter in method.GetParameters())
+            {
+                if (parameter.ParameterType == typeof(IExportLocatorScope))
+                {
+                    expressions.Add(scopeParameter);
+                }
+                else if (parameter.ParameterType == typeof(StaticInjectionContext))
+                {
+                    expressions.Add(staticParameter);
+                }
+                else if (parameter.ParameterType == typeof(IInjectionContext))
+                {
+                    expressions.Add(injectionParameter);
+                }
+                else
+                {
+                    var locateParameter =
+                        Expression.Call(scopeParameter,
+                            _locateMethod,
+                            Expression.Constant(parameter.ParameterType),
+                            injectionParameter,
+                            Expression.Constant(null, typeof(ActivationStrategyFilter)),
+                            Expression.Constant(null, typeof(object)),
+                            Expression.Constant(false)
+                        );
+                    
+                    expressions.Add(locateParameter);
+                }
+            }
+
+            var castExpression = Expression.Convert(delegateParameter, @delegate.GetType());
+
+            Expression call = Expression.Call(castExpression, method, expressions);
+
+            if (!call.Type.IsByRef)
+            {
+                call = Expression.Convert(call, typeof(object));
+            }
+
+            return
+                Expression.Lambda<ExecuteDelegateWithInjection>(call, scopeParameter, staticParameter,
+                    injectionParameter, delegateParameter).Compile();
+        }
+
+        private static MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
+            new[] {typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool)});
     }
 }
