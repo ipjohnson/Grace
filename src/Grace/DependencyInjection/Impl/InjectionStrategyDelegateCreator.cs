@@ -112,9 +112,7 @@ namespace Grace.DependencyInjection.Impl
                         {
                             continue;
                         }
-
-
-
+                        
                         properties[propertyMember.MemberInfo.Name] = true;
                     }
                 }
