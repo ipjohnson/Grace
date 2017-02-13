@@ -1,5 +1,4 @@
 ﻿using Grace.Data;
-using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Exceptions
 {

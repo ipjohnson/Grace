@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
 using Grace.Data.Immutable;
-using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.Expressions

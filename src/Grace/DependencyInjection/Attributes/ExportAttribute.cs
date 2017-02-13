@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Attributes

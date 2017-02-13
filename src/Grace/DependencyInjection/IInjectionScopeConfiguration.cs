@@ -1,6 +1,5 @@
 ﻿using System;
 using Grace.DependencyInjection.Impl;
-using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection
 {

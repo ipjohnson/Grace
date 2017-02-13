@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
 using Grace.Utilities;
 using SimpleFixture.NSubstitute;
-using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Registration
