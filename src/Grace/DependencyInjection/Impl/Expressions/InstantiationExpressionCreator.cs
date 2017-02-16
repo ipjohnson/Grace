@@ -359,7 +359,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return CallExportFunc(configuration.ActivationStrategy, parameter, parameterInfo, injectionScope, request, configuration.ExternallyOwned);
             }
 
-            var newRequest = request.NewRequest(parameter.ParameterType, configuration.ActivationStrategy, configuration.ActivationType, RequestType.ConstructorParameter, parameter, true);
+            var newRequest = request.NewRequest(parameterInfo?.UseType ?? parameter.ParameterType, 
+                                                configuration.ActivationStrategy, 
+                                                configuration.ActivationType, 
+                                                RequestType.ConstructorParameter, 
+                                                parameter, 
+                                                true);
 
             if (parameterInfo?.LocateWithKey != null)
             {

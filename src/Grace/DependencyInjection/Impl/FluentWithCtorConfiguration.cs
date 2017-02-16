@@ -36,6 +36,18 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Use a specific type for parameter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IFluentWithCtorConfiguration<TParam> Use(Type type)
+        {
+            _constructorParameterInfo.UseType = type;
+
+            return this;
+        }
+
+        /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
         /// It will be called each time the parameter is resolved
         /// </summary>
@@ -245,6 +257,18 @@ namespace Grace.DependencyInjection.Impl
         public IFluentWithCtorConfiguration<T, TParam> Named(string name)
         {
             _constructorParameterInfo.ParameterName = name;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Use specific type to satisfy parameter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IFluentWithCtorConfiguration<T, TParam> Use(Type type)
+        {
+            _constructorParameterInfo.UseType = type;
 
             return this;
         }

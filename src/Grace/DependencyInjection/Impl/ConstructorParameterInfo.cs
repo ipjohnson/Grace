@@ -61,5 +61,10 @@ namespace Grace.DependencyInjection.Impl
         /// Is the parameter dynamic
         /// </summary>
         public bool IsDynamic { get; set; }
+
+        /// <summary>
+        /// Use specific type for parameter
+        /// </summary>
+        public Type UseType { get; set; }
     }
 }

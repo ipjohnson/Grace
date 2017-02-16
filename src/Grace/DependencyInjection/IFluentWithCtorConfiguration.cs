@@ -64,6 +64,13 @@ namespace Grace.DependencyInjection
         /// <param name="name"></param>
         /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> Named(string name);
+        
+        /// <summary>
+        /// Use a specific type for parameter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<TParam> Use(Type type);
     }
 
     /// <summary>
@@ -129,5 +136,12 @@ namespace Grace.DependencyInjection
         /// <param name="name"></param>
         /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> Named(string name);
+
+        /// <summary>
+        /// Use specific type to satisfy parameter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration<T, TParam> Use(Type type);
     }
 }

@@ -266,5 +266,47 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
         #endregion
 
+        #region Use Tests
+        
+        [Fact]
+        public void WithCtor_Use()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(DependentService<IBasicService[]>))
+                    .WithCtorParam<IBasicService[]>()
+                    .Use(typeof(BasicService[]));
+            });
+
+            var instance = container.Locate<DependentService<IBasicService[]>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(1, instance.Value.Length);
+            Assert.IsType<BasicService>(instance.Value[0]);
+        }
+
+        [Fact]
+        public void WithCtor_Generic_Use()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<DependentService<IBasicService[]>>()
+                    .WithCtorParam<IBasicService[]>()
+                    .Use(typeof(BasicService[]));
+            });
+
+            var instance = container.Locate<DependentService<IBasicService[]>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(1, instance.Value.Length);
+            Assert.IsType<BasicService>(instance.Value[0]);
+        }
+
+        #endregion
+
     }
 }
