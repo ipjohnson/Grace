@@ -10,8 +10,8 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class MemberInjectionSelector : IMemberInjectionSelector
     {
-        private Type _memberType;
-        private Func<MemberInfo, bool> _filter;
+        private readonly Type _memberType;
+        private readonly Func<MemberInfo, bool> _filter;
 
         /// <summary>
         /// Default constructor

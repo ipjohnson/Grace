@@ -8,8 +8,8 @@ namespace Grace.DependencyInjection
     /// <typeparam name="T"></typeparam>
     public class Scoped<T> : IDisposable
     {
-        private IExportLocatorScope _scope;
-        private string _scopeName;
+        private readonly IExportLocatorScope _scope;
+        private readonly string _scopeName;
         private IExportLocatorScope _childScope;
         private T _instance;
 

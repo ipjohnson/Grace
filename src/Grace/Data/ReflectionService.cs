@@ -387,7 +387,7 @@ namespace Grace.Data
                     injectionParameter, delegateParameter).Compile();
         }
 
-        private static MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
+        private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
             new[] {typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool)});
     }
 }
