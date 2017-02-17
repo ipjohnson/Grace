@@ -63,8 +63,7 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export<T>().As<TInterface>();
         }
-
-
+        
         /// <summary>
         /// Extension to export a list of types to a registration block
         /// </summary>
@@ -75,12 +74,11 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export(types);
         }
-
-
+        
         /// <summary>
         /// This is a short cut to registering a value as a name using the member name for exporting
         /// ExportNamedValue(() => someValue) export the value of someValue under the name someValue
-        /// ExportInstance(someValue).AsName("someValue") is the long hand form
+        /// ExportInstance(someValue).AsKeyed(someValue.GetType(), "someValue") is the long hand form
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
@@ -118,6 +116,5 @@ namespace Grace.DependencyInjection
         {
             registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));    
         }
-        
     }
 }
