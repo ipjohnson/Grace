@@ -135,7 +135,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentWithCtorConfiguration<TParam> IsDynamic(bool isDynamic = true)
         {
-            _constructorParameterInfo.IsDynamic = true;
+            _constructorParameterInfo.IsDynamic = isDynamic;
 
             return this;
         }

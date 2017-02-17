@@ -2,6 +2,7 @@
   "version": "5.1.0-*",
 
   "dependencies": {
+    "Castle.Core": "4.0.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Grace": "5.1.0-*",
     "Grace.DependencyInjection.Extensions": "5.0.0",

@@ -1,24 +1,25 @@
 ﻿using System;
-using Grace.DependencyInjection.Conditions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
-    /// configuration object for decorator
+    /// 
     /// </summary>
-    public class FluentDecoratorStrategyConfiguration : IFluentDecoratorStrategyConfiguration
+    public class ProxyFluentDecoratorStrategyConfiguration : IFluentDecoratorStrategyConfiguration
     {
-        private readonly ICompiledDecoratorStrategy _strategy;
+        private IFluentDecoratorStrategyConfiguration _configuration;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="strategy"></param>
-        public FluentDecoratorStrategyConfiguration(ICompiledDecoratorStrategy strategy)
+        /// <param name="configuration"></param>
+        public ProxyFluentDecoratorStrategyConfiguration(IFluentDecoratorStrategyConfiguration configuration)
         {
-            _strategy = strategy;
+            _configuration = configuration;
         }
-
 
         /// <summary>
         /// Apply decorator after lifestyle, by default it's before
@@ -26,9 +27,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentDecoratorStrategyConfiguration ApplyAfterLifestyle()
         {
-            _strategy.ApplyAfterLifestyle = true;
-
-            return this;
+            return _configuration.ApplyAfterLifestyle();
         }
 
         /// <summary>
@@ -38,16 +37,13 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentDecoratorStrategyConfiguration As(Type type)
         {
-            _strategy.AddExportAs(type);
-
-            return this;
+            return _configuration.As(type);
         }
 
         /// <summary>
         /// Condition for decorator strategy
         /// </summary>
-        public IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When
-            => new WhenConditionConfiguration<IFluentDecoratorStrategyConfiguration>(_strategy.AddCondition, this);
+        public IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When => _configuration.When;
 
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
@@ -57,13 +53,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
 
         /// <summary>
@@ -75,13 +65,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
 
         /// <summary>
@@ -94,13 +78,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
 
         /// <summary>
@@ -114,13 +92,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
 
         /// <summary>
@@ -135,13 +107,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
 
         /// <summary>
@@ -157,13 +123,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TArg5, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TParam> paramValue)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
-
-            var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
-
-            _strategy.ConstructorParameter(parameterInfo);
-
-            return new FluentDecoratorWithCtorConfiguration<TParam>(this, parameterInfo);
+            return _configuration.WithCtorParam(paramValue);
         }
     }
 }
