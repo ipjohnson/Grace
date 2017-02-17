@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class ProxyFluentDecoratorStrategyConfiguration : IFluentDecoratorStrategyConfiguration
     {
-        private IFluentDecoratorStrategyConfiguration _configuration;
+        private readonly IFluentDecoratorStrategyConfiguration _configuration;
 
         /// <summary>
         /// Default constructor
