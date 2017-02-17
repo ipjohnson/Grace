@@ -79,7 +79,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
         {
             configuration.When.InjectedInto<BasicService>();
 
-            strategyConfiguration.When.InjectedInto<BasicService>().ReceivedCalls();
+            strategyConfiguration.Received().When.InjectedInto<BasicService>();
         }
     }
 }
