@@ -60,7 +60,7 @@ namespace Grace.DependencyInjection.Lifestyle
             if (CompiledDelegate == null)
             {
                 // new request as we don't want to carry any info over from parent request
-                var newRequest = request.Services.Compiler.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth, scope);
+                var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
 
                 var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 

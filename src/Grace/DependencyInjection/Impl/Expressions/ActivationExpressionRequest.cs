@@ -431,9 +431,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="injectedType">type being injected into</param>
         /// <param name="requestType">request type</param>
         /// <param name="info">info for request</param>
-        /// <param name="maintainPath">maintain wrapper and decorator path</param>
+        /// <param name="maintainPaths">maintain wrapper and decorator path</param>
         /// <returns>new request</returns>
-        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPath = false)
+        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
             {
@@ -456,7 +456,38 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 returnValue.Filter = Filter;
             }
 
-            if (maintainPath)
+            if (maintainPaths)
+            {
+                returnValue._wrapperNodes = _wrapperNodes;
+                returnValue._decoratorNodes = _decoratorNodes;
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Creates new rooted request (for lifestyles)
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="requestingScope"></param>
+        /// <param name="maintainPaths"></param>
+        /// <returns></returns>
+        public IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope,
+            bool maintainPaths = false)
+        {
+            if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
+            {
+                throw new RecursiveLocateException(GetStaticInjectionContext());
+            }
+
+            var returnValue = new ActivationExpressionRequest(activationType,
+                                                   RequestType.Root,
+                                                   Services,
+                                                   Constants, 
+                                                   ObjectGraphDepth + 1, 
+                                                   requestingScope);
+
+            if (maintainPaths)
             {
                 returnValue._wrapperNodes = _wrapperNodes;
                 returnValue._decoratorNodes = _decoratorNodes;

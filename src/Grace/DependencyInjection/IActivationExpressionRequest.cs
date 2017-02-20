@@ -357,6 +357,15 @@ namespace Grace.DependencyInjection
         IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false);
 
         /// <summary>
+        /// Creates new rooted request (for lifestyles)
+        /// </summary>
+        /// <param name="activationType"></param>
+        /// <param name="requestingScope"></param>
+        /// <param name="maintainPaths"></param>
+        /// <returns></returns>
+        IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope, bool maintainPaths = false);
+
+        /// <summary>
         /// Scope the request originated in
         /// </summary>
         IInjectionScope RequestingScope { get; }

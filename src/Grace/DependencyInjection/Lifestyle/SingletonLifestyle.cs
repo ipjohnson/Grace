@@ -51,8 +51,8 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             // Create new request as we shouldn't carry over anything from the previous request
-            var newRequest = request.Services.Compiler.CreateNewRequest(request.ActivationType, request.ObjectGraphDepth, scope);
-
+            var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            
             _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
             lock (_lockObject)
