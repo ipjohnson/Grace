@@ -1,11 +1,11 @@
 {
-  "version": "5.1.0-*",
+  "version": "5.1.1-*",
 
   "dependencies": {
     "Castle.Core": "4.0.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "Grace": "5.1.0-*",
-    "Grace.DependencyInjection.Extensions": "5.0.0",
+    "Grace": "5.1.1-*",
+    "Grace.DependencyInjection.Extensions": "5.1.0",
     "Microsoft.Extensions.DependencyInjection": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-*",
     "NETStandard.Library": "1.6.0",
