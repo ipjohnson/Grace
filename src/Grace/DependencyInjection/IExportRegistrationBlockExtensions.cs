@@ -112,9 +112,11 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="filter"></param>
-        public static void ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo,bool> filter = null)
+        public static IExportRegistrationBlock ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo,bool> filter = null)
         {
-            registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));    
+            registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));  
+            
+            return registrationBlock;
         }
     }
 }
