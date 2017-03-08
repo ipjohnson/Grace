@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (type != null)
             {
-                attributes = type.GetTypeInfo().GetCustomAttributes().ToArray();
+                attributes = type.GetTypeInfo().GetCustomAttributes()?.ToArray();
             }
             else
             {
@@ -60,7 +60,7 @@ namespace Grace.DependencyInjection.Impl
 
                 if (parameterInfo != null)
                 {
-                    attributes = parameterInfo.GetCustomAttributes().ToArray();
+                    attributes = parameterInfo.GetCustomAttributes()?.ToArray();
                 }
                 else
                 {
@@ -68,7 +68,8 @@ namespace Grace.DependencyInjection.Impl
 
                     if (memberInfo != null)
                     {
-                        attributes = memberInfo.GetCustomAttributes<Attribute>().ToArray();
+                        attributes = memberInfo.GetCustomAttributes<Attribute>()?.ToArray();
+
                     }
                     else
                     {
@@ -78,7 +79,7 @@ namespace Grace.DependencyInjection.Impl
                }
             }
 
-            if (attributes.Length == 0)
+            if (attributes == null || attributes.Length == 0)
             {
                 return ImmutableLinkedList<Attribute>.Empty;
             }
