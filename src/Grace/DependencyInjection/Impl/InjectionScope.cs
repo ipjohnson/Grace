@@ -369,8 +369,7 @@ namespace Grace.DependencyInjection.Impl
 
             Configure(module.Configure);
         }
-
-
+        
         /// <summary>
         /// Strategies associated with this scope
         /// </summary>
