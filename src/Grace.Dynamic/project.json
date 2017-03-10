@@ -1,9 +1,9 @@
 ﻿{
-  "version": "5.1.1-*",
+  "version": "5.2.0-*",
   "authors": [ "Ian Johnson" ],
   "description": "IL Generation library for Grace dependency injection container",
   "dependencies": {
-    "Grace": "5.1.1-*"
+    "Grace": "5.2.0-*"
   },
 
   "frameworks": {
