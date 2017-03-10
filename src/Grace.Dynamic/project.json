@@ -41,6 +41,7 @@
     "tags": []
   },
   "buildOptions": {
-    "xmlDoc": true
+    "xmlDoc": true,
+    "keyFile": "../../tools/Grace.snk"
   }
 }
