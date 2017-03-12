@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         IEnumerable<IMemberInjectionSelector> MemberInjectionSelectors { get; }
 
-            /// <summary>
+        /// <summary>
         /// List of missing export strategy providers
         /// </summary>
         IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders { get; }
