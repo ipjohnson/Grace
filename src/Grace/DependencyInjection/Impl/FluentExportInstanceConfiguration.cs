@@ -72,6 +72,20 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export as specific name
+        /// </summary>
+        /// <param name="name">export name</param>
+        /// <returns></returns>
+        public IFluentExportInstanceConfiguration<T> AsName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+
+            _exportConfiguration.AddExportAsName(name);
+
+            return this;
+        }
+
+        /// <summary>
         /// Mark an export as externally owned means the container will not track and dispose the instance
         /// </summary>
         /// <returns></returns>

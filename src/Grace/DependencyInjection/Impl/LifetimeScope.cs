@@ -208,6 +208,45 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            return _injectionScope.LocateByNameFromChildScope(this, this, name, extraData, consider, false);
+        }
+
+        /// <summary>
+        /// Locate all by specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Try to locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            value = _injectionScope.LocateByNameFromChildScope(this, this, name, extraData, consider, true);
+
+            return value != null;
+        }
+
+        /// <summary>
         /// Locate from a parent scope if it's not in the cache
         /// </summary>
         /// <param name="type">type to locate</param>

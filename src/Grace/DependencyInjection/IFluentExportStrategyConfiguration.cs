@@ -27,6 +27,13 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration AsKeyed(Type type, object key);
 
         /// <summary>
+        /// Export as Name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration AsName(string name);
+
+        /// <summary>
         /// Export by interfaces
         /// </summary>
         /// <param name="filter"></param>
@@ -145,6 +152,13 @@ namespace Grace.DependencyInjection
         /// <param name="key">key to export under</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key);
+
+        /// <summary>
+        /// Export as specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> AsName(string name);
 
         /// <summary>
         /// Export the type by the interfaces it implements

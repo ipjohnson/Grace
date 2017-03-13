@@ -27,8 +27,10 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         private IActivationStrategyMetadata _metadataObject;
         private ImmutableLinkedList<Type> _exportAs = ImmutableLinkedList<Type>.Empty;
         private ImmutableLinkedList<KeyValuePair<Type, object>> _exportAsKeyed = ImmutableLinkedList<KeyValuePair<Type, object>>.Empty;
+        private ImmutableLinkedList<string> _exportAsName = ImmutableLinkedList<string>.Empty;
         private ImmutableArray<ICompiledCondition> _conditions = ImmutableArray<ICompiledCondition>.Empty;
         private ImmutableHashTree<object, object> _metadata = ImmutableHashTree<object, object>.Empty;
+        private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
 
         /// <summary>
         /// Default constructor
@@ -83,6 +85,11 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// Export as a keyed
         /// </summary>
         public IEnumerable<KeyValuePair<Type, object>> ExportAsKeyed => _exportAsKeyed;
+
+        /// <summary>
+        /// Export as a name
+        /// </summary>
+        public IEnumerable<string> ExportAsName => _exportAsName;
 
         /// <summary>
         /// Does the activation strategy have conditions for it's use
@@ -203,6 +210,15 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// Export as name
+        /// </summary>
+        /// <param name="name"></param>
+        public void AddExportAsName(string name)
+        {
+            _exportAsName = _exportAsName.Add(name);
+        }
+
+        /// <summary>
         /// Add condition for strategy
         /// </summary>
         /// <param name="condition">condition</param>
@@ -305,5 +321,41 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             return new ActivationStrategyMetadata(ActivationType, _exportAs, _exportAsKeyed, _metadata);
         }
 
+        /// <summary>
+        /// Keys for data
+        /// </summary>
+        public IEnumerable<object> Keys => _extraData.Keys;
+
+        /// <summary>
+        /// Values for data
+        /// </summary>
+        public IEnumerable<object> Values => _extraData.Values;
+
+        /// <summary>
+        /// Enumeration of all the key value pairs
+        /// </summary>
+        public IEnumerable<KeyValuePair<object, object>> KeyValuePairs => _extraData;
+
+        /// <summary>
+        /// Extra data associated with the injection request. 
+        /// </summary>
+        /// <param name="key">key of the data object to get</param>
+        /// <returns>data value</returns>
+        public object GetExtraData(object key)
+        {
+            return _extraData.GetValueOrDefault(key);
+        }
+
+        /// <summary>
+        /// Sets extra data on the injection context
+        /// </summary>
+        /// <param name="key">object name</param>
+        /// <param name="newValue">new object value</param>
+        /// <param name="replaceIfExists">replace value if key exists</param>
+        /// <returns>the final value of key</returns>
+        public object SetExtraData(object key, object newValue, bool replaceIfExists = true)
+        {
+            return ImmutableHashTree.ThreadSafeAdd(ref _extraData, key, newValue, replaceIfExists);
+        }
     }
 }

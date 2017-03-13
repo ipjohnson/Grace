@@ -282,6 +282,47 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            return ((IInjectionScope) this).LocateByNameFromChildScope(this,
+                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, false);
+        }
+
+        /// <summary>
+        /// Locate all by specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Try to locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        public bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
+        {
+            value = ((IInjectionScope)this).LocateByNameFromChildScope(this,
+                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, false);
+
+            return value != null;
+        }
+
+        /// <summary>
         /// Create as a new IExportLocate scope
         /// </summary>
         /// <param name="scopeName">scope name</param>
@@ -419,7 +460,73 @@ namespace Grace.DependencyInjection.Impl
         {
             return InternalLocate(childScope, disposalScope, type, consider, key, CreateInjectionContextFromExtraData(type, extraData), allowNull, isDynamic);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childScope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <param name="allowNull"></param>
+        /// <returns></returns>
+        object IInjectionScope.LocateByNameFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope,
+            string name,
+            object extraData, ActivationStrategyFilter consider, bool allowNull)
+        {
+            var collection = StrategyCollectionContainer.GetActivationStrategyCollectionByName(name);
 
+            ICompiledExportStrategy strategy = null;
+
+            if (collection != null)
+            {
+                if (consider != null)
+                {
+                    var context = new StaticInjectionContext(typeof(object));
+
+                    strategy =
+                        collection.GetStrategies()
+                            .FirstOrDefault(
+                                s => (!s.HasConditions || s.Conditions.All(con => con.MeetsCondition(s, context))) && consider(s));
+                }
+                else
+                {
+                    strategy = collection.GetPrimary();
+
+                    if (strategy == null)
+                    {
+                        var context = new StaticInjectionContext(typeof(object));
+
+                        strategy = collection.GetStrategies()
+                            .FirstOrDefault(
+                                s => !s.HasConditions || s.Conditions.All(con => con.MeetsCondition(s, context)));
+                    }
+                }
+            }
+
+            if (strategy != null)
+            {
+                var strategyDelegate = 
+                    strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
+
+                return strategyDelegate(childScope, disposalScope, CreateContext(extraData));
+            }
+
+            if (Parent != null)
+            {
+                return ((IInjectionScope) Parent).LocateByNameFromChildScope(childScope, disposalScope, name, extraData,
+                    consider, allowNull);
+            }
+
+            if (!allowNull)
+            {
+                throw new LocateException(new StaticInjectionContext(typeof(object)));
+            }
+
+            return null;
+        }
+        
         /// <summary>
         /// Internal locate all method
         /// </summary>

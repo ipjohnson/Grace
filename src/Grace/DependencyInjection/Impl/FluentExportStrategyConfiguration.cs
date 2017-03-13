@@ -56,6 +56,20 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export as Name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration AsName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+
+            _exportConfiguration.AddExportAsName(name);
+
+            return this;
+        }
+
+        /// <summary>
         /// Export by interfaces
         /// </summary>
         /// <param name="filter"></param>
@@ -298,6 +312,20 @@ namespace Grace.DependencyInjection.Impl
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             _exportConfiguration.AddExportAsKeyed(typeof(TInterface), key);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Export as specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> AsName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+
+            _exportConfiguration.AddExportAsName(name);
 
             return this;
         }
@@ -584,7 +612,7 @@ namespace Grace.DependencyInjection.Impl
 
             return new FluentWithCtorConfiguration<T, TParam>(this, parameterInfo);
         }
-        
+
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>

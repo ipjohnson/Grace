@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
 using Grace.Data.Immutable;
@@ -29,6 +30,7 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>> _conditions = ImmutableLinkedList<Func<Type, IEnumerable<ICompiledCondition>>>.Empty;
         private ImmutableLinkedList<Func<Type, bool>> _excludeFuncs = ImmutableLinkedList<Func<Type, bool>>.Empty;
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
+        private ImmutableLinkedList<Func<Type, IEnumerable<string>>> _byName = ImmutableLinkedList<Func<Type, IEnumerable<string>>>.Empty;
         private Func<Type, ICompiledLifestyle> _lifestyleFunc;
         private bool _exportByAttributes;
         private bool _externallyOwned;
@@ -125,6 +127,23 @@ namespace Grace.DependencyInjection.Impl
             }
 
             _byInterfaces = _byInterfaces.Add(whereClause);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Export by name
+        /// </summary>
+        /// <param name="nameFunc"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ByName(Func<Type, IEnumerable<string>> nameFunc = null)
+        {
+            if (nameFunc == null)
+            {
+                nameFunc = type => new[] { type.Name };
+            }
+
+            _byName = _byName.Add(nameFunc);
 
             return this;
         }
@@ -310,6 +329,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 var exportTypes = GetExportedTypes(type);
                 var keyedExports = GetKeyedExportTypes(type);
+                var names = GetExportNames(type);
 
                 if (_exportByAttributes)
                 {
@@ -332,14 +352,33 @@ namespace Grace.DependencyInjection.Impl
                 }
 
                 if (exportTypes != ImmutableLinkedList<Type>.Empty ||
-                    keyedExports != ImmutableLinkedList<Tuple<Type, object>>.Empty)
+                    keyedExports != ImmutableLinkedList<Tuple<Type, object>>.Empty ||
+                    names != ImmutableLinkedList<string>.Empty)
                 {
-                    yield return CreateExportStrategyForType(type, exportTypes, keyedExports);
+                    yield return CreateExportStrategyForType(type, exportTypes, keyedExports, names);
                 }
             }
         }
 
-        private ICompiledExportStrategy CreateExportStrategyForType(Type type, ImmutableLinkedList<Type> exportTypes, ImmutableLinkedList<Tuple<Type, object>> keyedExports)
+        private ImmutableLinkedList<string> GetExportNames(Type type)
+        {
+            var returnList = ImmutableLinkedList<string>.Empty;
+
+            foreach (var func in _byName)
+            {
+                foreach (var name in func(type))
+                {
+                    if (name != null)
+                    {
+                        returnList = returnList.Add(name);
+                    }
+                }
+            }
+
+            return returnList;
+        }
+
+        private ICompiledExportStrategy CreateExportStrategyForType(Type type, ImmutableLinkedList<Type> exportTypes, ImmutableLinkedList<Tuple<Type, object>> keyedExports, ImmutableLinkedList<string> names)
         {
             var strategy = _strategyCreator.GetCompiledExportStrategy(type);
 
@@ -351,6 +390,11 @@ namespace Grace.DependencyInjection.Impl
             foreach (var keyedExport in keyedExports)
             {
                 strategy.AddExportAsKeyed(keyedExport.Item1, keyedExport.Item2);
+            }
+
+            foreach (var name in names)
+            {
+                strategy.AddExportAsName(name);
             }
 
             strategy.Lifestyle = _lifestyleFunc?.Invoke(type);

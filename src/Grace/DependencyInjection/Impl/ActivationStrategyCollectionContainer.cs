@@ -45,7 +45,7 @@ namespace Grace.DependencyInjection.Impl
             ArrayLengthMinusOne = collections.Length - 1;
             Collections = collections;
         }
-        
+
         /// <summary>
         /// Export type as their base
         /// </summary>
@@ -66,6 +66,12 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         protected ImmutableLinkedList<IActivationStrategyInspector> Inspectors =
             ImmutableLinkedList<IActivationStrategyInspector>.Empty;
+
+        /// <summary>
+        /// Strategies by name
+        /// </summary>
+        protected ImmutableHashTree<string, IActivationStrategyCollection<T>> StrategiesByName =
+            ImmutableHashTree<string, IActivationStrategyCollection<T>>.Empty;
 
         /// <summary>
         /// Add strategy to container
@@ -94,7 +100,6 @@ namespace Grace.DependencyInjection.Impl
 
             var added = false;
 
-
             foreach (var pair in types)
             {
                 added = true;
@@ -117,6 +122,13 @@ namespace Grace.DependencyInjection.Impl
                 {
                     AddStrategyByAs(strategy, keyedPair.Key, keyedPair.Value);
                 }
+            }
+
+            foreach (var name in strategy.ExportAsName)
+            {
+                added = true;
+
+                AddStrategyByName(strategy, name);
             }
 
             if (!added)
@@ -161,6 +173,16 @@ namespace Grace.DependencyInjection.Impl
             var hashCode = type.GetHashCode();
 
             return Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+        }
+
+        /// <summary>
+        /// Get collection for a specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IActivationStrategyCollection<T> GetActivationStrategyCollectionByName(string name)
+        {
+            return StrategiesByName.GetValueOrDefault(name);
         }
 
         /// <summary>
@@ -249,7 +271,21 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
         }
-        
+
+        private void AddStrategyByName(T strategy, string name)
+        {
+            var collection = StrategiesByName.GetValueOrDefault(name);
+
+            if (collection == null)
+            {
+                collection = new ActivationStrategyCollection<T>(typeof(object));
+
+                StrategiesByName = StrategiesByName.Add(name, collection);
+            }
+
+            collection.AddStrategy(strategy, null);
+        }
+
         private void AddStrategyByAs(T strategy, Type exportAs, object withKey)
         {
             var hashCode = exportAs.GetHashCode();

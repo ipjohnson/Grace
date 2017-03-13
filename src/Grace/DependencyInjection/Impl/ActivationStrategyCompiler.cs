@@ -144,8 +144,7 @@ namespace Grace.DependencyInjection.Impl
 
             return null;
         }
-
-
+        
         /// <summary>
         /// Compile a delegate
         /// </summary>

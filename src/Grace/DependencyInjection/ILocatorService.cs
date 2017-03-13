@@ -99,6 +99,34 @@ namespace Grace.DependencyInjection
         /// <param name="isDynamic"></param>
         /// <returns></returns>
         bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
-        
+
+        /// <summary>
+        /// Locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
+
+        /// <summary>
+        /// Locate all by specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
+
+        /// <summary>
+        /// Try to locate by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        bool TryLocateByName(string name, out object value, object extraData = null,
+            ActivationStrategyFilter consider = null);
     }
 }

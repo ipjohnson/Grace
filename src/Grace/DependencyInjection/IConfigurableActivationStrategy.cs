@@ -40,6 +40,12 @@ namespace Grace.DependencyInjection
         void AddExportAsKeyed(Type exportType, object key);
 
         /// <summary>
+        /// Export as name
+        /// </summary>
+        /// <param name="name"></param>
+        void AddExportAsName(string name);
+
+        /// <summary>
         /// Add condition for strategy
         /// </summary>
         /// <param name="condition">condition</param>

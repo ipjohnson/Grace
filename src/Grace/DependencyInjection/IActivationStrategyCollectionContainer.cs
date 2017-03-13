@@ -29,6 +29,13 @@ namespace Grace.DependencyInjection
         IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type);
 
         /// <summary>
+        /// Get collection for a specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IActivationStrategyCollection<T> GetActivationStrategyCollectionByName(string name);
+
+        /// <summary>
         /// Get all activation types
         /// </summary>
         /// <returns></returns>

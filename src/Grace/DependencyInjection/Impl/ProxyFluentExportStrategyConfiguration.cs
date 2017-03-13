@@ -44,6 +44,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Export as Name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration AsName(string name)
+        {
+            return _strategy.AsName(name);
+        }
+
+        /// <summary>
         /// Export by interfaces
         /// </summary>
         /// <param name="filter"></param>
@@ -215,6 +225,16 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key)
         {
             return _strategy.AsKeyed<TInterface>(key);
+        }
+
+        /// <summary>
+        /// Export as specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> AsName(string name)
+        {
+            return _strategy.AsName(name);
         }
 
         /// <summary>

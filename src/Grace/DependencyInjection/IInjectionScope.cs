@@ -71,6 +71,19 @@ namespace Grace.DependencyInjection
         object LocateFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, Type type, object extraData,ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childScope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="name"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <param name="allowNull"></param>
+        /// <returns></returns>
+        object LocateByNameFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, string name,
+            object extraData, ActivationStrategyFilter consider, bool allowNull);
+
+        /// <summary>
         /// Internal locate all method
         /// </summary>
         /// <typeparam name="T"></typeparam>

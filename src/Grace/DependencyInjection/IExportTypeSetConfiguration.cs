@@ -51,6 +51,13 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration ByInterfaces(Func<Type, bool> whereClause = null);
 
         /// <summary>
+        /// Export by name
+        /// </summary>
+        /// <param name="nameFunc"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ByName(Func<Type, IEnumerable<string>> nameFunc = null);
+
+        /// <summary>
         /// Export the selected classes by type
         /// </summary>
         /// <returns>configuration object</returns>
@@ -126,6 +133,5 @@ namespace Grace.DependencyInjection
         /// <param name="inspector"></param>
         /// <returns></returns>
         IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector);
-
     }
 }

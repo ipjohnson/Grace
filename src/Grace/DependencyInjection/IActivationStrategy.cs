@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grace.Data;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;
@@ -35,7 +36,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Activation strategy
     /// </summary>
-    public interface IActivationStrategy : IDisposable
+    public interface IActivationStrategy : IExtraDataContainer, IDisposable
     {
         /// <summary>
         /// Injection scope for strategy
@@ -71,6 +72,11 @@ namespace Grace.DependencyInjection
         /// Export as a keyed
         /// </summary>
         IEnumerable<KeyValuePair<Type, object>> ExportAsKeyed { get; }
+
+        /// <summary>
+        /// Export as a name
+        /// </summary>
+        IEnumerable<string> ExportAsName { get; }
 
         /// <summary>
         /// Does the activation strategy have conditions for it's use
