@@ -317,7 +317,7 @@ namespace Grace.DependencyInjection.Impl
         public bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
         {
             value = ((IInjectionScope)this).LocateByNameFromChildScope(this,
-                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, false);
+                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, true);
 
             return value != null;
         }
