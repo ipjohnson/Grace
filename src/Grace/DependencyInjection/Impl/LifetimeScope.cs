@@ -113,7 +113,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data</param>
         /// <param name="consider">filter out different strategies</param>
         /// <param name="withKey">key to use during construction</param>
-        /// <param name="isDynamic"></param>
+        /// <param name="isDynamic">bypass the cache and look at all possible</param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
         public T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
