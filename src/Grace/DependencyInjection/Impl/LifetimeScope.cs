@@ -226,9 +226,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        public IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        public List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
-            throw new NotImplementedException();
+            return _injectionScope.InternalLocateAllByName(this, this, name, extraData, consider);
         }
 
         /// <summary>

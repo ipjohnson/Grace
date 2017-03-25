@@ -64,5 +64,29 @@ namespace Grace.Tests.DependencyInjection.Named
             Assert.False(returnValue);
             Assert.Null(instance);
         }
+
+        [Fact]
+        public void LocateAllByName()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().AsName("MultipleService");
+                c.Export<MultipleService2>().AsName("MultipleService");
+                c.Export<MultipleService3>().AsName("MultipleService");
+                c.Export<MultipleService4>().AsName("MultipleService");
+                c.Export<MultipleService5>().AsName("MultipleService");
+            });
+
+            var services = container.LocateAllByName("MultipleService");
+            
+            Assert.Equal(5, services.Count);
+            Assert.IsType<MultipleService1>(services[0]);
+            Assert.IsType<MultipleService2>(services[1]);
+            Assert.IsType<MultipleService3>(services[2]);
+            Assert.IsType<MultipleService4>(services[3]);
+            Assert.IsType<MultipleService5>(services[4]);
+        }
     }
 }

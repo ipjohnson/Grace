@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl
         /// Internal field storage
         /// </summary>
         protected InternalFieldStorageClass InternalFieldStorage = new InternalFieldStorageClass();
-        
+
         /// <summary>
         /// Disposal scope providers, this or DisposalScope must be set
         /// </summary>
@@ -290,7 +290,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
-            return ((IInjectionScope) this).LocateByNameFromChildScope(this,
+            return ((IInjectionScope)this).LocateByNameFromChildScope(this,
                 DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, false);
         }
 
@@ -301,9 +301,13 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        public IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        public List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
-            throw new NotImplementedException();
+            return ((IInjectionScope)this).InternalLocateAllByName(this, 
+                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), 
+                name,
+                extraData, 
+                consider);
         }
 
         /// <summary>
@@ -410,7 +414,7 @@ namespace Grace.DependencyInjection.Impl
 
             Configure(module.Configure);
         }
-        
+
         /// <summary>
         /// Strategies associated with this scope
         /// </summary>
@@ -420,7 +424,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Wrappers associated with this scope
         /// </summary>
-        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer => 
+        public IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> WrapperCollectionContainer =>
             InternalFieldStorage.Wrappers ?? GetWrappers();
 
         /// <summary>
@@ -460,7 +464,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return InternalLocate(childScope, disposalScope, type, consider, key, CreateInjectionContextFromExtraData(type, extraData), allowNull, isDynamic);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -507,7 +511,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (strategy != null)
             {
-                var strategyDelegate = 
+                var strategyDelegate =
                     strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
 
                 return strategyDelegate(childScope, disposalScope, CreateContext(extraData));
@@ -515,7 +519,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (Parent != null)
             {
-                return ((IInjectionScope) Parent).LocateByNameFromChildScope(childScope, disposalScope, name, extraData,
+                return ((IInjectionScope)Parent).LocateByNameFromChildScope(childScope, disposalScope, name, extraData,
                     consider, allowNull);
             }
 
@@ -526,7 +530,7 @@ namespace Grace.DependencyInjection.Impl
 
             return null;
         }
-        
+
         /// <summary>
         /// Internal locate all method
         /// </summary>
@@ -573,6 +577,44 @@ namespace Grace.DependencyInjection.Impl
             if (comparer != null)
             {
                 returnList.Sort(comparer);
+            }
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="exportName"></param>
+        /// <param name="extraData"></param>
+        /// <param name="consider"></param>
+        /// <returns></returns>
+        List<object> IInjectionScope.InternalLocateAllByName(IExportLocatorScope scope, IDisposalScope disposalScope, string exportName, object extraData, ActivationStrategyFilter consider)
+        {
+            var context = CreateContext(extraData);
+
+            var returnList = new List<object>();
+
+            var collection = StrategyCollectionContainer.GetActivationStrategyCollectionByName(exportName);
+
+            foreach (var strategy in collection.GetStrategies())
+            {
+                if (consider == null || consider(strategy))
+                {
+                    var activation = strategy.GetActivationStrategyDelegate(this,
+                        InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
+
+                    returnList.Add(activation(scope, disposalScope, context.Clone()));
+                }
+            }
+
+            var injectionScopeParent = Parent as IInjectionScope;
+
+            if (injectionScopeParent != null)
+            {
+                returnList.AddRange(injectionScopeParent.InternalLocateAllByName(scope, disposalScope, exportName, context, consider));
             }
 
             return returnList;

@@ -116,7 +116,7 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        IEnumerable<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
+        List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
 
         /// <summary>
         /// Try to locate by name
