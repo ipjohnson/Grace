@@ -35,5 +35,34 @@ namespace Grace.Tests.DependencyInjection.Named
             Assert.NotNull(instance);
             Assert.IsType<BasicService>(instance);
         }
+
+        [Fact]
+        public void TryLocateByName_Find()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().AsName("BasicService"));
+
+            object instance;
+
+            var returnValue = container.TryLocateByName("BasicService", out instance);
+
+            Assert.True(returnValue);
+            Assert.NotNull(instance);
+            Assert.IsType<BasicService>(instance);
+        }
+
+        [Fact]
+        public void TryLocateByName_Cant_Find()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            object instance;
+
+            var returnValue = container.TryLocateByName("BasicService", out instance);
+
+            Assert.False(returnValue);
+            Assert.Null(instance);
+        }
     }
 }
