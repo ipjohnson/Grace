@@ -23,21 +23,16 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Dispose of scope
         /// </summary>
-        public virtual void Dispose()
+        public void Dispose()
         {
-            var disposable = Interlocked.Exchange(ref _disposable, null);
+            var disposable = Interlocked.Exchange(ref _disposable, ImmutableLinkedList<DisposableEntry>.Empty);
 
-            if (disposable != null)
+            while (disposable.Count != 0)
             {
-                while (disposable.Count != 0)
-                {
-                    disposable.Value.DisposalAction?.Invoke();
-                    disposable.Value.DisposableItem.Dispose();
+                disposable.Value.DisposalAction?.Invoke();
+                disposable.Value.DisposableItem.Dispose();
 
-                    disposable = disposable.Next;
-                }
-
-                GC.SuppressFinalize(this);
+                disposable = disposable.Next;
             }
         }
 
@@ -55,7 +50,7 @@ namespace Grace.DependencyInjection.Impl
 
                 return disposable;
             }
-            
+
             ImmutableLinkedList.ThreadSafeAdd(ref _disposable,
                 new DisposableEntry { DisposableItem = disposable, DisposalAction = () => cleanupDelegate(disposable) });
 
