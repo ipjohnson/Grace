@@ -5,8 +5,8 @@
   },
 
   "dependencies": {
-    "Grace": "6.0.0-*",
-    "Grace.Dynamic": "6.0.0-*",
+    "Grace": "6.0.1-*",
+    "Grace.Dynamic": "6.0.1-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
