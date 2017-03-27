@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (entry != null)
             {
-                while (entry != null)
+                while (entry != DisposableEntry.Empty)
                 {
                     entry.DisposalAction?.Invoke();
                     entry.DisposableItem.Dispose();
