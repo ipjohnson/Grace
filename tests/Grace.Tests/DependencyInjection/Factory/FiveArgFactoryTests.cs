@@ -9,7 +9,7 @@ namespace Grace.Tests.DependencyInjection.Factory
     public class FiveArgFactoryTests
     {
         [Fact]
-        public void FactoryThreeArg_Create_Instance()
+        public void FactoryFiveArg_Create_Instance()
         {
             var container = new DependencyInjectionContainer();
 
