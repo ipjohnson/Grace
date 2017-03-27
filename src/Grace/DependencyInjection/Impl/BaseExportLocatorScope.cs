@@ -14,11 +14,9 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
 
-        /// <summary>
-        /// Scope id and name
-        /// </summary>
-        protected readonly ScopeIdAndNameClass ScopeIdAndName;
-
+        private string _scopeIdString;
+        private Guid _scopeId = Guid.Empty;
+        
         /// <summary>
         /// length of the activation delegates array minus one
         /// </summary>
@@ -40,7 +38,7 @@ namespace Grace.DependencyInjection.Impl
                                       ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {
             Parent = parent;
-            ScopeIdAndName = new ScopeIdAndNameClass(name);
+            ScopeName = name ?? "";
 
             ActivationDelegates = activationDelegates;
             ArrayLengthMinusOne = activationDelegates.Length - 1;
@@ -54,12 +52,25 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Name of scope
         /// </summary>
-        public string ScopeName => ScopeIdAndName.ScopeName;
+        public string ScopeName { get; }
 
         /// <summary>
         /// Scope id
         /// </summary>
-        public Guid ScopeId => ScopeIdAndName.ScopeId;
+        public Guid ScopeId
+        {
+            get
+            {
+                if (_scopeId != Guid.Empty)
+                {
+                    return _scopeId;
+                }
+
+                Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
+
+                return _scopeId = new Guid(_scopeIdString);
+            }
+        }
 
         /// <summary>
         /// Keys for data
@@ -107,49 +118,6 @@ namespace Grace.DependencyInjection.Impl
         {
             return _lockObjects.GetValueOrDefault(lockName) ??
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
-        }
-
-        /// <summary>
-        /// SCope Id and Name
-        /// </summary>
-        public class ScopeIdAndNameClass
-        {
-            private string _scopeIdString;
-            private Guid _scopeId = Guid.Empty;
-
-            /// <summary>
-            /// Default constructor
-            /// </summary>
-            /// <param name="scopeName"></param>
-            public ScopeIdAndNameClass(string scopeName)
-            {
-                ScopeName = scopeName ?? "";
-            }
-
-            /// <summary>
-            /// Scope name
-            /// </summary>
-            public string ScopeName { get; }
-                
-            /// <summary>
-            /// Scope Id
-            /// </summary>
-            public Guid ScopeId
-            {
-                get
-                {
-                    if (_scopeId != Guid.Empty)
-                    {
-                        return _scopeId;
-                    }
-
-                    Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
-
-                    _scopeId = new Guid(_scopeIdString);
-
-                    return _scopeId;
-                }
-            }
         }
     }
 }
