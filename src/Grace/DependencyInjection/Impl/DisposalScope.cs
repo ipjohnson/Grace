@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -9,11 +10,6 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class DisposalScope : IDisposalScope
     {
-        /// <summary>
-        /// Should disposal scope catch exceptions, false by default
-        /// </summary>
-        public static bool CatchDisposalException = false;
-
         private ImmutableLinkedList<Tuple<IDisposable, Action>> _disposable =
             ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty;
 
@@ -22,40 +18,17 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual void Dispose()
         {
-            var disposables = ImmutableLinkedList.ThreadSafeEmpty(ref _disposable);
+            var disposable = Interlocked.Exchange(ref _disposable, null);
 
-            if (ReferenceEquals(disposables, ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty))
+            if (disposable != null)
             {
-                return;
-            }
-
-            InternalDispose(disposables);
-        }
-
-        private void InternalDispose(IEnumerable<Tuple<IDisposable, Action>> disposables)
-        {
-            var exceptions = ImmutableLinkedList<Exception>.Empty;
-
-            foreach (var disposable in disposables)
-            {
-                try
+                while (disposable.Count != 0)
                 {
-                    disposable.Item2?.Invoke();
+                    disposable.Value.Item2?.Invoke();
+                    disposable.Value.Item1.Dispose();
 
-                    disposable.Item1.Dispose();
+                    disposable = disposable.Next;
                 }
-                catch (Exception exp)
-                {
-                    if (!CatchDisposalException)
-                    {
-                        exceptions = exceptions.Add(exp);
-                    }
-                }
-            }
-
-            if (!ReferenceEquals(exceptions, ImmutableLinkedList<Exception>.Empty))
-            {
-                throw new AggregateException("Exceptions thrown while disposing scope", exceptions.Reverse());
             }
         }
 
