@@ -5,6 +5,7 @@
     "Castle.Core": "4.0.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Grace": "6.0.1-*",
+    "Grace.Dynamic": "6.0.1-*",
     "Microsoft.Extensions.DependencyInjection": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-*",
     "NETStandard.Library": "1.6.0",

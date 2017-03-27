@@ -10,8 +10,15 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class DisposalScope : IDisposalScope
     {
-        private ImmutableLinkedList<Tuple<IDisposable, Action>> _disposable =
-            ImmutableLinkedList<Tuple<IDisposable, Action>>.Empty;
+        private struct DisposableEntry
+        {
+            public IDisposable DisposableItem;
+
+            public Action DisposalAction;
+        }
+
+        private ImmutableLinkedList<DisposableEntry> _disposable =
+            ImmutableLinkedList<DisposableEntry>.Empty;
 
         /// <summary>
         /// Dispose of scope
@@ -24,8 +31,8 @@ namespace Grace.DependencyInjection.Impl
             {
                 while (disposable.Count != 0)
                 {
-                    disposable.Value.Item2?.Invoke();
-                    disposable.Value.Item1.Dispose();
+                    disposable.Value.DisposalAction?.Invoke();
+                    disposable.Value.DisposableItem.Dispose();
 
                     disposable = disposable.Next;
                 }
@@ -39,15 +46,16 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="cleanupDelegate">logic that will be run directly before the object is disposed</param>
         public T AddDisposable<T>(T disposable, Action<T> cleanupDelegate = null) where T : IDisposable
         {
-            Action cleanupAction = null;
-
-            if (cleanupDelegate != null)
+            if (cleanupDelegate == null)
             {
-                cleanupAction = () => cleanupDelegate(disposable);
-            }
+                ImmutableLinkedList.ThreadSafeAdd(ref _disposable,
+                    new DisposableEntry { DisposableItem = disposable });
 
+                return disposable;
+            }
+            
             ImmutableLinkedList.ThreadSafeAdd(ref _disposable,
-                new Tuple<IDisposable, Action>(disposable, cleanupAction));
+                new DisposableEntry { DisposableItem = disposable, DisposalAction = () => cleanupDelegate(disposable) });
 
             return disposable;
         }
