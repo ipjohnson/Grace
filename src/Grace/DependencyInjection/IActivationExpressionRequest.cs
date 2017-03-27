@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -151,7 +152,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Request context to create expression
     /// </summary>
-    public interface IActivationExpressionRequest
+    public interface IActivationExpressionRequest : IExtraDataContainer
     {
         /// <summary>
         /// Type being requested

@@ -151,6 +151,23 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Locate type or return default value
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public object LocateOrDefault(Type type, object defaultValue = null)
+        {
+            var hashCode = type.GetHashCode();
+
+            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+
+            return func != null ?
+                   func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) :
+                   InternalLocate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, null, null, null, true,false) ?? defaultValue;
+        }
+
+        /// <summary>
         /// Locate type
         /// </summary>
         /// <typeparam name="T">type to locate</typeparam>
@@ -158,6 +175,17 @@ namespace Grace.DependencyInjection.Impl
         public T Locate<T>()
         {
             return (T)Locate(typeof(T));
+        }
+
+        /// <summary>
+        /// Locate or return default
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T LocateOrDefault<T>(T defaultValue = default(T))
+        {
+            return (T) LocateOrDefault(typeof(T), defaultValue);
         }
 
         /// <summary>

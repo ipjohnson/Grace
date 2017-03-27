@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -152,6 +153,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
     }
 
+
+
     /// <summary>
     /// Expression request object
     /// </summary>
@@ -160,6 +163,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private bool _injectionContextRequired;
         private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
+        private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
+        private ImmutableHashTree<object,object> _perDelegateData = ImmutableHashTree<object, object>.Empty;
         private string _uniqueId;
 
         /// <summary>
@@ -571,6 +576,43 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public bool InjectionContextRequired()
         {
             return _injectionContextRequired;
+        }
+
+        /// <summary>
+        /// Keys for data
+        /// </summary>
+        public IEnumerable<object> Keys => _extraData.Keys;
+
+        /// <summary>
+        /// Values for data
+        /// </summary>
+        public IEnumerable<object> Values => _extraData.Values;
+
+        /// <summary>
+        /// Enumeration of all the key value pairs
+        /// </summary>
+        public IEnumerable<KeyValuePair<object, object>> KeyValuePairs => _extraData;
+
+        /// <summary>
+        /// Extra data associated with the injection request. 
+        /// </summary>
+        /// <param name="key">key of the data object to get</param>
+        /// <returns>data value</returns>
+        public object GetExtraData(object key)
+        {
+            return _extraData.GetValueOrDefault(key);
+        }
+
+        /// <summary>
+        /// Sets extra data on the injection context
+        /// </summary>
+        /// <param name="key">object name</param>
+        /// <param name="newValue">new object value</param>
+        /// <param name="replaceIfExists">replace value if key exists</param>
+        /// <returns>the final value of key</returns>
+        public object SetExtraData(object key, object newValue, bool replaceIfExists = true)
+        {
+            return ImmutableHashTree.ThreadSafeAdd(ref _extraData, key, newValue, replaceIfExists);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 typeof(ActivationStrategyDelegate),
                 typeof(string)
             });
-
+           
             var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
             var expression = Expression.Call(closedMethod,
