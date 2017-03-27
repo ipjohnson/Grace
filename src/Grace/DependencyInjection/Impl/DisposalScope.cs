@@ -36,6 +36,8 @@ namespace Grace.DependencyInjection.Impl
 
                     disposable = disposable.Next;
                 }
+
+                GC.SuppressFinalize(this);
             }
         }
 
