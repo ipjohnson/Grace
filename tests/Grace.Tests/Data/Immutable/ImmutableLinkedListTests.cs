@@ -13,10 +13,6 @@ namespace Grace.Tests.Data.Immutable
         public void ImmutableLinkedList_Null_Reference_Check()
         {
             var value = (ImmutableLinkedList<int>) null;
-
-            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAdd(ref value,2));
-
-            Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeEmpty(ref value));
             
             Assert.Throws<ArgumentNullException>(() => ImmutableLinkedList.ThreadSafeAddRange(ref value, new []{5}));
 
