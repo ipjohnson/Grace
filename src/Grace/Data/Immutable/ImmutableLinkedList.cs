@@ -22,8 +22,6 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public static ImmutableLinkedList<T> ThreadSafeEmpty<T>(ref ImmutableLinkedList<T> list)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-
             return Interlocked.Exchange(ref list, ImmutableLinkedList<T>.Empty);
         }
         
@@ -35,8 +33,6 @@ namespace Grace.Data.Immutable
         /// <param name="value"></param>
         public static void ThreadSafeAdd<T>(ref ImmutableLinkedList<T> list, T value)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-
             var listValue = list;
             var newList = listValue.Add(value);
 
@@ -45,12 +41,19 @@ namespace Grace.Data.Immutable
                 return;
             }
 
+            AddWithWait(ref list, value);
+        }
+
+        private static void AddWithWait<T>(ref ImmutableLinkedList<T> list, T value)
+        {
+            ImmutableLinkedList<T> listValue;
+            ImmutableLinkedList<T> newList;
             var wait = new SpinWait();
 
             while (true)
             {
-                 wait.SpinOnce();
-             
+                wait.SpinOnce();
+
                 listValue = list;
                 newList = listValue.Add(value);
 
