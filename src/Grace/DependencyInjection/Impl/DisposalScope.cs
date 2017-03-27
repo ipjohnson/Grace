@@ -28,7 +28,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Dispose of scope
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             var entry = Interlocked.Exchange(ref _entry, null);
 
