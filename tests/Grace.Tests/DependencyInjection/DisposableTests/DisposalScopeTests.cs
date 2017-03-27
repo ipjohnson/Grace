@@ -23,37 +23,37 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
             Assert.True(eventFired);
         }
 
-        [Fact]
-        public void DisposalScope_ThrowExceptionDuringCleanUp()
-        {
-            var disposalScope = new DisposalScope();
-            var disposableService = new DisposableService();
-            var eventFired = false;
+        //[Fact]
+        //public void DisposalScope_ThrowExceptionDuringCleanUp()
+        //{
+        //    var disposalScope = new DisposalScope();
+        //    var disposableService = new DisposableService();
+        //    var eventFired = false;
 
-            disposableService.Disposing += (sender, args) => eventFired = true;
+        //    disposableService.Disposing += (sender, args) => eventFired = true;
 
-            disposalScope.AddDisposable(disposableService, disposed => { throw new Exception(); });
+        //    disposalScope.AddDisposable(disposableService, disposed => { throw new Exception(); });
 
-            Assert.ThrowsAny<AggregateException>(() => disposalScope.Dispose());
-        }
+        //    Assert.ThrowsAny<AggregateException>(() => disposalScope.Dispose());
+        //}
 
-        [Fact]
-        public void DisposalScope_ThrowExceptionDuringDispose()
-        {
-            var disposalScope = new DisposalScope();
-            var disposableService = new DisposableService();
-            var eventFired = false;
+        //[Fact]
+        //public void DisposalScope_ThrowExceptionDuringDispose()
+        //{
+        //    var disposalScope = new DisposalScope();
+        //    var disposableService = new DisposableService();
+        //    var eventFired = false;
 
-            disposableService.Disposing += (sender, args) =>
-            {
-                eventFired = true;
-                throw new Exception();
-            };
+        //    disposableService.Disposing += (sender, args) =>
+        //    {
+        //        eventFired = true;
+        //        throw new Exception();
+        //    };
 
-            disposalScope.AddDisposable(disposableService, disposed => { throw new Exception(); });
+        //    disposalScope.AddDisposable(disposableService, disposed => { throw new Exception(); });
 
-            Assert.Throws<AggregateException>(() => disposalScope.Dispose());
-        }
+        //    Assert.Throws<AggregateException>(() => disposalScope.Dispose());
+        //}
 
         [Fact]
         public void DoubleDisposeTest()
