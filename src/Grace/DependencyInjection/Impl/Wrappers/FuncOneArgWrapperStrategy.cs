@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
 using Grace.DependencyInjection.Impl.Expressions;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -66,7 +67,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         public class FuncExpression<TArg1, TResult>
         {
             private readonly IInjectionContextCreator _injectionContextCreator;
-            private readonly string _arg1Id = Guid.NewGuid().ToString();
+            private readonly string _arg1Id = UniqueStringId.Generate();
             private readonly ActivationStrategyDelegate _action;
 
             /// <summary>

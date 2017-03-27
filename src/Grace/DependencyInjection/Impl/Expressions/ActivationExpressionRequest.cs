@@ -7,6 +7,7 @@ using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -275,7 +276,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     return _uniqueId;
                 }
 
-                return Interlocked.CompareExchange(ref _uniqueId, Guid.NewGuid().ToString(), null) ?? _uniqueId;
+                return Interlocked.CompareExchange(ref _uniqueId, UniqueStringId.Generate(), null) ?? _uniqueId;
             }
         }
 

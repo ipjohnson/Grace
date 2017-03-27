@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -12,7 +13,7 @@ namespace Grace.DependencyInjection.Lifestyle
     public class SingletonPerObjectGraph : ICompiledLifestyle
     {
         private readonly bool _guaranteeOnlyOne;
-        private readonly string _uniqueId = Guid.NewGuid().ToString();
+        private readonly string _uniqueId = UniqueStringId.Generate();
 
         /// <summary>
         /// Default constructor

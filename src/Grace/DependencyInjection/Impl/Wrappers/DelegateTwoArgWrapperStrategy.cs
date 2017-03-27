@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
 using Grace.DependencyInjection.Impl.Expressions;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -71,8 +72,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         public class DelegateExpression<T1, T2, TResult, TDelegate>
         {
             private readonly IInjectionContextCreator _injectionContextCreator;
-            private readonly string _arg1Id = Guid.NewGuid().ToString();
-            private readonly string _arg2Id = Guid.NewGuid().ToString();
+            private readonly string _arg1Id = UniqueStringId.Generate();
+            private readonly string _arg2Id = UniqueStringId.Generate();
             private readonly ActivationStrategyDelegate _action;
             private readonly MethodInfo _funcMethodInfo;
 

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using Grace.DependencyInjection.Exceptions;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -18,7 +19,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Unique id
         /// </summary>
-        protected readonly string UniqueId = Guid.NewGuid().ToString();
+        protected readonly string UniqueId = UniqueStringId.Generate();
 
         /// <summary>
         /// Compiled delegate
