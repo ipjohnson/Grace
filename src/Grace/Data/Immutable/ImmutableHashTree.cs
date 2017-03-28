@@ -359,8 +359,7 @@ namespace Grace.Data.Immutable
                 currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
             }
 
-            return currenNode.Height != 0 &&
-                   key.Equals(currenNode.Key)
+            return currenNode.Height != 0 && key.Equals(currenNode.Key)
                     ? currenNode.Value
                     : GetConflictedValue(key, currenNode.Conflicts, defaultValue);
         }
