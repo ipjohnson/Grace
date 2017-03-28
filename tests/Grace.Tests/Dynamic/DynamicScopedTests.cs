@@ -41,5 +41,20 @@ namespace Grace.Tests.Dynamic
                 value = scope.Locate<DisposableDependent>();
             }
         }
+        
+        [Fact]
+        public void DynamicMethod_Per_Scope()
+        {
+            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration());
+
+            container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
+
+            var value = container.Locate<DisposableDependent>();
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                value = scope.Locate<DisposableDependent>();
+            }
+        }
     }
 }

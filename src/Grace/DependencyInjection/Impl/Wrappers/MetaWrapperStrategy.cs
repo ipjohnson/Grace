@@ -50,7 +50,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var constructor = request.ActivationType.GetTypeInfo().DeclaredConstructors.First();
 
-            var newRequest = request.NewRequest(requestType, this, request.ActivationType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(requestType, this, request.ActivationType, RequestType.Other, null, true, true);
 
             var strategy = request.GetWrappedExportStrategy();
 

@@ -364,6 +364,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                                 configuration.ActivationType, 
                                                 RequestType.ConstructorParameter, 
                                                 parameter, 
+                                                true,
                                                 true);
 
             if (parameterInfo?.LocateWithKey != null)
@@ -412,7 +413,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,
-                RequestType.ConstructorParameter, parameter);
+                RequestType.ConstructorParameter, parameter, false, true);
 
             return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned,injectionScope,strategy), injectionScope, newRequest);
         }

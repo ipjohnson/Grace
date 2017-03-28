@@ -154,8 +154,51 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
     }
 
+    /// <summary>
+    /// Data that is per delegate
+    /// </summary>
+    public class PerDelegateData : IDataPerDelegate
+    {
+        private ImmutableHashTree<object,object> _data = ImmutableHashTree<object, object>.Empty;
 
+        /// <summary>
+        /// Keys for data
+        /// </summary>
+        public IEnumerable<object> Keys => _data.Keys;
 
+        /// <summary>
+        /// Values for data
+        /// </summary>
+        public IEnumerable<object> Values => _data.Values;
+
+        /// <summary>
+        /// Enumeration of all the key value pairs
+        /// </summary>
+        public IEnumerable<KeyValuePair<object, object>> KeyValuePairs => _data;
+
+        /// <summary>
+        /// Extra data associated with the injection request. 
+        /// </summary>
+        /// <param name="key">key of the data object to get</param>
+        /// <returns>data value</returns>
+        public object GetExtraData(object key)
+        {
+            return _data.GetValueOrDefault(key);
+        }
+
+        /// <summary>
+        /// Sets extra data on the injection context
+        /// </summary>
+        /// <param name="key">object name</param>
+        /// <param name="newValue">new object value</param>
+        /// <param name="replaceIfExists">replace value if key exists</param>
+        /// <returns>the final value of key</returns>
+        public object SetExtraData(object key, object newValue, bool replaceIfExists = true)
+        {
+            return ImmutableHashTree.ThreadSafeAdd(ref _data, key, newValue, replaceIfExists);
+        }
+    }
+    
     /// <summary>
     /// Expression request object
     /// </summary>
@@ -165,7 +208,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
-        private ImmutableHashTree<object,object> _perDelegateData = ImmutableHashTree<object, object>.Empty;
         private string _uniqueId;
 
         /// <summary>
@@ -177,7 +219,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="constants"></param>
         /// <param name="objectGraphDepth"></param>
         /// <param name="requestingScope"></param>
-        public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth, IInjectionScope requestingScope)
+        /// <param name="delegateData"></param>
+        public ActivationExpressionRequest(Type activationType, RequestType requestedType, IActivationServices services, IExpressionConstants constants, int objectGraphDepth, IInjectionScope requestingScope, IDataPerDelegate delegateData)
         {
             ActivationType = activationType;
 
@@ -192,6 +235,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             IsRequired = true;
             ObjectGraphDepth = objectGraphDepth;
             RequestingScope = requestingScope;
+            PerDelegateData = delegateData;
         }
 
         /// <summary>
@@ -438,15 +482,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="requestType">request type</param>
         /// <param name="info">info for request</param>
         /// <param name="maintainPaths">maintain wrapper and decorator path</param>
+        /// <param name="carryData"></param>
         /// <returns>new request</returns>
-        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false)
+        public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false, bool carryData = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
             {
                 throw new RecursiveLocateException(GetStaticInjectionContext());
             }
 
-            var returnValue = new ActivationExpressionRequest(activationType, requestType, Services, Constants, ObjectGraphDepth + 1, RequestingScope)
+            var data = carryData ? PerDelegateData : new PerDelegateData();
+
+            var returnValue = new ActivationExpressionRequest(activationType, requestType, Services, Constants, ObjectGraphDepth + 1, RequestingScope, data)
             {
                 Parent = this,
                 InjectedType = injectedType,
@@ -491,7 +538,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                                    Services,
                                                    Constants, 
                                                    ObjectGraphDepth + 1, 
-                                                   requestingScope);
+                                                   requestingScope,
+                                                   new PerDelegateData());
 
             if (maintainPaths)
             {
@@ -506,6 +554,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Original requesting scope
         /// </summary>
         public IInjectionScope RequestingScope { get; }
+
+        /// <summary>
+        /// Data that is per delegate and won't transfer to other delegates
+        /// </summary>
+        public IDataPerDelegate PerDelegateData { get; }
 
         /// <summary>
         /// Get static injection context for request

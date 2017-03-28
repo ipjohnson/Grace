@@ -15,10 +15,11 @@ namespace Grace.Dynamic.Impl
         /// Default constructor
         /// </summary>
         /// <param name="expressionResult"></param>
-        public DynamicMethodGenerationRequest(IActivationExpressionResult expressionResult, Func<DynamicMethodGenerationRequest, Expression, bool> tryGenerateIL)
+        public DynamicMethodGenerationRequest(IActivationExpressionResult expressionResult, Func<DynamicMethodGenerationRequest, Expression, bool> tryGenerateIL, ParameterExpression[] extraParameters)
         {
             ExpressionResult = expressionResult;
             TryGenerateIL = tryGenerateIL;
+            ExtraParameters = extraParameters;
             ExpressionRequest = ExpressionResult.Request;
         }
 
@@ -31,6 +32,11 @@ namespace Grace.Dynamic.Impl
         /// Expression Request
         /// </summary>
         public IActivationExpressionRequest ExpressionRequest { get; }
+
+        /// <summary>
+        /// Extra parameters for delegate
+        /// </summary>
+        public ParameterExpression[] ExtraParameters { get; }
 
         /// <summary>
         /// IL Generator

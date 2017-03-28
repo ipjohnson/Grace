@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     }
                     else
                     {
-                        var arg1Request = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy, expression.Type, RequestType.Other, null, true);
+                        var arg1Request = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy, expression.Type, RequestType.Other, null, true, true);
 
                         var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
 

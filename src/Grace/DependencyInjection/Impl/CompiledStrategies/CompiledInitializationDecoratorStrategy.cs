@@ -59,7 +59,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <returns></returns>
         protected virtual IActivationExpressionResult InternalGetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var newRequest = request.NewRequest(typeof(T), this, ActivationType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(typeof(T), this, ActivationType, RequestType.Other, null, true, true);
 
             var expression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

@@ -56,7 +56,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var arrayType = enumerableType.MakeArrayType();
 
             var newRequest = request.NewRequest(arrayType, request.RequestingStrategy,
-                request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
+                request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true, true);
 
             newRequest.SetFilter(request.Filter);
             newRequest.SetEnumerableComparer(request.EnumerableComparer);
@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var newRequest =
                 request.NewRequest(arrayType, request.RequestingStrategy,
-                    request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true);
+                    request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true, true);
 
             newRequest.SetFilter(request.Filter);
             newRequest.SetEnumerableComparer(request.EnumerableComparer);

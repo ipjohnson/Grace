@@ -113,7 +113,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             IActivationExpressionRequest request)
         {
             var newRequest = request.NewRequest(_dependentStrategy.ActivationType, this, request.InjectedType,
-                request.RequestType, request.Info, true);
+                request.RequestType, request.Info, true, true);
 
             var instanceResult = _dependentStrategy.GetActivationExpression(scope, newRequest);
 

@@ -125,7 +125,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                         var requestType = _request.ActivationType.GenericTypeArguments[0];
 
                         var newRequest = _request.NewRequest(requestType, _activationStrategy, typeof(Lazy<TResult>),
-                            RequestType.Other, null, true);
+                            RequestType.Other, null, true, true);
 
                         newRequest.DisposalScopeExpression = _request.Constants.RootDisposalScope;
 

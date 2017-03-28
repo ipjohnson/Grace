@@ -154,7 +154,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var parameterRequest = request.NewRequest(parameter.ParameterType,
                     activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType,
-                    RequestType.MethodParameter, parameter);
+                    RequestType.MethodParameter, parameter, false, true);
 
                 if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
                 {

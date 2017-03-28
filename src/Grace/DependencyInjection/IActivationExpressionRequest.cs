@@ -150,6 +150,14 @@ namespace Grace.DependencyInjection
     }
 
     /// <summary>
+    /// Data that is per delegate, used for lifestyles
+    /// </summary>
+    public interface IDataPerDelegate : IExtraDataContainer
+    {
+        
+    }
+
+    /// <summary>
     /// Request context to create expression
     /// </summary>
     public interface IActivationExpressionRequest : IExtraDataContainer
@@ -354,8 +362,9 @@ namespace Grace.DependencyInjection
         /// <param name="requestType">request type</param>
         /// <param name="info">info for request</param>
         /// <param name="maintainPaths">maintain wrapper and decorator path</param>
+        /// <param name="carryData"></param>
         /// <returns>new request</returns>
-        IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false);
+        IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false, bool carryData = false);
 
         /// <summary>
         /// Creates new rooted request (for lifestyles)
@@ -370,5 +379,10 @@ namespace Grace.DependencyInjection
         /// Scope the request originated in
         /// </summary>
         IInjectionScope RequestingScope { get; }
+
+        /// <summary>
+        /// Data that is per delegate and won't transfer to other delegates
+        /// </summary>
+        IDataPerDelegate PerDelegateData { get; }
     }
 }

@@ -74,7 +74,8 @@ namespace Grace.DependencyInjection.Impl
                                                    new ActivationServices(this, _builder, _attributeDiscoveryService, _exportExpressionBuilder, _injectionContextCreator),
                                                    _constants,
                                                    objectGraphDepth,
-                                                   requestingScope);
+                                                   requestingScope, 
+                                                   new PerDelegateData());
         }
 
         /// <summary>

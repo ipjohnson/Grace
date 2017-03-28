@@ -106,7 +106,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
         private IActivationExpressionResult GetExpressionFromDependentStrategy(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var newRequest = request.NewRequest(_dependentStrategy.ActivationType, this, request.InjectedType, request.RequestType, request.Info, true);
+            var newRequest = request.NewRequest(_dependentStrategy.ActivationType, this, request.InjectedType, request.RequestType, request.Info, true, true);
 
             var instanceResult = _dependentStrategy.GetActivationExpression(scope, newRequest);
 
@@ -116,7 +116,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             foreach (var parameterInfo in _methodInfo.GetParameters())
             {
                 newRequest = request.NewRequest(parameterInfo.ParameterType, this, _dependentStrategy.ActivationType,
-                    RequestType.MethodParameter, parameterInfo);
+                    RequestType.MethodParameter, parameterInfo, false, true);
 
                 var parameterResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

@@ -29,7 +29,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             for (var i = 0; i < types.Length; i++)
             {
-                var arg1Request = request.NewRequest(types[i], strategy, resultType, RequestType.Other, null, true);
+                var arg1Request = request.NewRequest(types[i], strategy, resultType, RequestType.Other, null, true, true);
 
                 resultArray[i] = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
             }

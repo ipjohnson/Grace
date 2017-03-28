@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
+using Grace.Data;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Lifestyle
@@ -36,7 +37,7 @@ namespace Grace.DependencyInjection.Lifestyle
         {
             ThreadSafe = threadSafe;
         }
-        
+
         /// <summary>
         /// Generalization for lifestyle
         /// </summary>
@@ -60,6 +61,13 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <returns></returns>
         public virtual IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
+            var local = request.PerDelegateData.GetExtraDataOrDefaultValue<ParameterExpression>("local" + UniqueId);
+
+            if (local != null)
+            {
+                return request.Services.Compiler.CreateNewResult(request, local);
+            }
+
             if (CompiledDelegate == null)
             {
                 // new request as we don't want to carry any info over from parent request
@@ -76,7 +84,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 typeof(ActivationStrategyDelegate),
                 typeof(string)
             });
-           
+
             var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
             var expression = Expression.Call(closedMethod,
@@ -84,7 +92,18 @@ namespace Grace.DependencyInjection.Lifestyle
                                              Expression.Constant(CompiledDelegate),
                                              Expression.Constant(UniqueId));
 
-            return request.Services.Compiler.CreateNewResult(request, expression);
+            local = Expression.Variable(request.ActivationType);
+
+            request.PerDelegateData.SetExtraData("local" + UniqueId, local);
+
+            var assignExpression = Expression.Assign(local, expression);
+
+            var result = request.Services.Compiler.CreateNewResult(request, local);
+
+            result.AddExtraParameter(local);
+            result.AddExtraExpression(assignExpression);
+
+            return result;
         }
 
         /// <summary>
@@ -111,7 +130,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             return (T)value;
         }
-        
+
         /// <summary>
         /// Get value from scope using lock
         /// </summary>

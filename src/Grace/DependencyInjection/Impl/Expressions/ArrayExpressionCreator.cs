@@ -170,7 +170,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             
                             var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                                request.Info, true);
+                                request.Info, true, true);
 
                             var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         }
 
                         var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                            request.Info, true);
+                            request.Info, true, true);
 
                         var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -238,7 +238,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             {
                                 var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
                                     request.RequestingStrategy?.ActivationType, request.RequestType,
-                                    request.Info, true);
+                                    request.Info, true, true);
 
                                 var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -276,7 +276,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                             var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
                                 request.RequestingStrategy?.ActivationType, request.RequestType,
-                                request.Info, true);
+                                request.Info, true, true);
 
                             var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -339,7 +339,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                         if (expressions.Count == 0)
                         {
-                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true);
+                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true, true);
 
                             request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
 
@@ -435,7 +435,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
 
                 var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType,
-                    RequestType.Other, null, true);
+                    RequestType.Other, null, true, true);
 
                 var newPath =
                     ImmutableLinkedList<IActivationPathNode>.Empty.Add(

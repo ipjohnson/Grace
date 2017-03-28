@@ -125,7 +125,7 @@ namespace Grace.DependencyInjection.Impl
             PropertyInfo property, ImportAttributeInfo importInfo)
         {
             var propertyRequest = request.NewRequest(property.PropertyType, strategy, locateType,
-                RequestType.Member, property);
+                RequestType.Member, property, false, true);
 
             propertyRequest.SetIsRequired(importInfo.IsRequired);
             propertyRequest.SetEnumerableComparer(importInfo.Comparer);
@@ -200,7 +200,7 @@ namespace Grace.DependencyInjection.Impl
             foreach (var parameter in method.GetParameters())
             {
                 var parameterRequest = request.NewRequest(parameter.ParameterType, strategy, locateType,
-                    RequestType.MethodParameter, parameter);
+                    RequestType.MethodParameter, parameter, false, true);
 
                 if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
                 {

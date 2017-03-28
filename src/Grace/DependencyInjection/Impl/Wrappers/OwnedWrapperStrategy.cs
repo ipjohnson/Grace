@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var assign = Expression.Assign(ownedParameter, Expression.New(constructor));
 
-            var newRequest = request.NewRequest(wrappedType, this, request.ActivationType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(wrappedType, this, request.ActivationType, RequestType.Other, null, true, true);
 
             newRequest.DisposalScopeExpression = ownedParameter;
 

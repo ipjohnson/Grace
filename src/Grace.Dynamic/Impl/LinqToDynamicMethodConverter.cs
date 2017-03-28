@@ -16,12 +16,12 @@ namespace Grace.Dynamic.Impl
         /// try to create delegate using IL generation
         /// </summary>
         /// <param name="expressionContext">expression context</param>
+        /// <param name="parameters"></param>
+        /// <param name="extraExpressions"></param>
         /// <param name="finalExpression">final expression to convert</param>
         /// <param name="newDelegate">created delegate</param>
         /// <returns>true if delegate was created</returns>
-        bool TryCreateDelegate(IActivationExpressionResult expressionContext,
-            Expression finalExpression,
-            out ActivationStrategyDelegate newDelegate);
+        bool TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, out ActivationStrategyDelegate newDelegate);
     }
 
     /// <summary>
@@ -47,19 +47,28 @@ namespace Grace.Dynamic.Impl
         /// try to create delegate using IL generation
         /// </summary>
         /// <param name="expressionContext">expression context</param>
+        /// <param name="parameters"></param>
+        /// <param name="extraExpressions"></param>
         /// <param name="finalExpression">final expression to convert</param>
         /// <param name="newDelegate">created delegate</param>
         /// <returns>true if delegate was created</returns>
-        public virtual bool TryCreateDelegate(IActivationExpressionResult expressionContext, Expression finalExpression,
-            out ActivationStrategyDelegate newDelegate)
+        public virtual bool TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, out ActivationStrategyDelegate newDelegate)
         {
             newDelegate = null;
 
             try
             {
-                var request = new DynamicMethodGenerationRequest(expressionContext, TryGenerateIL);
+                var request = new DynamicMethodGenerationRequest(expressionContext, TryGenerateIL, parameters);
 
                 var constants = new List<object>();
+
+                foreach (var expression in extraExpressions)
+                {
+                    if (!ImplementationFactory.Locate<IConstantExpressionCollector>().GetConstantExpressions(expression, constants))
+                    {
+                        return false;
+                    }
+                }
 
                 if (!ImplementationFactory.Locate<IConstantExpressionCollector>().GetConstantExpressions(finalExpression, constants))
                 {
@@ -90,6 +99,19 @@ namespace Grace.Dynamic.Impl
                     true);
 
                 request.ILGenerator = method.GetILGenerator();
+
+                foreach (var parameter in parameters)
+                {
+                    request.ILGenerator.DeclareLocal(parameter.Type);
+                }
+
+                foreach (var expression in extraExpressions)
+                {
+                    if (!TryGenerateIL(request, expression))
+                    {
+                        return false;
+                    }
+                }
 
                 if (!TryGenerateIL(request, finalExpression))
                 {
@@ -133,6 +155,15 @@ namespace Grace.Dynamic.Impl
                     return ImplementationFactory.Locate<IConstantExpressionGenerator>()
                         .GenerateIL(request, (ConstantExpression)expression);
 
+                case ExpressionType.Convert:
+                    if (TryGenerateIL(request, ((UnaryExpression)expression).Operand))
+                    {
+                        request.ILGenerator.Emit(OpCodes.Castclass, expression.Type);
+                        return true;
+                    }
+
+                    return false;
+
                 case ExpressionType.MemberInit:
                     return ImplementationFactory.Locate<IMemeberInitExpressionGenerator>()
                         .GenerateIL(request, (MemberInitExpression)expression);
@@ -147,8 +178,15 @@ namespace Grace.Dynamic.Impl
 
                 case ExpressionType.Parameter:
                     return ImplementationFactory.Locate<IParameterExpressionGenerator>()
-                        .GenerateIL(request, (ParameterExpression) expression);
-                    
+                        .GenerateIL(request, (ParameterExpression)expression);
+
+                case ExpressionType.Assign:
+                    return ImplementationFactory.Locate<IAssignExpressionGenerator>()
+                        .GenerateIL(request, (BinaryExpression)expression);
+
+                default:
+                    request.ToString();
+                    break;
             }
 
             return false;

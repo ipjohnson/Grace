@@ -53,6 +53,7 @@ namespace Grace.Dynamic
             DynamicImplementation.ExportSingleton<IArrayInitExpressionGenerator>(f => new ArrayInitExpressionGenerator());
             DynamicImplementation.ExportSingleton<IParameterExpressionGenerator>(f => new ParameterExpressionGenerator());
             DynamicImplementation.ExportSingleton<ICallExpressionGenerator>(f => new CallExpressionGenerator());
+            DynamicImplementation.ExportSingleton<IAssignExpressionGenerator>(f => new AssignExpressionGenerator());
 
             DynamicImplementation.ExportInstance<ILinqToDynamicMethodConverter>(f => new LinqToDynamicMethodConverter(f));
 

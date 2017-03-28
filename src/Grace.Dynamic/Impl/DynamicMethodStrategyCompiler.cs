@@ -23,8 +23,8 @@ namespace Grace.Dynamic.Impl
         /// <param name="constants"></param>
         /// <param name="injectionCreator"></param>
         /// <param name="linqToDynamicMethodConverter"></param>
-        public DynamicMethodStrategyCompiler(IInjectionScopeConfiguration configuration, IActivationExpressionBuilder builder, IAttributeDiscoveryService attributeDiscoveryService, IDefaultStrategyExpressionBuilder exportExpressionBuilder, IInjectionContextCreator injectionContextCreator, IExpressionConstants constants, IInjectionStrategyDelegateCreator injectionCreator, ILinqToDynamicMethodConverter linqToDynamicMethodConverter) : 
-            base(configuration, builder, attributeDiscoveryService, exportExpressionBuilder, injectionContextCreator, constants,injectionCreator)
+        public DynamicMethodStrategyCompiler(IInjectionScopeConfiguration configuration, IActivationExpressionBuilder builder, IAttributeDiscoveryService attributeDiscoveryService, IDefaultStrategyExpressionBuilder exportExpressionBuilder, IInjectionContextCreator injectionContextCreator, IExpressionConstants constants, IInjectionStrategyDelegateCreator injectionCreator, ILinqToDynamicMethodConverter linqToDynamicMethodConverter) :
+            base(configuration, builder, attributeDiscoveryService, exportExpressionBuilder, injectionContextCreator, constants, injectionCreator)
         {
             _linqToDynamicMethodConverter = linqToDynamicMethodConverter;
         }
@@ -40,17 +40,14 @@ namespace Grace.Dynamic.Impl
         protected override ActivationStrategyDelegate CompileExpressionResultToDelegate(IActivationExpressionResult expressionContext,
             ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression)
         {
-            if (parameters.Length == 0 &&
-                extraExpressions.Length == 0)
-            {
-                ActivationStrategyDelegate dynamicDelegate;
+            ActivationStrategyDelegate dynamicDelegate;
 
-                // try to create delegate, if not fall back to normal Linq Expression compile
-                if (_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, finalExpression, out dynamicDelegate))
-                {
-                    return dynamicDelegate;
-                }
+            // try to create delegate, if not fall back to normal Linq Expression compile
+            if (_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, parameters, extraExpressions, finalExpression, out dynamicDelegate))
+            {
+                return dynamicDelegate;
             }
+
 
             return base.CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
         }

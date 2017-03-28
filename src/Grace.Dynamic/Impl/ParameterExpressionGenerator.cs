@@ -53,6 +53,35 @@ namespace Grace.Dynamic.Impl
                 return true;
             }
 
+            for (int i = 0; i < request.ExtraParameters.Length; i++)
+            {
+                if (expression == request.ExtraParameters[i])
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            request.ILGenerator.Emit(OpCodes.Ldloc_0);
+                            return true;
+
+                        case 1:
+                            request.ILGenerator.Emit(OpCodes.Ldloc_1);
+                            return true;
+
+                        case 2:
+                            request.ILGenerator.Emit(OpCodes.Ldloc_2);
+                            return true;
+
+                        case 3:
+                            request.ILGenerator.Emit(OpCodes.Ldloc_3);
+                            return true;
+
+                        default:
+                            request.ILGenerator.Emit(OpCodes.Ldloc_S, i);
+                            return true;
+                    }
+                }
+            }
+
             return false;
         }
     }

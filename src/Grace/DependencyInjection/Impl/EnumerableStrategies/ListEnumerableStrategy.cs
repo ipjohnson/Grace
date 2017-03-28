@@ -48,7 +48,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 
             var closedType = typeof(List<>).MakeGenericType(elementType);
 
-            var newRequest = request.NewRequest(elementType.MakeArrayType(), this, closedType, RequestType.Other, null, true);
+            var newRequest = request.NewRequest(elementType.MakeArrayType(), this, closedType, RequestType.Other, null, true, true);
 
             newRequest.SetFilter(request.Filter);
             newRequest.SetEnumerableComparer(request.EnumerableComparer);
