@@ -22,23 +22,15 @@ namespace Grace.Utilities
         public static string Generate()
         {
             var intValue = _local.Value.Next();
-
-            var builder = new StringBuilder();
-
-            builder.Append((char)(intValue % 95 + 32));
-
-            intValue = intValue >> 7;
-            builder.Append((char)(intValue % 95 + 32));
-
-            intValue = intValue >> 7;
-            builder.Append((char)(intValue % 95 + 32));
-
-            intValue = intValue >> 7;
-            builder.Append((char)(intValue % 95 + 32));
-
-            builder.Append(Interlocked.Increment(ref _counter));
-
-            return builder.ToString();
+            
+            return new string(new[]
+            {
+                (char)(intValue % 95 + 32),
+                (char)((intValue >> 7) % 95 + 32),
+                (char)((intValue >> 14) % 95 + 32),
+                (char)((intValue >> 21) % 95 + 32)
+            }) 
+            + Interlocked.Increment(ref _counter);
         }
     }
 }
