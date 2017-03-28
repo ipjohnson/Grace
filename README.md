@@ -18,7 +18,7 @@ It's as easy as create, configure, and locate.
 Getting Grace
 =====
 
-[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5, .Net Standard 1.0, and PCL Profile 259.
+[NuGet](http://www.nuget.org/packages/Grace/) package supports .Net 4.5 and .Net Standard 1.0.
 
 [Getting Started](https://github.com/ipjohnson/Grace/wiki/Getting-Started)  - A getting started guide for Grace as well as documentation for more complex topics 
 
