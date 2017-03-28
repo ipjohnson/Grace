@@ -328,6 +328,7 @@ namespace Grace.Data.Immutable
         /// <param name="key">key to use for looking up</param>
         /// <param name="defaultValue">default value if not found</param>
         /// <returns></returns>
+        [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
