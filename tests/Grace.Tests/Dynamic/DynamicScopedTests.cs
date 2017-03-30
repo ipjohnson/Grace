@@ -30,7 +30,10 @@ namespace Grace.Tests.Dynamic
         [Fact]
         public void Scoped_DisposalTest()
         {
-            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration());
+            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration(c =>
+            {
+                c.Trace = s => Assert.DoesNotContain("falling back", s);
+            }));
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
 
@@ -45,7 +48,10 @@ namespace Grace.Tests.Dynamic
         [Fact]
         public void DynamicMethod_Per_Scope()
         {
-            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration());
+            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration(c =>
+            {
+                c.Trace = s => Assert.DoesNotContain("falling back", s);
+            }));
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerScope());
 
