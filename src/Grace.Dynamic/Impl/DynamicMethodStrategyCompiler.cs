@@ -45,6 +45,8 @@ namespace Grace.Dynamic.Impl
             // try to create delegate, if not fall back to normal Linq Expression compile
             if (_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, parameters, extraExpressions, finalExpression, out dynamicDelegate))
             {
+                expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Could not generate delegate for {expressionContext.Request.ActivationType.FullName} using DynamicMethod falling back to linq expressions");
+
                 return dynamicDelegate;
             }
 
