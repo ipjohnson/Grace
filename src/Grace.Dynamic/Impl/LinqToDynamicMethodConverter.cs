@@ -124,9 +124,9 @@ namespace Grace.Dynamic.Impl
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                // ignore exception and compile linq expression normally
+                throw;
             }
 
             return false;
