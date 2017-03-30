@@ -83,7 +83,6 @@ namespace Grace.Dynamic.Impl
                 {
                     return false;
                 }
-                throw new Exception("Got here");
 
                 request.Target = target;
 
@@ -105,6 +104,8 @@ namespace Grace.Dynamic.Impl
                 {
                     request.ILGenerator.DeclareLocal(parameter.Type);
                 }
+
+                throw new Exception("Got here");
 
                 foreach (var expression in extraExpressions)
                 {
