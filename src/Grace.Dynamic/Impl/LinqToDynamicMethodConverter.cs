@@ -118,9 +118,7 @@ namespace Grace.Dynamic.Impl
                 {
                     return false;
                 }
-
-                throw new Exception("Got here");
-
+                
                 request.ILGenerator.Emit(OpCodes.Ret);
 
                 newDelegate = (ActivationStrategyDelegate)method.CreateDelegate(typeof(ActivationStrategyDelegate), target);
@@ -129,7 +127,7 @@ namespace Grace.Dynamic.Impl
             }
             catch (Exception exp)
             {
-                throw;
+                expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Exception thrown while compiling dynamic method {exp.Message}");
             }
 
             return false;
