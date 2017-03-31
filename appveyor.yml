@@ -22,8 +22,8 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix %nuget_suffix%
-- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release --version-suffix %nuget_suffix%
+- cmd: dotnet pack src/Grace/project.json -o . -c Release
+- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release
 test_script:
 - cmd: cd tests/Grace.Tests/
 - cmd: CodeCoverageAppVeyor.cmd
