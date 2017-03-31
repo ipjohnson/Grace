@@ -1,5 +1,5 @@
 environment:
-  build_version: 6.0.1  
+  build_version: 6.0.2  
   nuget_suffix: Beta%APPVEYOR_BUILD_NUMBER%
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
@@ -22,8 +22,8 @@ build:
   publish_nuget_symbols: true
   verbosity: minimal
 after_build:
-- cmd: dotnet pack src/Grace/project.json -o . -c Release
-- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release
+- cmd: dotnet pack src/Grace/project.json -o . -c Release --version-suffix %nuget_suffix%
+- cmd: dotnet pack src/Grace.Dynamic/project.json -o . -c Release --version-suffix %nuget_suffix%
 test_script:
 - cmd: cd tests/Grace.Tests/
 - cmd: CodeCoverageAppVeyor.cmd
