@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public object LocateOrDefault(Type type, object defaultValue = null)
+        public object LocateOrDefault(Type type, object defaultValue)
         {
             var hashCode = type.GetHashCode();
 
