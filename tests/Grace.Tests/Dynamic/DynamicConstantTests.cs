@@ -218,7 +218,49 @@ namespace Grace.Tests.Dynamic
             Assert.NotNull(instance); ;
         }
 
-        #region DynamicConstantTests
+        [Fact]
+        public void DynamicMethod_Primary_Constant_Test()
+        {
+            var container = new DependencyInjectionContainer(GraceDynamicMethod.Configuration(c =>
+            {
+                c.Trace = s => Assert.DoesNotContain("falling back", s);
+            }));
+
+            container.Configure(c => c.Export<ConstantValues>().
+                                        WithCtorParam(() => "StringValue").
+                                        WithCtorParam(() => 5).
+                                        WithCtorParam(()=> 10.0).
+                                        WithCtorParam(() => true));
+
+            var instance = container.Locate<ConstantValues>();
+
+            Assert.NotNull(instance);
+            Assert.Equal("StringValue", instance.StringValue);
+            Assert.Equal(5, instance.IntValue);
+            Assert.Equal(10.0, instance.DoubleValue);
+            Assert.True(instance.BoolValue);
+        }
+
+        #region DynamicConstant classes
+
+        public class ConstantValues
+        {
+            public ConstantValues(string stringValue, int intValue, double doubleValue, bool boolValue)
+            {
+                StringValue = stringValue;
+                IntValue = intValue;
+                DoubleValue = doubleValue;
+                BoolValue = boolValue;
+            }
+
+            public string StringValue { get; }
+
+            public int IntValue { get; }
+
+            public double DoubleValue { get; }
+
+            public bool BoolValue { get; }
+        }
 
         public class Dependent1
         {
