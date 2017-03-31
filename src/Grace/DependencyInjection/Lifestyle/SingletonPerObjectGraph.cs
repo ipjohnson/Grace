@@ -101,18 +101,8 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <returns></returns>
         public static T GetValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
-            var value = context.SharedData.GetExtraData(uniqueId);
-
-            if (value != null)
-            {
-                return (T)value;
-            }
-
-            value = activationDelegate(scope, disposalScope, context);
-
-            context.SharedData.SetExtraData(uniqueId, value);
-
-            return (T)value;
+            return (T)(context.SharedData.GetExtraData(uniqueId) ??
+                       context.SharedData.SetExtraData(uniqueId, activationDelegate(scope, disposalScope, context)));
         }
 
         /// <summary>

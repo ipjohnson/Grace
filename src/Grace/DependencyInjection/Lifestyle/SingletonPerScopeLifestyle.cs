@@ -117,18 +117,8 @@ namespace Grace.DependencyInjection.Lifestyle
         public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
             string uniqueId)
         {
-            var value = scope.GetExtraData(uniqueId);
-
-            if (value != null)
-            {
-                return (T)value;
-            }
-
-            value = creationDelegate(scope, scope, null);
-
-            scope.SetExtraData(uniqueId, value);
-
-            return (T)value;
+            return (T) (scope.GetExtraData(uniqueId) ?? 
+                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, null)));
         }
 
         /// <summary>
