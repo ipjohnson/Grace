@@ -42,5 +42,22 @@ namespace Grace.Tests.DependencyInjection.Factory
             Assert.NotNull(instance.Value);
             Assert.Same(basicService, instance.Value);
         }
+
+        [Fact]
+        public void NoArgFactory_Return_Null_Value()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportFactory<IBasicService>(() => null);
+                c.Export<DefaultBasicService>().As<IDefaultBasicService>();
+            });
+
+            var instance = container.Locate<IDefaultBasicService>();
+
+            Assert.NotNull(instance);
+            Assert.Null(instance.BasicService);
+        }
     }
 }

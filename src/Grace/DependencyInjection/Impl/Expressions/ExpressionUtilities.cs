@@ -92,7 +92,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (!allowDisposableTracking)
             {
-                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
+                if (request.DefaultValue != null)
+                {
+                    var method = typeof(ExpressionUtilities).GetRuntimeMethods()
+                           .FirstOrDefault(m => m.Name == "ValueOrDefault");
+
+                    var closedMethod = method.MakeGenericMethod(request.ActivationType);
+
+                    return Expression.Call(closedMethod, expression, Expression.Constant(request.DefaultValue.DefaultValue, request.ActivationType));
+                }
+
+                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull &&
+                    request.IsRequired)
                 {
                     var closedMethod = CheckForNullMethodInfo.MakeGenericMethod(request.ActivationType);
 
@@ -100,27 +111,35 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                            Expression.Constant(request.GetStaticInjectionContext()),
                                            expression);
                 }
+
+                return expression;
+
+            }
+            if (request.DefaultValue != null)
+            {
+                var method = typeof(ExpressionUtilities).GetRuntimeMethods()
+                    .FirstOrDefault(m => m.Name == "AddToDisposableScopeOrDefault");
+
+                var closedMethod = method.MakeGenericMethod(request.ActivationType);
+
+                return Expression.Call(closedMethod, request.DisposalScopeExpression, expression, Expression.Constant(request.DefaultValue.DefaultValue, request.ActivationType));
+            }
+
+            if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull ||
+                !request.IsRequired)
+            {
+                var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
+
+                return Expression.Call(closedMethod, request.DisposalScopeExpression, expression);
             }
             else
             {
-                if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull)
-                {
-                    var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
+                var closedMethod = CheckForNullAndAddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
 
-                    return Expression.Call(closedMethod, request.DisposalScopeExpression, expression);
-                }
-                else
-                {
-                    var closedMethod =
-                        CheckForNullAndAddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
-
-                    return Expression.Call(closedMethod,
-                                           request.DisposalScopeExpression,
-                                           Expression.Constant(request.GetStaticInjectionContext()), expression);
-                }
+                return Expression.Call(closedMethod,
+                                       request.DisposalScopeExpression,
+                                       Expression.Constant(request.GetStaticInjectionContext()), expression);
             }
-
-            return expression;
         }
 
         #region Check For Null
@@ -238,6 +257,48 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
         }
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tValue"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T ValueOrDefault<T>(T tValue, T defaultValue)
+        {
+            return tValue != null ? tValue : defaultValue;
+        }
+
+        #region AddToDisposableScopeOrDefault
+
+        /// <summary>
+        /// Add to disposal scope or use default
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="disposalScope"></param>
+        /// <param name="tValue"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T AddToDisposableScopeOrDefault<T>(IDisposalScope disposalScope, T tValue, T defaultValue)
+        {
+            if (tValue != null)
+            {
+                var disposable = tValue as IDisposable;
+
+                if (disposable != null)
+                {
+                    disposalScope.AddDisposable(disposable);
+                }
+
+                return tValue;
+            }
+
+            return defaultValue;
+        }
+
+        #endregion
+
         #endregion
     }
 }

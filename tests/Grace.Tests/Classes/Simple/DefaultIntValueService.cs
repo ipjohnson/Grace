@@ -1,4 +1,6 @@
-﻿namespace Grace.Tests.Classes.Simple
+﻿using System;
+
+namespace Grace.Tests.Classes.Simple
 {
     public interface IDefaultIntValueService
     {
@@ -15,5 +17,20 @@
         }
 
         public int Value { get; }
+    }
+
+    public interface IDefaultBasicService
+    {
+        IBasicService BasicService { get; }
+    }
+
+    public class DefaultBasicService : IDefaultBasicService
+    {
+        public DefaultBasicService(IBasicService basicService = null)
+        {
+            BasicService = basicService;
+        }
+
+        public IBasicService BasicService { get; }
     }
 }
