@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection.Lifestyle
             string uniqueId)
         {
             return (T) (scope.GetExtraData(uniqueId) ?? 
-                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, null)));
+                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, null), false));
         }
 
         /// <summary>
