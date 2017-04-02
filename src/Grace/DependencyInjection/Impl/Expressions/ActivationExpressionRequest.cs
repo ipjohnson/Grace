@@ -209,6 +209,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
         private string _uniqueId;
+        private InjectionTargetInfo _targetInfo;
 
         /// <summary>
         /// Default constructor
@@ -580,6 +581,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
 
+            if (_targetInfo != null)
+            {
+                return targetInfos.Add(_targetInfo);
+            }
+
             var targetName = "";
 
             if (Info is ParameterInfo)
@@ -591,7 +597,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 targetName = ((MemberInfo)Info).Name;
             }
 
-            return targetInfos.Add(new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, targetName, RequestType, ActivationType, false, null, UniqueId));
+            _targetInfo = 
+                new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, targetName, RequestType, ActivationType, false, null, UniqueId);
+
+            return targetInfos.Add(_targetInfo);
         }
 
         /// <summary>
