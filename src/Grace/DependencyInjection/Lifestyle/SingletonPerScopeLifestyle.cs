@@ -32,7 +32,8 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="threadSafe"></param>
+        /// <param name="threadSafe">Under normal circumstances set to false, only set to true if you know there are multiple threads
+        ///  accessing scope and you need to make sure only one instance is created</param>
         public SingletonPerScopeLifestyle(bool threadSafe)
         {
             ThreadSafe = threadSafe;
@@ -107,7 +108,7 @@ namespace Grace.DependencyInjection.Lifestyle
         }
 
         /// <summary>
-        /// Get value from scope with no lock
+        /// Get value from scope with no lock 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="scope"></param>
