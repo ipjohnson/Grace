@@ -38,8 +38,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {
-            var closedGeneric = AddMethod.MakeGenericMethod(activationConfiguration.ActivationType);
-
             var closedActionType = typeof(Action<>).MakeGenericType(activationConfiguration.ActivationType);
 
             object disposalDelegate = null;
@@ -49,8 +47,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 disposalDelegate = activationConfiguration.DisposalDelegate;
             }
 
-            var disposalCall =
-                Expression.Call(request.DisposalScopeExpression, closedGeneric, result.Expression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType));
+            MethodInfo closedGeneric;
+            Expression[] parameterExpressions;
+
+            if (disposalDelegate == null)
+            {
+                closedGeneric = AddMethod.MakeGenericMethod(activationConfiguration.ActivationType);
+                parameterExpressions = new[] {result.Expression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType)};
+
+            }
+            else
+            {
+                closedGeneric = AddMethodWithCleanup.MakeGenericMethod(activationConfiguration.ActivationType);
+                parameterExpressions = new[] {result.Expression};
+            }
+
+            var disposalCall = Expression.Call(request.DisposalScopeExpression, closedGeneric, parameterExpressions);
 
             var disposalResult = request.Services.Compiler.CreateNewResult(request, disposalCall);
 
@@ -67,7 +79,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
             get
             {
                 return _addMethod ??
-                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable"));
+                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && m.GetParameters().Length == 1));
+            }
+        }
+
+        /// <summary>
+        /// Method info for add method on IDisposalScope with cleanup delegate
+        /// </summary>
+        protected MethodInfo AddMethodWithCleanup
+        {
+            get
+            {
+                return _addMethod ??
+                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && m.GetParameters().Length == 2));
             }
         }
     }

@@ -20,11 +20,9 @@ namespace Grace.DependencyInjection.Impl
 
             public static readonly DisposableEntry Empty = new DisposableEntry();
         }
-
-        //private ImmutableLinkedList<DisposableEntry> _disposable =
-        //    ImmutableLinkedList<DisposableEntry>.Empty;
-        private DisposableEntry _entry = DisposableEntry.Empty;
         
+        private DisposableEntry _entry = DisposableEntry.Empty;
+
         /// <summary>
         /// Dispose of scope
         /// </summary>
@@ -32,16 +30,37 @@ namespace Grace.DependencyInjection.Impl
         {
             var entry = Interlocked.Exchange(ref _entry, null);
 
-            if (entry != null)
+            if (ReferenceEquals(entry, null))
             {
-                while (entry != DisposableEntry.Empty)
-                {
-                    entry.DisposalAction?.Invoke();
-                    entry.DisposableItem.Dispose();
-
-                    entry = entry.Next;
-                }
+                return;
             }
+
+            while (ReferenceEquals(entry, DisposableEntry.Empty))
+            {
+                entry.DisposalAction?.Invoke();
+                entry.DisposableItem.Dispose();
+
+                entry = entry.Next;
+            }
+        }
+
+        /// <summary>
+        /// Add an object for disposal tracking
+        /// </summary>
+        /// <param name="disposable">object to track for disposal</param>
+        public T AddDisposable<T>(T disposable) where T : IDisposable
+        {
+            var current = _entry;
+            var entry = new DisposableEntry { DisposableItem = disposable, Next = current };
+
+            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
+            {
+                return disposable;
+            }
+
+            SwapWaitAdd(entry);
+
+            return disposable;
         }
 
         /// <summary>
@@ -49,13 +68,13 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="disposable">disposable object to track</param>
         /// <param name="cleanupDelegate">logic that will be run directly before the object is disposed</param>
-        public T AddDisposable<T>(T disposable, Action<T> cleanupDelegate = null) where T : IDisposable
-        { 
+        public T AddDisposable<T>(T disposable, Action<T> cleanupDelegate) where T : IDisposable
+        {
             DisposableEntry entry;
 
             if (cleanupDelegate == null)
             {
-                entry = new DisposableEntry {DisposableItem = disposable, Next = _entry};
+                entry = new DisposableEntry { DisposableItem = disposable, Next = _entry };
             }
             else
             {
@@ -69,7 +88,7 @@ namespace Grace.DependencyInjection.Impl
 
             var current = _entry;
 
-            if (Interlocked.CompareExchange(ref _entry, entry, current) == current)
+            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
             {
                 return disposable;
             }
@@ -85,15 +104,13 @@ namespace Grace.DependencyInjection.Impl
 
             spinWait.SpinOnce();
 
-            var current = _entry;
+            var current = entry.Next = _entry;
 
-            while (Interlocked.CompareExchange(ref _entry, entry, current) != current)
+            while (!ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
             {
                 spinWait.SpinOnce();
 
-                current = _entry;
-
-                entry.Next = _entry;
+                current = entry.Next = _entry;
             }
         }
     }
