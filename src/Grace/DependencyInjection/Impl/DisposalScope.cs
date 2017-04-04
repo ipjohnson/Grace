@@ -28,20 +28,22 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public virtual void Dispose()
         {
-            var entry = Interlocked.Exchange(ref _entry, null);
+            var entry = Interlocked.Exchange(ref _entry, DisposableEntry.Empty);
 
-            if (ReferenceEquals(entry, null))
+            if (ReferenceEquals(entry, DisposableEntry.Empty))
             {
                 return;
             }
 
-            while (ReferenceEquals(entry, DisposableEntry.Empty))
+            do
             {
                 entry.DisposalAction?.Invoke();
                 entry.DisposableItem.Dispose();
 
                 entry = entry.Next;
-            }
+
+            } while (!ReferenceEquals(entry, DisposableEntry.Empty));
+            
         }
 
         /// <summary>
