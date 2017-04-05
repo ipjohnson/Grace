@@ -38,7 +38,8 @@ Features in Grace
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
 * Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerObjectGraph, SingletonPerAncestor&lt;T&gt;, and WeakSingleton. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
-
+* Built in support for the decorator pattern
+* Support for custom wrappers (Func&lt;T&gt; and Meta&lt;Tgt; are examples of built in wrappers)
 
 
 Builds of Grace
