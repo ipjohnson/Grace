@@ -79,10 +79,11 @@ namespace Grace.Data.Immutable
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             var currentValue = destination;
-
-            var newValue = currentValue.Add(key, value, updateDelegate);
-
-            if (ReferenceEquals(Interlocked.CompareExchange(ref destination, newValue, currentValue), currentValue))
+            
+            if (ReferenceEquals(currentValue,
+                                Interlocked.CompareExchange(ref destination, 
+                                                            currentValue.Add(key, value, updateDelegate), 
+                                                            currentValue)))
             {
                 return;
             }
@@ -94,7 +95,6 @@ namespace Grace.Data.Immutable
             ImmutableHashTree<TKey, TValue>.UpdateDelegate updateDelegate)
         {
             ImmutableHashTree<TKey, TValue> currentValue;
-            ImmutableHashTree<TKey, TValue> newValue;
 
             var wait = new SpinWait();
 
@@ -103,10 +103,11 @@ namespace Grace.Data.Immutable
                 wait.SpinOnce();
 
                 currentValue = destination;
-
-                newValue = currentValue.Add(key, value, updateDelegate);
-
-                if (ReferenceEquals(Interlocked.CompareExchange(ref destination, newValue, currentValue), currentValue))
+                
+                if (ReferenceEquals(currentValue,
+                                    Interlocked.CompareExchange(ref destination, 
+                                                                currentValue.Add(key, value, updateDelegate), 
+                                                                currentValue)))
                 {
                     break;
                 }
