@@ -82,10 +82,19 @@ namespace Grace.Data.Immutable
 
             var newValue = currentValue.Add(key, value, updateDelegate);
 
-            if (Interlocked.CompareExchange(ref destination, newValue, currentValue) == currentValue)
+            if (ReferenceEquals(Interlocked.CompareExchange(ref destination, newValue, currentValue), currentValue))
             {
                 return;
             }
+
+            SpinWaitThreadSafeAddS(ref destination, key, value, updateDelegate);
+        }
+
+        private static void SpinWaitThreadSafeAddS<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value,
+            ImmutableHashTree<TKey, TValue>.UpdateDelegate updateDelegate)
+        {
+            ImmutableHashTree<TKey, TValue> currentValue;
+            ImmutableHashTree<TKey, TValue> newValue;
 
             var wait = new SpinWait();
 
@@ -97,7 +106,7 @@ namespace Grace.Data.Immutable
 
                 newValue = currentValue.Add(key, value, updateDelegate);
 
-                if (Interlocked.CompareExchange(ref destination, newValue, currentValue) == currentValue)
+                if (ReferenceEquals(Interlocked.CompareExchange(ref destination, newValue, currentValue), currentValue))
                 {
                     break;
                 }
