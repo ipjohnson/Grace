@@ -13,30 +13,42 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// For memory allocation and execution performance I've written a one off linked list to track items for disposal
         /// </summary>
-        private class DisposableEntry
+        private class DisposeEntry
         {
-            public IDisposable DisposableItem;
+            /// <summary>
+            /// Item to be disposed
+            /// </summary>
+            public IDisposable DisposeItem;
 
-            public Action DisposalAction;
+            /// <summary>
+            /// Cleanup delegate that was passed in, this is a wrapper around the original delegate that was passed in
+            /// </summary>
+            public Action CleanupDelegate;
 
-            public DisposableEntry Next;
+            /// <summary>
+            /// Next entry to dispose
+            /// </summary>
+            public DisposeEntry Next;
 
-            public static readonly DisposableEntry Empty = new DisposableEntry();
+            /// <summary>
+            /// Empty entry
+            /// </summary>
+            public static readonly DisposeEntry Empty = new DisposeEntry();
         }
         
-        private DisposableEntry _entry = DisposableEntry.Empty;
+        private DisposeEntry _entry = DisposeEntry.Empty;
 
         /// <summary>
         /// Dispose of scope
         /// </summary>
         public virtual void Dispose()
         {
-            var entry = Interlocked.Exchange(ref _entry, DisposableEntry.Empty);
+            var entry = Interlocked.Exchange(ref _entry, DisposeEntry.Empty);
             
-            while (!ReferenceEquals(entry, DisposableEntry.Empty))
+            while (!ReferenceEquals(entry, DisposeEntry.Empty))
             {
-                entry.DisposalAction?.Invoke();
-                entry.DisposableItem?.Dispose();
+                entry.CleanupDelegate?.Invoke();
+                entry.DisposeItem?.Dispose();
 
                 entry = entry.Next;
             }
@@ -49,7 +61,7 @@ namespace Grace.DependencyInjection.Impl
         public T AddDisposable<T>(T disposable) where T : IDisposable
         {
             var current = _entry;
-            var entry = new DisposableEntry { DisposableItem = disposable, Next = current };
+            var entry = new DisposeEntry { DisposeItem = disposable, Next = current };
 
             if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
             {
@@ -68,24 +80,24 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="cleanupDelegate">logic that will be run directly before the object is disposed</param>
         public T AddDisposable<T>(T disposable, Action<T> cleanupDelegate) where T : IDisposable
         {
-            DisposableEntry entry;
-
-            if (cleanupDelegate == null)
-            {
-                entry = new DisposableEntry { DisposableItem = disposable, Next = _entry };
-            }
-            else
-            {
-                entry = new DisposableEntry
-                {
-                    DisposableItem = disposable,
-                    DisposalAction = () => cleanupDelegate(disposable),
-                    Next = _entry
-                };
-            }
+            DisposeEntry entry;
 
             var current = _entry;
 
+            if (cleanupDelegate == null)
+            {
+                entry = new DisposeEntry { DisposeItem = disposable, Next = current };
+            }
+            else
+            {
+                entry = new DisposeEntry
+                {
+                    DisposeItem = disposable,
+                    CleanupDelegate = () => cleanupDelegate(disposable),
+                    Next = current
+                };
+            }
+            
             if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
             {
                 return disposable;
@@ -96,7 +108,7 @@ namespace Grace.DependencyInjection.Impl
             return disposable;
         }
 
-        private void SwapWaitAdd(DisposableEntry entry)
+        private void SwapWaitAdd(DisposeEntry entry)
         {
             var spinWait = new SpinWait();
 
@@ -108,7 +120,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 spinWait.SpinOnce();
 
-                current = entry.Next = _entry;
+                entry.Next = current = _entry;
             }
         }
     }
