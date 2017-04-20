@@ -10,6 +10,9 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class DisposalScope : IDisposalScope
     {
+        /// <summary>
+        /// For memory allocation and execution performance I've written a one off linked list to track items for disposal
+        /// </summary>
         private class DisposableEntry
         {
             public IDisposable DisposableItem;
@@ -33,7 +36,7 @@ namespace Grace.DependencyInjection.Impl
             while (!ReferenceEquals(entry, DisposableEntry.Empty))
             {
                 entry.DisposalAction?.Invoke();
-                entry.DisposableItem.Dispose();
+                entry.DisposableItem?.Dispose();
 
                 entry = entry.Next;
             }
