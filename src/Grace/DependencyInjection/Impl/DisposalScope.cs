@@ -36,6 +36,9 @@ namespace Grace.DependencyInjection.Impl
             public static readonly DisposeEntry Empty = new DisposeEntry();
         }
         
+        /// <summary>
+        /// Internal list of disposal entries
+        /// </summary>
         private DisposeEntry _entry = DisposeEntry.Empty;
 
         /// <summary>
