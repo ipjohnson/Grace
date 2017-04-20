@@ -244,13 +244,8 @@ namespace Grace.Data.Immutable
         public ImmutableHashTree<TKey, TValue> Add(TKey key, TValue value, UpdateDelegate updateDelegate = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-
-            if (updateDelegate == null)
-            {
-                updateDelegate = KeyAlreadyExists;
-            }
-
-            return InternalAdd(key.GetHashCode(), key, value, updateDelegate);
+            
+            return InternalAdd(key.GetHashCode(), key, value, updateDelegate ?? KeyAlreadyExists);
         }
 
         /// <summary>
@@ -333,7 +328,7 @@ namespace Grace.Data.Immutable
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            return GetValueOrDefault(key, key.GetHashCode(), defaultValue);
+            return Height != 0 ? GetValueOrDefault(key, key.GetHashCode(), defaultValue) : defaultValue;
         }
 
         /// <summary>
@@ -361,12 +356,17 @@ namespace Grace.Data.Immutable
 
             return currenNode.Height != 0 && key.Equals(currenNode.Key)
                     ? currenNode.Value
-                    : GetConflictedValue(key, currenNode.Conflicts, defaultValue);
+                    : GetConflictedValue(key, currenNode, defaultValue);
         }
 
-        private TValue GetConflictedValue(TKey key, ImmutableArray<KeyValuePair<TKey, TValue>> conflicts, TValue defaultValue)
+        private TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
         {
-            foreach (var kvp in conflicts)
+            if (currentNode.Height == 0)
+            {
+                return defaultValue;
+            }
+
+            foreach (var kvp in currentNode.Conflicts)
             {
                 if (ReferenceEquals(kvp.Key, key) || key.Equals(kvp.Key))
                 {
