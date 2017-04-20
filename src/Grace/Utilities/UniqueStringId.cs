@@ -12,7 +12,6 @@ namespace Grace.Utilities
     /// </summary>
     public static class UniqueStringId
     {
-        private static readonly ThreadLocal<Random> _local = new ThreadLocal<Random>(() => new Random());
         private static int _counter;
 
         /// <summary>
@@ -21,16 +20,7 @@ namespace Grace.Utilities
         /// <returns></returns>
         public static string Generate()
         {
-            var intValue = _local.Value.Next();
-            
-            return new string(new[]
-            {
-                (char)(intValue % 95 + 32),
-                (char)((intValue >> 7) % 95 + 32),
-                (char)((intValue >> 14) % 95 + 32),
-                (char)((intValue >> 21) % 95 + 32)
-            }) 
-            + Interlocked.Increment(ref _counter);
+            return "*-g" + Interlocked.Increment(ref _counter);
         }
     }
 }
