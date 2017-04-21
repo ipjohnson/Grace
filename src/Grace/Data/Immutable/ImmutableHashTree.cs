@@ -537,7 +537,7 @@ namespace Grace.Data.Immutable
 
         private ImmutableHashTree<TKey, TValue> ResolveConflicts(TKey key, TValue value, UpdateDelegate updateDelegate)
         {
-            if (ReferenceEquals(Key, key) || Key.Equals(key))
+            if (Key.Equals(key))
             {
                 var newValue = updateDelegate(Value, value);
 
