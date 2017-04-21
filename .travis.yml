@@ -1,0 +1,11 @@
+dist: trusty
+language: csharp
+mono: none
+dotnet: 1.0.1
+branches:
+  only:
+  - master
+install:
+  - dotnet restore Grace.sln
+script:
+- dotnet test -f netcoreapp1.0 tests/Grace.Tests/project.json
