@@ -27,3 +27,4 @@ test_script:
 artifacts:
 - path: Grace*.nupkg
   name: Grace
+os: Visual Studio 2017
