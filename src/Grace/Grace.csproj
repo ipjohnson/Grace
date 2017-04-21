@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Grace is a feature rich Dependency Injection Container</Description>
+    <VersionPrefix>6.0.2</VersionPrefix>
+    <Authors>Ian Johnson</Authors>
+    <TargetFrameworks>netstandard1.0;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Grace</AssemblyName>
+    <AssemblyOriginatorKeyFile>../../tools/Grace.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>Grace</PackageId>
+    <PackageTags>Grace;di;ioc;dependencyinjection</PackageTags>
+    <PackageReleaseNotes>https://github.com/ipjohnson/Grace/wiki/Release-Notes</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/ipjohnson/Grace</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ipjohnson/Grace</RepositoryUrl>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.0' ">1.6.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

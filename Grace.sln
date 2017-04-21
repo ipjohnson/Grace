@@ -1,25 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{762F1687-3461-481F-9CF6-EED426E3C75D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A5A89CBA-121E-4285-BD6B-A57248CBFCED}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Grace", "src\Grace\Grace.xproj", "{537E2325-0DD5-4CE8-B431-E452FEC31203}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Grace.Tests", "tests\Grace.Tests\Grace.Tests.xproj", "{2A5E8AF7-C99C-4BBC-BAB6-CDFD100853F6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77C4F22F-AFC9-4307-A94F-519FF2DA89B7}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
-		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Grace.Dynamic", "src\Grace.Dynamic\Grace.Dynamic.xproj", "{FE669DA9-617E-4513-A95C-625F3E1ADA66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace", "src\Grace\Grace.csproj", "{537E2325-0DD5-4CE8-B431-E452FEC31203}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Grace.Dynamic.Console", "tests\Grace.Dynamic.Console\Grace.Dynamic.Console.xproj", "{7C36544F-B459-402A-8DF2-1922A58130A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Tests", "tests\Grace.Tests\Grace.Tests.csproj", "{2A5E8AF7-C99C-4BBC-BAB6-CDFD100853F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Dynamic", "src\Grace.Dynamic\Grace.Dynamic.csproj", "{FE669DA9-617E-4513-A95C-625F3E1ADA66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Dynamic.Console", "tests\Grace.Dynamic.Console\Grace.Dynamic.Console.csproj", "{7C36544F-B459-402A-8DF2-1922A58130A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
