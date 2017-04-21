@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Tests", "tests\Grace.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Dynamic", "src\Grace.Dynamic\Grace.Dynamic.csproj", "{FE669DA9-617E-4513-A95C-625F3E1ADA66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Dynamic.Console", "tests\Grace.Dynamic.Console\Grace.Dynamic.Console.csproj", "{7C36544F-B459-402A-8DF2-1922A58130A6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,10 +36,6 @@ Global
 		{FE669DA9-617E-4513-A95C-625F3E1ADA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE669DA9-617E-4513-A95C-625F3E1ADA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE669DA9-617E-4513-A95C-625F3E1ADA66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C36544F-B459-402A-8DF2-1922A58130A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C36544F-B459-402A-8DF2-1922A58130A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C36544F-B459-402A-8DF2-1922A58130A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C36544F-B459-402A-8DF2-1922A58130A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +44,5 @@ Global
 		{537E2325-0DD5-4CE8-B431-E452FEC31203} = {762F1687-3461-481F-9CF6-EED426E3C75D}
 		{2A5E8AF7-C99C-4BBC-BAB6-CDFD100853F6} = {A5A89CBA-121E-4285-BD6B-A57248CBFCED}
 		{FE669DA9-617E-4513-A95C-625F3E1ADA66} = {762F1687-3461-481F-9CF6-EED426E3C75D}
-		{7C36544F-B459-402A-8DF2-1922A58130A6} = {A5A89CBA-121E-4285-BD6B-A57248CBFCED}
 	EndGlobalSection
 EndGlobal
