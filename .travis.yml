@@ -8,4 +8,4 @@ branches:
 install:
   - dotnet restore Grace.sln
 script:
-- dotnet test -f netcoreapp1.0 tests/Grace.Tests/GraceTests.csproj
+- dotnet test -f netcoreapp1.0 tests/Grace.Tests/Grace.Tests.csproj
