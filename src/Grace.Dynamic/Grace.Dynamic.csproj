@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <Description>IL Generation library for Grace dependency injection container</Description>
-    <VersionPrefix>6.0.2</VersionPrefix>
     <Authors>Ian Johnson</Authors>
     <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
