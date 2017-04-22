@@ -433,24 +433,7 @@ namespace Grace.DependencyInjection.Impl
 
             _decoratorStrategyProviders = _decoratorStrategyProviders.Add(new SimpleDecoratorStrategyProvider(strategy));
         }
-
-        /// <summary>
-        /// Initialize all types using a decorator
-        /// </summary>
-        /// <typeparam name="T">type to decorate</typeparam>
-        /// <param name="apply">apply logic</param>
-        //public void ExportInitialize<T>(Action<T> apply)
-        //{
-        //    if (apply == null) throw new ArgumentNullException(nameof(apply));
-
-        //    ExportDecorator<T>(x =>
-        //    {
-        //        apply(x);
-
-        //        return x;
-        //    });
-        //}
-
+        
         /// <summary>
         /// Add injection inspector that will be called to inspect all exports, wrappers and decorators (apply cross cutting configuration with an inspector)
         /// </summary>
