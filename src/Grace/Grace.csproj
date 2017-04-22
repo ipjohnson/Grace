@@ -6,9 +6,9 @@
     <TargetFrameworks>netstandard1.0;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Grace</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../tools/Grace.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' AND '$(APPVEYOR)' != 'True'">true</PublicSign>
     <PackageId>Grace</PackageId>
     <PackageTags>Grace;di;ioc;dependencyinjection</PackageTags>
     <PackageReleaseNotes>https://github.com/ipjohnson/Grace/wiki/Release-Notes</PackageReleaseNotes>
