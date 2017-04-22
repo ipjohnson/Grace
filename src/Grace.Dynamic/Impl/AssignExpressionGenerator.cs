@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Grace.Dynamic.Impl
 {
+    /// <summary>
+    /// Interface for emiting assign expression
+    /// </summary>
     public interface IAssignExpressionGenerator
     {
         /// <summary>

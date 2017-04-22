@@ -15,6 +15,8 @@ namespace Grace.Dynamic.Impl
         /// Default constructor
         /// </summary>
         /// <param name="expressionResult"></param>
+        /// <param name="tryGenerateIL"></param>
+        /// <param name="extraParameters"></param>
         public DynamicMethodGenerationRequest(IActivationExpressionResult expressionResult, Func<DynamicMethodGenerationRequest, Expression, bool> tryGenerateIL, ParameterExpression[] extraParameters)
         {
             ExpressionResult = expressionResult;
