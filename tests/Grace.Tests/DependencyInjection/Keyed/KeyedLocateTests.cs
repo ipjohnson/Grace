@@ -1,4 +1,6 @@
-﻿using Grace.DependencyInjection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -137,6 +139,38 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             Assert.NotNull(instance);
             Assert.Equal(5, instance.Value);
+        }
+
+        public class DependentEnumerable
+        {
+            public DependentEnumerable(IEnumerable<IDependentService<IBasicService>> services)
+            {
+                Services = services;
+            }
+
+            public IEnumerable<IDependentService<IBasicService>> Services { get; }
+        }
+
+        [Fact]
+        public void Keyed_Generic_Value()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAs<BasicService, IBasicService>();
+                c.Export(typeof(DependentService<>)).AsKeyed(typeof(IDependentService<>), 'A');
+                c.Export<DependentEnumerable>()
+                    .WithCtorParam<IEnumerable<IDependentService<IBasicService>>>().LocateWithKey(new[] { 'A' });
+            });
+
+            var instance = container.Locate<DependentEnumerable>();
+
+            Assert.NotNull(instance);
+            var array = instance.Services.ToArray();
+
+            Assert.Equal(1, array.Length);
+            Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
     }
 }
