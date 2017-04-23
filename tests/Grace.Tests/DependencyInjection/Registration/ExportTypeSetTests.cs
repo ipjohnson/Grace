@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
@@ -187,7 +188,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void ExportTypeSet_BasedOn()
+        public void ExportTypeSet_BasedOn_Generic()
         {
             var container = new DependencyInjectionContainer();
 
@@ -202,6 +203,139 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.IsType<InheritingClasses>(instance);
 
             Assert.Throws<LocateException>(() => container.Locate<IBasicService>());
+        }
+
+        [Fact]
+        public void ExportTypeSet_BasedOn()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().BasedOn(typeof(CustomBaseService)).ByInterfaces();
+            });
+
+            var instance = container.Locate<IInheritingService>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<InheritingClasses>(instance);
+
+            Assert.Throws<LocateException>(() => container.Locate<IBasicService>());
+        }
+
+        [Fact]
+        public void ExportTypeSet_ByType()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByType().Lifestyle.Singleton();
+            });
+
+            var instance = container.Locate<BasicService>();
+            var instance2 = container.Locate<BasicService>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance2);
+            Assert.Same(instance, instance2);
+        }
+
+        [Fact]
+        public void ExportTypeSet_ByType_With_Filter()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByTypes(t =>
+                {
+                    if (t.Name.StartsWith("Multiple"))
+                    {
+                        return new[] { t };
+                    }
+
+                    return new Type[0];
+                }).Lifestyle.Singleton();
+            });
+
+            var instance = container.Locate<BasicService>();
+            var instance2 = container.Locate<BasicService>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance2);
+            Assert.NotSame(instance, instance2);
+
+            var multiple = container.Locate<MultipleService1>();
+            var multiple2 = container.Locate<MultipleService1>();
+
+            Assert.NotNull(multiple);
+            Assert.NotNull(multiple2);
+            Assert.Same(multiple, multiple2);
+        }
+
+
+        [Fact]
+        public void ExportTypeSet_ByTypeKeyed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByKeyedTypes(t =>
+                {
+                    if (t.Name.StartsWith("Multiple"))
+                    {
+                        return new[] { new Tuple<Type, object>(typeof(IMultipleService), t.Name.Last()) };
+                    }
+
+                    return new Tuple<Type, object>[0];
+                });
+            });
+
+            var instance1 = container.Locate<IMultipleService>(withKey: '1');
+
+            Assert.NotNull(instance1);
+        }
+
+        [Fact]
+        public void ExportTypeSet_ExternallyOwned()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces();
+            });
+
+            var disposed = false;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.True(disposed);
+
+            container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces().ExternallyOwned();
+            });
+
+            disposed = false;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.False(disposed);
         }
     }
 }
