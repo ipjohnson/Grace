@@ -61,5 +61,6 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
             Assert.Null(instance.GetWrappedType(typeof(int)));
         }
+
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Wrappers
@@ -23,6 +26,23 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Equal(10, instance.Dependency2);
             Assert.Equal("hello", instance.Dependency3);
             Assert.Equal(true, instance.Dependency4);
+        }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void FuncFourArg_GetWrappedType(FuncFourArgWrapperStrategy strategy)
+        {
+            Assert.Equal(typeof(IBasicService),
+                strategy.GetWrappedType(typeof(Func<int, int, int, int, IBasicService>)));
+        }
+
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void FuncFourArg_GetWrappedType_NonGeneric(FuncFourArgWrapperStrategy strategy)
+        {
+            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
         }
     }
 }

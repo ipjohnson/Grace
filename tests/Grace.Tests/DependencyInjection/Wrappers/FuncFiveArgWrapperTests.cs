@@ -1,11 +1,13 @@
 ﻿using System;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Wrappers
 {
-    public class FuncFiveArgWrapperStrategy
+    public class FuncFiveArgWrapperTests
     {
         [Fact]
         public void FuncFiveArg_Locate_Instance()
@@ -24,6 +26,23 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Equal("hello", instance.Dependency3);
             Assert.Equal(true, instance.Dependency4);
             Assert.Equal(3, instance.Dependency5);
+        }
+
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void FuncFiveArg_GetWrappedType(Grace.DependencyInjection.Impl.Wrappers.FuncFiveArgWrapperStrategy strategy)
+        {
+            Assert.Equal(typeof(IBasicService),
+                         strategy.GetWrappedType(typeof(Func<int,int,int,int,int,IBasicService>)));
+        }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void FuncFiveArg_GetWrappedType_NonGeneric(Grace.DependencyInjection.Impl.Wrappers.FuncFiveArgWrapperStrategy strategy)
+        {
+            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
         }
     }
 }
