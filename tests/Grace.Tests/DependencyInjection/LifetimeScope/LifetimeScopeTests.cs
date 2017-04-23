@@ -28,6 +28,46 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
             }
         }
 
+
+        [Fact]
+        public void Container_BeingLifetimeScope_LocateOrDefault()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+            });
+
+            using (var lifetimeScope = container.BeginLifetimeScope())
+            {
+                var defaultValue = new BasicService();
+
+                var basicService = lifetimeScope.LocateOrDefault<IBasicService>(defaultValue);
+
+                Assert.NotNull(basicService);
+                Assert.IsType<BasicService>(basicService);
+                Assert.NotSame(basicService, defaultValue);
+            }
+        }
+
+        [Fact]
+        public void Container_BeingLifetimeScope_LocateOrDefault_ReturnDefault()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            using (var lifetimeScope = container.BeginLifetimeScope())
+            {
+                var defaultValue = new BasicService();
+
+                var basicService = lifetimeScope.LocateOrDefault<IBasicService>(defaultValue);
+
+                Assert.NotNull(basicService);
+                Assert.IsType<BasicService>(basicService);
+                Assert.Same(basicService, defaultValue);
+            }
+        }
+        
         [Fact]
         public void Container_BeginLifetimeScope_DisposeCorrectly()
         {
