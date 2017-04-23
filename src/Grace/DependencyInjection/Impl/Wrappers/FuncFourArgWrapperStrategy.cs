@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var genericType = type.GetGenericTypeDefinition();
 
-            return genericType == typeof(Func<,,,>) ? type.GetTypeInfo().GenericTypeArguments[4] : null;
+            return genericType == typeof(Func<,,,,>) ? type.GetTypeInfo().GenericTypeArguments[4] : null;
         }
 
         /// <summary>
