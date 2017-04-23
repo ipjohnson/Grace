@@ -4,7 +4,7 @@ using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
-namespace Grace.Tests.DependencyInjection.LocateAll
+namespace Grace.Tests.DependencyInjection.Locate
 {
     public class LocateAllTests
     {
