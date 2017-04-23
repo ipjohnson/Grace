@@ -13,7 +13,7 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
         [Theory]
         [AutoData]
         [SubFixtureInitialize]
-        public void BaseInstanceExportStrategy_AddSecondaryStrategy(BaseInstanceExportStrategy strategy, ICompiledExportStrategy addStrategy)
+        public void BaseInstanceExportStrategy_AddSecondaryStrategy(ConstantInstanceExportStrategy<int> strategy, ICompiledExportStrategy addStrategy)
         {
             strategy.AddSecondaryStrategy(addStrategy);
 
@@ -26,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
         [Theory]
         [AutoData]
         [SubFixtureInitialize]
-        public void BaseInstanceExportStrategy_AddSecondaryStrategy_Null(BaseInstanceExportStrategy strategy, ICompiledExportStrategy addStrategy)
+        public void BaseInstanceExportStrategy_AddSecondaryStrategy_Null(ConstantInstanceExportStrategy<int> strategy, ICompiledExportStrategy addStrategy)
         {
             Assert.Throws<ArgumentNullException>(() => strategy.AddSecondaryStrategy(null));
         }
