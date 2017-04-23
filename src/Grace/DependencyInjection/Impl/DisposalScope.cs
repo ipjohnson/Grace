@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 spinWait.SpinOnce();
 
-                 current = entry.Next = _entry;
+                current = entry.Next = _entry;
             }
         }
     }
