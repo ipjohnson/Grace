@@ -1,5 +1,9 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Wrappers
@@ -34,6 +38,22 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Same(c, instance.Dependency3);
             Assert.Same(d, instance.Dependency4);
             Assert.Same(e, instance.Dependency5);
+        }
+
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void DelegateFiveArg_GetWrappedType(DelegateFiveArgWrapperStrategy strategy)
+        {
+            Assert.Equal(typeof(IBasicService), strategy.GetWrappedType(typeof(Func<int, int, int, int, int, IBasicService>)));
+        }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void DelegateFiveArg_GetWrappedType_Returns_Null(DelegateFiveArgWrapperStrategy strategy)
+        {
+            Assert.Equal(null, strategy.GetWrappedType(typeof(IBasicService)));
         }
     }
 }

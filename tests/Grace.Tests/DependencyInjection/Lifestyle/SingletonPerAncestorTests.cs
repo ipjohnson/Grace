@@ -1,5 +1,10 @@
 ﻿using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
+using Grace.DependencyInjection.Lifestyle;
+using Grace.Tests.Classes.Simple;
 using Grace.Tests.DependencyInjection.Lifestyle.AncestorClasses;
+using SimpleFixture.NSubstitute;
+using SimpleFixture.xUnit;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Lifestyle
@@ -32,6 +37,26 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             Assert.NotSame(instance.Instance1.Leaf.Shared1, instance.Instance2.Leaf.Shared1);
         }
 
+
+        [Fact]
+        public void SharedPerAncestor_Ancestor_Not_Found()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>().Lifestyle.SingletonPerAncestor<DependentService<IBasicService>>();
+            });
+
+
+            var instance = container.Locate<DependentService<IBasicService>>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+
+            Assert.Throws<LocateException>(() => container.Locate<IBasicService>());
+        }
+
         [Fact]
         public void SharedPerAncestor_Creates_One_Guaranteed()
         {
@@ -56,6 +81,16 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             Assert.Same(instance.Instance2.Leaf.Shared1, instance.Instance2.Leaf.Shared2);
 
             Assert.NotSame(instance.Instance1.Leaf.Shared1, instance.Instance2.Leaf.Shared1);
+        }
+
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void SharedPerAncestor_Clone(SingletonPerAncestor lifestyle)
+        {
+            var clone = lifestyle.Clone();
+
+            Assert.IsType<SingletonPerAncestor>(clone);
         }
     }
 }

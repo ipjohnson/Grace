@@ -97,6 +97,29 @@ namespace Grace.Tests.Data.Immutable
             Assert.False(tree.TryGetValue(5, out testValue));
             Assert.Equal(0, testValue);
         }
+
+        [Fact]
+        public void ImmutableHashTree_ThreadSafeAdd_UpdateIfExists()
+        {
+            var tree = ImmutableHashTree<string, int>.Empty;
+
+            Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 5));
+
+            Assert.Equal(1, tree.Count);
+            Assert.Equal(5, tree["Hello"]);
+
+            Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10));
+
+            Assert.Equal(1, tree.Count);
+            Assert.Equal(5, tree["Hello"]);
+
+            Assert.Equal(10, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10, updateIfExists: true));
+
+            Assert.Equal(1, tree.Count);
+            Assert.Equal(10, tree["Hello"]);
+
+        }
+
         #region conflict tests
 
         public class ConflictClass
@@ -169,6 +192,20 @@ namespace Grace.Tests.Data.Immutable
             }
         }
 
+
+        [Fact]
+        public void ImmutableHashTree_Conflict_GetValue_Default()
+        {
+            var tree = ImmutableHashTree<ConflictClass, int>.Empty;
+
+            tree = tree.Add(new ConflictClass(5, 1), 6);
+
+            var value = tree.GetValueOrDefault(new ConflictClass(5, 2), 10);
+
+            Assert.Equal(10, value);
+        }
+
+
         [Fact]
         public void ImmutableHashTree_Conflict_IterateInOrder()
         {
@@ -202,6 +239,7 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Equal(1000, tree.IterateInOrder().Count());
         }
+
         #endregion
 
         #region Thread test
