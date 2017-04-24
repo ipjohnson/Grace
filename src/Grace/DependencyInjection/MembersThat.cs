@@ -20,6 +20,16 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
+        /// Members that match method
+        /// </summary>
+        /// <param name="matchMethod"></param>
+        /// <returns></returns>
+        public static MembersThatConfiguration Match(Func<MemberInfo, bool> matchMethod)
+        {
+            return new MembersThatConfiguration().Match(matchMethod);
+        }   
+        
+        /// <summary>
         /// Member name starts with prefix
         /// </summary>
         /// <param name="prefix"></param>

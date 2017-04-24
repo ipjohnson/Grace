@@ -5,6 +5,7 @@ using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Tests.Classes.Simple;
+using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Registration
@@ -150,6 +151,25 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.Same(multipleService, container.Locate<IMultipleService>());
 
             Assert.Same(basicService, container.Locate<IBasicService>());
+        }
+        
+
+        [Fact]
+        public void ExportTypeSet_WithInspector()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>()
+                    .ByInterfaces()
+                    .WithInspector(new StrategyInspectorTests.StrategyInspectorInjectProperty());
+            });
+
+            var instance = container.Locate<IPropertyInjectionService>(new {Count = 5});
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
         }
 
         public class GenericClass<T>
