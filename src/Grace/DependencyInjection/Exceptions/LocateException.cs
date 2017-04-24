@@ -18,8 +18,6 @@ namespace Grace.DependencyInjection.Exceptions
         /// <param name="message">message, this is not required</param>
         public LocateException(StaticInjectionContext context, string message = null) : base(CreateMessage(context, message))
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
             Context = context;
         }
 
@@ -41,6 +39,8 @@ namespace Grace.DependencyInjection.Exceptions
 
         private static string CreateMessage(StaticInjectionContext context, string message = null)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
             var builder = new StringBuilder();
 
