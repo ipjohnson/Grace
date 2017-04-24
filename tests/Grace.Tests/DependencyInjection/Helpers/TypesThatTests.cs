@@ -103,9 +103,47 @@ namespace Grace.Tests.DependencyInjection.Helpers
             Assert.True(haveFilter(typeof(AttributedSimpleObjectB)));
 
             Assert.False(haveFilter(typeof(AttributedSimpleObjectC)));
+        }
+
+        [Fact]
+        public void TypesThat_And()
+        {
+            Func<Type, bool> haveFilter = TypesThat.StartWith("Attributed").And.EndWith("B");
+
+            Assert.False(haveFilter(typeof(AttributedSimpleObjectA)));
+
+            Assert.True(haveFilter(typeof(AttributedSimpleObjectB)));
 
         }
 
+        [Fact]
+        public void TypesThat_StartWith()
+        {
+            Func<Type, bool> haveFilter = TypesThat.StartWith("A");
 
+            Assert.True(haveFilter(typeof(AttributedSimpleObjectA)));
+
+            Assert.False(haveFilter(typeof(BasicService)));
+        }
+        
+        [Fact]
+        public void TypesThat_Contains()
+        {
+            Func<Type, bool> haveFilter = TypesThat.Contains("Simple");
+
+            Assert.True(haveFilter(typeof(AttributedSimpleObjectA)));
+
+            Assert.False(haveFilter(typeof(BasicService)));
+        }
+
+        [Fact]
+        public void TypesThat_StartWith_Not()
+        {
+            Func<Type, bool> haveFilter = TypesThat.Not().StartWith("A");
+
+            Assert.False(haveFilter(typeof(AttributedSimpleObjectA)));
+
+            Assert.True(haveFilter(typeof(BasicService)));
+        }
     }
 }

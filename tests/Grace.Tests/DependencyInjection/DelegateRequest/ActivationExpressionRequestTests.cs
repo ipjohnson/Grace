@@ -36,6 +36,56 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
         {
             Assert.Null(request.PopDecoratorPathNode());
         }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ActivationExpressionRequest_GetSetData(ActivationExpressionRequest request)
+        {
+            request.SetExtraData("Hello", 5);
+
+            Assert.Equal(5, request.GetExtraData("Hello"));
+        }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ActivationExpressionRequest_Keys(ActivationExpressionRequest request)
+        {
+            request.SetExtraData("Hello", 5);
+            
+            var keys = request.Keys.ToArray();
+
+            Assert.Equal(1, keys.Length);
+            Assert.Equal("Hello", keys[0]);
+        }
+
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ActivationExpressionRequest_Value(ActivationExpressionRequest request)
+        {
+            request.SetExtraData("Hello", 5);
+
+            var values = request.Values.ToArray();
+
+            Assert.Equal(1, values.Length);
+            Assert.Equal(5, values[0]);
+        }
+        
+        [Theory]
+        [AutoData]
+        [SubFixtureInitialize]
+        public void ActivationExpressionRequest_KVP(ActivationExpressionRequest request)
+        {
+            request.SetExtraData("Hello", 5);
+
+            var values = request.KeyValuePairs.ToArray();
+
+            Assert.Equal(1, values.Length);
+            Assert.Equal("Hello", values[0].Key);
+            Assert.Equal(5, values[0].Value);
+        }
 
         [Fact]
         public void PerDelegateData_Keys()
