@@ -211,5 +211,14 @@ namespace Grace.DependencyInjection
         {
             return new TypesThatConfiguration().AreOpenGeneric();
         }
+
+        /// <summary>
+        /// Not value
+        /// </summary>
+        /// <returns></returns>
+        public static TypesThatConfiguration Not()
+        {
+            return new TypesThatConfiguration().Not;
+        }
     }
 }
