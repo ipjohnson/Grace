@@ -1,4 +1,3 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Build Status](https://travis-ci.org/ipjohnson/Grace.svg?branch=master)](https://travis-ci.org/ipjohnson/Grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace)
 
 Meet Grace
 =====
@@ -26,6 +25,7 @@ Getting Grace
 
 Features in Grace
 =====
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Build Status](https://travis-ci.org/ipjohnson/Grace.svg?branch=master)](https://travis-ci.org/ipjohnson/Grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace)
 
 * Fluent interface or Attributes for configuration allowing for maximum flexibility
 * Supports child containers and light weight lifetime scopes
