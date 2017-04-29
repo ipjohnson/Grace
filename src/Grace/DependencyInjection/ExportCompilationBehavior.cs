@@ -25,6 +25,11 @@ namespace Grace.DependencyInjection
         LeastParameters,
 
         /// <summary>
+        /// Dynamicly pick the cosntructor to use each request, not very fast but allows for support similar to NInject
+        /// </summary>
+        Dynamic,
+
+        /// <summary>
         /// Not implemented but avaliable for extension purposes
         /// </summary>
         Other

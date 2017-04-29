@@ -76,7 +76,7 @@ namespace Grace.DependencyInjection
         /// <param name="keyedDelegate">keyed types</param>
         /// <returns></returns>
         IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate);
-        
+
         /// <summary>
         /// Exclude a type from being used
         /// </summary>
@@ -95,6 +95,13 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns></returns>
         IExportTypeSetConfiguration ExternallyOwned();
+
+        /// <summary>
+        /// Set constructor selection method for individual exports
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, ConstructorSelectionMethod?> method);
 
         /// <summary>
         /// Lifestyle for set

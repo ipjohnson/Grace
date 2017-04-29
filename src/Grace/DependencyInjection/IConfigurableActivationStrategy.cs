@@ -81,6 +81,11 @@ namespace Grace.DependencyInjection
         ConstructorInfo SelectedConstructor { get; set; }
 
         /// <summary>
+        /// Constructor selection method
+        /// </summary>
+        ConstructorSelectionMethod? ConstructorSelectionMethod { get; set; }
+
+        /// <summary>
         /// IS strategy externally owned
         /// </summary>
         new bool ExternallyOwned { get; set; }

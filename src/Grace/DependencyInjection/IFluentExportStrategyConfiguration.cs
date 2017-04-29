@@ -54,6 +54,13 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo);
 
         /// <summary>
+        /// Specify the constructor selection algorithm
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method);
+
+        /// <summary>
         /// Import public members Fields, Properties, and Methods (not done by default) 
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
@@ -210,6 +217,13 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo);
 
         /// <summary>
+        /// Use a specific constructor selection method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method);
+
+        /// <summary>
         /// Mark specific members to be injected
         /// </summary>
         /// <param name="selector">select specific members, if null all public members will be injected</param>
@@ -236,7 +250,7 @@ namespace Grace.DependencyInjection
         /// Assign a lifestyle to this export
         /// </summary>
         ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle { get; }
-
+        
         /// <summary>
         /// Export using a specific lifestyle
         /// </summary>

@@ -131,6 +131,11 @@ namespace Grace.DependencyInjection.Impl
         public IEnumerable<MethodInjectionInfo> MethodInjections => MethodInjectionList;
 
         /// <summary>
+        /// Constructor selection method
+        /// </summary>
+        public ConstructorSelectionMethod? ConstructorSelectionMethod { get; set; }
+
+        /// <summary>
         /// add method injection to list
         /// </summary>
         /// <param name="methodInjection"></param>

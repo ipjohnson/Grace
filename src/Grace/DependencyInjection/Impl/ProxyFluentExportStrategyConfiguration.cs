@@ -83,6 +83,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Specify the constructor selection algorithm
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Import a specific member
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
@@ -304,6 +314,16 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo)
         {
             return _strategy.ImportConstructor(constructorInfo);
+        }
+
+        /// <summary>
+        /// Use a specific constructor selection method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method)
+        {
+            return _strategy.ImportConstructorSelection(method);
         }
 
         /// <summary>

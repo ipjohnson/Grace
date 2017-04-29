@@ -34,6 +34,7 @@ namespace Grace.DependencyInjection.Impl
         private Func<Type, ICompiledLifestyle> _lifestyleFunc;
         private bool _exportByAttributes;
         private bool _externallyOwned;
+        private Func<Type, ConstructorSelectionMethod?> _constructorSelectionMethod;
 
         /// <summary>
         /// Default constructor
@@ -206,6 +207,20 @@ namespace Grace.DependencyInjection.Impl
         public IExportTypeSetConfiguration ExportAttributedTypes()
         {
             _exportByAttributes = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Set constructor selection method for individual exports
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, ConstructorSelectionMethod?> method)
+        {
+            if (method == null) throw new ArgumentNullException(nameof(method));
+
+            _constructorSelectionMethod = method;
 
             return this;
         }
@@ -420,6 +435,8 @@ namespace Grace.DependencyInjection.Impl
             {
                 ProcessAttributes(type, strategy);
             }
+
+            strategy.ConstructorSelectionMethod = _constructorSelectionMethod?.Invoke(type);
 
             return strategy;
         }

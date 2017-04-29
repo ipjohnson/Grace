@@ -18,5 +18,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns>export strategies</returns>
         IEnumerable<ICompiledExportStrategy> SecondaryStrategies();
+
     }
 }

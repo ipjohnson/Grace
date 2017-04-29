@@ -192,7 +192,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return constructors[0];
             }
 
-            switch (injectionScope.ScopeConfiguration.Behaviors.ConstructorSelection)
+            switch (configuration.ConstructorSelectionMethod ??
+                    injectionScope.ScopeConfiguration.Behaviors.ConstructorSelection)
             {
                 case ConstructorSelectionMethod.LeastParameters:
                     return constructors.Last();

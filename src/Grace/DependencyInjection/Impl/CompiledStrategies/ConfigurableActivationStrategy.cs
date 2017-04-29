@@ -106,8 +106,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         public ICompiledLifestyle Lifestyle
         {
-            get { return ActivationConfiguration.Lifestyle; }
-            set { ActivationConfiguration.Lifestyle = value; }
+            get => ActivationConfiguration.Lifestyle;
+            set => ActivationConfiguration.Lifestyle = value;
         }
 
         /// <summary>
@@ -115,8 +115,17 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         public object DisposalDelegate
         {
-            get { return ActivationConfiguration.DisposalDelegate; }
-            set { ActivationConfiguration.DisposalDelegate = value; }
+            get => ActivationConfiguration.DisposalDelegate;
+            set => ActivationConfiguration.DisposalDelegate = value;
+        }
+
+        /// <summary>
+        /// Constructor selection method
+        /// </summary>
+        public ConstructorSelectionMethod? ConstructorSelectionMethod
+        {
+            get => ActivationConfiguration.ConstructorSelectionMethod;
+            set => ActivationConfiguration.ConstructorSelectionMethod = value;
         }
 
         /// <summary>
@@ -124,8 +133,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         public bool ExternallyOwned
         {
-            get { return ActivationConfiguration.ExternallyOwned; }
-            set { ActivationConfiguration.ExternallyOwned = value; }
+            get => ActivationConfiguration.ExternallyOwned;
+            set => ActivationConfiguration.ExternallyOwned = value;
         }
 
         /// <summary>
@@ -145,14 +154,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         public MethodInjectionInfo ActivationMethod
         {
-            get
-            {
-                return ActivationConfiguration.ActivationMethod;
-            }
-            set
-            {
-                ActivationConfiguration.ActivationMethod = value;
-            }
+            get => ActivationConfiguration.ActivationMethod;
+            set => ActivationConfiguration.ActivationMethod = value;
         }
 
         /// <summary>
@@ -268,8 +271,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         public ConstructorInfo SelectedConstructor
         {
-            get { return ActivationConfiguration.SelectedConstructor; }
-            set { ActivationConfiguration.SelectedConstructor = value; }
+            get => ActivationConfiguration.SelectedConstructor;
+            set => ActivationConfiguration.SelectedConstructor = value;
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

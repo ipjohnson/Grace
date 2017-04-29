@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
@@ -219,6 +220,72 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
             Assert.Null(instance.ConstructorImportService);
+        }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_ImportConstructorMethod()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().ByInterfaces();
+                c.Export<ConstructorImportService>().As<IConstructorImportService>();
+                c.Export<MultipleConstructorImport>()
+                    .ImportConstructor(() => new MultipleConstructorImport(Arg.Any<IBasicService>()));
+            });
+
+            var instance = container.Locate<MultipleConstructorImport>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Null(instance.ConstructorImportService);
+        }
+
+        public class LessConstructor
+        {
+            public LessConstructor()
+            {
+                
+            }
+
+            public LessConstructor(IBasicService basicService, IConstructorImportService constructorImportService)
+            {
+                BasicService = basicService;
+                ConstructorImportService = constructorImportService;
+            }
+
+            public IBasicService BasicService { get; }
+
+            public IConstructorImportService ConstructorImportService { get; }
+
+        }
+
+        [Fact]
+        public void FluentExportStrategyConfigurationGeneric_ImportConstructorSelectionMethod()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.LeastParameters);
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<ConstructorImportService>().As<IConstructorImportService>();
+                c.Export<MultipleConstructorImport>()
+                    .ImportConstructorSelection(ConstructorSelectionMethod.MostParameters);
+            });
+
+            var lessConstructor = container.Locate<LessConstructor>();
+
+            Assert.NotNull(lessConstructor);
+            Assert.Null(lessConstructor.BasicService);
+            Assert.Null(lessConstructor.ConstructorImportService);
+
+            var instance = container.Locate<MultipleConstructorImport>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.NotNull(instance.ConstructorImportService);
+            Assert.NotNull(instance.ConstructorImportService.BasicService);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
@@ -111,6 +112,18 @@ namespace Grace.DependencyInjection.Impl
             if (constructorInfo == null) throw new ArgumentNullException(nameof(constructorInfo));
 
             _exportConfiguration.SelectedConstructor = constructorInfo;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specify the constructor selection algorithm
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method)
+        {
+            _exportConfiguration.ConstructorSelectionMethod = method;
 
             return this;
         }
@@ -470,6 +483,18 @@ namespace Grace.DependencyInjection.Impl
             if (constructorInfo == null) throw new ArgumentNullException(nameof(constructorInfo));
 
             _exportConfiguration.SelectedConstructor = constructorInfo;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Use a specific constructor selection method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method)
+        {
+            _exportConfiguration.ConstructorSelectionMethod = method;
 
             return this;
         }
