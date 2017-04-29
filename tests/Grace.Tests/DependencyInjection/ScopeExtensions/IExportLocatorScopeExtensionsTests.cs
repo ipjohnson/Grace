@@ -1,5 +1,6 @@
 ﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
+using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.ScopeExtensions
@@ -19,6 +20,11 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
                 Assert.Same(container, lifetimeScope.GetInjectionScope());
             }
         }
+        
+        public class ImportPropertyClass
+        {
+            public IBasicService BasicService { get; set; }
+        }
 
         [Fact]
         public void IExportLocatorScopeExtensions_WhatDoIHave()
@@ -29,6 +35,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
             {
                 c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton();
                 c.Export<DependentService<IBasicService>>().As<IDependentService<IBasicService>>();
+                c.Export<ImportPropertyClass>().ImportProperty(i => i.BasicService);
             });
 
             using (var child = container.CreateChildScope())
@@ -38,6 +45,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
                 Assert.False(string.IsNullOrEmpty(whatDoIHave));
 
                 Assert.True(whatDoIHave.Contains("Singleton"));
+                Assert.True(whatDoIHave.Contains("Member Name"));
             }
         }
     }
