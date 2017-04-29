@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
@@ -10,6 +12,48 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 {
     public class FuncOneArgWrapperTests
     {
+        public interface ITest
+        {
+            int Value { get; }    
+        }
+
+        public class Test1 : ITest
+        {
+            public Test1(int value)
+            {
+                Value = value;
+            }
+
+            public int Value { get; }
+        }
+        
+        public class Test2 : ITest
+        {
+            public Test2(int value)
+            {
+                Value = value;
+            }
+
+            public int Value { get; }
+        }
+
+        [Fact]
+        public void FuncArg_Test()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportFactory<int, ITest>(i => new Test1(i));
+                c.ExportFactory<int, ITest>(i => new Test2(i));
+            });
+
+            var valueFunc = container.Locate<IEnumerable<Func<int, ITest>>>().ToArray();
+
+            var value1 = valueFunc[0](5);
+            var value2 = valueFunc[1](10);
+        }
+
         [Fact]
         public void FuncOneArg_Create_Instance()
         {
