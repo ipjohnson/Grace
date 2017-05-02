@@ -52,19 +52,24 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         protected readonly IWrapperExpressionCreator WrapperExpressionCreator;
 
+        private readonly IInjectionContextValueProvider _contextValueProvider;
+
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="arrayExpressionCreator"></param>
         /// <param name="enumerableExpressionCreator"></param>
         /// <param name="wrapperExpressionCreator"></param>
+        /// <param name="contextValueProvider"></param>
         public ActivationExpressionBuilder(IArrayExpressionCreator arrayExpressionCreator,
                                            IEnumerableExpressionCreator enumerableExpressionCreator,
-                                           IWrapperExpressionCreator wrapperExpressionCreator)
+                                           IWrapperExpressionCreator wrapperExpressionCreator,
+                                           IInjectionContextValueProvider contextValueProvider)
         {
             EnumerableExpressionCreator = enumerableExpressionCreator;
             ArrayExpressionCreator = arrayExpressionCreator;
             WrapperExpressionCreator = wrapperExpressionCreator;
+            _contextValueProvider = contextValueProvider;
         }
 
 
@@ -208,7 +213,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var valueMethod = typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetValueFromInjectionContext", new[]
+            var valueMethod = _contextValueProvider.GetType().GetRuntimeMethod("GetValueFromInjectionContext", new[]
             {
                 typeof(IExportLocatorScope),
                 typeof(StaticInjectionContext),
@@ -228,7 +233,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 key = ((string)key).ToLowerInvariant();
             }
 
-            var expresion = Expression.Call(closedMethod,
+            var expresion = Expression.Call(Expression.Constant(_contextValueProvider),
+                                            closedMethod,
                                             request.Constants.ScopeParameter,
                                             Expression.Constant(request.GetStaticInjectionContext()),
                                             Expression.Constant(key, typeof(object)),
@@ -239,108 +245,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return request.Services.Compiler.CreateNewResult(request, expresion);
         }
-
-        /// <summary>
-        /// Gets value from injection context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="locator"></param>
-        /// <param name="staticContext"></param>
-        /// <param name="key"></param>
-        /// <param name="dataProvider"></param>
-        /// <param name="defaultValue"></param>
-        /// <param name="useDefault"></param>
-        /// <param name="isRequired"></param>
-        /// <returns></returns>
-        public static T GetValueFromInjectionContext<T>(
-            IExportLocatorScope locator,
-            StaticInjectionContext staticContext,
-            object key,
-            IInjectionContext dataProvider,
-            object defaultValue,
-            bool useDefault,
-            bool isRequired)
-        {
-            object value = null;
-
-            if (dataProvider != null)
-            {
-                value = GetValueFromExtraDataProvider<T>(key, dataProvider);
-            }
-
-            if (value == null)
-            {
-                var currentLocator = locator;
-
-                while (currentLocator != null && value == null)
-                {
-                    value = GetValueFromExtraDataProvider<T>(key, currentLocator);
-
-                    currentLocator = currentLocator.Parent;
-                }
-            }
-
-            if (value == null && useDefault)
-            {
-                value = defaultValue;
-            }
-
-            if (value != null)
-            {
-                if (value is Delegate)
-                {
-                    value = 
-                        ReflectionService.InjectAndExecuteDelegate(locator, staticContext, dataProvider, value as Delegate);
-                }
-
-                if (!typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
-                {
-                    try
-                    {
-                        value = Convert.ChangeType(value, typeof(T));
-                    }
-                    catch (Exception exp)
-                    {
-                        // to do fix up exception
-                        throw new LocateException(staticContext, exp);
-                    }
-                }
-            }
-            else if (isRequired && !useDefault)
-            {
-                throw new LocateException(staticContext);
-            }
-
-            return (T)value;
-        }
-
-        private static object GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider)
-        {
-            object value = null;
-
-            if (key != null)
-            {
-                value = dataProvider.GetExtraData(key);
-            }
-
-            return value ?? dataProvider.Values.FirstOrDefault(o =>
-                   {
-                       if (o is T)
-                       {
-                           return true;
-                       }
-
-                       var delegateInstance = o as Delegate;
-
-                       if (delegateInstance != null)
-                       {
-                           return delegateInstance.GetMethodInfo().ReturnType == typeof(T);
-                       }
-
-                       return false;
-                   });
-        }
-
+        
         /// <summary>
         /// Decorate an export strategy with decorators
         /// </summary>

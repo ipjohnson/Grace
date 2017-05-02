@@ -179,9 +179,9 @@ namespace Grace.DependencyInjection
                 f => new DefaultStrategyExpressionBuilder(f.Locate<ITypeExpressionBuilder>()));
 
             DefaultImplementation.ExportInstance<ITypeExpressionBuilder>(
-                f => new TypeExpressionBuilder(f.Locate<IInstantiationExpressionCreator>(), 
-                                               f.Locate<IDisposalScopeExpressionCreator>(), 
-                                               f.Locate<IMemberInjectionExpressionCreator>(), 
+                f => new TypeExpressionBuilder(f.Locate<IInstantiationExpressionCreator>(),
+                                               f.Locate<IDisposalScopeExpressionCreator>(),
+                                               f.Locate<IMemberInjectionExpressionCreator>(),
                                                f.Locate<IMethodInvokeExpressionCreator>(),
                                                f.Locate<IEnrichmentExpressionCreator>()));
 
@@ -194,7 +194,8 @@ namespace Grace.DependencyInjection
             DefaultImplementation.ExportInstance<IActivationExpressionBuilder>(
                 f => new ActivationExpressionBuilder(f.Locate<IArrayExpressionCreator>(),
                                                      f.Locate<IEnumerableExpressionCreator>(),
-                                                     f.Locate<IWrapperExpressionCreator>()));
+                                                     f.Locate<IWrapperExpressionCreator>(),
+                                                     f.Locate<IInjectionContextValueProvider>()));
 
             DefaultImplementation.ExportInstance<IArrayExpressionCreator>(
                 f => new ArrayExpressionCreator(f.Locate<IWrapperExpressionCreator>()));
@@ -214,8 +215,9 @@ namespace Grace.DependencyInjection
                 f => new DefaultWrapperCollectionProvider());
 
             DefaultImplementation.ExportInstance<IInjectionContextCreator>(f => new InjectionContextCreator());
+            DefaultImplementation.ExportInstance<IInjectionContextValueProvider>(f => new InjectionContextValueProvider());
 
-            DefaultImplementation.ExportInstance< IActivationStrategyAttributeProcessor>(f => new ActivationStrategyAttributeProcessor());
+            DefaultImplementation.ExportInstance<IActivationStrategyAttributeProcessor>(f => new ActivationStrategyAttributeProcessor());
 
             DefaultImplementation.ExportInstance<IDynamicArrayLocator>(f => new DynamicArrayLocator());
             DefaultImplementation.ExportInstance<IDynamicIEnumerableLocator>(f => new DynamicIEnumerableLocator());

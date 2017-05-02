@@ -100,8 +100,7 @@ namespace Grace.Data
                 builder.Append(currentType.Name);
             }
         }
-
-
+        
         /// <summary>
         /// Checks to see if checkType is based on baseType
         /// Both inheritance and interface implementation is considered
@@ -202,9 +201,26 @@ namespace Grace.Data
                 return values;
             }
 
-            if (annonymousObject.GetType() == typeof(IDictionary<string, object>))
+            var array = annonymousObject as Array;
+
+            if (array != null)
             {
-                return ((IDictionary<string, object>)annonymousObject).Aggregate(values,
+                var i = 0;
+
+                foreach (var value in array)
+                {
+                    values = values.Add(i.ToString(), value);
+                    i++;
+                }
+
+                return values;
+            }
+
+            var dictionary = annonymousObject as IDictionary<string, object>;
+
+            if (dictionary != null)
+            {
+                return dictionary.Aggregate(values,
                     (v, kvp) => v.Add(kvp.Key, kvp.Value));
             }
 

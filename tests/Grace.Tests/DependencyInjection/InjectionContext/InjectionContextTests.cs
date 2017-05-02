@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
@@ -8,6 +9,28 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 {
     public class InjectionContextTests
     {
+        [Fact]
+        public void Container_InjectionContext_ArrayValue()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<DependentService<int>>(new[] { 5 });
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Value);
+        }
+        
+        [Fact]
+        public void Container_InjectionContext_Delegate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<DependentService<int>>(new Func<int>(() => 5));
+
+            Assert.NotNull(instance);
+            Assert.Equal(5, instance.Value);
+        }
+
         [Fact]
         public void Container_InjectionContext_Value_Name_Casing_Mismatch()
         {
