@@ -2,6 +2,7 @@
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Impl.Wrappers;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
@@ -66,6 +67,11 @@ namespace Grace.DependencyInjection
         /// Register concrete implementation that are unknown
         /// </summary>
         public bool AutoRegisterUnknown { get; set; }
+
+        /// <summary>
+        /// Lifestyle picker to be used when 
+        /// </summary>
+        public Func<Type, ICompiledLifestyle> AutoRegistrationLifestylePicker { get; set; }
 
         /// <summary>
         /// Export as type and base implementations, false by default

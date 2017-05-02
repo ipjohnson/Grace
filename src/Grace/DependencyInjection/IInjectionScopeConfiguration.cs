@@ -1,5 +1,6 @@
 ﻿using System;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
 {
@@ -46,6 +47,11 @@ namespace Grace.DependencyInjection
         bool AutoRegisterUnknown { get; }
 
         /// <summary>
+        /// Lifestyle picker to be used when 
+        /// </summary>
+        Func<Type, ICompiledLifestyle> AutoRegistrationLifestylePicker { get; }
+
+        /// <summary>
         /// Export as type and base implementations, true by default
         /// </summary>
         bool ExportAsBase { get; }
@@ -77,7 +83,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         bool TrackDisposableTransients { get; }
 
-            /// <summary>
+        /// <summary>
         /// Clone configuration
         /// </summary>
         /// <returns></returns>

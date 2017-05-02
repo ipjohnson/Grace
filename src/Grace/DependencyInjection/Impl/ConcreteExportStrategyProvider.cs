@@ -109,7 +109,12 @@ namespace Grace.DependencyInjection.Impl
             }
             else if (ShouldCreateConcreteStrategy(requestedType))
             {
-                yield return new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder).ProcessAttributeForStrategy();
+                var strategy =
+                    new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder).ProcessAttributeForStrategy();
+
+                strategy.Lifestyle = scope.ScopeConfiguration.AutoRegistrationLifestylePicker?.Invoke(requestedType);
+
+                yield return strategy;
             }
         }
 
