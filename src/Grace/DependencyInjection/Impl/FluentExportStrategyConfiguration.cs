@@ -121,7 +121,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method)
+        public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             _exportConfiguration.ConstructorSelectionMethod = method;
 
@@ -492,7 +492,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method)
+        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             _exportConfiguration.ConstructorSelectionMethod = method;
 

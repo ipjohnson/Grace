@@ -7,6 +7,7 @@ using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Utilities;
 
@@ -34,7 +35,7 @@ namespace Grace.DependencyInjection.Impl
         private Func<Type, ICompiledLifestyle> _lifestyleFunc;
         private bool _exportByAttributes;
         private bool _externallyOwned;
-        private Func<Type, ConstructorSelectionMethod?> _constructorSelectionMethod;
+        private Func<Type, IConstructorExpressionCreator> _constructorSelectionMethod;
 
         /// <summary>
         /// Default constructor
@@ -216,7 +217,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, ConstructorSelectionMethod?> method)
+        public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method)
         {
             if (method == null) throw new ArgumentNullException(nameof(method));
 

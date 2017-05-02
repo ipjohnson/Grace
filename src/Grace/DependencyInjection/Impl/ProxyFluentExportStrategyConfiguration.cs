@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -87,7 +88,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method)
+        public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             throw new NotImplementedException();
         }
@@ -321,7 +322,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method)
+        public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             return _strategy.ImportConstructorSelection(method);
         }

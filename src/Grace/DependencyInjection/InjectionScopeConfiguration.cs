@@ -179,7 +179,7 @@ namespace Grace.DependencyInjection
                                                f.Locate<IMethodInvokeExpressionCreator>(),
                                                f.Locate<IEnrichmentExpressionCreator>()));
 
-            DefaultImplementation.ExportInstance<IInstantiationExpressionCreator>(f => new InstantiationExpressionCreator());
+            DefaultImplementation.ExportSingleton<IInstantiationExpressionCreator>(f => new InstantiationExpressionCreator());
             DefaultImplementation.ExportInstance<IDisposalScopeExpressionCreator>(f => new DisposalScopeExpressionCreator());
             DefaultImplementation.ExportInstance<IEnrichmentExpressionCreator>(f => new EnrichmentExpressionCreator());
             DefaultImplementation.ExportInstance<IMethodInvokeExpressionCreator>(f => new MethodInvokeExpressionCreator());

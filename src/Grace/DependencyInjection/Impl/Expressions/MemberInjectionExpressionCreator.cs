@@ -91,7 +91,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return CreateNewMemeberInitExpression(scope, request, activationConfiguration, result, expression);
             }
 
-            throw new NotSupportedException("Currently only memeber injection works for New expressions");
+            return result;
         }
 
         /// <summary>

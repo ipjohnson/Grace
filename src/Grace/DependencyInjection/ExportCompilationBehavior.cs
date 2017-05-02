@@ -1,38 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
 {
     /// <summary>
     /// Enumeration for constructor selection method
     /// </summary>
-    public enum ConstructorSelectionMethod
+    public static class ConstructorSelectionMethod
     {
+        static ConstructorSelectionMethod()
+        {
+            LeastParameters = new LeastParametersConstructorExpressionCreator();
+
+            MostParameters = new MostParametersConstructorExpressionCreator();
+
+            BestMatch = new BestMatchLeastConstructorExpressionCreator();
+
+            Dynamic = new DynamicConstructorExpressionCreator();
+        }
+
         /// <summary>
         /// Matches the best constructor based on which exports are registered
         /// </summary>
-        BestMatch,
+        public static IConstructorExpressionCreator BestMatch { get; }
 
         /// <summary>
         /// Use the constructor with the most parameters
         /// </summary>
-        MostParameters,
+        public static IConstructorExpressionCreator MostParameters { get; }
 
         /// <summary>
         /// Use the constructor with the least parameters
         /// </summary>
-        LeastParameters,
+        public static  IConstructorExpressionCreator LeastParameters { get; }
 
         /// <summary>
         /// Dynamicly pick the cosntructor to use each request, not very fast but allows for support similar to NInject
         /// </summary>
-        Dynamic,
-
-        /// <summary>
-        /// Not implemented but avaliable for extension purposes
-        /// </summary>
-        Other
+        public static IConstructorExpressionCreator Dynamic { get; }
     }
 
     /// <summary>
@@ -87,7 +94,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Constructor selection algorithm, best match by default
         /// </summary>
-        public ConstructorSelectionMethod ConstructorSelection { get; set; } = ConstructorSelectionMethod.BestMatch;
+        public IConstructorExpressionCreator ConstructorSelection { get; set; } = ConstructorSelectionMethod.BestMatch;
 
         /// <summary>
         /// customize IEnumerable&lt;T&gt; creation

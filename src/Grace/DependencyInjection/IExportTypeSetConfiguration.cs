@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -101,7 +102,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, ConstructorSelectionMethod?> method);
+        IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method);
 
         /// <summary>
         /// Lifestyle for set

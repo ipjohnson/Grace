@@ -15,12 +15,17 @@ namespace Grace.Utilities
         private static int _counter;
 
         /// <summary>
+        /// Prefix for all string id's
+        /// </summary>
+        public const string Prefix = "*-g";
+
+        /// <summary>
         /// Generate string that is unique to this process
         /// </summary>
         /// <returns></returns>
         public static string Generate()
         {
-            return "*-g" + Interlocked.Increment(ref _counter);
+            return Prefix + Interlocked.Increment(ref _counter);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -58,7 +59,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        IFluentExportStrategyConfiguration ImportConstructorSelection(ConstructorSelectionMethod method);
+        IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method);
 
         /// <summary>
         /// Import public members Fields, Properties, and Methods (not done by default) 
@@ -221,7 +222,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        IFluentExportStrategyConfiguration<T> ImportConstructorSelection(ConstructorSelectionMethod method);
+        IFluentExportStrategyConfiguration<T> ImportConstructorSelection(IConstructorExpressionCreator method);
 
         /// <summary>
         /// Mark specific members to be injected

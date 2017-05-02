@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl
@@ -133,7 +134,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Constructor selection method
         /// </summary>
-        public ConstructorSelectionMethod? ConstructorSelectionMethod { get; set; }
+        public IConstructorExpressionCreator ConstructorSelectionMethod { get; set; }
 
         /// <summary>
         /// add method injection to list

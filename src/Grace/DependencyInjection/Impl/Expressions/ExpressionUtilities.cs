@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -39,6 +40,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         #endregion
 
         #region Create Expression to call delegate
+
+        private const string _closureName = "System.Runtime.CompilerServices.Closure";
+
         /// <summary>
         /// Create an expression to call delegate and apply null check and disposal logic
         /// </summary>
@@ -52,13 +56,31 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var methodInfo = delegateInstance.GetMethodInfo();
 
-            var resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
-                methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
+            Expression expression = null;
+            IActivationExpressionResult[] resultsExpressions;
 
-            Expression expression = methodInfo.IsStatic
-                ? Expression.Call(methodInfo, resultsExpressions.Select(e => e.Expression))
-                : Expression.Call(Expression.Constant(delegateInstance.Target),
-                    methodInfo, resultsExpressions.Select(e => e.Expression));
+            // Handle closure based delegates differently
+            if (delegateInstance.Target != null && delegateInstance.Target.GetType().FullName == _closureName)
+            {
+                resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
+                    methodInfo.GetParameters().
+                        Where(p => !(p.Position == 0 && p.ParameterType.FullName == "System.Runtime.CompilerServices.Closure")).
+                        Select(p => p.ParameterType).ToArray());
+                
+                expression = Expression.Invoke(Expression.Constant(delegateInstance),
+                    resultsExpressions.Select(e => e.Expression));
+
+            }
+            else
+            {
+                resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
+                    methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
+
+                expression = methodInfo.IsStatic
+                    ? Expression.Call(methodInfo, resultsExpressions.Select(e => e.Expression))
+                    : Expression.Call(Expression.Constant(delegateInstance.Target),
+                        methodInfo, resultsExpressions.Select(e => e.Expression));
+            }
 
             expression = ApplyNullCheckAndAddDisposal(scope, request, expression, allowDisposableTracking);
 

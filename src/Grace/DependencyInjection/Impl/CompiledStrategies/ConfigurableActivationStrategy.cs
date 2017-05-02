@@ -7,6 +7,7 @@ using System.Threading;
 using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Conditions;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Diagnostics;
 
@@ -122,7 +123,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <summary>
         /// Constructor selection method
         /// </summary>
-        public ConstructorSelectionMethod? ConstructorSelectionMethod
+        public IConstructorExpressionCreator ConstructorSelectionMethod
         {
             get => ActivationConfiguration.ConstructorSelectionMethod;
             set => ActivationConfiguration.ConstructorSelectionMethod = value;

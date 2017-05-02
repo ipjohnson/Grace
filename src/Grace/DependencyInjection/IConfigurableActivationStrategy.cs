@@ -2,6 +2,7 @@
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection
@@ -83,7 +84,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Constructor selection method
         /// </summary>
-        ConstructorSelectionMethod? ConstructorSelectionMethod { get; set; }
+        IConstructorExpressionCreator ConstructorSelectionMethod { get; set; }
 
         /// <summary>
         /// IS strategy externally owned

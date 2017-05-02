@@ -449,6 +449,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return request.Services.Compiler.CreateNewResult(request, request.Constants.ScopeParameter);
             }
 
+            if (request.ActivationType == typeof(IDisposalScope))
+            {
+                return request.Services.Compiler.CreateNewResult(request, request.DisposalScopeExpression);
+            }
+
             if (request.ActivationType == typeof(IInjectionContext))
             {
                 request.RequireInjectionContext();
