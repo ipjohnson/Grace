@@ -21,7 +21,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.Null(instance.BasicService);
             Assert.Null(instance.ConstructorImportService);
 
-            instance = container.Locate<MultipleConstructorImport>(new { basicService = new BasicService()});
+            instance = container.Locate<MultipleConstructorImport>(new { basicService = new BasicService() });
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
@@ -63,7 +63,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
         {
             public DynamicPropertyClassTest()
             {
-                
+
             }
 
             public DynamicPropertyClassTest(IBasicService basicService)
@@ -89,13 +89,13 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.Null(instance.BasicService);
             Assert.Equal(5, instance.IntValue);
 
-            instance = container.Locate<DynamicPropertyClassTest>(new { basicService = new BasicService()});
+            instance = container.Locate<DynamicPropertyClassTest>(new { basicService = new BasicService() });
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
             Assert.Equal(5, instance.IntValue);
 
-            instance = container.Locate<DynamicPropertyClassTest>(new { intValue = 10});
+            instance = container.Locate<DynamicPropertyClassTest>(new { intValue = 10 });
 
             Assert.NotNull(instance);
             Assert.Null(instance.BasicService);
@@ -120,7 +120,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 BasicService = basicService;
                 DoubleValue = doubleValue;
             }
-            
+
             public IBasicService BasicService { get; }
 
             public double DoubleValue { get; }
@@ -149,5 +149,31 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance.BasicService);
             Assert.Equal(5.0, instance.DoubleValue);
         }
+
+        public class DynamicMultipleIntParameters
+        {
+            public DynamicMultipleIntParameters(int firstValue, int secondValue)
+            {
+                FirstValue = firstValue;
+                SecondValue = secondValue;
+            }
+
+            public int FirstValue { get; }
+
+            public int SecondValue { get; }
+        }
+
+        [Fact]
+        public void Dynamic_MultipleIntParameters_Issue78()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            var instance = container.Locate<DynamicMultipleIntParameters>(new { secondValue = 10, firstValue = 5 });
+
+            Assert.NotNull(instance);
+            Assert.Equal(instance.FirstValue, 5);
+            Assert.Equal(10, instance.SecondValue);
+        }
+
     }
 }
