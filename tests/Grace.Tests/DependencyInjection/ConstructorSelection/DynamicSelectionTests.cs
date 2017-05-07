@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Xunit;
 using Grace.Tests.Classes.Simple;
 
@@ -105,6 +106,48 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
             Assert.Equal(10, instance.IntValue);
+        }
+
+        public class DynamicMultipleConstructor_NoDefault
+        {
+            public DynamicMultipleConstructor_NoDefault(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public DynamicMultipleConstructor_NoDefault(IBasicService basicService, double doubleValue)
+            {
+                BasicService = basicService;
+                DoubleValue = doubleValue;
+            }
+            
+            public IBasicService BasicService { get; }
+
+            public double DoubleValue { get; }
+        }
+
+        [Fact]
+        public void Dynamic_ThrowsWhenMissingDependency()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            Assert.Throws<LocateException>(() => container.Locate<DynamicMultipleConstructor_NoDefault>());
+
+            var instance = container.Locate<DynamicMultipleConstructor_NoDefault>(new BasicService());
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+
+            instance =
+                container.Locate<DynamicMultipleConstructor_NoDefault>(new
+                {
+                    basicService = new BasicService(),
+                    doubleValue = 5.0
+                });
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Equal(5.0, instance.DoubleValue);
         }
     }
 }
