@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var memberType = kvp.Key.GetMemeberType();
                 object key = null;
-                
+
                 if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                 {
                     key = kvp.Key.Name;
@@ -91,7 +91,108 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return CreateNewMemeberInitExpression(scope, request, activationConfiguration, result, expression);
             }
 
-            return result;
+            return CreateMemberInjectExpressions(scope, request, activationConfiguration, result);
+        }
+
+        /// <summary>
+        /// Creates member injection statements
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationConfiguration"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult CreateMemberInjectExpressions(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
+        {
+            var members = GetMemberInjectionInfoForConfiguration(scope, request, activationConfiguration);
+
+            if (members.Count == 0)
+            {
+                return result;
+            }
+
+            ParameterExpression variable = result.Expression as ParameterExpression;
+
+            var newResult = request.Services.Compiler.CreateNewResult(request);
+
+            if (variable == null)
+            {
+                variable = Expression.Variable(result.Expression.Type);
+
+                newResult.AddExpressionResult(result);
+
+                newResult.AddExtraParameter(variable);
+                newResult.AddExtraExpression(Expression.Assign(variable, result.Expression));
+            }
+
+            foreach (var memberKVP in members)
+            {
+                var expression = memberKVP.Value.CreateExpression;
+
+                if (expression == null)
+                {
+                    var memberType = memberKVP.Key.GetMemeberType();
+
+                    var newRequest =
+                        request.NewRequest(memberType, activationConfiguration.ActivationStrategy,
+                            activationConfiguration.ActivationType, RequestType.Member, memberKVP.Key, false, true);
+
+                    if (memberKVP.Value.LocateKey == null &&
+                        scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
+                    {
+                        newRequest.SetLocateKey(memberKVP.Key.Name);
+                    }
+                    else
+                    {
+                        newRequest.SetLocateKey(memberKVP.Value.LocateKey);
+                    }
+
+                    newRequest.IsDynamic = memberKVP.Value.IsDynamic;
+                    newRequest.SetIsRequired(memberKVP.Value.IsRequired);
+                    newRequest.SetFilter(memberKVP.Value.Filter);
+
+                    if (memberKVP.Value.DefaultValue != null)
+                    {
+                        newRequest.SetDefaultValue(
+                            new DefaultValueInformation { DefaultValue = memberKVP.Value.DefaultValue });
+                    }
+
+                    var memberResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
+
+                    if (memberResult == null)
+                    {
+                        if (memberKVP.Value.IsRequired)
+                        {
+                            throw new LocateException(newRequest.GetStaticInjectionContext());
+                        }
+                    }
+                    else
+                    {
+                        Expression memberExpression;
+
+                        if (memberKVP.Key is FieldInfo)
+                        {
+                            memberExpression = Expression.Field(variable, memberKVP.Key as FieldInfo);
+                        }
+                        else if (memberKVP.Key is PropertyInfo)
+                        {
+                            memberExpression = Expression.Property(variable, (PropertyInfo)memberKVP.Key);
+                        }
+                        else
+                        {
+                            throw new LocateException(request.GetStaticInjectionContext(), $"{memberKVP.Key.GetType().Name} member type not supported");
+                        }
+
+                        newResult.AddExpressionResult(memberResult);
+
+                        newResult.AddExtraExpression(Expression.Assign(memberExpression, memberResult.Expression));
+                    }
+                }
+            }
+
+            newResult.Expression = variable;
+
+            return newResult;
         }
 
         /// <summary>
@@ -120,7 +221,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     var newRequest =
                         request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Key, false, true);
 
-                    if (memberKVP.Value.LocateKey == null && 
+                    if (memberKVP.Value.LocateKey == null &&
                         scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
                     {
                         newRequest.SetLocateKey(memberKVP.Key.Name);
@@ -180,7 +281,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var members = new Dictionary<MemberInfo, MemberInjectionInfo>();
-            
+
             var currentScope = scope;
 
             while (currentScope != null)
@@ -189,8 +290,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 currentScope = currentScope.Parent as IInjectionScope;
             }
-            
-            ProcessMemberSelectors(scope, request, activationConfiguration.ActivationType,activationConfiguration.MemberInjectionSelectors, members);
+
+            ProcessMemberSelectors(scope, request, activationConfiguration.ActivationType, activationConfiguration.MemberInjectionSelectors, members);
 
             return members;
         }

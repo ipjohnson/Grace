@@ -64,7 +64,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (dataProvider != null)
             {
-                value = GetValueFromExtraDataProvider<T>(key, dataProvider);
+                GetValueFromExtraDataProvider<T>(key, dataProvider, out value);
 
                 if (value == null)
                 {
@@ -88,9 +88,12 @@ namespace Grace.DependencyInjection.Impl
             {
                 var currentLocator = locator;
 
-                while (currentLocator != null && value == null)
+                while (currentLocator != null)
                 {
-                    value = GetValueFromExtraDataProvider<T>(key, currentLocator);
+                    if (GetValueFromExtraDataProvider<T>(key, currentLocator, out value))
+                    {
+                        break;
+                    }
 
                     currentLocator = currentLocator.Parent;
                 }
@@ -137,7 +140,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="dataProvider"></param>
         /// <returns></returns>
-        protected virtual object GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider)
+        protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
         {
             object value = null;
 
@@ -146,22 +149,35 @@ namespace Grace.DependencyInjection.Impl
                 value = dataProvider.GetExtraData(key);
             }
 
-            return value ?? dataProvider.Values.FirstOrDefault(o =>
+            if (value != null)
+            {
+                tValue = value;
+                return true;
+            }
+
+            foreach (var o in dataProvider.Values)
             {
                 if (o is T)
                 {
+                    tValue = o;
+
                     return true;
                 }
 
                 var delegateInstance = o as Delegate;
 
-                if (delegateInstance != null)
+                if (delegateInstance != null && 
+                    delegateInstance.GetMethodInfo().ReturnType == typeof(T))
                 {
-                    return delegateInstance.GetMethodInfo().ReturnType == typeof(T);
-                }
+                    tValue = o;
 
-                return false;
-            });
+                    return true;
+                }
+            }
+
+            tValue = null;
+
+            return false;
         }
     }
 }

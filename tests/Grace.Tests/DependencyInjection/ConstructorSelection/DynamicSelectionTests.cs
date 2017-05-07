@@ -56,5 +56,55 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance.BasicService);
             Assert.NotNull(instance.ConstructorImportService);
         }
+
+
+        public class DynamicPropertyClassTest
+        {
+            public DynamicPropertyClassTest()
+            {
+                
+            }
+
+            public DynamicPropertyClassTest(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
+
+            public int IntValue { get; set; }
+        }
+
+        [Fact]
+        public void Dynamic_PropertyInject()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            container.Configure(c => c.Export<DynamicPropertyClassTest>().ImportProperty(i => i.IntValue).DefaultValue(5));
+
+            var instance = container.Locate<DynamicPropertyClassTest>();
+
+            Assert.NotNull(instance);
+            Assert.Null(instance.BasicService);
+            Assert.Equal(5, instance.IntValue);
+
+            instance = container.Locate<DynamicPropertyClassTest>(new { basicService = new BasicService()});
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Equal(5, instance.IntValue);
+
+            instance = container.Locate<DynamicPropertyClassTest>(new { intValue = 10});
+
+            Assert.NotNull(instance);
+            Assert.Null(instance.BasicService);
+            Assert.Equal(10, instance.IntValue);
+
+            instance = container.Locate<DynamicPropertyClassTest>(new { intValue = 10, basicService = new BasicService() });
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Equal(10, instance.IntValue);
+        }
     }
 }
