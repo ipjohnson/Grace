@@ -155,6 +155,11 @@ namespace Grace.DependencyInjection.Impl
         {
             var typeInfo = type.GetTypeInfo();
 
+            if (ExtraData != null && typeInfo.IsAssignableFrom(ExtraData.GetType().GetTypeInfo()))
+            {
+                return ExtraData;
+            }
+            
             var value = _extraDataProperties.Values.FirstOrDefault(v => typeInfo.IsAssignableFrom(v.GetType().GetTypeInfo()));
 
             return value ??

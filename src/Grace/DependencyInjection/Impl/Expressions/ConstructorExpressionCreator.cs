@@ -107,12 +107,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {
-            return
-                configuration.ConstructorParameters.FirstOrDefault(p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
-                                                                        (p.ParameterType == null || p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()))) ??
-                configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
+            var parameterInfo = parameter.ParameterType.GetTypeInfo();
+
+            var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
+                p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                     (p.ParameterType == null || 
+                      p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo) ||
+                      parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo())));
+
+            if (matchedConstructor != null)
+            {
+                return matchedConstructor;
+            }
+
+            return configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
                                                                         p.ParameterType != null &&
-                                                                        p.ParameterType.GetTypeInfo().IsAssignableFrom(parameter.ParameterType.GetTypeInfo()));
+                                                                        (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) || 
+                                                                        p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo)));
         }
 
         /// <summary>
@@ -361,8 +372,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
         {
-            // TODO: fill this in
-            return false;
+            var matchedParameter = FindParameterInfoExpression(parameter,configuration);
+
+            if (matchedParameter == null)
+            {
+                return false;
+            }
+
+            return matchedParameter.ExportFunc != null || 
+                  !matchedParameter.IsRequired.GetValueOrDefault(true) ||
+                   matchedParameter.UseType != null ||
+                   matchedParameter.DefaultValue != null;
         }
     }
 }

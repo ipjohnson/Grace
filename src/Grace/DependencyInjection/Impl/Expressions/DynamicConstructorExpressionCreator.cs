@@ -28,12 +28,27 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return CreateCallExpression(scope, request, activationConfiguration, activationDelegate);
         }
 
+        /// <summary>
+        /// Create call expression for delegate
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationConfiguration"></param>
+        /// <param name="activationDelegate"></param>
+        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateCallExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, ActivationStrategyDelegate activationDelegate)
         {
             return ExpressionUtilities.CreateExpressionForDelegate(activationDelegate, activationConfiguration.ExternallyOwned,
                 scope, request);
         }
 
+        /// <summary>
+        /// Given an expression create an activation delegate
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <param name="activationConfiguration"></param>
+        /// <returns></returns>
         protected virtual ActivationStrategyDelegate CreateActivationDelegate(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var activationExpression = BuildActivationExpression(scope, request, activationConfiguration);
@@ -51,13 +66,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var foundValues = new Dictionary<string, ParameterExpression>();
             var throwAtEnd = true;
 
-            var constructors = request.ActivationType.GetTypeInfo()
-                .DeclaredConstructors
-                .Where(c => c.IsPublic && !c.IsStatic)
-                .OrderByDescending(c => c.GetParameters().Length)
-                .ToArray();
-
-            foreach (var constructorInfo in constructors)
+            foreach (var constructorInfo in GetConstructors(request))
             {
                 var testParameters = new List<ParameterExpression>();
                 var locateParameters = new List<Expression>();
@@ -143,23 +152,92 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return result;
         }
 
+        private static ConstructorInfo[] GetConstructors(IActivationExpressionRequest request)
+        {
+            var constructors = request.ActivationType.GetTypeInfo()
+                .DeclaredConstructors
+                .Where(c => c.IsPublic && !c.IsStatic)
+                .OrderByDescending(c => c.GetParameters().Length)
+                .ToArray();
+
+            return constructors;
+        }
+
         private Expression CreateLocateExpression(ParameterInfo parameter, IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
+            var parameterInfo = FindParameterInfoExpression(parameter, activationConfiguration);
+
+            if (parameterInfo?.ExportFunc is Delegate)
+            {
+                var newRequest = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy,
+                    activationConfiguration.ActivationType, RequestType.ConstructorParameter, parameter, true);
+
+                var delegateValue = (Delegate)parameterInfo.ExportFunc;
+
+                var expressionCall = ExpressionUtilities.CreateExpressionForDelegate(delegateValue,
+                    activationConfiguration.ExternallyOwned, scope, newRequest);
+
+                var standardParameters = delegateValue.GetMethodInfo()
+                    .GetParameters()
+                    .All(p =>
+                    {
+                        if (p.ParameterType == typeof(IExportLocatorScope))
+                        {
+                            return true;
+                        }
+
+                        if (p.ParameterType == typeof(IDisposalScope))
+                        {
+                            return true;
+                        }
+
+                        if (p.ParameterType == typeof(IInjectionContext))
+                        {
+                            return true;
+                        }
+
+                        return true;
+                    });
+
+                if (standardParameters)
+                {
+                    return expressionCall.Expression;
+                }
+
+                newRequest = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy,
+                    activationConfiguration.ActivationType, RequestType.ConstructorParameter, parameter, true);
+                
+                var compiledDelegate = request.Services.Compiler.CompileDelegate(scope, expressionCall);
+
+                expressionCall =
+                    ExpressionUtilities.CreateExpressionForDelegate(compiledDelegate, false, scope, newRequest);
+
+                return expressionCall.Expression;
+            }
+
             var closedMethod = DynamicLocateMethodInfo.MakeGenericMethod(parameter.ParameterType);
 
             return Expression.Call(Expression.Constant(this),
-                                   closedMethod,
-                                   request.Constants.ScopeParameter,
-                                   request.DisposalScopeExpression,
-                                   request.Constants.InjectionContextParameter,
-                                   Expression.Constant(parameter.Name),
-                                   Expression.Constant(true),
-                                   Expression.Constant(false),
-                                   Expression.Default(parameter.ParameterType));
+                closedMethod,
+                request.Constants.ScopeParameter,
+                request.DisposalScopeExpression,
+                request.Constants.InjectionContextParameter,
+                Expression.Constant(parameter.Name),
+                Expression.Constant(true),
+                Expression.Constant(false),
+                Expression.Default(parameter.ParameterType));
         }
 
         private Tuple<ParameterExpression, Expression> CreateCanLocateStatement(ParameterInfo parameter, IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
+            var parameterInfo = FindParameterInfoExpression(parameter, activationConfiguration);
+
+            if (parameterInfo != null &&
+                (parameterInfo.DefaultValue != null || parameterInfo.ExportFunc != null))
+            {
+                return null;
+            }
+
             var closedMethod = DynamicCanLocateMethodInfo.MakeGenericMethod(parameter.ParameterType);
 
             var callExpression = Expression.Call(Expression.Constant(this),
@@ -203,7 +281,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return true;
             }
-            
+
             value = context.GetValueByType(typeof(T));
 
             if (value is T)
@@ -266,7 +344,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (value is T)
             {
-                return (T) value;
+                return (T)value;
             }
 
             var currentScope = scope;
@@ -277,19 +355,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (value is T)
                 {
-                    return (T) value;
+                    return (T)value;
                 }
 
                 foreach (var valuePair in currentScope.KeyValuePairs)
                 {
-                    if (!valuePair.Key.ToString().StartsWith(UniqueStringId.Prefix) && 
+                    if (!valuePair.Key.ToString().StartsWith(UniqueStringId.Prefix) &&
                         valuePair.Value is T)
                     {
                         return (T)valuePair.Value;
                     }
-                    
+
                 }
-                
+
                 currentScope = currentScope.Parent;
             }
 

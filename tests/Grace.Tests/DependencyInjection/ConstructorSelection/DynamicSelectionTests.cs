@@ -36,5 +36,25 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance.BasicService);
             Assert.NotNull(instance.ConstructorImportService);
         }
+
+        [Fact]
+        public void Dynamic_WithCtorValue()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            container.Configure(c => c.Export<MultipleConstructorImport>().WithCtorParam(() => new BasicService()));
+
+            var instance = container.Locate<MultipleConstructorImport>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Null(instance.ConstructorImportService);
+
+            instance = container.Locate<MultipleConstructorImport>(new ConstructorImportService(new BasicService()));
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.NotNull(instance.ConstructorImportService);
+        }
     }
 }
