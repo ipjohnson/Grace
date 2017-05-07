@@ -89,7 +89,10 @@ namespace Grace.DependencyInjection.Impl
 
             if (!type.GetTypeInfo().IsInterface)
             {
-                return injectionScope.ScopeConfiguration.AutoRegisterUnknown;
+                return injectionScope.ScopeConfiguration.AutoRegisterUnknown &&
+                        type.GetTypeInfo().IsPrimitive == false &&
+                        type != typeof(string) &&
+                        type != typeof(DateTime);
             }
 
             return type == typeof(ILocatorService) ||
