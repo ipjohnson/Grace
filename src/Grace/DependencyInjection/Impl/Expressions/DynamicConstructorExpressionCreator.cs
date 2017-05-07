@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using Grace.DependencyInjection.Exceptions;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -63,7 +64,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var testVariableExpressions = new List<Expression>();
             var testExpressions = new List<Expression>();
 
-            var foundValues = new Dictionary<string, ParameterExpression>();
+            var foundValues = new Dictionary<string, Tuple<ParameterExpression, string>>();
             var throwAtEnd = true;
 
             foreach (var constructorInfo in GetConstructors(request))
@@ -75,7 +76,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     var paramKey = parameter.Name + "|" + parameter.ParameterType.FullName;
 
-                    ParameterExpression parameterExpression;
+                    Tuple<ParameterExpression, string> parameterExpression;
 
                     if (!foundValues.TryGetValue(paramKey, out parameterExpression))
                     {
@@ -84,15 +85,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         // only test for required parameters with no default value
                         if (canLocateInfo != null)
                         {
-                            parameterExpression = canLocateInfo.Item1;
-                            variables.Add(parameterExpression);
+                            parameterExpression = new Tuple<ParameterExpression, string>(canLocateInfo.Item1, $"{parameter.ParameterType.Name} {parameter.Name}");
+
+                            foundValues.Add(paramKey,parameterExpression);
+                            variables.Add(parameterExpression.Item1);
                             testVariableExpressions.Add(canLocateInfo.Item2);
                         }
                     }
 
                     if (parameterExpression != null)
                     {
-                        testParameters.Add(parameterExpression);
+                        testParameters.Add(parameterExpression.Item1);
                     }
 
                     locateParameters.Add(CreateLocateExpression(parameter, scope, request, activationConfiguration));
@@ -128,7 +131,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (throwAtEnd)
             {
-                testExpressions.Add(Expression.Throw(Expression.New(typeof(Exception))));
+                var constructor = typeof(LocateException).GetTypeInfo()
+                    .DeclaredConstructors.Single(c => c.GetParameters().Length == 2);
+
+                var testValues = foundValues.Values.ToArray();
+
+                var foundArrayExpression = Expression.NewArrayInit(typeof(bool), testValues.Select(t => t.Item1));
+                var labelArray = Expression.Constant(testValues.Select(t => t.Item2).ToArray());
+
+                var createErrorStringMethod = typeof(DynamicConstructorExpressionCreator).GetTypeInfo()
+                    .GetDeclaredMethod("CreateMissingErrorMessage");
+
+                testExpressions.Add(Expression.Throw(Expression.New(constructor,
+                    Expression.Constant(request.GetStaticInjectionContext()),
+                    Expression.Call(createErrorStringMethod, foundArrayExpression, labelArray))));
             }
 
             var result =
@@ -150,6 +166,28 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return result;
+        }
+
+        private static string CreateMissingErrorMessage(bool[] found, string[] labels)
+        {
+            var builder = new StringBuilder("Dynamic constructor could not find the following parameters ");
+
+            for (int i = 0; i < found.Length; i++)
+            {
+                if (found[i])
+                {
+                    continue;
+                }
+
+                builder.Append(labels[i]);
+
+                if (i < found.Length - 1)
+                {
+                    builder.Append(", ");
+                }
+            }
+
+            return builder.ToString();
         }
 
         private static ConstructorInfo[] GetConstructors(IActivationExpressionRequest request)
@@ -206,7 +244,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 newRequest = request.NewRequest(parameter.ParameterType, activationConfiguration.ActivationStrategy,
                     activationConfiguration.ActivationType, RequestType.ConstructorParameter, parameter, true);
-                
+
                 var compiledDelegate = request.Services.Compiler.CompileDelegate(scope, expressionCall);
 
                 expressionCall =
