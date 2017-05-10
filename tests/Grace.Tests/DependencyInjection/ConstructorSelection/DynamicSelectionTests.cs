@@ -57,8 +57,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance.BasicService);
             Assert.NotNull(instance.ConstructorImportService);
         }
-
-
+        
         public class DynamicPropertyClassTest
         {
             public DynamicPropertyClassTest()
@@ -174,6 +173,5 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.Equal(instance.FirstValue, 5);
             Assert.Equal(10, instance.SecondValue);
         }
-
     }
 }
