@@ -6,7 +6,10 @@ using System.Text;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
-    public class BestMatchLeastConstructorExpressionCreator : ConstructorExpressionCreator
+    /// <summary>
+    /// Constructor expression creator that picks it's constructor based on available exports
+    /// </summary>
+    public class BestMatchConstructorExpressionCreator : ConstructorExpressionCreator
     {
         /// <summary>
         /// This method is called when there are multiple constructors

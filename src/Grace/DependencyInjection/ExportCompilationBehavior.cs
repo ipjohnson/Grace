@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection
 
             MostParameters = new MostParametersConstructorExpressionCreator();
 
-            BestMatch = new BestMatchLeastConstructorExpressionCreator();
+            BestMatch = new BestMatchConstructorExpressionCreator();
 
             Dynamic = new DynamicConstructorExpressionCreator();
         }
