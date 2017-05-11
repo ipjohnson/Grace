@@ -258,7 +258,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return Expression.Call(Expression.Constant(this),
                 closedMethod,
                 request.Constants.ScopeParameter,
-                request.DisposalScopeExpression,
+                request.Constants.RootDisposalScope,
                 request.Constants.InjectionContextParameter,
                 Expression.Constant(parameter.Name.ToLowerInvariant()),
                 Expression.Constant(true),

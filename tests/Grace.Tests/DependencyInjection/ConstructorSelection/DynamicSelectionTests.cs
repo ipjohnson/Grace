@@ -57,7 +57,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance.BasicService);
             Assert.NotNull(instance.ConstructorImportService);
         }
-        
+
         public class DynamicPropertyClassTest
         {
             public DynamicPropertyClassTest()
@@ -172,6 +172,65 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance);
             Assert.Equal(instance.FirstValue, 5);
             Assert.Equal(10, instance.SecondValue);
+        }
+
+        public class MultipleConstructorDisposable : IDisposable
+        {
+            public MultipleConstructorDisposable(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public MultipleConstructorDisposable(IBasicService basicService, IConstructorImportService constructorImportService)
+            {
+                BasicService = basicService;
+                ConstructorImportService = constructorImportService;
+            }
+
+            public IBasicService BasicService { get; }
+
+            public IConstructorImportService ConstructorImportService { get; }
+
+            public event EventHandler Disposed;
+
+            public void Dispose()
+            {
+                Disposed?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        [Fact]
+        public void Dynamic_Disposable()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            bool disposed = false;
+
+            using (var owned = container.Locate<Owned<MultipleConstructorDisposable>>(new BasicService()))
+            {
+                Assert.NotNull(owned);
+                Assert.NotNull(owned.Value);
+                Assert.NotNull(owned.Value.BasicService);
+                Assert.Null(owned.Value.ConstructorImportService);
+
+                owned.Value.Disposed += (sender, args) => disposed = true;
+            }
+
+            Assert.True(disposed);
+
+            disposed = false;
+
+            using (var owned = container.Locate<Owned<MultipleConstructorDisposable>>(new { basicService = new BasicService(), constructorImportService = new ConstructorImportService(new BasicService()) }))
+            {
+                Assert.NotNull(owned);
+                Assert.NotNull(owned.Value);
+                Assert.NotNull(owned.Value.BasicService);
+                Assert.NotNull(owned.Value.ConstructorImportService);
+
+                owned.Value.Disposed += (sender, args) => disposed = true;
+            }
+
+            Assert.True(disposed);
         }
     }
 }
