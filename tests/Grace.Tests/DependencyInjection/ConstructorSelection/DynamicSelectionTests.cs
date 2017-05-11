@@ -232,5 +232,43 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             Assert.True(disposed);
         }
+
+        public class ImportTwoMultipleConstructorImport
+        {
+            public ImportTwoMultipleConstructorImport(MultipleConstructorImport import1, MultipleConstructorImport import2)
+            {
+                Import1 = import1;
+                Import2 = import2;
+            }
+
+            public MultipleConstructorImport Import1 { get; }
+
+            public MultipleConstructorImport Import2 { get; }
+        }
+
+        [Fact]
+        public void Dynamic_PassThroughForPerObjectGraph()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            container.Configure(c => c.Export<MultipleConstructorImport>().Lifestyle.SingletonPerObjectGraph());
+
+            var basicService = new BasicService();
+
+            var instance = container.Locate<ImportTwoMultipleConstructorImport>(basicService);
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Import1);
+            Assert.Same(instance.Import1, instance.Import2);
+            Assert.Same(instance.Import1.BasicService, basicService);
+
+            var instance2 = container.Locate<ImportTwoMultipleConstructorImport>(new { basicService, constructorImportService = new ConstructorImportService(basicService) });
+
+            Assert.NotNull(instance2);
+            Assert.NotNull(instance2.Import1);
+            Assert.Same(instance2.Import1, instance2.Import2);
+            Assert.Same(instance2.Import1.BasicService, basicService);
+            Assert.NotSame(instance.Import1, instance2.Import1);
+        }
     }
 }
