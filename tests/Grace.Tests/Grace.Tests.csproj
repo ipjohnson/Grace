@@ -23,10 +23,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170427-09" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta1-build1309" />
     <PackageReference Include="Castle.Core" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="1.1.0" />
-    <PackageReference Include="SimpleFixture.NSubstitute" Version="3.0.0" />
-    <PackageReference Include="SimpleFixture.xUnit" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="1.1.1" />
+    <PackageReference Include="SimpleFixture.NSubstitute" Version="3.0.1" />
+    <PackageReference Include="SimpleFixture.xUnit" Version="3.0.1" />
     <PackageReference Include="xunit" Version="2.3.0-beta1-build3642" />
   </ItemGroup>
 
