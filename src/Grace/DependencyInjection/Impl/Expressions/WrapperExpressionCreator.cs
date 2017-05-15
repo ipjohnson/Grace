@@ -56,13 +56,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
                 else
                 {
-                    var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(wrappedType);
+                    var collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
 
-                    if (collection == null && wrappedType.IsConstructedGenericType)
+                    if (collection == null)
                     {
-                        var generic = wrappedType.GetGenericTypeDefinition();
+                        lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
+                        {
+                            var newRequest = request.NewRequest(wrappedType, request.RequestingStrategy,
+                                request.InjectedType, request.RequestType, request.Info, false, true);
 
-                        collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(generic);
+                            request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
+                        }
+
+                        collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
                     }
 
                     if (collection != null)
@@ -179,6 +185,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
             wrappedType = type;
 
             return ImmutableLinkedList<IActivationPathNode>.Empty;
+        }
+
+        private IActivationStrategyCollection<ICompiledExportStrategy> GetWrappedTypeFromStrategiesCollection(IInjectionScope scope, Type wrappedType)
+        {
+            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(wrappedType);
+
+            if (collection == null && wrappedType.IsConstructedGenericType)
+            {
+                var generic = wrappedType.GetGenericTypeDefinition();
+
+                collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(generic);
+            }
+
+            return collection;
         }
     }
 }

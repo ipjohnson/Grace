@@ -33,6 +33,28 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         }
 
         [Fact]
+        public void Scoped_Dependent_MissingType()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var funcService = container.Locate<DependentService<Func<Scoped<DisposableService>>>>();
+
+            var disposed = false;
+
+            using (var scoped = funcService.Value())
+            {
+                Assert.NotNull(scoped);
+                Assert.NotNull(scoped.Instance);
+
+                scoped.Instance.Disposing += (sender, args) => disposed = true;
+
+                Assert.False(disposed);
+            }
+
+            Assert.True(disposed);
+        }
+
+        [Fact]
         public void Scoped_Named()
         {
             var container = new DependencyInjectionContainer();
