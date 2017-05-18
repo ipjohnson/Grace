@@ -112,11 +112,21 @@ namespace Grace.Tests.DependencyInjection.Metadata
             var multipleServices = container.Locate<IEnumerable<Meta<IMultipleService>>>().ToArray();
             
             Assert.Equal(5, multipleServices.Length);
+
             Assert.Equal(1, multipleServices[0].Metadata["Key"]);
+            Assert.IsType<MultipleService1>(multipleServices[0].Value);
+
             Assert.Equal(2, multipleServices[1].Metadata["Key"]);
+            Assert.IsType<MultipleService2>(multipleServices[1].Value);
+
             Assert.Equal(3, multipleServices[2].Metadata["Key"]);
+            Assert.IsType<MultipleService3>(multipleServices[2].Value);
+
             Assert.Equal(4, multipleServices[3].Metadata["Key"]);
+            Assert.IsType<MultipleService4>(multipleServices[3].Value);
+
             Assert.Equal(5, multipleServices[4].Metadata["Key"]);
+            Assert.IsType<MultipleService5>(multipleServices[4].Value);
         }
 
         [Fact]
@@ -138,11 +148,21 @@ namespace Grace.Tests.DependencyInjection.Metadata
             var multipleServices = dependentService.Value.ToArray();
 
             Assert.Equal(5, multipleServices.Length);
+
             Assert.Equal(1, multipleServices[0].Metadata["Key"]);
+            Assert.IsType<MultipleService1>(multipleServices[0].Value);
+
             Assert.Equal(2, multipleServices[1].Metadata["Key"]);
+            Assert.IsType<MultipleService2>(multipleServices[1].Value);
+
             Assert.Equal(3, multipleServices[2].Metadata["Key"]);
+            Assert.IsType<MultipleService3>(multipleServices[2].Value);
+
             Assert.Equal(4, multipleServices[3].Metadata["Key"]);
+            Assert.IsType<MultipleService4>(multipleServices[3].Value);
+
             Assert.Equal(5, multipleServices[4].Metadata["Key"]);
+            Assert.IsType<MultipleService5>(multipleServices[4].Value);
         }
     }
 }
