@@ -94,5 +94,55 @@ namespace Grace.Tests.DependencyInjection.Metadata
             Assert.False(meta.Metadata.MetadataMatches("Hello", "Earth"));
             Assert.True(meta.Metadata.MetadataMatches("Hello", null));
         }
+                
+        [Fact]
+        public void Meta_Enumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>().WithMetadata("Key", 1);
+                c.Export<MultipleService2>().As<IMultipleService>().WithMetadata("Key", 2);
+                c.Export<MultipleService3>().As<IMultipleService>().WithMetadata("Key", 3);
+                c.Export<MultipleService4>().As<IMultipleService>().WithMetadata("Key", 4);
+                c.Export<MultipleService5>().As<IMultipleService>().WithMetadata("Key", 5);
+            });
+
+            var multipleServices = container.Locate<IEnumerable<Meta<IMultipleService>>>().ToArray();
+            
+            Assert.Equal(5, multipleServices.Length);
+            Assert.Equal(1, multipleServices[0].Metadata["Key"]);
+            Assert.Equal(2, multipleServices[1].Metadata["Key"]);
+            Assert.Equal(3, multipleServices[2].Metadata["Key"]);
+            Assert.Equal(4, multipleServices[3].Metadata["Key"]);
+            Assert.Equal(5, multipleServices[4].Metadata["Key"]);
+        }
+
+        [Fact]
+        public void Meta_Enumerable_Dependent()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>().WithMetadata("Key", 1);
+                c.Export<MultipleService2>().As<IMultipleService>().WithMetadata("Key", 2);
+                c.Export<MultipleService3>().As<IMultipleService>().WithMetadata("Key", 3);
+                c.Export<MultipleService4>().As<IMultipleService>().WithMetadata("Key", 4);
+                c.Export<MultipleService5>().As<IMultipleService>().WithMetadata("Key", 5);
+            });
+
+            var dependentService = container.Locate<DependentService<IEnumerable<Meta<IMultipleService>>>>();
+
+            var multipleServices = dependentService.Value.ToArray();
+
+            Assert.Equal(5, multipleServices.Length);
+            Assert.Equal(1, multipleServices[0].Metadata["Key"]);
+            Assert.Equal(2, multipleServices[1].Metadata["Key"]);
+            Assert.Equal(3, multipleServices[2].Metadata["Key"]);
+            Assert.Equal(4, multipleServices[3].Metadata["Key"]);
+            Assert.Equal(5, multipleServices[4].Metadata["Key"]);
+        }
     }
 }
