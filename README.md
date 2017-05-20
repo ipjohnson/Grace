@@ -7,11 +7,11 @@ Grace is a feature rich Dependency Injection Container designed with ease of use
 ```csharp 
    using Grace.DependencyInjection;
 
-   DependencyInjectionContainer container = new DependencyInjectionContainer();
+   var container = new DependencyInjectionContainer();
 
    container.Configure(c => c.Export<BasicService>().As<IBasicService>());
 
-   IBasicService basicService = container.Locate<IBasicService>();
+   var basicService = container.Locate<IBasicService>();
 ```
 
 It's as easy as create, configure, and locate.
