@@ -26,6 +26,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="wrappedType"></param>
         /// <returns></returns>
         ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType);
+
+        /// <summary>
+        /// Sets up wrappers for request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        bool SetupWrappersForRequest(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
     /// <summary>
@@ -41,78 +49,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            Type wrappedType;
-
-            var wrappers = GetWrappers(scope, request.ActivationType, request, out wrappedType);
-
-            if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
+            if (SetupWrappersForRequest(scope, request))
             {
-                if (request.DecoratorPathNode != null &&
-                    wrappedType.GetTypeInfo().IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType.GetTypeInfo()))
-                {
-                    var decorator = request.PopDecoratorPathNode();
-
-                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(decorator).AddRange(wrappers.Reverse());
-                }
-                else
-                {
-                    var collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
-
-                    if (collection == null)
-                    {
-                        lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
-                        {
-                            var newRequest = request.NewRequest(wrappedType, request.RequestingStrategy,
-                                request.InjectedType, request.RequestType, request.Info, false, true);
-
-                            request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
-                        }
-
-                        collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
-                    }
-
-                    if (collection != null)
-                    {
-                        var primary = request.Filter == null ? collection.GetPrimary() : null;
-
-                        if (primary != null)
-                        {
-                            wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
-                        }
-                        else
-                        {
-                            foreach (var strategy in collection.GetStrategies())
-                            {
-                                var pass = true;
-
-                                if (strategy.HasConditions)
-                                {
-                                    foreach (var condition in strategy.Conditions)
-                                    {
-                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext()))
-                                        {
-                                            pass = false;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (pass &&
-                                    (request.Filter == null || request.Filter(strategy)))
-                                {
-                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(strategy, wrappedType, null)).AddRange(wrappers.Reverse());
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-
-                request.SetWrapperPath(wrappers);
-
                 var wrapper = request.PopWrapperPathNode();
 
                 return wrapper.GetActivationExpression(scope, request);
@@ -185,6 +123,92 @@ namespace Grace.DependencyInjection.Impl.Expressions
             wrappedType = type;
 
             return ImmutableLinkedList<IActivationPathNode>.Empty;
+        }
+
+        /// <summary>
+        /// Sets up wrappers for request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public bool SetupWrappersForRequest(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            Type wrappedType;
+
+            var wrappers = GetWrappers(scope, request.ActivationType, request, out wrappedType);
+
+            if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
+            {
+                if (request.DecoratorPathNode != null &&
+                    wrappedType.GetTypeInfo().IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType.GetTypeInfo()))
+                {
+                    var decorator = request.PopDecoratorPathNode();
+
+                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(decorator).AddRange(wrappers.Reverse());
+                }
+                else
+                {
+                    var collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
+
+                    if (collection == null)
+                    {
+                        lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
+                        {
+                            var newRequest = request.NewRequest(wrappedType, request.RequestingStrategy,
+                                request.InjectedType, request.RequestType, request.Info, false, true);
+
+                            request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
+                        }
+
+                        collection = GetWrappedTypeFromStrategiesCollection(scope, wrappedType);
+                    }
+
+                    if (collection != null)
+                    {
+                        var primary = request.Filter == null ? collection.GetPrimary() : null;
+
+                        if (primary != null)
+                        {
+                            wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
+                        }
+                        else
+                        {
+                            foreach (var strategy in collection.GetStrategies())
+                            {
+                                var pass = true;
+
+                                if (strategy.HasConditions)
+                                {
+                                    foreach (var condition in strategy.Conditions)
+                                    {
+                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext()))
+                                        {
+                                            pass = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (pass &&
+                                    (request.Filter == null || request.Filter(strategy)))
+                                {
+                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(strategy, wrappedType, null)).AddRange(wrappers.Reverse());
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                request.SetWrapperPath(wrappers);
+
+                return true;
+            }
+
+            return false;
         }
 
         private IActivationStrategyCollection<ICompiledExportStrategy> GetWrappedTypeFromStrategiesCollection(IInjectionScope scope, Type wrappedType)

@@ -223,6 +223,8 @@ namespace Grace.DependencyInjection
             DefaultImplementation.ExportInstance<IDynamicIEnumerableLocator>(f => new DynamicIEnumerableLocator());
 
             DefaultImplementation.ExportInstance<IInjectionStrategyDelegateCreator>(f => new InjectionStrategyDelegateCreator());
+
+            DefaultImplementation.ExportInstance<IStrongMetadataInstanceProvider>(f => new StrongMetadataInstanceProvider());
         }
 
         #endregion
