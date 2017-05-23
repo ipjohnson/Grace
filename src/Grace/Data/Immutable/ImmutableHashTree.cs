@@ -364,18 +364,23 @@ namespace Grace.Data.Immutable
                 currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
             }
 
-            return currenNode.Height != 0 && key.Equals(currenNode.Key)
+            return ReferenceEquals(currenNode.Key, key)
                     ? currenNode.Value
                     : GetConflictedValue(key, currenNode, defaultValue);
         }
 
         private TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
         {
+            if (key.Equals(currentNode.Key))
+            {
+                return currentNode.Value;
+            }
+
             if (currentNode.Height == 0)
             {
                 return defaultValue;
             }
-
+            
             foreach (var kvp in currentNode.Conflicts)
             {
                 if (ReferenceEquals(kvp.Key, key) || key.Equals(kvp.Key))
