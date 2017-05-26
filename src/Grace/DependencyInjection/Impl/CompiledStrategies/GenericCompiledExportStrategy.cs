@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
@@ -29,6 +30,23 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// Dispose of strategy
+        /// </summary>
+        public override void Dispose()
+        {
+            var lifestyles = Interlocked.Exchange(ref _lifestyles, ImmutableHashTree<Type, ICompiledLifestyle>.Empty);
+
+            foreach (var valuePair in lifestyles)
+            {
+                var disposable = valuePair.Value as IDisposable;
+
+                disposable?.Dispose();
+            }
+
+            base.Dispose();
+        }
+
+        /// <summary>
         /// Type of activation strategy
         /// </summary>
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
@@ -48,7 +66,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             return configuration;
         }
-
 
         /// <summary>
         /// Get an activation strategy for this delegate
