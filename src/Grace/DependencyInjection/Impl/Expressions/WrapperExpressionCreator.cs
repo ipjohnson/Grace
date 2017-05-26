@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Grace.Data.Immutable;
 
@@ -197,7 +198,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             }
                         }
                     }
-                    else
+                    else if(!wrappedType.IsArray && 
+                        (!wrappedType.IsConstructedGenericType || wrappedType.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
                     {
                         return false;
                     }
