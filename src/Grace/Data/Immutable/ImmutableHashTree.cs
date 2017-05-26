@@ -336,9 +336,17 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            var keyHash = key.GetHashCode();
+            var currenNode = this;
 
-            return Height != 0 ? GetValueOrDefault(key, key.GetHashCode(), defaultValue) : defaultValue;
+            while (currenNode.Hash != keyHash && currenNode.Height != 0)
+            {
+                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
+            }
+
+            return ReferenceEquals(currenNode.Key, key)
+                ? currenNode.Value
+                : GetConflictedValue(key, currenNode, defaultValue);
         }
 
         /// <summary>
