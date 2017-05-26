@@ -14,7 +14,6 @@ namespace Grace.DependencyInjection.Lifestyle
     {
         private object _singleton;
         private readonly object _lockObject = new object();
-        private DisposalScope _disposalScope = new DisposalScope();
         private ActivationStrategyDelegate _activationDelegate;
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 if (_singleton == null)
                 {
-                    _singleton = _activationDelegate(scope, _disposalScope, null);
+                    _singleton = _activationDelegate(scope, scope, null);
                 }
             }
 
@@ -73,9 +72,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         public void Dispose()
         {
-            var disposalScope = Interlocked.CompareExchange(ref _disposalScope, null, _disposalScope);
 
-            disposalScope?.Dispose();
         }
     }
 }
