@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// Singleton lifestyle
     /// </summary>
     [DebuggerDisplay("Singleton Lifestyle")]
-    public class SingletonLifestyle : ICompiledLifestyle, IDisposable
+    public class SingletonLifestyle : ICompiledLifestyle
     {
         private object _singleton;
         private readonly object _lockObject = new object();
@@ -65,14 +65,6 @@ namespace Grace.DependencyInjection.Lifestyle
             Interlocked.CompareExchange(ref ConstantExpression, Expression.Constant(_singleton), null);
 
             return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-
         }
     }
 }
