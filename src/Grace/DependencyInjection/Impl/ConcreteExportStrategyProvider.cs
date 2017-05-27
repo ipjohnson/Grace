@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
@@ -64,9 +65,21 @@ namespace Grace.DependencyInjection.Impl
                     yield return new KeyedLocateDelegateStrategy(scope);
                     yield break;
                 }
+
+                if (genericType.FullName == "System.Collections.Immutable.ImmutableList`1" ||
+                    genericType.FullName == "System.Collections.Immutable.ImmutableArray`1" ||
+                    genericType.FullName == "System.Collections.Immutable.ImmutableQueue`1" ||
+                    genericType.FullName == "System.Collections.Immutable.ImmutableStack`1" ||
+                    genericType.FullName == "System.Collections.Immutable.ImmutableSortedSet`1" ||
+                    genericType.FullName == "System.Collections.Immutable.ImmutableHashSet`1")
+                {
+                    yield return new ImmutableCollectionStrategy(genericType, scope);
+                    yield break;
+                }
             }
 
-            if (requestedType.GetTypeInfo().IsInterface)
+            if (requestedType.GetTypeInfo().IsInterface || 
+                requestedType.GetTypeInfo().IsAbstract)
             {
                 yield break;
             }
@@ -125,7 +138,12 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public virtual bool ShouldCreateConcreteStrategy(Type type)
         {
-            return !(type == typeof(string) || type.GetTypeInfo().IsPrimitive || type == typeof(DateTime));
+            if(type == typeof(string) || type.GetTypeInfo().IsPrimitive || type == typeof(DateTime))
+            {
+                return false;
+            }
+
+            return type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic);
         }
     }
 }
