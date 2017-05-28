@@ -199,5 +199,20 @@ namespace Grace.DependencyInjection
         /// <param name="type"></param>
         /// <returns></returns>
         IFluentWrapperStrategyConfiguration ExportWrapper(Type type);
+
+        /// <summary>
+        /// Test if a type is exported
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        bool IsExported(Type type, object key = null);
+
+        /// <summary>
+        /// Clears exports from registration block
+        /// </summary>
+        /// <param name="exportFilter"></param>
+        /// <returns></returns>
+        bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -9,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class ExportRegistrationBlock : IExportRegistrationBlockValueProvider
     {
-        private readonly List<IExportStrategyProvider> _exportStrategyProviders = new List<IExportStrategyProvider>();
+        private readonly List<ICompiledExportStrategy> _exportStrategyProviders = new List<ICompiledExportStrategy>();
         private ImmutableLinkedList<IWrapperStrategyProvider> _wrapperProviders = ImmutableLinkedList<IWrapperStrategyProvider>.Empty;
         private ImmutableLinkedList<IDecoratorStrategyProvider> _decoratorStrategyProviders = ImmutableLinkedList<IDecoratorStrategyProvider>.Empty;
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
@@ -17,6 +18,7 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
         private ImmutableLinkedList<IMemberInjectionSelector> _globalSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
         private readonly IActivationStrategyCreator _strategyCreator;
+        private IExportStrategyProvider _currentProvider;
 
         /// <summary>
         /// Default constructor
@@ -40,13 +42,9 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IEnumerable<ICompiledExportStrategy> GetExportStrategies()
         {
-            foreach (var strategyProvider in _exportStrategyProviders)
-            {
-                foreach (var strategy in strategyProvider.ProvideExportStrategies())
-                {
-                    yield return strategy;
-                }
-            }
+            ProcessCurrentProvider();
+
+            return _exportStrategyProviders;
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var strategy = _strategyCreator.GetCompiledExportStrategy(typeof(T));
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportStrategyConfiguration<T>(strategy);
         }
@@ -161,7 +159,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetCompiledExportStrategy(type);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportStrategyConfiguration(strategy);
         }
@@ -175,9 +173,11 @@ namespace Grace.DependencyInjection.Impl
         {
             if (types == null) throw new ArgumentNullException(nameof(types));
 
+            ProcessCurrentProvider();
+
             var configuration = _strategyCreator.GetTypeSetConfiguration(types);
 
-            _exportStrategyProviders.Add((IExportStrategyProvider)configuration);
+            _currentProvider = (IExportStrategyProvider)configuration;
 
             return configuration;
         }
@@ -194,7 +194,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetConstantStrategy(instance);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
@@ -211,7 +211,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncStrategy(instanceFunc);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
@@ -228,7 +228,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithScopeStrategy(instanceFunc);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
@@ -245,7 +245,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithStaticContextStrategy(instanceFunc);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
@@ -263,7 +263,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithInjectionContextStrategy(instanceFunc);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy);
         }
@@ -280,7 +280,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -298,7 +298,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -317,7 +317,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -337,7 +337,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -358,7 +358,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -380,7 +380,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            _exportStrategyProviders.Add(new SimpleExportStrategyProvider(strategy));
+            AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy);
         }
@@ -399,6 +399,85 @@ namespace Grace.DependencyInjection.Impl
             _wrapperProviders = _wrapperProviders.Add(new SimpleExportWrapperProvider(strategy));
 
             return new FluentWrapperStrategyConfiguration(strategy);
+        }
+
+        /// <summary>
+        /// Test if a type is exported
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool IsExported(Type type, object key = null)
+        {
+            ProcessCurrentProvider();
+
+            if (key != null)
+            {
+                if (_exportStrategyProviders.Any(s => s.ExportAsKeyed.Any(kvp =>
+                {
+                    return type == kvp.Key && key.Equals(kvp.Value);
+                })))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (_exportStrategyProviders.Any(s => s.ExportAs.Contains(type)))
+                {
+                    return true;
+                }
+            }
+
+            var locateService = OwningScope.ScopeConfiguration.Implementation.Locate<ICanLocateTypeService>();
+
+            var currentScope = OwningScope;
+
+            while (currentScope != null)
+            {
+                if (locateService.CanLocate(currentScope, type, null, key, false))
+                {
+                    return true;
+                }
+
+                currentScope = currentScope.Parent as IInjectionScope;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Clears exports from current registration block, this does not unregister exports for previous configuration calls
+        /// </summary>
+        /// <param name="exportFilter"></param>
+        /// <returns></returns>
+        public bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null)
+        {
+            bool returnValue = false;
+
+            ProcessCurrentProvider();
+
+            if (exportFilter == null)
+            {
+                _exportStrategyProviders.Clear();
+
+                return true;
+            }
+
+            for (int i = 0; i < _exportStrategyProviders.Count;)
+            {
+                if (!exportFilter(_exportStrategyProviders[i]))
+                {
+                    i++;
+                }
+                else
+                {
+                    returnValue = true;
+                    _exportStrategyProviders.RemoveAt(i);
+                }
+            }
+
+            return returnValue;
         }
 
         /// <summary>
@@ -479,7 +558,7 @@ namespace Grace.DependencyInjection.Impl
             // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (activationStrategy is ICompiledExportStrategy)
             {
-                _exportStrategyProviders.Add(new SimpleExportStrategyProvider((ICompiledExportStrategy)activationStrategy));
+                AddExportStrategy((ICompiledExportStrategy)activationStrategy);
             }
             else if (activationStrategy is ICompiledDecoratorStrategy)
             {
@@ -504,7 +583,24 @@ namespace Grace.DependencyInjection.Impl
         {
             if (strategyProvider == null) throw new ArgumentNullException(nameof(strategyProvider));
 
-            _exportStrategyProviders.Add(strategyProvider);
+            _exportStrategyProviders.AddRange(strategyProvider.ProvideExportStrategies());
+        }
+
+        private void AddExportStrategy(ICompiledExportStrategy strategy)
+        {
+            ProcessCurrentProvider();
+            
+            _exportStrategyProviders.Add(strategy);
+        }
+
+        private void ProcessCurrentProvider()
+        {
+            if (_currentProvider != null)
+            {
+                _exportStrategyProviders.AddRange(_currentProvider.ProvideExportStrategies());
+
+                _currentProvider = null;
+            }
         }
     }
 }
