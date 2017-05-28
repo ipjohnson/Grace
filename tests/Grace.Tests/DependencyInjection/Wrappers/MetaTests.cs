@@ -39,5 +39,27 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.NotNull(service.BasicService);
             Assert.Equal("World", service.Metadata["Hello"]);
         }
+
+        public class IntMetadata
+        {
+            public int IntProp { get; set; }
+        }
+
+        [Fact]
+        public void Meta_Strongly_Typed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>().WithMetadata("IntProp", 10);
+            });
+
+            var instance = container.Locate<Meta<IBasicService, IntMetadata>>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<BasicService>(instance.Value);
+            Assert.Equal(10, instance.Metadata.IntProp);
+        }
     }
 }

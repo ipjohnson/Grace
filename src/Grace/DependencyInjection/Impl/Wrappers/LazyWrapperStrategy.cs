@@ -9,12 +9,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// </summary>
     public class LazyWrapperStrategy : BaseWrapperStrategy
     {
+        
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
         public LazyWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Lazy<>), injectionScope)
         {
+
         }
 
         /// <summary>

@@ -18,8 +18,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to be located</param>
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
+        /// <param name="includeAutoRegister"></param>
         /// <returns></returns>
-        bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null);
+        bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeAutoRegister = true);
     }
 
     /// <summary>
@@ -34,8 +35,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to be located</param>
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
+        /// <param name="includeAutoRegister"></param>
         /// <returns></returns>
-        public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null)
+        public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeAutoRegister = true)
         {
             if (key != null)
             {
@@ -89,7 +91,8 @@ namespace Grace.DependencyInjection.Impl
 
             if (!type.GetTypeInfo().IsInterface)
             {
-                return injectionScope.ScopeConfiguration.AutoRegisterUnknown &&
+                return  includeAutoRegister &&
+                        injectionScope.ScopeConfiguration.AutoRegisterUnknown &&
                         type.GetTypeInfo().IsPrimitive == false &&
                         type != typeof(string) &&
                         type != typeof(DateTime);

@@ -163,6 +163,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">function to create instance</param>
         /// <returns></returns>
+        [Obsolete("Please use ExportFactor<T>")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<T> instanceFunc);
 
         /// <summary>
@@ -171,6 +172,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">instance func</param>
         /// <returns></returns>
+        [Obsolete("Please use ExportFactor<IExportLocatorScope, T>")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, T> instanceFunc);
 
         /// <summary>
@@ -179,6 +181,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
+        [Obsolete("Please use ExportFactor<IExportLocatorScope, StaticInjectionContext, T>")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc);
 
         /// <summary>
@@ -187,6 +190,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
         /// <returns></returns>
+        [Obsolete("Please use ExportFactor<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>")]
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc);
 
         /// <summary>
@@ -195,5 +199,20 @@ namespace Grace.DependencyInjection
         /// <param name="type"></param>
         /// <returns></returns>
         IFluentWrapperStrategyConfiguration ExportWrapper(Type type);
+
+        /// <summary>
+        /// Test if a type is exported
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        bool IsExported(Type type, object key = null);
+
+        /// <summary>
+        /// Clears exports from registration block
+        /// </summary>
+        /// <param name="exportFilter"></param>
+        /// <returns></returns>
+        bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null);
     }
 }

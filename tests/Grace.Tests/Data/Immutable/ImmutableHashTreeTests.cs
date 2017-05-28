@@ -42,15 +42,7 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out value));
         }
-
-        [Fact]
-        public void ImmutableHashTree_GetValue_Null_Key()
-        {
-            var tree = ImmutableHashTree<int?, int>.Empty;
-
-            Assert.Throws<ArgumentNullException>(() => tree.GetValueOrDefault(null));
-        }
-
+        
         [Fact]
         public void ImmutableHashTree_Index_Throws_KeyNotFound()
         {
