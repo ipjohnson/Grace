@@ -71,8 +71,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             WrapperExpressionCreator = wrapperExpressionCreator;
             _contextValueProvider = contextValueProvider;
         }
-
-
+        
         /// <summary>
         /// Get a linq expression to satisfy the request
         /// </summary>
