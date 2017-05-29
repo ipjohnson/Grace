@@ -10,7 +10,7 @@ namespace Grace.Tests.DependencyInjection.Registration
     public class IsExportedTests
     {
         [Fact]
-        public void IsExported_Test()
+        public void IsExported()
         {
             var container = new DependencyInjectionContainer();
 
@@ -24,7 +24,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
         
         [Fact]
-        public void IsExported_Keyed_Test()
+        public void IsExported_Keyed()
         {
             var container = new DependencyInjectionContainer();
 
@@ -36,6 +36,26 @@ namespace Grace.Tests.DependencyInjection.Registration
                 Assert.False(c.IsExported(typeof(IMultipleService)));
                 Assert.True(c.IsExported(typeof(IMultipleService), 5));
             });
+        }
+
+
+        [Fact]
+        public void IsExported_In_Parent()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+            });
+
+            using (var childContainer = container.CreateChildScope())
+            {
+                childContainer.Configure(c =>
+                {
+                    Assert.True(c.IsExported(typeof(IMultipleService)));
+                });
+            }
         }
     }
 }
