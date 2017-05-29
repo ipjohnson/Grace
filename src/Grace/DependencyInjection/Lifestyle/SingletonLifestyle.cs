@@ -10,11 +10,10 @@ namespace Grace.DependencyInjection.Lifestyle
     /// Singleton lifestyle
     /// </summary>
     [DebuggerDisplay("Singleton Lifestyle")]
-    public class SingletonLifestyle : ICompiledLifestyle, IDisposable
+    public class SingletonLifestyle : ICompiledLifestyle
     {
         private object _singleton;
         private readonly object _lockObject = new object();
-        private DisposalScope _disposalScope = new DisposalScope();
         private ActivationStrategyDelegate _activationDelegate;
 
         /// <summary>
@@ -59,23 +58,13 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 if (_singleton == null)
                 {
-                    _singleton = _activationDelegate(scope, _disposalScope, null);
+                    _singleton = _activationDelegate(scope, scope, null);
                 }
             }
 
             Interlocked.CompareExchange(ref ConstantExpression, Expression.Constant(_singleton), null);
 
             return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-            var disposalScope = Interlocked.CompareExchange(ref _disposalScope, null, _disposalScope);
-
-            disposalScope?.Dispose();
         }
     }
 }

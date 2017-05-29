@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Exceptions;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -10,15 +11,20 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// </summary>
     public class LazyMetadataWrapperStrategy : BaseWrapperStrategy
     {
+        private readonly IStrongMetadataInstanceProvider _strongMetadataInstanceProvider;
+        private readonly IWrapperExpressionCreator _wrapperExpressionCreator;
+
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
-        public LazyMetadataWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Lazy<,>), injectionScope)
+        /// <param name="strongMetadataInstanceProvider"></param>
+        public LazyMetadataWrapperStrategy(IInjectionScope injectionScope, IStrongMetadataInstanceProvider strongMetadataInstanceProvider, IWrapperExpressionCreator wrapperExpressionCreator) : base(typeof(Lazy<,>), injectionScope)
         {
+            _strongMetadataInstanceProvider = strongMetadataInstanceProvider;
+            _wrapperExpressionCreator = wrapperExpressionCreator;
         }
-
-
+        
         /// <summary>
         /// Get type that wrapper wraps
         /// </summary>
@@ -33,8 +39,38 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var genericType = type.GetGenericTypeDefinition();
 
-            return genericType == typeof(Lazy<,>) && type.GetTypeInfo().GenericTypeArguments[1] == typeof(IActivationStrategyMetadata) ?
+            return genericType == typeof(Lazy<,>) ?
                     type.GetTypeInfo().GenericTypeArguments[0] : null;
+        }
+
+
+        /// <summary>
+        /// Compile a delegate
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="compiler">compiler</param>
+        /// <param name="activationType">activation type</param>
+        /// <returns></returns>
+        protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
+            Type activationType)
+        {
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
+
+            if (!_wrapperExpressionCreator.SetupWrappersForRequest(scope, request))
+            {
+                throw new LocateException(request.GetStaticInjectionContext(),"Could not calculate wrapper");
+            }
+
+            var expressionResult = GetActivationExpression(scope, request);
+
+            ActivationStrategyDelegate returnValue = null;
+
+            if (expressionResult != null)
+            {
+                returnValue = compiler.CompileDelegate(scope, expressionResult);
+            }
+
+            return returnValue;
         }
 
         /// <summary>
@@ -45,7 +81,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var closedClass = typeof(LazyExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments[0]);
+            var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
             var closedMethod = closedClass.GetRuntimeMethod("CreateLazy", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
@@ -56,7 +92,10 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 throw new LocateException(request.GetStaticInjectionContext(), "Could not find strategy that is wrapped");
             }
 
-            var instance = Activator.CreateInstance(closedClass, scope, request, this, wrappedStrategy.Metadata);
+            var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments[1],
+                wrappedStrategy.Metadata);
+
+            var instance = Activator.CreateInstance(closedClass, scope, request, this, metadata);
 
             var callExpression =
                 Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
@@ -71,13 +110,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// Lazy expression helper class
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
-        public class LazyExpression<TResult>
+        /// <typeparam name="TMetadata"></typeparam>
+        public class LazyExpression<TResult, TMetadata>
         {
             private ActivationStrategyDelegate _delegate;
             private IActivationExpressionRequest _request;
             private IInjectionScope _scope;
             private IActivationStrategy _activationStrategy;
-            private readonly IActivationStrategyMetadata _metadata;
+            private readonly TMetadata _metadata;
             private readonly object _lock = new object();
 
             /// <summary>
@@ -87,7 +127,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="request"></param>
             /// <param name="activationStrategy"></param>
             /// <param name="metadata"></param>
-            public LazyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy, IActivationStrategyMetadata metadata)
+            public LazyExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy, TMetadata metadata)
             {
                 _scope = scope;
                 _request = request;
@@ -102,10 +142,10 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="disposalScope"></param>
             /// <param name="injectionContext"></param>
             /// <returns></returns>
-            public Lazy<TResult, IActivationStrategyMetadata> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
+            public Lazy<TResult, TMetadata> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
                 IInjectionContext injectionContext)
             {
-                return new Lazy<TResult, IActivationStrategyMetadata>(() =>
+                return new Lazy<TResult, TMetadata>(() =>
                 {
                     if (_delegate == null)
                     {

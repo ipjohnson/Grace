@@ -1,4 +1,5 @@
 ﻿using Grace.DependencyInjection.Impl.CompiledStrategies;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -17,11 +18,15 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var collection = scope.ScopeConfiguration.Implementation
                     .Locate<IActivationStrategyCollectionContainer<ICompiledWrapperStrategy>>();
 
+            var metadataProvider = scope.ScopeConfiguration.Implementation.Locate<IStrongMetadataInstanceProvider>();
+            var wrapperExpressionCreator = scope.ScopeConfiguration.Implementation.Locate<IWrapperExpressionCreator>();
+
             collection.AddStrategy(new LazyWrapperStrategy(scope));
-            collection.AddStrategy(new LazyMetadataWrapperStrategy(scope));
+            collection.AddStrategy(new LazyMetadataWrapperStrategy(scope, metadataProvider,wrapperExpressionCreator));
             collection.AddStrategy(new OwnedWrapperStrategy(scope));
             collection.AddStrategy(new MetaWrapperStrategy(scope));
-
+            collection.AddStrategy(new StronglyTypedMetadataWrapperStrategy(scope, metadataProvider));
+            
             collection.AddStrategy(new GenericCompiledWrapperStrategy(typeof(Scoped<>), scope, scope.StrategyCompiler.DefaultStrategyExpressionBuilder) { ExternallyOwned = false });
 
             collection.AddStrategy(new FuncWrapperStrategy(scope));

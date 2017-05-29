@@ -100,7 +100,7 @@ namespace Grace.DependencyInjection
             {
                 var func = valueExpression.Compile();
 
-                return registrationBlock.ExportInstance((s, c) => func()).AsKeyed(typeof(T), exportName);
+                return registrationBlock.ExportFactory(func).AsKeyed(typeof(T), exportName);
             }
 
             throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
@@ -117,6 +117,20 @@ namespace Grace.DependencyInjection
             registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));  
             
             return registrationBlock;
+        }
+
+        /// <summary>
+        /// Export func with context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="block"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static IFluentExportInstanceConfiguration<T> ExportFuncWithContext<T>(
+            this IExportRegistrationBlock block,
+            Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func)
+        {
+            return block.ExportFactory(func);
         }
     }
 }

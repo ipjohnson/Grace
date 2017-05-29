@@ -336,9 +336,17 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            var keyHash = key.GetHashCode();
+            var currenNode = this;
 
-            return Height != 0 ? GetValueOrDefault(key, key.GetHashCode(), defaultValue) : defaultValue;
+            while (currenNode.Hash != keyHash && currenNode.Height != 0)
+            {
+                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
+            }
+
+            return ReferenceEquals(currenNode.Key, key)
+                ? currenNode.Value
+                : GetConflictedValue(key, currenNode, defaultValue);
         }
 
         /// <summary>
@@ -351,12 +359,6 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
-            // don't check for null as it's assumed if you calculated a hash then you have key
-            if (ReferenceEquals(Key, key))
-            {
-                return Value;
-            }
-
             var currenNode = this;
 
             while (currenNode.Hash != keyHash && currenNode.Height != 0)
@@ -364,18 +366,23 @@ namespace Grace.Data.Immutable
                 currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
             }
 
-            return currenNode.Height != 0 && key.Equals(currenNode.Key)
+            return ReferenceEquals(currenNode.Key, key)
                     ? currenNode.Value
                     : GetConflictedValue(key, currenNode, defaultValue);
         }
 
         private TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
         {
+            if (key.Equals(currentNode.Key))
+            {
+                return currentNode.Value;
+            }
+
             if (currentNode.Height == 0)
             {
                 return defaultValue;
             }
-
+            
             foreach (var kvp in currentNode.Conflicts)
             {
                 if (ReferenceEquals(kvp.Key, key) || key.Equals(kvp.Key))

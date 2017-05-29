@@ -184,10 +184,6 @@ namespace Grace.Dynamic.Impl
                 case ExpressionType.Assign:
                     return ImplementationFactory.Locate<IAssignExpressionGenerator>()
                         .GenerateIL(request, (BinaryExpression)expression);
-
-                default:
-                    request.ToString();
-                    break;
             }
 
             return false;
