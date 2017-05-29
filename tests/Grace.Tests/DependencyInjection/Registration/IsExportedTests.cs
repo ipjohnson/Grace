@@ -38,6 +38,18 @@ namespace Grace.Tests.DependencyInjection.Registration
             });
         }
 
+        [Fact]
+        public void IsExported_In_Current_Scope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().As<IMultipleService>();
+            });
+
+            container.Configure(c => Assert.True(c.IsExported(typeof(IMultipleService))));
+        }
 
         [Fact]
         public void IsExported_In_Parent()
