@@ -281,15 +281,15 @@ namespace Grace.Data.Immutable
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-
-            var keyHash = key.GetHashCode();
-
+            
             if (Height == 0)
             {
                 value = default(TValue);
 
                 return false;
             }
+
+            var keyHash = key.GetHashCode();
 
             var currenNode = this;
 
@@ -359,6 +359,11 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
+            if (ReferenceEquals(Key, key))
+            {
+                return Value;
+            }
+
             var currenNode = this;
 
             while (currenNode.Hash != keyHash && currenNode.Height != 0)
