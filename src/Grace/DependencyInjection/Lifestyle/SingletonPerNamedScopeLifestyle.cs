@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// <summary>
     /// Singleton per a named scope
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}")]
     public class SingletonPerNamedScopeLifestyle : ICompiledLifestyle
     {
         private readonly string _scopeName;

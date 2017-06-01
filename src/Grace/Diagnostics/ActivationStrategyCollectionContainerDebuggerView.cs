@@ -55,7 +55,7 @@ namespace Grace.Diagnostics
         /// Strategies debugger view
         /// </summary>
         /// <typeparam name="TStrategy"></typeparam>
-        [DebuggerDisplay("{DebuggerDisplayValue,nq}", Name = "{DebuggerDisplayName,nq}")]
+        [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}", Name = "{DebuggerDisplayName,nq}")]
         public class StrategyListDebuggerView<TStrategy>
         {
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]

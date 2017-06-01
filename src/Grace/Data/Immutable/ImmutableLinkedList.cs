@@ -115,7 +115,7 @@ namespace Grace.Data.Immutable
     /// Immutable linked list class
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ImmutableLinkedListDebugView<>))]
     public class ImmutableLinkedList<T> : IEnumerable<T>
     {

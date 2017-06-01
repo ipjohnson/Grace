@@ -120,7 +120,7 @@ namespace Grace.Data.Immutable
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ImmutableHashTreeDebuggerView<,>))]
     public sealed class ImmutableHashTree<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
     {
