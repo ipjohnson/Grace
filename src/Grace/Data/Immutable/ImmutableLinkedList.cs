@@ -308,10 +308,10 @@ namespace Grace.Data.Immutable
             public T Current => _current.Value;
 
             object IEnumerator.Current => Current;
-
+            
             public void Dispose()
             {
-
+                // leaving empty as there is nothing to dispose
             }
         }
     }
