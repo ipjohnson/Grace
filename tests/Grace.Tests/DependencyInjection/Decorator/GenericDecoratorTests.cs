@@ -8,7 +8,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
     {
         public class DecoratorDependentService<T> : IDependentService<T>
         {
-            private IDependentService<T> _service;
+            private readonly IDependentService<T> _service;
 
             public DecoratorDependentService(IDependentService<T> service)
             {

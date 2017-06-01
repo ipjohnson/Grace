@@ -5,7 +5,7 @@ namespace Grace.Tests.Classes.Simple
     public class BasicServiceFuncDecorator : IBasicService
     {
         private IBasicService _instance;
-        private Func<IBasicService> _func;
+        private readonly Func<IBasicService> _func;
 
         public BasicServiceFuncDecorator(Func<IBasicService> func)
         {

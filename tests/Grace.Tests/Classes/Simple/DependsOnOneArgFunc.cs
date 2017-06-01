@@ -9,7 +9,7 @@ namespace Grace.Tests.Classes.Simple
 
     public class DependsOnOneArgFunc<T1,T2> : IDependsOnOneArgFunc<T1, T2>
     {
-        private Func<T2, ITwoDependencyService<T1, T2>> _func;
+        private readonly Func<T2, ITwoDependencyService<T1, T2>> _func;
 
         public DependsOnOneArgFunc(Func<T2, ITwoDependencyService<T1, T2>> func)
         {

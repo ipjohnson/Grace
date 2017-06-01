@@ -58,7 +58,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
         public class DecoratorLifestyle : IDecoratorLifestyle
         {
-            private IDecoratorLifestyle _instance;
+            private readonly IDecoratorLifestyle _instance;
 
             public DecoratorLifestyle(IDecoratorLifestyle instance)
             {

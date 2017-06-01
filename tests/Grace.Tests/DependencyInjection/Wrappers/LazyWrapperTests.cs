@@ -34,7 +34,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
         public class LazyType1
         {
-            private Lazy<LazyType2> _lazy;
+            private readonly Lazy<LazyType2> _lazy;
 
             public LazyType1(Lazy<LazyType2> lazy)
             {
@@ -46,7 +46,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
         public class LazyType2
         {
-            private Lazy<LazyType1> _lazy;
+            private readonly Lazy<LazyType1> _lazy;
 
             public LazyType2(Lazy<LazyType1> lazy)
             {
