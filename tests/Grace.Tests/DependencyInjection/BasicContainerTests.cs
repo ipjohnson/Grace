@@ -50,6 +50,18 @@ namespace Grace.Tests.DependencyInjection
 
             Assert.NotNull(instance);
         }
+        
+        [Fact]
+        public void DependencyInjectionContainer_Configure_AddModule()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.AddModule(new TestModule()));
+
+            var instance = container.Locate<IBasicService>();
+
+            Assert.NotNull(instance);
+        }
 
         [Fact]
         public void DependencyInjectionContainer_Configure_Null_Module_Throws()

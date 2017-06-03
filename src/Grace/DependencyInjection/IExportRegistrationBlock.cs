@@ -51,6 +51,12 @@ namespace Grace.DependencyInjection
         void AddMemberInjectionSelector(IMemberInjectionSelector selector);
 
         /// <summary>
+        /// Add configuration module
+        /// </summary>
+        /// <param name="module"></param>
+        void AddModule(IConfigurationModule module);
+
+        /// <summary>
         /// Export a specific type
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>

@@ -135,6 +135,17 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Add configuration module
+        /// </summary>
+        /// <param name="module"></param>
+        public void AddModule(IConfigurationModule module)
+        {
+            if (module == null) throw new ArgumentNullException(nameof(module));
+
+            module.Configure(this);
+        }
+
+        /// <summary>
         /// Export a specific type
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>

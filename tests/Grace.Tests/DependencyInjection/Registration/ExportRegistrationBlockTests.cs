@@ -18,6 +18,13 @@ namespace Grace.Tests.DependencyInjection.Registration
         {
             Assert.Throws<ArgumentNullException>(() => block.Export((Type) null));
         }
+        
+        [Theory]
+        [AutoData]
+        public void ExportRegistrationBlock_AddModule_Null(ExportRegistrationBlock block)
+        {
+            Assert.Throws<ArgumentNullException>(() => block.AddModule(null));
+        }
 
         [Theory]
         [AutoData]
