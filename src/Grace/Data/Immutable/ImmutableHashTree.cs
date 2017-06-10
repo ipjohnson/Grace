@@ -336,6 +336,11 @@ namespace Grace.Data.Immutable
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
+            if (ReferenceEquals(Key, key))
+            {
+                return Value;
+            }
+
             var keyHash = key.GetHashCode();
             var currenNode = this;
 
