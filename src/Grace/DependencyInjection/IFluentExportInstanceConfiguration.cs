@@ -58,6 +58,13 @@ namespace Grace.DependencyInjection
         ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle { get; }
 
         /// <summary>
+        /// Only export if delegate returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
+
+        /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>

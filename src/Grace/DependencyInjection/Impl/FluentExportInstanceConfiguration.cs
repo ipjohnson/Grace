@@ -8,17 +8,20 @@ namespace Grace.DependencyInjection.Impl
     /// Configuration object for an export instance
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class FluentExportInstanceConfiguration<T> : IFluentExportInstanceConfiguration<T>
+    public class FluentExportInstanceConfiguration<T> : IFluentExportInstanceConfiguration<T>, IActivationStrategyProvider
     {
         private readonly IConfigurableActivationStrategy _exportConfiguration;
+        private readonly IExportRegistrationBlock _registrationBlock;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="exportConfiguration"></param>
-        public FluentExportInstanceConfiguration(IConfigurableActivationStrategy exportConfiguration)
+        /// <param name="registrationBlock"></param>
+        public FluentExportInstanceConfiguration(IConfigurableActivationStrategy exportConfiguration, IExportRegistrationBlock registrationBlock)
         {
             _exportConfiguration = exportConfiguration;
+            _registrationBlock = registrationBlock;
         }
 
         /// <summary>
@@ -97,6 +100,21 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Only export if delegate returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportInstanceConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
+        {
+            if (!filter(_registrationBlock))
+            {
+                _registrationBlock.ClearExports(export => export == _exportConfiguration);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>
@@ -131,5 +149,14 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public ILifestylePicker<IFluentExportInstanceConfiguration<T>> Lifestyle => 
             new LifestylePicker<IFluentExportInstanceConfiguration<T>>(this, lifestyle => _exportConfiguration.Lifestyle = lifestyle);
+
+        /// <summary>
+        /// Get stragey from configuration
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategy GetStrategy()
+        {
+            return _exportConfiguration;
+        }
     }
 }

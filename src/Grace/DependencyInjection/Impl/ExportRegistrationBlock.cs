@@ -156,7 +156,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportStrategyConfiguration<T>(strategy);
+            return new FluentExportStrategyConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportStrategyConfiguration(strategy);
+            return new FluentExportStrategyConfiguration(strategy, this);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<T>(strategy);
+            return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<T>(strategy);
+            return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<T>(strategy);
+            return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<T>(strategy);
+            return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<T>(strategy);
+            return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -393,7 +393,7 @@ namespace Grace.DependencyInjection.Impl
 
             AddExportStrategy(strategy);
 
-            return new FluentExportInstanceConfiguration<TResult>(strategy);
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>
@@ -417,8 +417,9 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="key"></param>
+        /// <param name="excludeStrategy"></param>
         /// <returns></returns>
-        public bool IsExported(Type type, object key = null)
+        public bool IsExported(Type type, object key = null, ICompiledExportStrategy excludeStrategy = null)
         {
             ProcessCurrentProvider();
 
@@ -426,7 +427,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (_exportStrategyProviders.Any(s => s.ExportAsKeyed.Any(kvp =>
                 {
-                    return type == kvp.Key && key.Equals(kvp.Value);
+                    return type == kvp.Key && key.Equals(kvp.Value) && !ReferenceEquals(excludeStrategy, s);
                 })))
                 {
                     return true;
@@ -434,7 +435,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                if (_exportStrategyProviders.Any(s => s.ExportAs.Contains(type)))
+                if (_exportStrategyProviders.Any(s => !ReferenceEquals(s,excludeStrategy) && s.ExportAs.Contains(type)))
                 {
                     return true;
                 }

@@ -75,11 +75,17 @@ namespace Grace.DependencyInjection
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
 
         /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter);
+
+        /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
         /// <returns>configuraiton object</returns>
-        [Obsolete("Use Lifestyle.Custom instead")]
         IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
@@ -251,13 +257,19 @@ namespace Grace.DependencyInjection
         /// Assign a lifestyle to this export
         /// </summary>
         ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle { get; }
-        
+
+        /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
+
         /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>
         /// <returns>configuration object</returns>
-        [Obsolete("Use Lifestyle.Custom instead")]
         IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>

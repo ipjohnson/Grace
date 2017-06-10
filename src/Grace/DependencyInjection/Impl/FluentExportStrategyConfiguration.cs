@@ -11,19 +11,33 @@ using Grace.DependencyInjection.Lifestyle;
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
+    /// Provides activation strategy
+    /// </summary>
+    public interface IActivationStrategyProvider
+    {
+        /// <summary>
+        /// Get stragey from configuration
+        /// </summary>
+        /// <returns></returns>
+        IActivationStrategy GetStrategy();
+    }
+
+    /// <summary>
     /// Configuration object for export strategy
     /// </summary>
-    public class FluentExportStrategyConfiguration : IFluentExportStrategyConfiguration
+    public class FluentExportStrategyConfiguration : IFluentExportStrategyConfiguration, IActivationStrategyProvider
     {
         private readonly IConfigurableActivationStrategy _exportConfiguration;
+        private readonly IExportRegistrationBlock _registrationBlock;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="exportConfiguration"></param>
-        public FluentExportStrategyConfiguration(IConfigurableActivationStrategy exportConfiguration)
+        public FluentExportStrategyConfiguration(IConfigurableActivationStrategy exportConfiguration, IExportRegistrationBlock registrationBlock)
         {
             _exportConfiguration = exportConfiguration;
+            _registrationBlock = registrationBlock;
         }
 
         /// <summary>
@@ -147,6 +161,21 @@ namespace Grace.DependencyInjection.Impl
         public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => new LifestylePicker<IFluentExportStrategyConfiguration>(this, lifestlye => UsingLifestyle(lifestlye));
 
         /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter)
+        {
+            if (!filter(_registrationBlock))
+            {
+                _registrationBlock.ClearExports(export => export == _exportConfiguration);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
@@ -216,23 +245,34 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
+
+        /// <summary>
+        /// Get stragey from configuration
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategy GetStrategy()
+        {
+            return _exportConfiguration;
+        }
     }
 
     /// <summary>
     /// Configuration object for export stategy
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>
+    public class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>, IActivationStrategyProvider
     {
         private readonly ICompiledExportStrategy _exportConfiguration;
+        private readonly IExportRegistrationBlock _registrationBlock;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="exportConfiguration"></param>
-        public FluentExportStrategyConfiguration(ICompiledExportStrategy exportConfiguration)
+        public FluentExportStrategyConfiguration(ICompiledExportStrategy exportConfiguration, IExportRegistrationBlock registrationBlock)
         {
             _exportConfiguration = exportConfiguration;
+            _registrationBlock = registrationBlock;
         }
 
         /// <summary>
@@ -573,6 +613,21 @@ namespace Grace.DependencyInjection.Impl
             new LifestylePicker<IFluentExportStrategyConfiguration<T>>(this, lifeStyle => UsingLifestyle(lifeStyle));
 
         /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
+        {
+            if (!filter(_registrationBlock))
+            {
+                _registrationBlock.ClearExports(export => export == _exportConfiguration);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
         /// <param name="lifestyle">lifestlye to use</param>
@@ -743,6 +798,15 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration.Priority = priority;
 
             return this;
+        }
+        
+        /// <summary>
+        /// Get stragey from configuration
+        /// </summary>
+        /// <returns></returns>
+        public IActivationStrategy GetStrategy()
+        {
+            return _exportConfiguration;
         }
     }
 }
