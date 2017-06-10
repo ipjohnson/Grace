@@ -1,5 +1,5 @@
 environment:
-  build_version: 6.2.1
+  build_version: 6.2.2
   Version: $(build_version)-Nightly%APPVEYOR_BUILD_NUMBER%
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
