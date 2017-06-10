@@ -33,7 +33,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Represents a dependency needed for an activation strategy
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     public class ActivationStrategyDependency
     {
         /// <summary>

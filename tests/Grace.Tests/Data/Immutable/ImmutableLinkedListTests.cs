@@ -169,7 +169,7 @@ namespace Grace.Tests.Data.Immutable
         private List<int> _finalList;
         private ManualResetEvent _startEvent;
         private CountdownEvent _countdownEvent;
-        private int _addAmount = 20000;
+        private readonly int _addAmount = 20000;
 
         [Fact]
         public void ImmutableLinkedList_Multithreaded_Test()

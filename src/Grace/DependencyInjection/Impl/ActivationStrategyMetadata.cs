@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Metadata for activation strategy
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}")]
     [DebuggerTypeProxy(typeof(ActivationStrategyMetadataDebuggerView))]
     public class ActivationStrategyMetadata : IActivationStrategyMetadata
     {

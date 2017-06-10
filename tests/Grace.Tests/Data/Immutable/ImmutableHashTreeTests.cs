@@ -238,7 +238,7 @@ namespace Grace.Tests.Data.Immutable
 
         private ImmutableHashTree<int, int> _hashTree;
         private ManualResetEvent _startEvent;
-        private int _addAmount = 10000;
+        private readonly int _addAmount = 10000;
 
         [Fact]
         public void ImmutableHashTree_Threading_Test()

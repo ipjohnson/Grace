@@ -115,7 +115,7 @@ namespace Grace.Data.Immutable
     /// Immutable linked list class
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [DebuggerDisplay("{DebuggerDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ImmutableLinkedListDebugView<>))]
     public class ImmutableLinkedList<T> : IEnumerable<T>
     {
@@ -308,10 +308,10 @@ namespace Grace.Data.Immutable
             public T Current => _current.Value;
 
             object IEnumerator.Current => Current;
-
+            
             public void Dispose()
             {
-
+                // leaving empty as there is nothing to dispose
             }
         }
     }

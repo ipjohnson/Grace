@@ -4,7 +4,7 @@ namespace Grace.Tests.Classes.Simple
 {
     public class LazyBasicService : IBasicService
     {
-        private Lazy<IBasicService> _lazyBasic;
+        private readonly Lazy<IBasicService> _lazyBasic;
 
         public LazyBasicService(Lazy<IBasicService> lazyBasic)
         {

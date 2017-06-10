@@ -110,6 +110,16 @@ namespace Grace.DependencyInjection.Impl
         public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => _strategy.Lifestyle;
 
         /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter)
+        {
+            return _strategy.OnlyIf(filter);
+        }
+
+        /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
@@ -363,6 +373,16 @@ namespace Grace.DependencyInjection.Impl
         /// Assign a lifestyle to this export
         /// </summary>
         public ILifestylePicker<IFluentExportStrategyConfiguration<T>> Lifestyle => _strategy.Lifestyle;
+        
+        /// <summary>
+        /// Export only if function returns true
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
+        {
+            return _strategy.OnlyIf(filter);
+        }
 
         /// <summary>
         /// Export using a specific lifestyle
@@ -491,6 +511,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _strategy.WithPriority(priority);
         }
+
 
         #endregion
     }

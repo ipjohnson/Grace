@@ -7,7 +7,7 @@
 
     public class DependsOnOneArgDelegate<T1, T2> : IDependsOnOneArgDelegate<T1, T2>
     {
-        private CustomDelegate _func;
+        private readonly CustomDelegate _func;
 
         public delegate ITwoDependencyService<T1, T2> CustomDelegate(T2 value);
 

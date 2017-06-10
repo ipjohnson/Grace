@@ -51,6 +51,12 @@ namespace Grace.DependencyInjection
         void AddMemberInjectionSelector(IMemberInjectionSelector selector);
 
         /// <summary>
+        /// Add configuration module
+        /// </summary>
+        /// <param name="module"></param>
+        void AddModule(IConfigurationModule module);
+
+        /// <summary>
         /// Export a specific type
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
@@ -205,8 +211,9 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type"></param>
         /// <param name="key"></param>
+        /// <param name="excludeStrategy"></param>
         /// <returns></returns>
-        bool IsExported(Type type, object key = null);
+        bool IsExported(Type type, object key = null, ICompiledExportStrategy excludeStrategy = null);
 
         /// <summary>
         /// Clears exports from registration block
@@ -214,5 +221,6 @@ namespace Grace.DependencyInjection
         /// <param name="exportFilter"></param>
         /// <returns></returns>
         bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null);
+        
     }
 }

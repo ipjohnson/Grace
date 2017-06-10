@@ -14,7 +14,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// Root injection scope that is inherited by the Dependency injection container
     /// </summary>
-    [DebuggerDisplay("{DebugDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebugDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(InjectionScopeDebuggerView))]
     public class InjectionScope : BaseExportLocatorScope, IInjectionScope
     {

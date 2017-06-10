@@ -9,7 +9,7 @@ namespace Grace.Diagnostics
     /// <summary>
     /// Debugger view for extra data
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}")]
     public class ExtraDataContainerDebuggerView
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

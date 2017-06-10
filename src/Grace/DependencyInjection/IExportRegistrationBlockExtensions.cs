@@ -132,5 +132,50 @@ namespace Grace.DependencyInjection
         {
             return block.ExportFactory(func);
         }
+
+        /// <summary>
+        /// Export only if type is not exported
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static IFluentExportInstanceConfiguration<T> IfNotRegistered<T>(
+            this IFluentExportInstanceConfiguration<T> configuration, Type type, object key = null)
+        {
+            var activationStrategyProvider = configuration as IActivationStrategyProvider;
+
+            return configuration.OnlyIf(block => !block.IsExported(type, key, activationStrategyProvider?.GetStrategy() as ICompiledExportStrategy));
+        }
+
+        /// <summary>
+        /// Export only if type is not exported
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static IFluentExportStrategyConfiguration IfNotRegistered(this IFluentExportStrategyConfiguration configuration, Type type, object key = null)
+        {
+            var activationStrategyProvider = configuration as IActivationStrategyProvider;
+
+            return configuration.OnlyIf(block => !block.IsExported(type, key, activationStrategyProvider?.GetStrategy() as ICompiledExportStrategy));
+        }
+
+        /// <summary>
+        /// Export only if type is not exported
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration"></param>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static IFluentExportStrategyConfiguration<T> IfNotRegistered<T>(this IFluentExportStrategyConfiguration<T> configuration, Type type, object key = null)
+        {
+            var activationStrategyProvider = configuration as IActivationStrategyProvider;
+
+            return configuration.OnlyIf(block => !block.IsExported(type, key, activationStrategyProvider?.GetStrategy() as ICompiledExportStrategy));
+        }
     }
 }

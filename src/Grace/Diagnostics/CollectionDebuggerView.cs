@@ -8,7 +8,7 @@ namespace Grace.Diagnostics
     /// Debugger class for IEnumerables that need to be displayed
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}")]
     public class CollectionDebuggerView<T>
     {
         /// <summary>

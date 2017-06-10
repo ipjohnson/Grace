@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// <summary>
     /// Singleton per ancestor
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplayValue,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayValue) + ",nq}")]
     public class SingletonPerAncestor : ICompiledLifestyle
     {
         private readonly Type _ancestorType;

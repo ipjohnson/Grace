@@ -56,7 +56,7 @@ namespace Grace.Diagnostics
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    [DebuggerDisplay("{DebuggerDisplayString,nq}", Name = "{DebuggerNameDisplayString,nq}")]
+    [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}", Name = "{DebuggerNameDisplayString,nq}")]
     public class KeyValuePairDebuggerView<TKey, TValue>
     {
         /// <summary>
