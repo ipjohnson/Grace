@@ -14,7 +14,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
     {
         public interface ITest
         {
-            int Value { get; }    
+            int Value { get; }
         }
 
         public class Test1 : ITest
@@ -26,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
             public int Value { get; }
         }
-        
+
         public class Test2 : ITest
         {
             public Test2(int value)
@@ -92,5 +92,33 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         {
             Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
         }
+
+        public class SomeClass
+        {
+            private SomeOtherClass _otherClass;
+            private IBasicService _basicService;
+        }
+
+        public class SomeOtherClass
+        {
+
+        }
+
+        [Fact]
+        public void FuncOneArg_Locate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SomeOtherClass>();
+                c.Export<SomeClass>();
+            });
+
+            var func = container.Locate<Func<IBasicService, SomeClass>>();
+
+            func(new BasicService());
+        }
+
     }
 }
