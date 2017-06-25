@@ -172,5 +172,140 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Equal(1, array.Length);
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
+
+
+        [Fact]
+        public void Keyed_And_NonKeyed_With_Differnt_Lifestyle()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+                c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+            });
+
+            bool disposedService = false;
+            bool disposedTransient = false;
+
+            using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+            {
+                var service = scope.Locate<DisposableService>();
+
+                Assert.Same(service, scope.Locate<DisposableService>());
+
+                service.Disposing += (sender, args) => disposedService = true;
+
+                var transientService = scope.Locate<DisposableService>(withKey: "TransientKey");
+
+                Assert.NotSame(service, transientService);
+
+                transientService.Disposing += (sender, args) => disposedTransient = true;
+            }
+
+            Assert.True(disposedService);
+            Assert.False(disposedTransient);
+        }
+
+        public class FactoryClass
+        {
+            private KeyedLocateDelegate<string, DisposableService> _createDelegate;
+
+            public FactoryClass(KeyedLocateDelegate<string, DisposableService> createDelegate)
+            {
+                _createDelegate = createDelegate;
+            }
+
+            public DisposableService CreateService()
+            {
+                return _createDelegate("TransientKey");
+            }
+        }
+
+        [Fact]
+        public void Keyed_And_NonKeyed_Factory_With_Differnt_Lifestyle()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+                c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+            });
+
+            bool disposedService = false;
+            bool disposedTransient = false;
+
+            using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+            {
+                var service = scope.Locate<DisposableService>();
+
+                Assert.Same(service, scope.Locate<DisposableService>());
+
+                service.Disposing += (sender, args) => disposedService = true;
+
+                var factory = scope.Locate<FactoryClass>();
+
+                var transientService = factory.CreateService();
+
+                Assert.NotSame(service, transientService);
+
+                transientService.Disposing += (sender, args) => disposedTransient = true;
+            }
+
+            Assert.True(disposedService);
+            Assert.False(disposedTransient);
+        }
+
+        //public class FuncFactoryClass
+        //{
+        //    private Func<DisposableService> _func;
+
+        //    public FuncFactoryClass(Func<DisposableService> func)
+        //    {
+        //        _func = func;
+        //    }
+
+        //    public DisposableService CreateService()
+        //    {
+        //        return _func();
+        //    }
+        //}
+
+        //[Fact]
+        //public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
+        //{
+        //    var container = new DependencyInjectionContainer();
+
+        //    container.Configure(c =>
+        //    {
+        //        c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+        //        c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+        //        c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
+        //    });
+
+        //    bool disposedService = false;
+        //    bool disposedTransient = false;
+
+        //    using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+        //    {
+        //        var service = scope.Locate<DisposableService>();
+
+        //        Assert.Same(service, scope.Locate<DisposableService>());
+
+        //        service.Disposing += (sender, args) => disposedService = true;
+
+        //        var factory = scope.Locate<FuncFactoryClass>();
+
+        //        var transientService = factory.CreateService();
+
+        //        Assert.NotSame(service, transientService);
+
+        //        transientService.Disposing += (sender, args) => disposedTransient = true;
+        //    }
+
+        //    Assert.True(disposedService);
+        //    Assert.False(disposedTransient);
+        //}
     }
 }
