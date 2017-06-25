@@ -149,6 +149,24 @@ namespace Grace.Tests.Data.Immutable
             Assert.Equal(5, newList[2]);
         }
 
+        [Fact]
+        public void ImmutableLinkedList_ReadOnlyList()
+        {
+            var list = ImmutableLinkedList.Create(5, 10, 15);
+
+            Assert.Equal(15, list[0]);
+            Assert.Equal(10, list[1]);
+            Assert.Equal(5, list[2]);
+        }
+
+        [Fact]
+        public void ImmutableLinkedList_ReadOnlyList_IndexException()
+        {
+            var list = ImmutableLinkedList.Create(5, 10, 15);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[-1]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => list[3]);
+        }
 
         [Fact]
         public void ImmutableLinkedList_Visit_Start_End()
