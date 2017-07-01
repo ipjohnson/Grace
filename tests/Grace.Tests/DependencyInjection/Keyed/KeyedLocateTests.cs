@@ -307,5 +307,38 @@ namespace Grace.Tests.DependencyInjection.Keyed
         //    Assert.True(disposedService);
         //    Assert.False(disposedTransient);
         //}
+
+       
+        [Fact]
+        public void Keyed_As_Way_Of_Picking_Based_On_Scope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().AsKeyed<IBasicService>("Default");
+                c.Export<CustomBasicService>().AsKeyed<IBasicService>("Custom");
+                c.ExportFactory<IExportLocatorScope, IBasicService>(
+                    scope => scope.Locate<IBasicService>(withKey: scope.ScopeName == "CustomScope" ? "Custom" : "Default"));
+            });
+
+            var instance = container.Locate<DependentService<IBasicService>>();
+
+            Assert.IsType<BasicService>(instance.Value);
+
+            using (var scope = container.BeginLifetimeScope("SomeScope"))
+            {
+                instance = scope.Locate<DependentService<IBasicService>>();
+
+                Assert.IsType<BasicService>(instance.Value);
+            }
+
+            using (var scope = container.BeginLifetimeScope("CustomScope"))
+            {
+                instance = scope.Locate<DependentService<IBasicService>>();
+
+                Assert.IsType<CustomBasicService>(instance.Value);
+            }
+        }
     }
 }
