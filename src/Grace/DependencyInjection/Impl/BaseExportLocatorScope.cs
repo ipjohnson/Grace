@@ -16,26 +16,32 @@ namespace Grace.DependencyInjection.Impl
 
         private string _scopeIdString;
         private Guid _scopeId = Guid.Empty;
+        
+        /// <summary>
+        /// length of the activation delegates array minus one
+        /// </summary>
+        protected readonly int ArrayLengthMinusOne;
 
         /// <summary>
-        /// Cache of activation delegates
+        /// array of activation delegates
         /// </summary>
-        protected ActivationStrategyDelegateCache DelegateCache;
+        protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="parent">parent scope</param>
         /// <param name="name">name of scope</param>
-        /// <param name="delegateCache"></param>
+        /// <param name="activationDelegates">activation delegates</param>
         protected BaseExportLocatorScope(IExportLocatorScope parent,
                                       string name,
-                                      ActivationStrategyDelegateCache delegateCache)
+                                      ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
         {
             Parent = parent;
             ScopeName = name ?? "";
 
-            DelegateCache = delegateCache;
+            ActivationDelegates = activationDelegates;
+            ArrayLengthMinusOne = activationDelegates.Length - 1;
         }
 
         /// <summary>
