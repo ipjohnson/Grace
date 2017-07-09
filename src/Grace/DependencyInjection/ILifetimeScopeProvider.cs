@@ -1,5 +1,6 @@
 ﻿using System;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
 {
@@ -13,8 +14,8 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="parentScope"></param>
         /// <param name="scopeName"></param>
-        /// <param name="activationStrategyDelegates"></param>
+        /// <param name="cache"></param>
         /// <returns></returns>
-        IExportLocatorScope CreateScope(IExportLocatorScope parentScope, string scopeName, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationStrategyDelegates);
+        IExportLocatorScope CreateScope(IExportLocatorScope parentScope, string scopeName, ActivationStrategyDelegateCache cache);
     }
 }

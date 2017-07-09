@@ -34,7 +34,7 @@ namespace Grace.Data.Immutable
 
             return tree;
         }
-        
+
         /// <summary>
         /// Adds value to hash tree
         /// </summary>
@@ -79,10 +79,10 @@ namespace Grace.Data.Immutable
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             var currentValue = destination;
-            
+
             if (ReferenceEquals(currentValue,
-                                Interlocked.CompareExchange(ref destination, 
-                                                            currentValue.Add(key, value, updateDelegate), 
+                                Interlocked.CompareExchange(ref destination,
+                                                            currentValue.Add(key, value, updateDelegate),
                                                             currentValue)))
             {
                 return;
@@ -103,10 +103,10 @@ namespace Grace.Data.Immutable
                 wait.SpinOnce();
 
                 currentValue = destination;
-                
+
                 if (ReferenceEquals(currentValue,
-                                    Interlocked.CompareExchange(ref destination, 
-                                                                currentValue.Add(key, value, updateDelegate), 
+                                    Interlocked.CompareExchange(ref destination,
+                                                                currentValue.Add(key, value, updateDelegate),
                                                                 currentValue)))
                 {
                     break;
@@ -254,7 +254,7 @@ namespace Grace.Data.Immutable
         public ImmutableHashTree<TKey, TValue> Add(TKey key, TValue value, UpdateDelegate updateDelegate = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            
+
             return InternalAdd(key.GetHashCode(), key, value, updateDelegate ?? KeyAlreadyExists);
         }
 
@@ -281,7 +281,7 @@ namespace Grace.Data.Immutable
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            
+
             if (Height == 0)
             {
                 value = default(TValue);
@@ -353,35 +353,15 @@ namespace Grace.Data.Immutable
                 ? currenNode.Value
                 : GetConflictedValue(key, currenNode, defaultValue);
         }
-
+        
         /// <summary>
-        /// Get value or default value from hash tree using a known hash value
+        /// Gets conflicted value for current node
         /// </summary>
-        /// <param name="key">key to use for look up</param>
-        /// <param name="keyHash">hash value for key</param>
-        /// <param name="defaultValue">default value to return when not found</param>
+        /// <param name="key"></param>
+        /// <param name="currentNode"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
-        [MethodImpl(InlineMethod.Value)]
-        public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
-        {
-            if (ReferenceEquals(Key, key))
-            {
-                return Value;
-            }
-
-            var currenNode = this;
-
-            while (currenNode.Hash != keyHash && currenNode.Height != 0)
-            {
-                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
-            }
-
-            return ReferenceEquals(currenNode.Key, key)
-                    ? currenNode.Value
-                    : GetConflictedValue(key, currenNode, defaultValue);
-        }
-
-        private TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
+        public TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
         {
             if (key.Equals(currentNode.Key))
             {
@@ -392,7 +372,7 @@ namespace Grace.Data.Immutable
             {
                 return defaultValue;
             }
-            
+
             foreach (var kvp in currentNode.Conflicts)
             {
                 if (ReferenceEquals(kvp.Key, key) || key.Equals(kvp.Key))
@@ -444,7 +424,7 @@ namespace Grace.Data.Immutable
         /// Is the hash tree empty
         /// </summary>
         public bool IsEmpty => Height == 0;
-        
+
         /// <summary>
         /// Gets an enumerator for the immutable hash
         /// </summary>

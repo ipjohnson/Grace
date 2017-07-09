@@ -18,8 +18,8 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parent">parent for scope</param>
         /// <param name="injectionScope"></param>
         /// <param name="name">name of scope</param>
-        /// <param name="activationDelegates">activation delegate cache</param>
-        public LifetimeScope(IExportLocatorScope parent, IInjectionScope injectionScope, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates) : base(parent, name, activationDelegates)
+        /// <param name="cache"></param>
+        public LifetimeScope(IExportLocatorScope parent, IInjectionScope injectionScope, string name, ActivationStrategyDelegateCache cache) : base(parent, name, cache)
         {
             _injectionScope = injectionScope;
         }
@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new scope</returns>
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return new LifetimeScope(this,_injectionScope, scopeName, ActivationDelegates);
+            return new LifetimeScope(this,_injectionScope, scopeName, DelegateCache);
         }
 
         /// <summary>
@@ -63,9 +63,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>located instance</returns>
         public object Locate(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            var func = DelegateCache.GetActivationStrategyDelegate(type);
 
             return func != null ? 
                    func(this, this, null) : 
@@ -80,9 +78,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object LocateOrDefault(Type type, object defaultValue)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            var func = DelegateCache.GetActivationStrategyDelegate(type);
 
             return func != null ? 
                    func(this, this, null) : 
@@ -127,9 +123,7 @@ namespace Grace.DependencyInjection.Impl
                 return LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
             }
 
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            var func = DelegateCache.GetActivationStrategyDelegate(type);
 
             return func != null ?
                    func(this, this, extraData == null ? null : CreateContext(extraData)) :
@@ -220,9 +214,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (!isDynamic && withKey == null && consider == null)
             {
-                var hashCode = type.GetHashCode();
-
-                var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+                var func = DelegateCache.GetActivationStrategyDelegate(type);
 
                 if (func != null)
                 {

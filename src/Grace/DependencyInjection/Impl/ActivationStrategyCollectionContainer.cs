@@ -24,13 +24,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportAsBase"></param>
         public ActivationStrategyCollectionContainer(int arraySize, bool exportAsBase)
         {
-            ArrayLengthMinusOne = arraySize - 1;
-            Collections = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[arraySize];
-
-            for (var i = 0; i < arraySize; i++)
-            {
-                Collections[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
-            }
+            Collections = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
 
             ExportAsBase = exportAsBase;
         }
@@ -40,9 +34,8 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="collections"></param>
         protected ActivationStrategyCollectionContainer(
-            ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] collections)
+            ImmutableHashTree<Type, IActivationStrategyCollection<T>> collections)
         {
-            ArrayLengthMinusOne = collections.Length - 1;
             Collections = collections;
         }
 
@@ -51,15 +44,11 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         protected bool ExportAsBase;
 
-        /// <summary>
-        /// Array length of Collections minus one 
-        /// </summary>
-        protected int ArrayLengthMinusOne;
 
         /// <summary>
         /// Array of hash trees
         /// </summary>
-        protected ImmutableHashTree<Type, IActivationStrategyCollection<T>>[] Collections;
+        protected ImmutableHashTree<Type, IActivationStrategyCollection<T>> Collections;
 
         /// <summary>
         /// Inspectors to apply to strategies
@@ -153,14 +142,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IEnumerable<T> GetAllStrategies()
         {
-            var returnList = new List<T>();
-
-            foreach (var hashEntry in Collections)
-            {
-                hashEntry.IterateInOrder((type, export) => returnList.AddRange(export.GetStrategies()));
-            }
-
-            return returnList;
+            return Collections.Values.SelectMany(c => c.GetStrategies());
         }
 
         /// <summary>
@@ -170,9 +152,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            return Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            return Collections.GetValueOrDefault(type);
         }
 
         /// <summary>
@@ -191,14 +171,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IEnumerable<Type> GetActivationTypes()
         {
-            var returnList = ImmutableLinkedList<Type>.Empty;
-
-            foreach (var hashEntry in Collections)
-            {
-                hashEntry.IterateInOrder((type, collection) => returnList = returnList.Add(type));
-            }
-
-            return returnList;
+            return Collections.Keys;
         }
 
         /// <summary>
@@ -207,19 +180,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IActivationStrategyCollectionContainer<T> Clone()
         {
-            var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArrayLengthMinusOne + 1];
-
-            for (var i = 0; i <= ArrayLengthMinusOne; i++)
-            {
-                newArray[i] = ImmutableHashTree<Type, IActivationStrategyCollection<T>>.Empty;
-
-                foreach (var keyValuePair in Collections[i])
-                {
-                    newArray[i] = newArray[i].Add(keyValuePair.Key, keyValuePair.Value.Clone());
-                }
-            }
-
-            return new ActivationStrategyCollectionContainer<T>(newArray);
+            return new ActivationStrategyCollectionContainer<T>(Collections);
         }
 
         /// <summary>
@@ -290,14 +251,13 @@ namespace Grace.DependencyInjection.Impl
         {
             var hashCode = exportAs.GetHashCode();
 
-            var collection = Collections[hashCode & ArrayLengthMinusOne].GetValueOrDefault(exportAs);
+            var collection = Collections.GetValueOrDefault(exportAs);
 
             if (collection == null)
             {
                 collection = CreateCollection(exportAs);
 
-                Collections[hashCode & ArrayLengthMinusOne] =
-                Collections[hashCode & ArrayLengthMinusOne].Add(exportAs, collection);
+                Collections = Collections.Add(exportAs, collection);
             }
 
             collection.AddStrategy(strategy, withKey);
@@ -315,12 +275,9 @@ namespace Grace.DependencyInjection.Impl
                 return;
             }
 
-            foreach (var collection in collections)
+            foreach (var strategyCollection in collections.Values)
             {
-                foreach (var strategyCollection in collection.Values)
-                {
-                    strategyCollection.Dispose();
-                }
+                strategyCollection.Dispose();
             }
         }
     }
