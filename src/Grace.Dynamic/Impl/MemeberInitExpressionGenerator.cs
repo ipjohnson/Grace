@@ -35,11 +35,7 @@ namespace Grace.Dynamic.Impl
             {
                 return false;
             }
-
-            var instance = request.ILGenerator.DeclareLocal(expression.Type);
-
-            request.ILGenerator.Emit(OpCodes.Stloc, instance);
-
+            
             foreach (var binding in expression.Bindings)
             {
                 if (binding.BindingType != MemberBindingType.Assignment)
@@ -47,7 +43,7 @@ namespace Grace.Dynamic.Impl
                     return false;
                 }
 
-                request.ILGenerator.Emit(OpCodes.Ldloc, instance);
+                request.ILGenerator.Emit(OpCodes.Dup);
 
                 if (!request.TryGenerateIL(request, ((MemberAssignment) binding).Expression))
                 {
@@ -76,8 +72,6 @@ namespace Grace.Dynamic.Impl
                     return false;
                 }
             }
-
-            request.ILGenerator.Emit(OpCodes.Ldloc, instance);
 
             return true;
         }
