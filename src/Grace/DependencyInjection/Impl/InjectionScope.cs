@@ -143,8 +143,17 @@ namespace Grace.DependencyInjection.Impl
         {
             var hashCode = type.GetHashCode();
 
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+            var currentNode = ActivationDelegates[hashCode & ArrayLengthMinusOne];
 
+            while (currentNode.Hash != hashCode && currentNode.Height != 0)
+            {
+                currentNode = hashCode < currentNode.Hash ? currentNode.Left : currentNode.Right;
+            }
+
+            var func = ReferenceEquals(type, currentNode.Key)
+                ? currentNode.Value
+                : currentNode.GetConflictedValue(type, currentNode, null);
+            
             return func != null ?
                    func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) :
                    InternalLocate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, null, null, null, false, false);

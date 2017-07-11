@@ -381,7 +381,7 @@ namespace Grace.Data.Immutable
                     : GetConflictedValue(key, currenNode, defaultValue);
         }
 
-        private TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
+        public TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
         {
             if (key.Equals(currentNode.Key))
             {
