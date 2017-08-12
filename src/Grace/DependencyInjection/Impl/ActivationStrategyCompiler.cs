@@ -316,18 +316,19 @@ namespace Grace.DependencyInjection.Impl
 
             if (strategyCollection != null)
             {
-                var primary = consider == null ? strategyCollection.GetPrimary() : null;
+                var primary = consider == null ? 
+                    strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                 if (primary != null)
                 {
-                    return primary.GetActivationStrategyDelegate(scope, this, locateType);
+                    return primary;
                 }
 
-                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
+                var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
-                if (strategy != null)
+                if (strategyDelegate != null)
                 {
-                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                    return strategyDelegate;
                 }
             }
 
@@ -341,18 +342,19 @@ namespace Grace.DependencyInjection.Impl
 
                 if (strategyCollection != null)
                 {
-                    var primary = consider == null ? strategyCollection.GetPrimary() : null;
+                    var primary = consider == null ? 
+                        strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                     if (primary != null)
                     {
-                        return primary.GetActivationStrategyDelegate(scope, this, locateType);
+                        return primary;
                     }
 
-                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
+                    var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
-                    if (strategy != null)
+                    if (strategyDelegate != null)
                     {
-                        return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                        return strategyDelegate;
                     }
                 }
             }
@@ -361,18 +363,19 @@ namespace Grace.DependencyInjection.Impl
 
             if (wrapperCollection != null)
             {
-                var primary = consider == null ? wrapperCollection.GetPrimary() : null;
+                var primary = consider == null ? 
+                    wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                 if (primary != null)
                 {
-                    return primary.GetActivationStrategyDelegate(scope, this, locateType);
+                    return primary;
                 }
 
-                var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
+                var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
-                if (strategy != null)
+                if (strategyDelegate != null)
                 {
-                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                    return strategyDelegate;
                 }
             }
 
@@ -384,18 +387,19 @@ namespace Grace.DependencyInjection.Impl
 
                 if (wrapperCollection != null)
                 {
-                    var primary = consider == null ? wrapperCollection.GetPrimary() : null;
+                    var primary = consider == null ? 
+                        wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                     if (primary != null)
                     {
-                        return primary.GetActivationStrategyDelegate(scope, this, locateType);
+                        return primary;
                     }
 
-                    var strategy = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
+                    var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType, injectionContext);
 
-                    if (strategy != null)
+                    if (strategyDelegate != null)
                     {
-                        return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                        return strategyDelegate;
                     }
                 }
             }
@@ -444,7 +448,7 @@ namespace Grace.DependencyInjection.Impl
             expressionContext.AddExtraExpression(ifThen, insertBeginning: true);
         }
 
-        private T GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType, IInjectionContext injectionContext) where T : IActivationStrategy
+        private ActivationStrategyDelegate GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType, IInjectionContext injectionContext) where T : IWrapperOrExportActivationStrategy
         {
             foreach (var strategy in strategyCollection.GetStrategies())
             {
@@ -472,10 +476,15 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                return strategy;
+                var strategyDelegate = strategy.GetActivationStrategyDelegate(scope, this, locateType);
+
+                if (strategyDelegate != null)
+                {
+                    return strategyDelegate;
+                }
             }
 
-            return default(T);
+            return null;
         }
 
 
