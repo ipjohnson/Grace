@@ -242,7 +242,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                             Expression.Constant(request.DefaultValue != null),
                                             Expression.Constant(request.IsRequired));
 
-            return request.Services.Compiler.CreateNewResult(request, expresion);
+            var result =  request.Services.Compiler.CreateNewResult(request, expresion);
+
+            result.UsingFallbackExpression = true;
+
+            return result;
         }
         
         /// <summary>

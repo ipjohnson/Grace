@@ -32,6 +32,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public Expression Expression { get; set; }
 
         /// <summary>
+        /// True if no type was found and the default fallback expression was used
+        /// </summary>
+        public bool UsingFallbackExpression { get; set; } = false;
+
+        /// <summary>
         /// Add child expression result
         /// </summary>
         /// <param name="result">expression result</param>
