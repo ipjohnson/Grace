@@ -11,7 +11,16 @@ namespace Grace.DependencyInjection
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class IExportRegistrationBlockExtensions
-    {
+    {   
+        /// <summary>
+        /// Ups the priority of partially closed generics based on the number of closed parameters
+        /// </summary>
+        /// <param name="registrationBlock">registration block</param>
+        public static void PrioritizePartiallyClosedGenerics(this IExportRegistrationBlock registrationBlock)
+        {
+            registrationBlock.AddInspector(new PartiallyClosedGenericPriorityAugmenter());
+        }
+
         /// <summary>
         /// Export types from an assembly
         /// </summary>
