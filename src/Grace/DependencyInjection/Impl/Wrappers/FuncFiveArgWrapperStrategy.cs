@@ -97,6 +97,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T4), _t4Id));
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T5), _t5Id));
 
+                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);

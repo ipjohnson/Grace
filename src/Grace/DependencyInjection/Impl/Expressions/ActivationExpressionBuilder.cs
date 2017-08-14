@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
+            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey);
 
             if (activationExpressionResult != null)
             {

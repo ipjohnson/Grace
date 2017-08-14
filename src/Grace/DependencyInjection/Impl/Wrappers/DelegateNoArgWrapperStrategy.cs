@@ -83,7 +83,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 _injectionContextCreator = injectionContextCreator;
 
                 var newRequest = request.NewRequest(typeof(TResult), activationStrategy, typeof(TDelegate), RequestType.Other, null, true);
-                
+
+                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);

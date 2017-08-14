@@ -1,4 +1,5 @@
-﻿using Grace.DependencyInjection;
+﻿using System;
+using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -425,6 +426,57 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Equal(9.0, instance.Parameters[2]);
             Assert.Equal(14.0m, instance.Parameters[3]);
             Assert.Equal(basicService, instance.Parameters[4]);
+        }
+
+        public class FuncFactoryClass
+        {
+            private Func<DisposableService> _func;
+
+            public FuncFactoryClass(Func<DisposableService> func)
+            {
+                _func = func;
+            }
+
+            public DisposableService CreateService()
+            {
+                return _func();
+            }
+        }
+
+        [Fact]
+        public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+                c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+                c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
+            });
+
+            bool disposedService = false;
+            bool disposedTransient = false;
+
+            using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+            {
+                var service = scope.Locate<DisposableService>();
+
+                Assert.Same(service, scope.Locate<DisposableService>());
+
+                service.Disposing += (sender, args) => disposedService = true;
+
+                var factory = scope.Locate<FuncFactoryClass>();
+
+                var transientService = factory.CreateService();
+
+                Assert.NotSame(service, transientService);
+
+                transientService.Disposing += (sender, args) => disposedTransient = true;
+            }
+
+            Assert.True(disposedService);
+            Assert.False(disposedTransient);
         }
     }
 }
