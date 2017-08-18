@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var foundValues = new Dictionary<string, Tuple<ParameterExpression, string>>();
             var throwAtEnd = true;
 
-            foreach (var constructorInfo in GetConstructors(request))
+            foreach (var constructorInfo in GetConstructors(activationConfiguration.ActivationType))
             {
                 var testParameters = new List<ParameterExpression>();
                 var locateParameters = new List<Expression>();
@@ -190,9 +190,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return builder.ToString();
         }
 
-        private static ConstructorInfo[] GetConstructors(IActivationExpressionRequest request)
+        private static ConstructorInfo[] GetConstructors(Type activationType)
         {
-            var constructors = request.ActivationType.GetTypeInfo()
+            var constructors = activationType.GetTypeInfo()
                 .DeclaredConstructors
                 .Where(c => c.IsPublic && !c.IsStatic)
                 .OrderByDescending(c => c.GetParameters().Length)

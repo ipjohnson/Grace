@@ -271,8 +271,46 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotSame(instance.Import1, instance2.Import1);
         }
 
+        public interface IHaveMultipleConstructors
+        {
+            int NumProp { get; }
 
+            string StringProp { get; }
+        }
 
+        public class HaveMultipleConstructors : IHaveMultipleConstructors
+        { 
+            public HaveMultipleConstructors()
+            {
 
+            }
+
+            public HaveMultipleConstructors(string stringValue, int intValue)
+            {
+
+                NumProp = intValue;
+
+                StringProp = stringValue;
+            }
+
+            public int NumProp { get; private set; }
+
+            public string StringProp { get; private set; }
+        }
+
+        [Fact]
+        public void DynamicConstructorSelection_WithFunc()
+        {
+            DependencyInjectionContainer di = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic); // ß not sure about the Dynamic strategy
+
+            di.Configure(config =>
+            {
+                config.Export<HaveMultipleConstructors>().As<IHaveMultipleConstructors>();
+            });
+
+            var myFunc = di.Locate<Func<string, int, IHaveMultipleConstructors>>();
+
+            var functioned = myFunc("funcString", 667);
+        }
     }
 }
