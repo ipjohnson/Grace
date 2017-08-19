@@ -166,34 +166,53 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (collection != null)
                     {
-                        var primary = request.Filter == null ? collection.GetPrimary() : null;
-
-                        if (primary != null)
+                        if (request.LocateKey != null)
                         {
-                            wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(primary, wrappedType, null)).AddRange(wrappers.Reverse());
+                            var strategy = collection.GetKeyedStrategy(request.LocateKey);
+
+                            if (strategy != null)
+                            {
+                                wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
+                                    .Add(new WrapperActivationPathNode(strategy, wrappedType, null))
+                                    .AddRange(wrappers.Reverse());
+                            }
                         }
                         else
                         {
-                            foreach (var strategy in collection.GetStrategies())
-                            {
-                                var pass = true;
+                            var primary = request.Filter == null ? collection.GetPrimary() : null;
 
-                                if (strategy.HasConditions)
+                            if (primary != null)
+                            {
+                                wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
+                                    .Add(new WrapperActivationPathNode(primary, wrappedType, null))
+                                    .AddRange(wrappers.Reverse());
+                            }
+                            else
+                            {
+                                foreach (var strategy in collection.GetStrategies())
                                 {
-                                    foreach (var condition in strategy.Conditions)
+                                    var pass = true;
+
+                                    if (strategy.HasConditions)
                                     {
-                                        if (!condition.MeetsCondition(strategy, request.GetStaticInjectionContext()))
+                                        foreach (var condition in strategy.Conditions)
                                         {
-                                            pass = false;
-                                            break;
+                                            if (!condition.MeetsCondition(strategy,
+                                                request.GetStaticInjectionContext()))
+                                            {
+                                                pass = false;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (pass &&
-                                    (request.Filter == null || request.Filter(strategy)))
-                                {
-                                    wrappers = ImmutableLinkedList<IActivationPathNode>.Empty.Add(new WrapperActivationPathNode(strategy, wrappedType, null)).AddRange(wrappers.Reverse());
+                                    if (pass &&
+                                        (request.Filter == null || request.Filter(strategy)))
+                                    {
+                                        wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
+                                            .Add(new WrapperActivationPathNode(strategy, wrappedType, null))
+                                            .AddRange(wrappers.Reverse());
+                                    }
                                 }
                             }
                         }

@@ -41,6 +41,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     if (parameter.IsOptional ||
                         parameter.ParameterType.IsGenericParameter ||
                         CanGetValueFromInfo(configuration, parameter) ||
+                        CanGetValueFromKnownValues(request, parameter) ||
                         injectionScope.CanLocate(parameter.ParameterType, null, key))
                     {
                         matchInfo.Matched++;
@@ -72,7 +73,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return returnConstructor;
         }
 
-
+        private bool CanGetValueFromKnownValues(IActivationExpressionRequest request, ParameterInfo parameter)
+        {
+            return request.KnownValueExpressions.Any(e => e.ActivationType == parameter.ParameterType);
+        }
+        
         /// <summary>
         /// Class used for keeping track of information about a constructor
         /// </summary>

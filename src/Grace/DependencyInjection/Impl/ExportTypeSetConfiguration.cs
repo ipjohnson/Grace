@@ -544,40 +544,63 @@ namespace Grace.DependencyInjection.Impl
 
             return returnList;
         }
-
+        
         private ImmutableLinkedList<Type> GetExportedInterfaceList(Type type)
         {
             var returnList = ImmutableLinkedList<Type>.Empty;
+            var isGeneric = type.GetTypeInfo().IsGenericTypeDefinition;
 
-            foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
+            foreach (var testInterface in type.GetTypeInfo().ImplementedInterfaces)
             {
+                var implementedInterface = testInterface;
+
+                if (isGeneric)
+                {
+                    if (!implementedInterface.IsConstructedGenericType ||
+                        implementedInterface.GenericTypeArguments.Length < type.GetTypeInfo().GenericTypeParameters.Length)
+                    {
+                        continue;
+                    }
+
+                    implementedInterface = implementedInterface.GetGenericTypeDefinition();
+                }
+
                 if (_scopeConfiguration.ExportByInterfaceFilter != null &&
                     _scopeConfiguration.ExportByInterfaceFilter(implementedInterface, type))
                 {
                     continue;
                 }
 
+                bool found = false;
+
                 foreach (var exportInterface in _byInterface)
                 {
                     if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
                     {
-                        if (implementedInterface.IsConstructedGenericType &&
+                        if (implementedInterface.GetTypeInfo().IsGenericTypeDefinition &&
                              implementedInterface.GetGenericTypeDefinition() == exportInterface)
                         {
                             returnList = returnList.Add(type.GetTypeInfo().IsGenericTypeDefinition ? exportInterface : implementedInterface);
+
+                            found = true;
                         }
                     }
                     else if (exportInterface.GetTypeInfo().IsAssignableFrom(implementedInterface.GetTypeInfo()))
                     {
                         returnList = returnList.Add(exportInterface);
+
+                        found = true;
                     }
                 }
 
-                foreach (var interfaceFunc in _byInterfaces)
+                if (!found)
                 {
-                    if (interfaceFunc(implementedInterface))
+                    foreach (var interfaceFunc in _byInterfaces)
                     {
-                        returnList = returnList.Add(implementedInterface);
+                        if (interfaceFunc(implementedInterface))
+                        {
+                            returnList = returnList.Add(implementedInterface);
+                        }
                     }
                 }
             }

@@ -13,7 +13,7 @@ namespace Grace.Data.Immutable
     /// </summary>
     public static class ImmutableLinkedList
     {
-        
+
         /// <summary>
         /// Empty an immutable linked list in a thread and return the list
         /// </summary>
@@ -24,7 +24,7 @@ namespace Grace.Data.Immutable
         {
             return Interlocked.Exchange(ref list, ImmutableLinkedList<T>.Empty);
         }
-        
+
         /// <summary>
         /// Add to a list in a thread safe manner
         /// </summary>
@@ -117,7 +117,7 @@ namespace Grace.Data.Immutable
     /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ImmutableLinkedListDebugView<>))]
-    public class ImmutableLinkedList<T> : IEnumerable<T>
+    public class ImmutableLinkedList<T> : IEnumerable<T>, IReadOnlyList<T>
     {
         /// <summary>
         /// Empty instance of list
@@ -308,10 +308,33 @@ namespace Grace.Data.Immutable
             public T Current => _current.Value;
 
             object IEnumerator.Current => Current;
-            
+
             public void Dispose()
             {
                 // leaving empty as there is nothing to dispose
+            }
+        }
+
+        /// <summary>Gets the element at the specified index in the read-only list.</summary>
+        /// <returns>The element at the specified index in the read-only list.</returns>
+        /// <param name="index">The zero-based index of the element to get. </param>
+        public T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                var current = this;
+
+                for (var i = 0; i < index; i++)
+                {
+                    current = current.Next;
+                }
+
+                return current.Value;
             }
         }
     }

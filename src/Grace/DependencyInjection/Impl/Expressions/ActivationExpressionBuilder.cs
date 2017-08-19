@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, null);
+            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey);
 
             if (activationExpressionResult != null)
             {
@@ -242,7 +242,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                             Expression.Constant(request.DefaultValue != null),
                                             Expression.Constant(request.IsRequired));
 
-            return request.Services.Compiler.CreateNewResult(request, expresion);
+            var result =  request.Services.Compiler.CreateNewResult(request, expresion);
+
+            result.UsingFallbackExpression = true;
+
+            return result;
         }
         
         /// <summary>
