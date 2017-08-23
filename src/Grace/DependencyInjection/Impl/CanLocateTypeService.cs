@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 using Grace.Data.Immutable;
 
@@ -43,7 +44,12 @@ namespace Grace.DependencyInjection.Impl
             {
                 var collection = injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type);
 
-                return collection?.GetKeyedStrategy(key) != null;
+                if (collection?.GetKeyedStrategy(key) != null)
+                {
+                    return true;
+                }
+
+                return injectionScope.Parent?.CanLocate(type, filter, key) ?? false;
             }
 
             if (injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type) != null)
@@ -70,9 +76,19 @@ namespace Grace.DependencyInjection.Impl
                     return true;
                 }
 
-                if (injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(generic) != null)
+                var collection = injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(generic);
+
+                if (collection != null)
                 {
-                    return true;
+                    foreach (var strategy in collection.GetStrategies())
+                    {
+                        var wrappedType = strategy.GetWrappedType(type);
+
+                        if (CanLocate(injectionScope, wrappedType, filter))
+                        {
+                            return true;
+                        }
+                    }
                 }
 
                 if (generic == typeof(IEnumerable<>) ||
@@ -89,7 +105,9 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            if (!type.GetTypeInfo().IsInterface)
+            if (!type.GetTypeInfo().IsInterface && 
+                !type.GetTypeInfo().IsSubclassOf(typeof(MulticastDelegate)) && 
+                type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsAbstract && !c.IsStatic))
             {
                 return  includeAutoRegister &&
                         injectionScope.ScopeConfiguration.AutoRegisterUnknown &&
@@ -98,10 +116,15 @@ namespace Grace.DependencyInjection.Impl
                         type != typeof(DateTime);
             }
 
-            return type == typeof(ILocatorService) ||
-                   type == typeof(IExportLocatorScope) ||
-                   type == typeof(IInjectionContext) ||
-                   type == typeof(StaticInjectionContext);
+            if (type == typeof(ILocatorService) ||
+                type == typeof(IExportLocatorScope) ||
+                type == typeof(IInjectionContext) ||
+                type == typeof(StaticInjectionContext))
+            {
+                return true;
+            }
+
+            return injectionScope.Parent?.CanLocate(type, filter) ?? false;
         }
     }
 }
