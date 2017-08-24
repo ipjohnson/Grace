@@ -101,6 +101,31 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             var functioned = myFunc("funcString", 667);
         }
-        
+
+        public class MultipleConstructorWithFunc
+        {
+            public MultipleConstructorWithFunc()
+            {
+                
+            }
+
+            public MultipleConstructorWithFunc(Func<IBasicService> basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public Func<IBasicService> BasicService { get; }
+        }
+
+        [Fact]
+        public void Container_Best_Match_NoFunc()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<MultipleConstructorWithFunc>();
+
+            Assert.NotNull(instance);
+            Assert.Null(instance.BasicService);
+        }
     }
 }
