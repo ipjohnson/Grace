@@ -178,3 +178,4 @@ $RECYCLE.BIN/
 /NuGet/lib
 /Source/.vs/config/applicationhost.config
 /.vs/config/applicationhost.config
+/.vs/Grace/v15/sqlite3/storage.ide

@@ -14,5 +14,16 @@
         {
             return default(T);
         }
+
+
+        /// <summary>
+        /// Locate arguement of type T
+        /// </summary>
+        /// <typeparam name="T">type of arg</typeparam>
+        /// <returns>default T value</returns>
+        public static T Locate<T>()
+        {
+            return default(T);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -139,6 +140,14 @@ namespace Grace.DependencyInjection.Impl
         ICompiledExportStrategy GetFuncWithInjectionContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func);
 
         /// <summary>
+        /// Get expression export strategy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        ICompiledExportStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression);
+
+        /// <summary>
         /// Get new compiled wrapper strategy
         /// </summary>
         /// <param name="type">wrapper type</param>
@@ -171,6 +180,17 @@ namespace Grace.DependencyInjection.Impl
         {
             _injectionScope = injectionScope;
             _exportExpressionBuilder = exportExpressionBuilder;
+        }
+
+        /// <summary>
+        /// Get expression export strategy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public ICompiledExportStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression)
+        {
+            return new ExpressionExportStrategy<T>(expression, _injectionScope);
         }
 
         /// <summary>

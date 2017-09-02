@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection
@@ -91,6 +92,14 @@ namespace Grace.DependencyInjection
         /// <param name="apply">decorator logic</param>
         /// <param name="applyAfterLifestyle"></param>
         void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true);
+
+        /// <summary>
+        /// Export an expression tree
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        IFluentExportInstanceConfiguration<TResult> ExportExpression<TResult>(Expression<Func<TResult>> expression);
 
         /// <summary>
         /// Export a specific type
