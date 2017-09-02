@@ -161,20 +161,26 @@ namespace Grace.Factory.Impl
             var ilGenerator = methodBuilder.GetILGenerator();
 
             var activation = proxyBuilder.DefineField("_activationMethod" + methodCount, typeof(ActivationStrategyDelegate),
-                FieldAttributes.Private);
+                FieldAttributes.Private);          
+            
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldfld, activation);
 
-            var cloneContext = ilGenerator.DeclareLocal(typeof(IInjectionContext));
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldfld, scopeField);
+
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldfld, disposalScopeField);
 
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Ldfld, contextField);
             ilGenerator.Emit(OpCodes.Callvirt, CloneMethod);
-            ilGenerator.Emit(OpCodes.Stloc_0);
-            
+
             var parameterInfos = new List<DelegateParameterInfo>();
 
             foreach (var parameter in parameters)
             {
-                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Dup);
 
                 var delegateParameterInfo = new DelegateParameterInfo(parameter);
 
@@ -206,17 +212,6 @@ namespace Grace.Factory.Impl
                 ilGenerator.Emit(OpCodes.Pop);
             }
 
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, activation);
-
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, scopeField);
-
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, disposalScopeField);
-
-            ilGenerator.Emit(OpCodes.Ldloc_0);
-            
             ilGenerator.Emit(OpCodes.Callvirt, DelegateInvoke);
 
             if (method.ReturnType != null || method.ReturnType != typeof(void))
