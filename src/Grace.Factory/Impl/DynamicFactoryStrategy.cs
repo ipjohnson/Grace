@@ -20,7 +20,7 @@ namespace Grace.Factory.Impl
     {
         private Type _proxyType;
         private List<DynamicTypeBuilder.DelegateInfo> _delegateInfo;
-        private object _proxyTypeLock = new object();
+        private readonly object _proxyTypeLock = new object();
 
         /// <summary>
         /// Default constructor
@@ -32,6 +32,7 @@ namespace Grace.Factory.Impl
 
         }
 
+        /// <inheritdoc />
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
             if (_proxyType == null)

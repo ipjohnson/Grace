@@ -63,6 +63,12 @@ namespace Grace.Factory.Impl
             public ParameterInfo ParameterInfo { get; }
         }
 
+        /// <summary>
+        /// Create new proxy type that implements the interface
+        /// </summary>
+        /// <param name="interfaceType">interface type</param>
+        /// <param name="methods">delegates that needed for constructor</param>
+        /// <returns></returns>
         public Type CreateType(Type interfaceType, out List<DelegateInfo> methods)
         {
             lock (BuilderLock)
