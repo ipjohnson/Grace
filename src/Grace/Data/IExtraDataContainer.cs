@@ -38,4 +38,12 @@ namespace Grace.Data
 	    /// <returns>the final value of key</returns>
 	    object SetExtraData(object key, object newValue, bool replaceIfExists = true);
 	}
+
+    public static class ExtraDataContainerExtensions
+    {
+        public static T GetExtraData<T>(this IExtraDataContainer container,  object key)
+        {
+            return (T)container.GetExtraData(key);
+        }
+    }
 }

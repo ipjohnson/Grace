@@ -184,8 +184,7 @@ namespace Grace.Tests.Factory
 
             IBasicService GetTestKey();
         }
-
-
+        
         [Fact]
         public void DynamicFactoryStrategy_KeyedProvider()
         {

@@ -55,6 +55,31 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     var newRequest = _request.NewRequest(node.Method.GetGenericArguments().First(), _activationStrategy,
                         _activationStrategy.ActivationType, RequestType.Other, null, true, true);
 
+                    var arguement = node.Arguments.FirstOrDefault();
+
+                    if (arguement != null)
+                    {
+                        var replaceNode = (MethodCallExpression)base.VisitMethodCall(node);
+
+                        arguement = replaceNode.Arguments.First();
+
+                        if (arguement is NewExpression newExpression)
+                        {
+                            var parameters = newExpression.Constructor.GetParameters();
+
+                            for (int i = 0; i < parameters.Length; i++)
+                            {
+                                var expression = newExpression.Arguments[i];
+                                var parameter = parameters[i];
+
+                                var knownValue = new SimpleKnownValueExpression(expression.Type, expression,
+                                    parameter.Name);
+
+                                newRequest.AddKnownValueExpression(knownValue);
+                            }
+                        }
+                    }
+
                     var activationExpression =
                         _request.Services.ExpressionBuilder.GetActivationExpression(_request.RequestingScope, newRequest);
 
@@ -62,6 +87,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     return activationExpression.Expression;
                 }
+
+                if (methodName == nameof(Arg.Scope))
+                {
+                    return _request.Constants.ScopeParameter;
+                }
+
+                if (methodName == nameof(Arg.Context))
+                {
+                    return _request.Constants.InjectionContextParameter;
+                }
+
             }
 
             return base.VisitMethodCall(node);

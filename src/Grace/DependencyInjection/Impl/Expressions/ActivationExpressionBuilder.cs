@@ -318,7 +318,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (key != null)
                 {
-                    var knownValue = knownValues.FirstOrDefault(v => v.Key == key);
+                    IKnownValueExpression knownValue;
+
+                    if (key is string keyString)
+                    {
+                        knownValue = 
+                            knownValues.FirstOrDefault(v => 
+                                string.Compare(keyString, v.Key as string,StringComparison.CurrentCultureIgnoreCase) == 0);
+                    }
+                    else
+                    {
+                        knownValue = knownValues.FirstOrDefault(v => v.Key == key);
+                    }
 
                     if (knownValue != null)
                     {
