@@ -104,17 +104,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 _action = request.Services.Compiler.CompileDelegate(scope, activationExpression);
             }
-
-            private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId)
-            {
-                var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
-
-                var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod,
-                    Expression.Constant(valueId));
-
-                return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
-            }
-
+            
             /// <summary>
             /// Method that creates Func
             /// </summary>

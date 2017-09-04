@@ -111,16 +111,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod("Func");
             }
-
-            private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string argId)
-            {
-                var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
-
-                var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod, Expression.Constant(argId));
-
-                return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
-            }
-
+            
             /// <summary>
             /// Method that is called each time a delegate needs to be created
             /// </summary>

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Linq.Expressions;
+using System.Reflection;
+using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
+using Grace.DependencyInjection.Impl.Expressions;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
@@ -112,6 +116,17 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             }
 
             return returnValue;
+        }
+
+
+        public static IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId)
+        {
+            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
+
+            var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod,
+                Expression.Constant(valueId));
+
+            return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
         }
     }
 }

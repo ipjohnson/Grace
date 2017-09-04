@@ -18,7 +18,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="injectionScope"></param>
         public FuncOneArgWrapperStrategy(IInjectionScope injectionScope) : base(typeof(Func<,>), injectionScope)
         {
-        
+
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 _injectionContextCreator = injectionContextCreator;
                 var requestType = request.ActivationType.GenericTypeArguments[1];
 
-                var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TArg1,TResult>), RequestType.Other, null, true);
+                var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TArg1, TResult>), RequestType.Other, null, true);
 
-                newRequest.AddKnownValueExpression(CreateKnownValueExpression(request));
+                newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(TArg1), _arg1Id));
 
                 newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
@@ -93,17 +93,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
                 _action = request.Services.Compiler.CompileDelegate(scope, activationExpression);
-            }
-
-            private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request)
-            {
-                var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
-
-                var argType = request.ActivationType.GenericTypeArguments[0];
-
-                var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod, Expression.Constant(_arg1Id));
-
-                return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
             }
 
             /// <summary>
