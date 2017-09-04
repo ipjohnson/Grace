@@ -239,6 +239,18 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Defines a custom scope when creating instance
+        /// </summary>
+        /// <param name="customscope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration DefinesNamedScope(string customscope)
+        {
+            _exportConfiguration.CustomScopeName = customscope;
+
+            return this;
+        }
+
+        /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
         /// <returns>configuraiton object</returns>
@@ -406,6 +418,18 @@ namespace Grace.DependencyInjection.Impl
 
                 _exportConfiguration.AddExportAs(interfaceTypes);
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Creates a new scope and then resolves decorators inside of it.
+        /// </summary>
+        /// <param name="namedScope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope)
+        {
+            _exportConfiguration.CustomScopeName = namedScope;
 
             return this;
         }

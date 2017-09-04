@@ -165,6 +165,16 @@ namespace Grace.DependencyInjection.Impl
         {
             return _strategy.WithPriority(priority);
         }
+
+        /// <summary>
+        /// Defines a custom scope when creating instance
+        /// </summary>
+        /// <param name="customscope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration DefinesNamedScope(string customscope)
+        {
+            return _strategy.DefinesNamedScope(customscope);
+        }
     }
 
     /// <summary>
@@ -265,6 +275,16 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null)
         {
             return _strategy.ByInterfaces(filter);
+        }
+
+        /// <summary>
+        /// Creates a new scope and then resolves decorators inside of it.
+        /// </summary>
+        /// <param name="namedScope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope)
+        {
+            return _strategy.DefinesNamedScope(namedScope);
         }
 
         /// <summary>

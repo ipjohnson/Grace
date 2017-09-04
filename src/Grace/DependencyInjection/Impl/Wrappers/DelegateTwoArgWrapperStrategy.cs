@@ -56,8 +56,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
             var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
-                    request.DisposalScopeExpression, request.Constants.InjectionContextParameter);
+                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
+                    request.DisposalScopeExpression, request.InjectionContextParameter);
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }

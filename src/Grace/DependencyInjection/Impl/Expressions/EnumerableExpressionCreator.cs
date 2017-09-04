@@ -95,7 +95,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var enumerableExpression = 
                 Expression.Call(Expression.Constant(enumerableCreator),
                     CreateEnumerableMethod.MakeGenericMethod(enumerableType),
-                    request.Constants.ScopeParameter,
+                    request.ScopeParameter,
                     arrayExpression.Expression);
 
             var returnResult = request.Services.Compiler.CreateNewResult(request, enumerableExpression);

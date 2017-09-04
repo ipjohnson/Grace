@@ -102,5 +102,10 @@ namespace Grace.DependencyInjection
         /// Method that's called when the type is activated
         /// </summary>
         MethodInjectionInfo ActivationMethod { get; set; }
+
+        /// <summary>
+        /// If not null then instance will be created in new scope.
+        /// </summary>
+        string CustomScopeName { get; set; }
     }
 }

@@ -115,6 +115,13 @@ namespace Grace.DependencyInjection
         /// <param name="priority"></param>
         /// <returns></returns>
         IFluentExportStrategyConfiguration WithPriority(int priority);
+
+        /// <summary>
+        /// Defines a custom scope when creating instance
+        /// </summary>
+        /// <param name="customscope"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration DefinesNamedScope(string customscope);
     }
 
     /// <summary>
@@ -179,6 +186,14 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null);
+
+
+        /// <summary>
+        /// Creates a new scope and then resolves decorators inside of it.
+        /// </summary>
+        /// <param name="namedScope"></param>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope);
 
         /// <summary>
         /// You can provide a cleanup method to be called 

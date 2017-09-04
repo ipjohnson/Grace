@@ -137,6 +137,11 @@ namespace Grace.DependencyInjection.Impl
         public IConstructorExpressionCreator ConstructorSelectionMethod { get; set; }
 
         /// <summary>
+        /// If not null then type will be created in new scope
+        /// </summary>
+        public string CustomScopeName { get; set; }
+
+        /// <summary>
         /// add method injection to list
         /// </summary>
         /// <param name="methodInjection"></param>
@@ -160,6 +165,7 @@ namespace Grace.DependencyInjection.Impl
                 ActivationMethod = ActivationMethod,
                 DisposalDelegate = DisposalDelegate,
                 ExternallyOwned = ExternallyOwned,
+                CustomScopeName = CustomScopeName
                 // leaving out lifestyle as that needs to be thread safe
             };
         }

@@ -25,6 +25,7 @@ namespace Grace.DependencyInjection
             ExportAsBase = false;
             TrackDisposableTransients = true;
             SupportFuncType = true;
+            InjectIDisposable = true;
 
             ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
@@ -106,6 +107,11 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// 
         /// </summary>
+        public bool InjectIDisposable { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         public IInjectionScopeConfiguration Clone()
         {
@@ -119,6 +125,7 @@ namespace Grace.DependencyInjection
                 ExportAsBase = ExportAsBase,
                 ExportByInterfaceFilter = ExportByInterfaceFilter,
                 ExportStrategyArraySize = ExportStrategyArraySize,
+                InjectIDisposable = InjectIDisposable,
                 Implementation = Implementation.Clone()
             };
         }

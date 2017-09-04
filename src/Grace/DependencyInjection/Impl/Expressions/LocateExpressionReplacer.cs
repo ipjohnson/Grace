@@ -90,12 +90,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (methodName == nameof(Arg.Scope))
                 {
-                    return _request.Constants.ScopeParameter;
+                    return _request.ScopeParameter;
                 }
 
                 if (methodName == nameof(Arg.Context))
                 {
-                    return _request.Constants.InjectionContextParameter;
+                    return _request.InjectionContextParameter;
                 }
 
             }

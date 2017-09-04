@@ -115,11 +115,13 @@ namespace Grace.DependencyInjection.Impl
                         type != typeof(string) &&
                         type != typeof(DateTime);
             }
-
+            
             if (type == typeof(ILocatorService) ||
                 type == typeof(IExportLocatorScope) ||
                 type == typeof(IInjectionContext) ||
-                type == typeof(StaticInjectionContext))
+                type == typeof(IDisposalScope) ||
+                type == typeof(StaticInjectionContext) || 
+                (type == typeof(IDisposable) && injectionScope.ScopeConfiguration.InjectIDisposable))
             {
                 return true;
             }

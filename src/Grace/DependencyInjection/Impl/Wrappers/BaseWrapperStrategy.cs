@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
 
-            var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod,
+            var callExpression = Expression.Call(request.InjectionContextParameter, getMethod,
                 Expression.Constant(valueId));
 
             return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), hintName, position);

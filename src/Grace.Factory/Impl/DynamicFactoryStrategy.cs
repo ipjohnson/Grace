@@ -50,9 +50,9 @@ namespace Grace.Factory.Impl
 
             var parameters = new List<Expression>
             {
-                request.Constants.ScopeParameter,
+                request.ScopeParameter,
                 request.DisposalScopeExpression,
-                request.Constants.InjectionContextParameter
+                request.InjectionContextParameter
             };
 
             foreach (var delegateInfo in _delegateInfo)
@@ -93,7 +93,7 @@ namespace Grace.Factory.Impl
         {
             var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
 
-            var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod,
+            var callExpression = Expression.Call(request.InjectionContextParameter, getMethod,
                 Expression.Constant(valueId));
 
             return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), nameHint, position);

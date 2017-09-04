@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -88,11 +90,37 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        public IActivationExpressionResult GetActivationExpression(IInjectionScope scope,
+            IActivationExpressionRequest request)
         {
-            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
+            Expression assignStatement = null;
+            ParameterExpression newScope = null;
 
-            return result ?? _builder.GetActivationExpression(scope, request, ActivationConfiguration, ActivationConfiguration.Lifestyle);
+            if (ActivationConfiguration.CustomScopeName != null)
+            {
+                newScope = Expression.Variable(typeof(IExportLocatorScope));
+
+                var beginScopeMethod =
+                    typeof(IExportLocatorScope).GetTypeInfo().GetDeclaredMethod("BeginLifetimeScope");
+
+                assignStatement =
+                    Expression.Assign(newScope,
+                        Expression.Call(request.ScopeParameter, beginScopeMethod,
+                            Expression.Constant(ActivationConfiguration.CustomScopeName)));
+
+                request.ScopeParameter = newScope;
+            }
+
+            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this) ??
+                         _builder.GetActivationExpression(scope, request, ActivationConfiguration, ActivationConfiguration.Lifestyle);
+
+            if (newScope != null)
+            {
+                result.AddExtraParameter(newScope);
+                result.AddExtraExpression(assignStatement);
+            }
+
+            return result;
         }
 
         /// <summary>

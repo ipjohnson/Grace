@@ -233,6 +233,16 @@ namespace Grace.DependencyInjection
         ParameterExpression DisposalScopeExpression { get; set; }
 
         /// <summary>
+        /// export locator scope parameter
+        /// </summary>
+        Expression ScopeParameter { get; set; }
+
+        /// <summary>
+        /// Injection context parameter
+        /// </summary>
+        Expression InjectionContextParameter { get; set; }
+
+        /// <summary>
         /// Info object for request (MethodInfo, FieldInfo, ParameterInfo)
         /// </summary>
         object Info { get; }
