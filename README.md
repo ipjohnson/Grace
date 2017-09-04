@@ -38,6 +38,7 @@ Features in Grace
    * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
+   * Custom interface factories with Grace.Factory
 * Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerObjectGraph, SingletonPerAncestor&lt;T&gt;, and WeakSingleton. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
 * Built in support for the decorator pattern
 * Support for custom wrappers (Func&lt;T&gt; and Meta&lt;T&gt; are examples of built in wrappers)
