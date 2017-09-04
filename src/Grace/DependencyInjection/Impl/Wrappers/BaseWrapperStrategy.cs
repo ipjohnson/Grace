@@ -119,14 +119,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
 
-        public static IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId)
+        public static IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string hintName = null, int? position = null)
         {
             var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
 
             var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod,
                 Expression.Constant(valueId));
 
-            return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
+            return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), hintName, position);
         }
     }
 }
