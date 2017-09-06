@@ -38,9 +38,9 @@ namespace Grace.Tests.Factory
             Assert.Same(newBasicService, basicService);
         }
 
-        public interface IComplexProvider
+        public interface IComplexProvider<T>
         {
-            IDependentService<int> CreateValue(int i);
+            IDependentService<T> CreateValue(T i);
         }
 
 
@@ -48,7 +48,7 @@ namespace Grace.Tests.Factory
         [AutoData]
         public void DynamicTypeBuilder_IntParam(DynamicTypeBuilder builder, IExportLocatorScope scope, IDisposalScope disposalScope, InjectionContext context)
         {
-            var proxyType = builder.CreateType(typeof(IComplexProvider), out List<DynamicTypeBuilder.DelegateInfo> methods);
+            var proxyType = builder.CreateType(typeof(IComplexProvider<int>), out List<DynamicTypeBuilder.DelegateInfo> methods);
 
             int value = 10;
             DependentService<int> service = null;
@@ -60,7 +60,31 @@ namespace Grace.Tests.Factory
                 return service = new DependentService<int>(value);
             });
 
-            var instance = (IComplexProvider)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
+            var instance = (IComplexProvider<int>)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
+
+            var instanceService = instance.CreateValue(value);
+
+            Assert.NotNull(instanceService);
+            Assert.Same(service, instanceService);
+        }
+
+        [Theory]
+        [AutoData]
+        public void DynamicTypeBuilder_StringParam(DynamicTypeBuilder builder, IExportLocatorScope scope, IDisposalScope disposalScope, InjectionContext context)
+        {
+            var proxyType = builder.CreateType(typeof(IComplexProvider<string>), out List<DynamicTypeBuilder.DelegateInfo> methods);
+
+            string value = "hello world";
+            DependentService<string> service = null;
+
+            var func = new ActivationStrategyDelegate((s, d, c) =>
+            {
+                Assert.True(c.Keys.Any(key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
+                                              Equals(c.GetExtraData(key), value)));
+                return service = new DependentService<string>(value);
+            });
+
+            var instance = (IComplexProvider<string>)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
 
             var instanceService = instance.CreateValue(value);
 
