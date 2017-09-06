@@ -181,7 +181,7 @@ namespace Grace.Tests.Factory
 
             IBasicService GetTestKey();
         }
-        
+
         [Fact]
         public void DynamicFactoryStrategy_KeyedProvider()
         {
@@ -205,6 +205,56 @@ namespace Grace.Tests.Factory
 
             Assert.NotNull(customService);
             Assert.IsType<CustomBasicService>(customService);
+        }
+
+        public interface ISomeTestServiceFactory
+        {
+            ISomeTestService CreateTest();
+        }
+
+        public interface ISomeTestService
+        {
+            ISomeTestService CreateTest();
+        }
+
+        public class SomeTestService : ISomeTestService
+        {
+            private ISomeTestServiceFactory _factory;
+
+            public SomeTestService(ISomeTestServiceFactory factory)
+            {
+                _factory = factory;
+            }
+
+            public ISomeTestService CreateTest()
+            {
+                return _factory.CreateTest();
+            }
+        }
+
+        [Fact]
+        public void ExportFactory_Recursive()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SomeTestService>().As<ISomeTestService>();
+                c.ExportFactory<ISomeTestServiceFactory>();
+            });
+
+            var factory = container.Locate<ISomeTestServiceFactory>();
+
+            Assert.NotNull(factory);
+
+            var instance = factory.CreateTest();
+
+            Assert.NotNull(instance);
+
+            var secondInstance = instance.CreateTest();
+
+            Assert.NotNull(secondInstance);
+            Assert.NotSame(instance, secondInstance);
         }
     }
 }

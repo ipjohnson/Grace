@@ -8,6 +8,7 @@ using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Impl.InstanceStrategies;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Utilities;
 
 namespace Grace.Factory.Impl
 {
@@ -53,12 +54,17 @@ namespace Grace.Factory.Impl
                 request.InjectionContextParameter
             };
 
+            var uniqueId = UniqueStringId.Generate();
+
             foreach (var delegateInfo in _delegateInfo)
             {
                 var locateType = delegateInfo.Method.ReturnType;
 
                 var newRequest = request.NewRequest(locateType, this, ActivationType, RequestType.Other, null, true);
 
+                newRequest.AddKnownValueExpression(
+                    CreateKnownValueExpression(newRequest, ActivationType, uniqueId));
+                
                 if (delegateInfo.Method.Name.StartsWith("Get"))
                 {
                     newRequest.SetLocateKey(delegateInfo.Method.Name.Substring("Get".Length));
@@ -79,12 +85,22 @@ namespace Grace.Factory.Impl
 
                 parameters.Add(Expression.Constant(compiledDelegate));
             }
-
-            var constructor = _proxyType.GetTypeInfo().DeclaredConstructors.First();
             
+            var constructor = _proxyType.GetTypeInfo().DeclaredConstructors.First();
+
             request.RequireInjectionContext();
 
-            return request.Services.Compiler.CreateNewResult(request, Expression.New(constructor, parameters));
+            var newStatement = Expression.New(constructor, parameters);
+
+            var setMethod = typeof(IExtraDataContainer).GetRuntimeMethod("SetExtraData",
+                new[] { typeof(object), typeof(object), typeof(bool) });
+
+            var invokeStatement = Expression.Call(request.InjectionContextParameter, setMethod,
+                Expression.Constant(uniqueId), newStatement, Expression.Constant(true));
+
+            var castStatement = Expression.Convert(invokeStatement, ActivationType);
+
+            return request.Services.Compiler.CreateNewResult(request, castStatement);
         }
 
         private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string nameHint = null, int? position = null)
