@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Grace.DependencyInjection
+﻿namespace Grace.DependencyInjection
 {
     /// <summary>
     /// Arg helper

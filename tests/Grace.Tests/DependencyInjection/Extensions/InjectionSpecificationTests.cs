@@ -2,7 +2,6 @@
 using Grace.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Specification;
-using Grace.DependencyInjection.Extensions;
 
 namespace Grace.Tests.DependencyInjection.Extensions
 {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data.Immutable;
-using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 {
