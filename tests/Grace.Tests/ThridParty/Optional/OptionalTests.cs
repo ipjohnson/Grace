@@ -13,6 +13,18 @@ namespace Grace.Tests.ThridParty.Optional
     public class OptionalStrategyProvider : IMissingExportStrategyProvider
     {
         /// <summary>
+        /// Can a given request be located using this provider
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            return request.ActivationType.IsConstructedGenericType &&
+                   request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>);
+        }
+
+        /// <summary>
         /// Provide exports for a missing type
         /// </summary>
         /// <param name="scope">scope to provide value</param>

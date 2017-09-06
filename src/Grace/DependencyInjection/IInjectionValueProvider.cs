@@ -6,6 +6,14 @@
     public interface IInjectionValueProvider
     {
         /// <summary>
+        ///  Can a value be located for this request
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request);
+
+        /// <summary>
         /// Get an expression for the request, returns null if this provider doesn't support it
         /// </summary>
         /// <param name="scope">scope for request</param>

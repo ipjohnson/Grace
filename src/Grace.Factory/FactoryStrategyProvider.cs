@@ -11,7 +11,7 @@ namespace Grace.Factory
     /// </summary>
     public class FactoryStrategyProvider : IMissingExportStrategyProvider
     {
-        private readonly Func<Type,bool> _typeFilter;
+        private readonly Func<Type, bool> _typeFilter;
 
         /// <summary>
         /// Default constructor
@@ -20,6 +20,18 @@ namespace Grace.Factory
         public FactoryStrategyProvider(Func<Type, bool> typeFilter = null)
         {
             _typeFilter = typeFilter;
+        }
+
+        /// <summary>
+        /// Can a given request be located using this provider
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            return request.ActivationType.GetTypeInfo().IsInterface &&
+                   (_typeFilter?.Invoke(request.ActivationType) ?? true);
         }
 
         /// <summary>

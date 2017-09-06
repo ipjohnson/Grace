@@ -8,6 +8,14 @@ namespace Grace.DependencyInjection
     public interface IMissingExportStrategyProvider
     {
         /// <summary>
+        /// Can a given request be located using this provider
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request);
+
+        /// <summary>
         /// Provide exports for a missing type
         /// </summary>
         /// <param name="scope">scope to provide value</param>

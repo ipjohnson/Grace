@@ -11,6 +11,17 @@ namespace Grace.Tests.DependencyInjection.AddOns
         {
             public IBasicService BasicService { get; set; }
 
+            /// <summary>
+            ///  Can a value be located for this request
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="request"></param>
+            /// <returns></returns>
+            public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+            {
+                return request.ActivationType == typeof(IBasicService);
+            }
+
             public IActivationExpressionResult GetExpressionResult(IInjectionScope scope, IActivationExpressionRequest request)
             {
                 if (request.ActivationType == typeof(IBasicService))
