@@ -202,7 +202,7 @@ namespace Grace.Factory.Impl
                         break;
                 }
 
-                ilGenerator.Emit(OpCodes.Box, typeof(int));
+                ilGenerator.Emit(OpCodes.Box, parameter.ParameterType);
                 ilGenerator.Emit(OpCodes.Ldc_I4_1);
 
                 ilGenerator.Emit(OpCodes.Callvirt, SetExtraDataMethod);
