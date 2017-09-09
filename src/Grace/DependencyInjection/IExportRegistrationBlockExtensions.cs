@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
 {
@@ -122,9 +123,40 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="filter"></param>
+        [Obsolete("Please use ImportMembers")]
         public static IExportRegistrationBlock ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null)
         {
-            registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T), filter));
+            registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, false));
+
+            return registrationBlock;
+        }
+
+
+        /// <summary>
+        /// Import all members of a specific type and can be filtered
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <param name="filter">filter out members to inject</param>
+        /// <param name="processAttributes">process import attribute</param>
+        public static IExportRegistrationBlock ImportMembers<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool processAttributes = true)
+        {
+            registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, processAttributes));
+
+            return registrationBlock;
+        }
+
+        /// <summary>
+        /// Import all members of a specific type and can be filtered
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <param name="filter"></param>
+        /// <param name="injectMethods">should methods be injected, false by default</param>
+        /// <param name="processAttributes">process import attribute</param>
+        public static IExportRegistrationBlock ImportMembers(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool injectMethods = false, bool processAttributes = true)
+        {
+            registrationBlock.AddMemberInjectionSelector(new PublicMemeberInjectionSelector(filter, injectMethods, processAttributes));
 
             return registrationBlock;
         }

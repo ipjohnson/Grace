@@ -152,7 +152,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuraiton object</returns>
         public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector, injectMethods));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector, injectMethods, false));
 
             return this;
         }
@@ -573,7 +573,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethod = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true), injectMethod));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true), injectMethod, false));
 
             return this;
         }

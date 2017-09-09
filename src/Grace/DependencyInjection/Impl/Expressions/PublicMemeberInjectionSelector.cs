@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -11,16 +13,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
         private readonly Func<MemberInfo, bool> _picker;
         private readonly bool _injectMethods;
+        private readonly bool _processAttributes;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="picker"></param>
         /// <param name="injectMethods"></param>
-        public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker, bool injectMethods)
+        /// <param name="processAttributes"></param>
+        public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker, bool injectMethods, bool processAttributes)
         {
             _picker = picker;
             _injectMethods = injectMethods;
+            _processAttributes = processAttributes;
         }
 
         /// <summary>
@@ -42,13 +47,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns>members being injected</returns>
         public IEnumerable<MemberInjectionInfo> GetPropertiesAndFields(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
-            while (true)
+            while (type != typeof(object))
             {
                 foreach (var declaredMember in type.GetTypeInfo().DeclaredMembers)
                 {
                     var propertyInfo = declaredMember as PropertyInfo;
                     Type importType = null;
-
+                    
                     if (propertyInfo != null)
                     {
                         if (propertyInfo.CanWrite && propertyInfo.SetMethod.IsPublic && !propertyInfo.SetMethod.IsStatic)
@@ -68,9 +73,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (importType != null && (_picker == null || _picker(declaredMember)))
                     {
-                        object key = null;
+                        var importAttribute = _processAttributes ? 
+                                declaredMember.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() : 
+                                null;
 
-                        if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(importType))
+                        var importInfo = importAttribute?.ProvideImportInfo(importType, declaredMember.Name);
+
+                        object key = importInfo?.ImportKey;
+
+                        if (key == null && 
+                            injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(importType))
                         {
                             key = declaredMember.Name;
                         }
@@ -78,18 +90,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         yield return new MemberInjectionInfo
                         {
                             MemberInfo = declaredMember,
-                            IsRequired = IsRequired,
+                            IsRequired = importInfo?.IsRequired ?? IsRequired,
                             DefaultValue = DefaultValue,
-                            LocateKey = key
+                            LocateKey = key,
                         };
                     }
                 }
-
-                if (type.GetTypeInfo().BaseType == typeof(object))
-                {
-                    break;
-                }
-
+                
                 type = type.GetTypeInfo().BaseType;
             }
         }
