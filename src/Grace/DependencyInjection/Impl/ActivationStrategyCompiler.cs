@@ -437,11 +437,11 @@ namespace Grace.DependencyInjection.Impl
                                                 Expression.Constant(null, typeof(object)));
 
             var assign =
-                Expression.Assign(expressionContext.Request.Constants.InjectionContextParameter, newExpression);
+                Expression.Assign(expressionContext.Request.InjectionContextParameter, newExpression);
 
             var ifThen =
                 Expression.IfThen(
-                    Expression.Equal(expressionContext.Request.Constants.InjectionContextParameter,
+                    Expression.Equal(expressionContext.Request.InjectionContextParameter,
                         Expression.Constant(null, typeof(IInjectionContext))),
                     assign);
 

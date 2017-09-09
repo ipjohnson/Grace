@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
 {
@@ -11,7 +13,7 @@ namespace Grace.DependencyInjection
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class IExportRegistrationBlockExtensions
-    {   
+    {
         /// <summary>
         /// Ups the priority of partially closed generics based on the number of closed parameters
         /// </summary>
@@ -27,7 +29,7 @@ namespace Grace.DependencyInjection
         /// <param name="registrationBlock"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static IExportTypeSetConfiguration ExportAssembly(this IExportRegistrationBlock registrationBlock,Assembly assembly)
+        public static IExportTypeSetConfiguration ExportAssembly(this IExportRegistrationBlock registrationBlock, Assembly assembly)
         {
             return registrationBlock.Export(assembly.ExportedTypes);
         }
@@ -42,7 +44,7 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export(typeof(T).GetTypeInfo().Assembly.ExportedTypes);
         }
-        
+
         /// <summary>
         /// Export types from a set of assemblies
         /// </summary>
@@ -72,7 +74,7 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export<T>().As<TInterface>();
         }
-        
+
         /// <summary>
         /// Extension to export a list of types to a registration block
         /// </summary>
@@ -83,7 +85,7 @@ namespace Grace.DependencyInjection
         {
             return registrationBlock.Export(types);
         }
-        
+
         /// <summary>
         /// This is a short cut to registering a value as a name using the member name for exporting
         /// ExportNamedValue(() => someValue) export the value of someValue under the name someValue
@@ -121,10 +123,41 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="filter"></param>
-        public static IExportRegistrationBlock ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo,bool> filter = null)
+        [Obsolete("Please use ImportMembers")]
+        public static IExportRegistrationBlock ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null)
         {
-            registrationBlock.AddMemberInjectionSelector(new MemberInjectionSelector(typeof(T),filter));  
-            
+            registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, false));
+
+            return registrationBlock;
+        }
+
+
+        /// <summary>
+        /// Import all members of a specific type and can be filtered
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <param name="filter">filter out members to inject</param>
+        /// <param name="processAttributes">process import attribute</param>
+        public static IExportRegistrationBlock ImportMembers<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool processAttributes = true)
+        {
+            registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, processAttributes));
+
+            return registrationBlock;
+        }
+
+        /// <summary>
+        /// Import all members of a specific type and can be filtered
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="registrationBlock"></param>
+        /// <param name="filter"></param>
+        /// <param name="injectMethods">should methods be injected, false by default</param>
+        /// <param name="processAttributes">process import attribute</param>
+        public static IExportRegistrationBlock ImportMembers(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool injectMethods = false, bool processAttributes = true)
+        {
+            registrationBlock.AddMemberInjectionSelector(new PublicMemeberInjectionSelector(filter, injectMethods, processAttributes));
+
             return registrationBlock;
         }
 
@@ -185,6 +218,77 @@ namespace Grace.DependencyInjection
             var activationStrategyProvider = configuration as IActivationStrategyProvider;
 
             return configuration.OnlyIf(block => !block.IsExported(type, key, activationStrategyProvider?.GetStrategy() as ICompiledExportStrategy));
+        }
+
+        /// <summary>
+        /// Excludes type from auto registration based on name. * at the front or back of name will be treated as wildcard
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, string typeName)
+        {
+            var provider = (IConcreteExportStrategyProvider)
+                block.OwningScope.MissingExportStrategyProviders.FirstOrDefault(p => p is IConcreteExportStrategyProvider);
+
+            provider?.AddFilter(t =>
+            {
+                if (typeName.StartsWith("*"))
+                {
+                    if (typeName.EndsWith("*"))
+                    {
+                        return t.FullName.Contains(typeName.Replace("*", ""));
+                    }
+
+                    return t.FullName.EndsWith(typeName.Replace("*", ""));
+                }
+
+                if (typeName.EndsWith("*"))
+                {
+                    return t.FullName.StartsWith(typeName.Replace("*", ""));
+                }
+
+                return t.FullName == typeName;
+            });
+
+            return block;
+        }
+
+        /// <summary>
+        /// Excludes a type from being auto regsitered
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, Type type)
+        {
+            var provider = (IConcreteExportStrategyProvider)
+                block.OwningScope.MissingExportStrategyProviders.FirstOrDefault(p => p is IConcreteExportStrategyProvider);
+
+            provider?.AddFilter(t => t.GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()));
+
+            return block;
+        }
+
+        /// <summary>
+        /// Initialize all instance of a specific type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="block"></param>
+        /// <param name="initializeAction"></param>
+        /// <returns></returns>
+        public static IExportRegistrationBlock ExportInitialize<T>(this IExportRegistrationBlock block,
+            Action<T> initializeAction)
+        {
+            var func = new Func<object,object>(instance =>
+            {
+                initializeAction((T) instance);
+                return instance;
+            });
+
+            block.AddInspector(new ExportInitializeInspector(func, typeof(T)));
+
+            return block;
         }
     }
 }

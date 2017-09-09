@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Lifestyle;

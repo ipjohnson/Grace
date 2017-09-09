@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 foreach (var parameter in invokeMethod.GetParameters())
                 {
-                    if (parameter.ParameterType == expression.Type)
+                    if (parameter.ParameterType.GetTypeInfo().IsAssignableFrom(expression.Type.GetTypeInfo()))
                     {
                         expressions.Add(expression);
                     }
@@ -65,6 +65,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 expression = Expression.Call(Expression.Constant(enrichmentDelegate), invokeMethod,
                     expressions);
+
+                if (activationConfiguration.ActivationType != expression.Type)
+                {
+                    expression = Expression.Convert(expression, activationConfiguration.ActivationType);
+                }
             }
 
             result.Expression = expression;

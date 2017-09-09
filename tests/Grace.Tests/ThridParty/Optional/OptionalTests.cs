@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Optional;
@@ -13,6 +12,18 @@ namespace Grace.Tests.ThridParty.Optional
     /// </summary>
     public class OptionalStrategyProvider : IMissingExportStrategyProvider
     {
+        /// <summary>
+        /// Can a given request be located using this provider
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+        {
+            return request.ActivationType.IsConstructedGenericType &&
+                   request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>);
+        }
+
         /// <summary>
         /// Provide exports for a missing type
         /// </summary>

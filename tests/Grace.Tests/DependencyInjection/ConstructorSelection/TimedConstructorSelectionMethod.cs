@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -45,7 +42,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                                                     PreBuildUpMethodInfo,
                                                     Expression.Constant(staticContext),
                                                     request.Constants.ScopeParameter,
-                                                    request.Constants.InjectionContextParameter);
+                                                    request.InjectionContextParameter);
 
             result.AddExtraParameter(returnVar);
             result.AddExtraExpression(Expression.Assign(returnVar, callExpression));
@@ -59,8 +56,8 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 PostBuildUpMethodInfo,
                 returnVar,
                 Expression.Constant(staticContext),
-                request.Constants.ScopeParameter,
-                request.Constants.InjectionContextParameter);
+                request.ScopeParameter,
+                request.InjectionContextParameter);
 
             return result;
         }

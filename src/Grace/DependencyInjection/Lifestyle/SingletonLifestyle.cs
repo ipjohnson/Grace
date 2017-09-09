@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading;
-using Grace.DependencyInjection.Impl;
 
 namespace Grace.DependencyInjection.Lifestyle
 {

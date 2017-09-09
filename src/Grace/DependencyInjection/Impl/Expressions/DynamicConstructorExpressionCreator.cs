@@ -257,9 +257,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return Expression.Call(Expression.Constant(this),
                 closedMethod,
-                request.Constants.ScopeParameter,
+                request.ScopeParameter,
                 request.Constants.RootDisposalScope,
-                request.Constants.InjectionContextParameter,
+                request.InjectionContextParameter,
                 Expression.Constant(parameter.Name.ToLowerInvariant()),
                 Expression.Constant(true),
                 Expression.Constant(false),
@@ -280,8 +280,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var callExpression = Expression.Call(Expression.Constant(this),
                                                 closedMethod,
-                                                request.Constants.ScopeParameter,
-                                                request.Constants.InjectionContextParameter,
+                                                request.ScopeParameter,
+                                                request.InjectionContextParameter,
                                                 Expression.Constant(parameter.Name.ToLowerInvariant()));
 
             var canVariable = Expression.Variable(typeof(bool));

@@ -82,7 +82,7 @@ namespace Grace.DependencyInjection.Lifestyle
             var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
             var expression = Expression.Call(closedMethod,
-                                             request.Constants.ScopeParameter,
+                                             request.ScopeParameter,
                                              Expression.Constant(CompiledDelegate),
                                              Expression.Constant(UniqueId),
                                              Expression.Constant(_scopeName),

@@ -80,8 +80,8 @@ namespace Grace.DependencyInjection.Lifestyle
                 closedMethod = openMethod.MakeGenericMethod(request.ActivationType);
             }
 
-            var expression = Expression.Call(closedMethod, request.Constants.ScopeParameter,
-                request.DisposalScopeExpression, request.Constants.InjectionContextParameter,
+            var expression = Expression.Call(closedMethod, request.ScopeParameter,
+                request.DisposalScopeExpression, request.InjectionContextParameter,
                 Expression.Constant(newDelegate), Expression.Constant(_uniqueId));
 
             request.RequireInjectionContext();

@@ -7,6 +7,11 @@ namespace Grace.DependencyInjection.Attributes.Interfaces
 	/// </summary>
 	public class ImportAttributeInfo
 	{
+        /// <summary>
+        /// Default value
+        /// </summary>
+        public object DefaultValue { get; set; }
+
 		/// <summary>
 		/// Is the import required
 		/// </summary>

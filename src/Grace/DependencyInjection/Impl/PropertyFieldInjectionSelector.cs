@@ -1,27 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Grace.Data;
+using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
-    /// 
+    /// injects fields and properties of a specific type
     /// </summary>
-    public class MemberInjectionSelector : IMemberInjectionSelector
+    public class PropertyFieldInjectionSelector : IMemberInjectionSelector
     {
         private readonly Type _memberType;
         private readonly Func<MemberInfo, bool> _filter;
+        private readonly bool _processAttributes;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="memberType"></param>
         /// <param name="filter"></param>
-        public MemberInjectionSelector(Type memberType, Func<MemberInfo, bool> filter)
+        /// <param name="processAttributes"></param>
+        public PropertyFieldInjectionSelector(Type memberType, Func<MemberInfo, bool> filter, bool processAttributes)
         {
             _memberType = memberType;
             _filter = filter;
+            _processAttributes = processAttributes;
             IsRequired = true;
         }
         
@@ -55,7 +60,21 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (_filter == null || _filter(property))
                     {
-                        yield return new MemberInjectionInfo { MemberInfo = property, LocateKey = LocateKey, IsRequired = IsRequired };
+                        var importAttribute = _processAttributes ?
+                            property.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() :
+                            null;
+
+                        var importInfo = importAttribute?.ProvideImportInfo(property.PropertyType,property.Name);
+
+                        object key = importInfo?.ImportKey ?? LocateKey;
+
+                        if (key == null &&
+                            injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(property.PropertyType))
+                        {
+                            key = property.Name;
+                        }
+
+                        yield return new MemberInjectionInfo { MemberInfo = property, LocateKey = key, IsRequired = importInfo?.IsRequired ?? IsRequired };
                     }
                 }
             }
@@ -70,7 +89,21 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (_filter == null || _filter(field))
                     {
-                        yield return new MemberInjectionInfo { MemberInfo = field, LocateKey = LocateKey, IsRequired = IsRequired };
+                        var importAttribute = _processAttributes ?
+                            field.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() :
+                            null;
+
+                        var importInfo = importAttribute?.ProvideImportInfo(field.FieldType, field.Name);
+
+                        object key = importInfo?.ImportKey ?? LocateKey;
+
+                        if (key == null &&
+                            injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(field.FieldType))
+                        {
+                            key = field.Name;
+                        }
+
+                        yield return new MemberInjectionInfo { MemberInfo = field, LocateKey = key, IsRequired = importInfo?.IsRequired ?? IsRequired };
                     }
                 }
             }

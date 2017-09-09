@@ -19,9 +19,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to be located</param>
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
-        /// <param name="includeAutoRegister"></param>
+        /// <param name="includeProviders"></param>
         /// <returns></returns>
-        bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeAutoRegister = true);
+        bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeProviders = true);
     }
 
     /// <summary>
@@ -36,9 +36,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to be located</param>
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
-        /// <param name="includeAutoRegister"></param>
+        /// <param name="includeProviders"></param>
         /// <returns></returns>
-        public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeAutoRegister = true)
+        public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeProviders = true)
         {
             if (key != null)
             {
@@ -91,37 +91,41 @@ namespace Grace.DependencyInjection.Impl
                     }
                 }
 
-                if (generic == typeof(IEnumerable<>) ||
-                    generic == typeof(IList<>) ||
-                    generic == typeof(ICollection<>) ||
-                    generic == typeof(IReadOnlyList<>) ||
-                    generic == typeof(IReadOnlyCollection<>) ||
-                    generic == typeof(List<>) ||
-                    generic == typeof(ReadOnlyCollection<>) ||
-                    generic == typeof(ImmutableLinkedList<>) ||
-                    generic == typeof(ImmutableArray<>))
+                if (generic == typeof(IEnumerable<>))
                 {
-                    return injectionScope.ScopeConfiguration.AutoRegisterUnknown;
+                    return true;
                 }
             }
-
-            if (!type.GetTypeInfo().IsInterface && 
-                !type.GetTypeInfo().IsSubclassOf(typeof(MulticastDelegate)) && 
-                type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsAbstract && !c.IsStatic))
-            {
-                return  includeAutoRegister &&
-                        injectionScope.ScopeConfiguration.AutoRegisterUnknown &&
-                        type.GetTypeInfo().IsPrimitive == false &&
-                        type != typeof(string) &&
-                        type != typeof(DateTime);
-            }
-
+            
             if (type == typeof(ILocatorService) ||
                 type == typeof(IExportLocatorScope) ||
                 type == typeof(IInjectionContext) ||
-                type == typeof(StaticInjectionContext))
+                type == typeof(IDisposalScope) ||
+                type == typeof(StaticInjectionContext) ||
+                (type == typeof(IDisposable) && injectionScope.ScopeConfiguration.InjectIDisposable))
             {
                 return true;
+            }
+
+            if (includeProviders)
+            {
+                var request = injectionScope.StrategyCompiler.CreateNewRequest(type, 0, injectionScope);
+
+                foreach (var provider in injectionScope.InjectionValueProviders)
+                {
+                    if (provider.CanLocate(injectionScope, request))
+                    {
+                        return true;
+                    }
+                }
+
+                foreach (var provider in injectionScope.MissingExportStrategyProviders)
+                {
+                    if (provider.CanLocate(injectionScope, request))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return injectionScope.Parent?.CanLocate(type, filter) ?? false;

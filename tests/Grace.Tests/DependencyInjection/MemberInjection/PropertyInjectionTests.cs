@@ -194,5 +194,32 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
 
             Assert.NotNull(instance.MultipleService);
         }
+
+        public class InheritingClass : MultiplePropertyInject
+        {
+            
+        }
+
+        [Fact]
+        public void PropertyInjection_ImportMember_Inheriting()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<MultipleService1>().As<IMultipleService>();
+                c.Export<InheritingClass>().ImportMembers(MembersThat.HaveAttribute<SomeTestAttribute>(attribute => attribute.TestValue == 10));
+            });
+
+            var instance = container.Locate<InheritingClass>();
+
+            Assert.NotNull(instance);
+
+            Assert.Null(instance.BasicService);
+
+            Assert.NotNull(instance.MultipleService);
+
+        }
     }
 }

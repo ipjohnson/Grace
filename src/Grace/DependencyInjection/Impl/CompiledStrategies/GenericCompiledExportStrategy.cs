@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -139,9 +141,35 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             scope.ScopeConfiguration.Trace?.Invoke($"Activating {closedType.FullName} with lifestyle '{Lifestyle}' for request type {activationType.FullName}");
 
-            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
 
-            return result ?? _builder.GetActivationExpression(scope, request, activation, activation.Lifestyle);
+            Expression assignStatement = null;
+            ParameterExpression newScope = null;
+
+            if (ActivationConfiguration.CustomScopeName != null)
+            {
+                newScope = Expression.Variable(typeof(IExportLocatorScope));
+
+                var beginScopeMethod =
+                    typeof(IExportLocatorScope).GetTypeInfo().GetDeclaredMethod("BeginLifetimeScope");
+
+                assignStatement =
+                    Expression.Assign(newScope,
+                        Expression.Call(request.ScopeParameter, beginScopeMethod,
+                            Expression.Constant(ActivationConfiguration.CustomScopeName)));
+
+                request.ScopeParameter = newScope;
+            }
+            
+            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this) ?? 
+                        _builder.GetActivationExpression(scope, request, activation, activation.Lifestyle);
+            
+            if (newScope != null)
+            {
+                result.AddExtraParameter(newScope);
+                result.AddExtraExpression(assignStatement);
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Grace.Data;
-using Grace.DependencyInjection.Impl.Expressions;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
@@ -56,8 +54,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
             var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
-                    request.DisposalScopeExpression, request.Constants.InjectionContextParameter);
+                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
+                    request.DisposalScopeExpression, request.InjectionContextParameter);
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
@@ -103,16 +101,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod("Func");
             }
-
-            private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string argId)
-            {
-                var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
-
-                var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod, Expression.Constant(argId));
-
-                return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
-            }
-
+            
             /// <summary>
             /// Method that creates delegate
             /// </summary>

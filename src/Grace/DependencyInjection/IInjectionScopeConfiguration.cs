@@ -84,6 +84,11 @@ namespace Grace.DependencyInjection
         bool TrackDisposableTransients { get; }
 
         /// <summary>
+        /// Inject current disposal scope as IDisposable
+        /// </summary>
+        bool InjectIDisposable { get; }
+
+        /// <summary>
         /// Clone configuration
         /// </summary>
         /// <returns></returns>

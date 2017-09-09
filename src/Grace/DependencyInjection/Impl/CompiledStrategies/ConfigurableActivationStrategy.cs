@@ -160,6 +160,15 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         }
 
         /// <summary>
+        /// If not null then instance will be created in new scope.
+        /// </summary>
+        public string CustomScopeName
+        {
+            get => ActivationConfiguration.CustomScopeName;
+            set => ActivationConfiguration.CustomScopeName = value;
+        }
+
+        /// <summary>
         /// Get activation configuration for strategy
         /// </summary>
         /// <param name="activationType"></param>

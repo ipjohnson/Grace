@@ -83,7 +83,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
             var closedMethod = openMethod.MakeGenericMethod(request.ActivationType.GenericTypeArguments);
 
-            var expression = Expression.Call(null, closedMethod, request.Constants.ScopeParameter);
+            var expression = Expression.Call(null, closedMethod, request.ScopeParameter);
 
             return request.Services.Compiler.CreateNewResult(request, expression);
         }

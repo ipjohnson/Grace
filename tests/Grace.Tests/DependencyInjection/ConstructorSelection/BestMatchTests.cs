@@ -127,5 +127,49 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             Assert.NotNull(instance);
             Assert.Null(instance.BasicService);
         }
+
+        public class ConcreteTestClass
+        {
+            public ConcreteTestClass()
+            {
+                throw new Exception("Should not get here");
+            }
+        }
+
+        public class MultipleConstructorWithConcreteType
+        {
+            public MultipleConstructorWithConcreteType(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public MultipleConstructorWithConcreteType(IBasicService basicService, ConcreteTestClass concreteTestClass)
+            {
+                BasicService = basicService;
+                ConcreteTestClass = concreteTestClass;
+            }
+
+            public IBasicService BasicService { get; }
+
+            public ConcreteTestClass ConcreteTestClass { get; }
+        }
+
+        [Fact]
+        public void BestMatchConstructor_FilterConcreteType()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.ExcludeTypeFromAutoRegistration("*ConcreteTestClass");
+            });
+
+            var instance = container.Locate<MultipleConstructorWithConcreteType>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.BasicService);
+            Assert.Null(instance.ConcreteTestClass);
+        }
     }
 }

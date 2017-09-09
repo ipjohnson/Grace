@@ -12,6 +12,18 @@ namespace Grace.Tests.DependencyInjection.AddOns
 
         public class DecoratorProvider : IMissingExportStrategyProvider
         {
+            /// <summary>
+            /// Can a given request be located using this provider
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="request"></param>
+            /// <returns></returns>
+            public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+            {
+                return request.ActivationType.IsConstructedGenericType &&
+                       request.ActivationType.GetGenericTypeDefinition() == typeof(IDependentService<>);
+            }
+
             public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
             {
                 if (request.ActivationType.IsConstructedGenericType &&
@@ -47,30 +59,6 @@ namespace Grace.Tests.DependencyInjection.AddOns
         }
 
         #endregion
-
-        #region Missing wrapper
-        public class WrapperClass<T>
-        {
-            public WrapperClass(T wrapped)
-            {
-                Wrapped = wrapped;
-            }
-
-            public T Wrapped { get; }
-        }
-
-        public class WrapperProvider : IMissingExportStrategyProvider
-        {
-            public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
-            {
-                if (request.ActivationType.IsConstructedGenericType &&
-                    request.ActivationType.GetGenericTypeDefinition() == typeof(WrapperClass<>))
-                {
-                    yield break;
-                }
-            }
-        }
-
-        #endregion
+        
     }
 }

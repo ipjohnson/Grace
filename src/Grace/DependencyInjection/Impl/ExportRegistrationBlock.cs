@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -277,6 +278,24 @@ namespace Grace.DependencyInjection.Impl
             AddExportStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
+        }
+
+        /// <summary>
+        /// Export an expression tree
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public IFluentExportInstanceConfiguration<TResult> ExportExpression<TResult>(Expression<Func<TResult>> expression)
+        {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+
+
+            var strategy = _strategyCreator.GetExpressionExportStrategy(expression);
+
+            AddExportStrategy(strategy);
+
+            return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
 
         /// <summary>

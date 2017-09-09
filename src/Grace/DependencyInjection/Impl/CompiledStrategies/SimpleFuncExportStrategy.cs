@@ -70,11 +70,11 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             if(_func.Target != null)
             {
                 expression = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(),
-                    request.Constants.ScopeParameter);
+                    request.ScopeParameter);
             }
             else
             {
-                expression = Expression.Call(_func.GetMethodInfo(), request.Constants.ScopeParameter);
+                expression = Expression.Call(_func.GetMethodInfo(), request.ScopeParameter);
             }
             return request.Services.Compiler.CreateNewResult(request, expression);
         }

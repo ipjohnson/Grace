@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Conditions;
@@ -153,7 +152,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuraiton object</returns>
         public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector, injectMethods));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector, injectMethods, false));
 
             return this;
         }
@@ -234,6 +233,18 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration WithPriority(int priority)
         {
             _exportConfiguration.Priority = priority;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Defines a custom scope when creating instance
+        /// </summary>
+        /// <param name="customscope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration DefinesNamedScope(string customscope)
+        {
+            _exportConfiguration.CustomScopeName = customscope;
 
             return this;
         }
@@ -411,6 +422,18 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Creates a new scope and then resolves decorators inside of it.
+        /// </summary>
+        /// <param name="namedScope"></param>
+        /// <returns></returns>
+        public IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope)
+        {
+            _exportConfiguration.CustomScopeName = namedScope;
+
+            return this;
+        }
+
+        /// <summary>
         /// You can provide a cleanup method to be called 
         /// </summary>
         /// <param name="disposalCleanupDelegate">action to call when disposing</param>
@@ -550,7 +573,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethod = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true), injectMethod));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true), injectMethod, false));
 
             return this;
         }

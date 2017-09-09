@@ -231,6 +231,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             KnownValueExpressions = ImmutableLinkedList<IKnownValueExpression>.Empty;
             DisposalScopeExpression = constants.RootDisposalScope;
+            ScopeParameter = constants.ScopeParameter;
+            InjectionContextParameter = constants.InjectionContextParameter;
 
             Parent = null;
             IsRequired = true;
@@ -298,6 +300,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Disposal scope expression to use
         /// </summary>
         public ParameterExpression DisposalScopeExpression { get; set; }
+
+        /// <summary>
+        /// export locator scope parameter
+        /// </summary>
+        public Expression ScopeParameter { get; set; }
+
+        /// <summary>
+        /// Injection context parameter
+        /// </summary>
+        public Expression InjectionContextParameter { get; set; }
 
         /// <summary>
         /// Info object for request (MethodInfo, FieldInfo, ParameterInfo)
@@ -501,6 +513,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 RequestingStrategy = requestingStrategy,
                 Info = info,
                 DisposalScopeExpression = DisposalScopeExpression,
+                ScopeParameter = ScopeParameter,
+                InjectionContextParameter = InjectionContextParameter,
                 KnownValueExpressions = KnownValueExpressions
             };
 
@@ -602,7 +616,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return targetInfos.Add(_targetInfo);
         }
-
+        
         /// <summary>
         /// Known values that can be used in request
         /// </summary>

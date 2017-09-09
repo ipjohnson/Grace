@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         var name = propertyInfo.Name;
 
-                        strategy.MemberInjectionSelector(new PublicMemeberInjectionSelector(m => m.Name == name, false) { IsRequired = importInfo.IsRequired });
+                        strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(propertyInfo.PropertyType, m => m.Name == name, false) { IsRequired = importInfo.IsRequired, LocateKey = importInfo.ImportKey });
                     }
                 }
             }
@@ -105,7 +105,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         var name = fieldInfo.Name;
 
-                        strategy.MemberInjectionSelector(new PublicMemeberInjectionSelector(m => m.Name == name, false) { IsRequired = importInfo.IsRequired });
+                        strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(fieldInfo.FieldType, info => info.Name == name, false) { IsRequired = importInfo.IsRequired, LocateKey = importInfo.ImportKey });
                     }
                 }
             }

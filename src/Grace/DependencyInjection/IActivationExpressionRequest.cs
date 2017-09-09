@@ -79,6 +79,16 @@ namespace Grace.DependencyInjection
         Type ActivationType { get; }
 
         /// <summary>
+        /// Hint for locating when multiple
+        /// </summary>
+        object Key { get; }
+
+        /// <summary>
+        /// Hint for where the value should be positioned
+        /// </summary>
+        int? Position { get; }
+
+        /// <summary>
         /// Expression that represents the known value
         /// </summary>
         /// <param name="request">request for expression</param>
@@ -223,6 +233,16 @@ namespace Grace.DependencyInjection
         ParameterExpression DisposalScopeExpression { get; set; }
 
         /// <summary>
+        /// export locator scope parameter
+        /// </summary>
+        Expression ScopeParameter { get; set; }
+
+        /// <summary>
+        /// Injection context parameter
+        /// </summary>
+        Expression InjectionContextParameter { get; set; }
+
+        /// <summary>
         /// Info object for request (MethodInfo, FieldInfo, ParameterInfo)
         /// </summary>
         object Info { get; }
@@ -251,7 +271,7 @@ namespace Grace.DependencyInjection
         /// Is the request dynamic
         /// </summary>
         bool IsDynamic { get; set; }
-
+        
         /// <summary>
         /// Known values that can be used in request
         /// </summary>

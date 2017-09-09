@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Grace.Data;
-using Grace.DependencyInjection.Impl.Expressions;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
@@ -21,7 +19,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="injectionScope"></param>
         public DelegateOneArgWrapperStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
         {
-        
+
         }
 
         /// <summary>
@@ -58,8 +56,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
             var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.Constants.ScopeParameter,
-                    request.DisposalScopeExpression, request.Constants.InjectionContextParameter);
+                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
+                    request.DisposalScopeExpression, request.InjectionContextParameter);
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
@@ -84,14 +82,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="request"></param>
             /// <param name="injectionContextCreator"></param>
             /// <param name="activationStrategy"></param>
-            public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request, 
+            public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request,
                 IInjectionContextCreator injectionContextCreator, IActivationStrategy activationStrategy)
             {
                 _injectionContextCreator = injectionContextCreator;
-                
+
                 var newRequest = request.NewRequest(typeof(TResult), activationStrategy, typeof(TDelegate), RequestType.Other, null, true);
 
-                newRequest.AddKnownValueExpression(CreateKnownValueExpression(request));
+                newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(TArg1), _arg1Id));
 
                 newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
@@ -101,17 +99,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 _action = request.Services.Compiler.CompileDelegate(scope, activationExpression);
 
                 _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod("Func");
-            }
-
-            private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request)
-            {
-                var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
-
-                var argType = typeof(TArg1);
-
-                var callExpression = Expression.Call(request.Constants.InjectionContextParameter, getMethod, Expression.Constant(_arg1Id));
-
-                return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType));
             }
 
             /// <summary>

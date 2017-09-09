@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Lifestyle;
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Grace.Data;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 
@@ -71,7 +70,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             WrapperExpressionCreator = wrapperExpressionCreator;
             _contextValueProvider = contextValueProvider;
         }
-        
+
         /// <summary>
         /// Get a linq expression to satisfy the request
         /// </summary>
@@ -234,21 +233,21 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var expresion = Expression.Call(Expression.Constant(_contextValueProvider),
                                             closedMethod,
-                                            request.Constants.ScopeParameter,
+                                            request.ScopeParameter,
                                             Expression.Constant(request.GetStaticInjectionContext()),
                                             Expression.Constant(key, typeof(object)),
-                                            request.Constants.InjectionContextParameter,
+                                            request.InjectionContextParameter,
                                             Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
                                             Expression.Constant(request.DefaultValue != null),
                                             Expression.Constant(request.IsRequired));
 
-            var result =  request.Services.Compiler.CreateNewResult(request, expresion);
+            var result = request.Services.Compiler.CreateNewResult(request, expresion);
 
             result.UsingFallbackExpression = true;
 
             return result;
         }
-        
+
         /// <summary>
         /// Decorate an export strategy with decorators
         /// </summary>
@@ -305,13 +304,67 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                                                Type activationType,
                                                                object key)
         {
-            var knownValue =
-                request.KnownValueExpressions.FirstOrDefault(
-                    v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo()));
+            var knownValues =
+                request.KnownValueExpressions.Where(
+                    v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo())).ToArray();
 
-            if (knownValue != null)
+            if (knownValues.Length > 0)
             {
-                return knownValue.ValueExpression(request);
+                if (knownValues.Length == 1)
+                {
+                    return knownValues[0].ValueExpression(request);
+                }
+
+                if (key != null)
+                {
+                    IKnownValueExpression knownValue;
+
+                    if (key is string keyString)
+                    {
+                        knownValue = 
+                            knownValues.FirstOrDefault(v => 
+                                string.Compare(keyString, v.Key as string,StringComparison.CurrentCultureIgnoreCase) == 0);
+                    }
+                    else
+                    {
+                        knownValue = knownValues.FirstOrDefault(v => v.Key == key);
+                    }
+
+                    if (knownValue != null)
+                    {
+                        return knownValue.ValueExpression(request);
+                    }
+                }
+
+                if (request.Info is MemberInfo memberInfo)
+                {
+                    var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, memberInfo.Name));
+
+                    if (knownValue != null)
+                    {
+                        return knownValue.ValueExpression(request);
+                    }
+                }
+
+                if (request.Info is ParameterInfo parameterInfo)
+                {
+                    var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name));
+
+                    if (knownValue != null)
+                    {
+                        return knownValue.ValueExpression(request);
+                    }
+
+                    knownValue = knownValues.FirstOrDefault(v =>
+                        Equals(v.Position.GetValueOrDefault(-1), parameterInfo.Position));
+
+                    if (knownValue != null)
+                    {
+                        return knownValue.ValueExpression(request);
+                    }
+                }
+                
+                return knownValues[0].ValueExpression(request);
             }
 
             if (request.WrapperPathNode != null)
@@ -346,7 +399,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod("GetInjectionScope", new[] { typeof(IExportLocatorScope) });
 
-                var expression = Expression.Call(method, request.Constants.ScopeParameter);
+                var expression = Expression.Call(method, request.ScopeParameter);
 
                 return request.Services.Compiler.CreateNewResult(request, expression);
             }
@@ -354,10 +407,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
             if (request.ActivationType == typeof(IExportLocatorScope) ||
                 request.ActivationType == typeof(ILocatorService))
             {
-                return request.Services.Compiler.CreateNewResult(request, request.Constants.ScopeParameter);
+                return request.Services.Compiler.CreateNewResult(request, request.ScopeParameter);
             }
 
-            if (request.ActivationType == typeof(IDisposalScope))
+            if (request.ActivationType == typeof(IDisposalScope) || 
+                (request.ActivationType == typeof(IDisposable) &&
+                 request.RequestingScope.ScopeConfiguration.InjectIDisposable))
             {
                 return request.Services.Compiler.CreateNewResult(request, request.DisposalScopeExpression);
             }
@@ -366,7 +421,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 request.RequireInjectionContext();
 
-                return request.Services.Compiler.CreateNewResult(request, request.Constants.InjectionContextParameter);
+                return request.Services.Compiler.CreateNewResult(request, request.InjectionContextParameter);
             }
 
             if (request.ActivationType == typeof(StaticInjectionContext))
@@ -400,10 +455,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
 
                 var expression = Expression.Call(closedMethod,
-                                                 request.Constants.ScopeParameter,
+                                                 request.ScopeParameter,
                                                  request.DisposalScopeExpression,
                                                  Expression.Constant(request.GetStaticInjectionContext()),
-                                                 request.Constants.InjectionContextParameter,
+                                                 request.InjectionContextParameter,
                                                  Expression.Constant(request.LocateKey, typeof(object)),
                                                  Expression.Constant(request.IsRequired),
                                                  Expression.Constant(request.DefaultValue != null),
@@ -742,4 +797,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         #endregion
     }
 }
+
+
 

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>IL Generation library for Grace dependency injection container</Description>
+    <Authors>Ian Johnson</Authors>
+    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Grace.Factory</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' AND '$(APPVEYOR)' != 'True'">true</PublicSign>
+    <PackageId>Grace.Factory</PackageId>
+    <PackageReleaseNotes>https://github.com/ipjohnson/Grace/wiki/Release-Notes</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/ipjohnson/Grace</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/ipjohnson/Grace/blob/master/License.md</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ipjohnson/Grace</RepositoryUrl>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.1' ">1.6.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Grace\Grace.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
+    <PackageReference Include="System.Reflection.Emit" Version="4.0.1" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

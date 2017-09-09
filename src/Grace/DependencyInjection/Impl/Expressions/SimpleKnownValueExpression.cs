@@ -15,16 +15,30 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="activationType"></param>
         /// <param name="expression"></param>
-        public SimpleKnownValueExpression(Type activationType, Expression expression)
+        /// <param name="key"></param>
+        /// <param name="position"></param>
+        public SimpleKnownValueExpression(Type activationType, Expression expression, object key = null, int? position = null)
         {
             ActivationType = activationType;
             _expression = expression;
+            Key = key;
+            Position = position;
         }
 
         /// <summary>
         /// Type for expression
         /// </summary>
         public Type ActivationType { get; }
+
+        /// <summary>
+        /// Hint for locating when multiple
+        /// </summary>
+        public object Key { get; }
+
+        /// <summary>
+        /// Hint for where the value should be positioned
+        /// </summary>
+        public int? Position { get; }
 
         /// <summary>
         /// Expression that represents the known value

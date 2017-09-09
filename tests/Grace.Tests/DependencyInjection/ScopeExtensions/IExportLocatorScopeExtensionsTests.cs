@@ -1,6 +1,5 @@
 ﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
-using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.ScopeExtensions

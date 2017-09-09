@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Grace.Factory\Grace.Factory.csproj" />
     <ProjectReference Include="..\..\src\Grace\Grace.csproj" />
     <ProjectReference Include="..\..\src\Grace.Dynamic\Grace.Dynamic.csproj" />
   </ItemGroup>
