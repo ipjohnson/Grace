@@ -269,5 +269,26 @@ namespace Grace.DependencyInjection
 
             return block;
         }
+
+        /// <summary>
+        /// Initialize all instance of a specific type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="block"></param>
+        /// <param name="initializeAction"></param>
+        /// <returns></returns>
+        public static IExportRegistrationBlock ExportInitialize<T>(this IExportRegistrationBlock block,
+            Action<T> initializeAction)
+        {
+            var func = new Func<object,object>(instance =>
+            {
+                initializeAction((T) instance);
+                return instance;
+            });
+
+            block.AddInspector(new ExportInitializeInspector(func, typeof(T)));
+
+            return block;
+        }
     }
 }
