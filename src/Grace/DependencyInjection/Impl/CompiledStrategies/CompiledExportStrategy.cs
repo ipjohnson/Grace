@@ -117,7 +117,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             if (newScope != null)
             {
                 result.AddExtraParameter(newScope);
-                result.AddExtraExpression(assignStatement);
+                result.AddExtraExpression(assignStatement, true);
             }
 
             return result;
