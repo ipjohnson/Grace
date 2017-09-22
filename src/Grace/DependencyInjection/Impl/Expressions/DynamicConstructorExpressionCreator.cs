@@ -24,7 +24,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             TypeActivationConfiguration activationConfiguration)
         {
+            // manipulate scope parameter rather 
+            var currentScope = request.ScopeParameter;
+
+            request.ScopeParameter = request.Constants.ScopeParameter;
+
             var activationDelegate = CreateActivationDelegate(scope, request, activationConfiguration);
+
+            request.ScopeParameter = currentScope;
 
             return CreateCallExpression(scope, request, activationConfiguration, activationDelegate);
         }
