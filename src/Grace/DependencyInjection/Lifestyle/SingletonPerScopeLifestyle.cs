@@ -83,7 +83,9 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 typeof(IExportLocatorScope),
                 typeof(ActivationStrategyDelegate),
-                typeof(string)
+                typeof(string),
+                typeof(bool),
+                typeof(IInjectionContext)
             });
 
             var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
@@ -91,7 +93,9 @@ namespace Grace.DependencyInjection.Lifestyle
             var expression = Expression.Call(closedMethod,
                                              request.ScopeParameter,
                                              Expression.Constant(CompiledDelegate),
-                                             Expression.Constant(UniqueId));
+                                             Expression.Constant(UniqueId),
+                                             Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
+                                             request.InjectionContextParameter);
 
             local = Expression.Variable(request.ActivationType);
 
@@ -114,12 +118,14 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope"></param>
         /// <param name="creationDelegate"></param>
         /// <param name="uniqueId"></param>
+        /// <param name="shareContext"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
         public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
-            string uniqueId)
+            string uniqueId, bool shareContext, IInjectionContext context)
         {
             return (T) (scope.GetExtraData(uniqueId) ?? 
-                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, null), false));
+                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, shareContext ? context : null), false));
         }
 
         /// <summary>
@@ -129,8 +135,10 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope"></param>
         /// <param name="creationDelegate"></param>
         /// <param name="uniqueId"></param>
+        /// <param name="shareContext"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate, string uniqueId)
+        public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate, string uniqueId, bool shareContext, IInjectionContext context)
         {
             var value = scope.GetExtraData(uniqueId);
 
@@ -145,7 +153,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                 if (value == null)
                 {
-                    value = creationDelegate(scope, scope, null);
+                    value = creationDelegate(scope, scope, shareContext ? context : null);
 
                     scope.SetExtraData(uniqueId, value);
                 }

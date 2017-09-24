@@ -90,6 +90,12 @@ namespace Grace.DependencyInjection
         public Func<Type, Type, bool> ExportByInterfaceFilter { get; set; }
 
         /// <summary>
+        /// When true the container will pass the current injection context into SingletonPerScope and SingletonPerNamedScope lifestyle.
+        /// By default this is false and a new context is will be created if needed.
+        /// </summary>
+        public bool SingletonPerScopeShareContext { get; set; }
+
+        /// <summary>
         /// Support Func&lt;Type,object&gt; out of the box
         /// </summary>
         public bool SupportFuncType { get; set; }
