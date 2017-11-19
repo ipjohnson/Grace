@@ -310,5 +310,35 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             var functioned = myFunc("funcString", 667);
         }
+
+        public class BasicDependency 
+        {
+            public BasicDependency(IBasicService basicService, string testString)
+            {
+                BasicService = basicService;
+                TestString = testString;
+            }
+
+            public IBasicService BasicService { get; }
+
+            public string TestString { get; }
+        }
+
+        [Fact]
+        public void DynamicConstructorSelection_WithCtorParam_Func()
+        {
+            DependencyInjectionContainer container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic); // ß not sure about the Dynamic strategy
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<DependentService<BasicDependency>>()
+                        .WithCtorParam((IBasicService service) => new BasicDependency(service, "SomeValue"));
+            });
+
+            var instance = container.Locate<DependentService<BasicDependency>>();
+
+            Assert.NotNull(instance);
+        }
     }
 }

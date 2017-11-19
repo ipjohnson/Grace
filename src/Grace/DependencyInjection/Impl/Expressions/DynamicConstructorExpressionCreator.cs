@@ -241,7 +241,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             return true;
                         }
 
-                        return true;
+                        return false;
                     });
 
                 if (standardParameters)
