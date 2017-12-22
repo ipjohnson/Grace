@@ -25,7 +25,7 @@ namespace Grace.Tests.DependencyInjection.Factory
         }
 
         [Fact]
-        public void Factory_Depend_On_IExportLocatorScope_StaticContext()
+        public void Factory_Depend_On_StaticContext()
         {
             var container = new DependencyInjectionContainer();
 
