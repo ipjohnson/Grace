@@ -210,20 +210,25 @@ namespace Grace.Tests.DependencyInjection.Generics
             var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.AddActivationStrategy(new GenericFatoryExportStrategy(container,
-                typeof(ITestGenericService<>), FactoryMethod)));
+                typeof(ITestGenericService<>), FactoryMethod){Lifestyle = new SingletonLifestyle()}));
 
             var instance = container.Locate<ITestGenericService<int>>();
 
             Assert.NotNull(instance);
             Assert.IsType<Impl1>(instance);
 
+            Assert.Same(instance, container.Locate<ITestGenericService<int>>());
 
             var instance2 = container.Locate<ITestGenericService<string>>();
 
             Assert.NotNull(instance2);
             Assert.IsType<Impl2>(instance2);
 
+            Assert.Same(instance2, container.Locate<ITestGenericService<string>>());
+
             Assert.ThrowsAny<Exception>(() => container.Locate<ITestGenericService<double>>());
+
+
         }
 
         private static object FactoryMethod(Type type)
