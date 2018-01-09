@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.Tests.Classes.Generics;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -257,6 +258,25 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.False(disposedTransient);
         }
 
+        [Fact]
+        public void KeyedWithGeneric()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(ImportGenericService<>)).AsKeyed(typeof(IImportGenericService<>), "A");
+                c.Export<BasicService>().As<IBasicService>();
+            });
+
+            var service = container.Locate<IImportGenericService<IBasicService>>(withKey: "A");
+
+            Assert.NotNull(service);
+            Assert.NotNull(service.Value);
+            Assert.IsType<BasicService>(service.Value);
+        }
+
+
         //public class FuncFactoryClass
         //{
         //    private Func<DisposableService> _func;
@@ -308,7 +328,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         //    Assert.False(disposedTransient);
         //}
 
-       
+
         [Fact]
         public void Keyed_As_Way_Of_Picking_Based_On_Scope()
         {
