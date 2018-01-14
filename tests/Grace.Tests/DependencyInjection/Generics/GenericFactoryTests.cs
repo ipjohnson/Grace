@@ -2,33 +2,28 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Grace.Data.Immutable;
-using Grace.DependencyInjection.Impl.Expressions;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Utilities;
+using Xunit;
 
-namespace Grace.DependencyInjection.Impl.CompiledStrategies
+namespace Grace.Tests.DependencyInjection.Generics
 {
-    /// <summary>
-    /// Export strategy for open generic types
-    /// </summary>
-    public class GenericCompiledExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
+    public class GenericFatoryExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
     {
-        private readonly IDefaultStrategyExpressionBuilder _builder;
         private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
         private ImmutableHashTree<Type, ICompiledLifestyle> _lifestyles = ImmutableHashTree<Type, ICompiledLifestyle>.Empty;
         private ImmutableLinkedList<ICompiledExportStrategy> _secondaryStrategies = ImmutableLinkedList<ICompiledExportStrategy>.Empty;
+        private Func<Type, object> _factory;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="activationType"></param>
-        /// <param name="injectionScope"></param>
-        /// <param name="builder"></param>
-        public GenericCompiledExportStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) : base(activationType, injectionScope)
+        public GenericFatoryExportStrategy(IInjectionScope scope, Type activationType, Func<Type, object> factory) : base(activationType, scope)
         {
-            _builder = builder;
+            _factory = factory;
         }
 
         /// <summary>
@@ -111,13 +106,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
-            var activationType = request.ActivationType;
-
-            var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
-
-            var activation = GetActivationConfiguration(closedType);
-
-            return _builder.GetActivationExpression(scope, request, activation, lifestyle);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -130,46 +119,31 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             var activationType = request.ActivationType;
 
-            var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
+            var activation = GetActivationConfiguration(activationType);
 
-            if (closedType == null)
+            if (activation.Lifestyle == null)
             {
-                return null;
+                return CreateExpression(request, activationType);
             }
 
-            var activation = GetActivationConfiguration(closedType);
+            return activation.Lifestyle.ProvideLifestyleExpression(scope, request, r => CreateExpression(r, activationType));
+        }
 
-            scope.ScopeConfiguration.Trace?.Invoke($"Activating {closedType.FullName} with lifestyle '{Lifestyle}' for request type {activationType.FullName}");
+        private IActivationExpressionResult CreateExpression(IActivationExpressionRequest request, Type activationType)
+        {
+            Expression expression;
 
-
-            Expression assignStatement = null;
-            ParameterExpression newScope = null;
-
-            if (ActivationConfiguration.CustomScopeName != null)
+            if (_factory.Target != null)
             {
-                newScope = Expression.Variable(typeof(IExportLocatorScope));
-
-                var beginScopeMethod =
-                    typeof(IExportLocatorScope).GetTypeInfo().GetDeclaredMethod("BeginLifetimeScope");
-
-                assignStatement =
-                    Expression.Assign(newScope,
-                        Expression.Call(request.ScopeParameter, beginScopeMethod,
-                            Expression.Constant(ActivationConfiguration.CustomScopeName)));
-
-                request.ScopeParameter = newScope;
+                expression = Expression.Call(Expression.Constant(_factory.Target), _factory.GetMethodInfo(),
+                    Expression.Constant(activationType));
             }
-            
-            var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this) ?? 
-                        _builder.GetActivationExpression(scope, request, activation, activation.Lifestyle);
-            
-            if (newScope != null)
+            else
             {
-                result.AddExtraParameter(newScope);
-                result.AddExtraExpression(assignStatement, true);
+                expression = Expression.Call(_factory.GetMethodInfo(), Expression.Constant(activationType));
             }
 
-            return result;
+            return request.Services.Compiler.CreateNewResult(request, expression);
         }
 
         /// <summary>
@@ -211,5 +185,66 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             return ImmutableHashTree.ThreadSafeAdd(ref _lifestyles, activationType, lifestyle);
         }
+    }
+
+    public class GenericFactoryTests
+    {
+        public interface ITestGenericService<T>
+        {
+            T Value { get; }
+        }
+
+        public class Impl1 : ITestGenericService<int>
+        {
+            public int Value => 10;
+        }
+
+        public class Impl2 : ITestGenericService<string>
+        {
+            public string Value => "Test-String";
+        }
+
+        [Fact]
+        public void GenericFactory()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.AddActivationStrategy(new GenericFatoryExportStrategy(container,
+                typeof(ITestGenericService<>), FactoryMethod){Lifestyle = new SingletonLifestyle()}));
+
+            var instance = container.Locate<ITestGenericService<int>>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<Impl1>(instance);
+
+            Assert.Same(instance, container.Locate<ITestGenericService<int>>());
+
+            var instance2 = container.Locate<ITestGenericService<string>>();
+
+            Assert.NotNull(instance2);
+            Assert.IsType<Impl2>(instance2);
+
+            Assert.Same(instance2, container.Locate<ITestGenericService<string>>());
+
+            Assert.ThrowsAny<Exception>(() => container.Locate<ITestGenericService<double>>());
+
+
+        }
+
+        private static object FactoryMethod(Type type)
+        {
+            if (type == typeof(ITestGenericService<int>))
+            {
+                return new Impl1();
+            }
+
+            if (type == typeof(ITestGenericService<string>))
+            {
+                return new Impl2();
+            }
+
+            throw new Exception("Cannot create");
+        }
+
     }
 }

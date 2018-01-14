@@ -421,7 +421,26 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = collection?.GetKeyedStrategy(key);
 
-            return strategy?.GetActivationStrategyDelegate(scope, this, locateType);
+            if (strategy != null)
+            {
+                return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+            }
+
+            if (locateType.IsConstructedGenericType)
+            {
+                var openGeneric = locateType.GetGenericTypeDefinition();
+
+                collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(openGeneric);
+
+                strategy = collection?.GetKeyedStrategy(key);
+
+                if (strategy != null)
+                {
+                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                }
+            }
+
+            return null;
         }
         
         private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)

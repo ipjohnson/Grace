@@ -133,7 +133,7 @@ namespace Grace.DependencyInjection.Impl
 
             return func != null ?
                    func(this, this, extraData == null ? null : CreateContext(extraData)) :
-                   LocateFromParent(type, null, null, null, allowNull: false, isDynamic: false);
+                   LocateFromParent(type, extraData, null, null, allowNull: false, isDynamic: false);
         }
 
         /// <summary>

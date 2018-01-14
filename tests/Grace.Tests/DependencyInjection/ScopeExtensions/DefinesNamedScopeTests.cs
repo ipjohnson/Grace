@@ -17,14 +17,14 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
                 _disposableService = disposableService;
                 _disposable = disposable;
             }
-            
+
             /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
             public void Dispose()
             {
                 _disposable?.Dispose();
             }
         }
-        
+
         public class GenericDependentClass<T> : IDisposable
         {
             private readonly IDisposable _disposable;
@@ -58,7 +58,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
 
                     var service = new DisposableService();
 
-                    service.Disposing += (o,e) => disposed = true;
+                    service.Disposing += (o, e) => disposed = true;
 
                     return service;
                 });
@@ -110,5 +110,24 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
 
             Assert.True(disposed);
         }
+
+        [Fact]
+        public void DefinesNamedScope_DynamicConstructor()
+        {
+            var container = new DependencyInjectionContainer(c =>
+                c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(DependentService<>)).As(typeof(IDependentService<>)).ExternallyOwned()
+                    .DefinesNamedScope("SomeScope");
+            });
+
+            var instance = container.Locate<IDependentService<IExportLocatorScope>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal("SomeScope", instance.Value.ScopeName);
+        }
+
     }
 }
