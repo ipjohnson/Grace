@@ -4,6 +4,7 @@ using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
+using Grace.Diagnostics;
 using Grace.Tests.Classes.Simple;
 using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
@@ -259,6 +260,21 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance);
             Assert.NotNull(instance2);
             Assert.Same(instance, instance2);
+        }
+
+        [Fact]
+        public void ExportTypeSet_Commands()
+        {
+            var container = new DependencyInjectionContainer(c => c.SupportFuncType = false);
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<CommandA>().ByInterface(typeof(ICommand<>));
+            });
+
+            var exports = container.StrategyCollectionContainer.GetAllStrategies().ToList();
+
+            Assert.Equal(3, exports.Count);
         }
 
         [Fact]
