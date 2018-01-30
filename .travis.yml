@@ -1,7 +1,7 @@
 dist: trusty
 language: csharp
 mono: none
-dotnet: 2.1.3
+dotnet: 1.1.6
 install:
   - dotnet restore Grace.sln
 script:
