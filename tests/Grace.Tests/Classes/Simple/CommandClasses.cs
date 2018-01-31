@@ -37,4 +37,44 @@ namespace Grace.Tests.Classes.Simple
 
         }
     }
+
+    public class OtherCommand : ICommand<int>
+    {
+        public void DoSomething(int value)
+        {
+
+        }
+    }
+
+    public class LoggingComand<T> : ICommand<T>
+    {
+        private ICommand<T> _command;
+
+        public LoggingComand(ICommand<T> command)
+        {
+            _command = command;
+        }
+
+        public void DoSomething(T value)
+        {
+            // Log
+            _command.DoSomething(value);
+        }
+    }
+
+    public class ValidatingCommand<T> : ICommand<T>
+    {
+        private ICommand<T> _command;
+
+        public ValidatingCommand(ICommand<T> command)
+        {
+            _command = command;
+        }
+
+        public void DoSomething(T value)
+        {
+            // validate
+            _command.DoSomething(value);
+        }
+    }
 }

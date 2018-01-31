@@ -274,7 +274,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             var exports = container.StrategyCollectionContainer.GetAllStrategies().ToList();
 
-            Assert.Equal(3, exports.Count);
+            Assert.Equal(6, exports.Count);
         }
 
         [Fact]
