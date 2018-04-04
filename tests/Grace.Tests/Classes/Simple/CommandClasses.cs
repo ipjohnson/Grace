@@ -49,10 +49,12 @@ namespace Grace.Tests.Classes.Simple
     public class LoggingComand<T> : ICommand<T>
     {
         private ICommand<T> _command;
+        private IBasicService _basicService;
 
-        public LoggingComand(ICommand<T> command)
+        public LoggingComand(IBasicService basicService, ICommand<T> command)
         {
             _command = command;
+            _basicService = basicService;
         }
 
         public void DoSomething(T value)
@@ -65,10 +67,12 @@ namespace Grace.Tests.Classes.Simple
     public class ValidatingCommand<T> : ICommand<T>
     {
         private ICommand<T> _command;
+        private IBasicService _basicService;
 
-        public ValidatingCommand(ICommand<T> command)
+        public ValidatingCommand( IBasicService basicService, ICommand<T> command)
         {
             _command = command;
+            _basicService = basicService;
         }
 
         public void DoSomething(T value)

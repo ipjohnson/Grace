@@ -41,6 +41,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
             container.Configure(c =>
             {
+                c.Export<BasicService>().As<IBasicService>();
                 c.Export<CommandA>().As<ICommand<int>>();
                 c.Export<OtherCommand>().As<ICommand<int>>();
                 c.ExportDecorator(typeof(ValidatingCommand<>)).As(typeof(ICommand<>)).When

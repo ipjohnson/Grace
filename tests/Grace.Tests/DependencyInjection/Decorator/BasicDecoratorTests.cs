@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -87,6 +88,27 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
             Assert.Equal(instance1.InstanceGuid, instance2.InstanceGuid);
             Assert.NotEqual(instance1.DecoratorGuid, instance2.DecoratorGuid);
+        }
+
+        [Fact]
+        public void MultipleDecoratorWithMultipleConstructorParameters()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().As<IBasicService>();
+                c.Export<CommandA>().As<ICommand<int>>();
+                c.Export<OtherCommand>().As<ICommand<int>>();
+                c.ExportDecorator(typeof(ValidatingCommand<>)).As(typeof(ICommand<>));
+                c.ExportDecorator(typeof(LoggingComand<>)).As(typeof(ICommand<>));
+            });
+
+            var instances = container.Locate<List<ICommand<int>>>();
+
+            Assert.Equal(2, instances.Count);
+            Assert.IsType<LoggingComand<int>>(instances[0]);
+            Assert.IsType<LoggingComand<int>>(instances[1]);
         }
     }
 }
