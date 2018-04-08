@@ -100,7 +100,7 @@ namespace Grace.Data
                 builder.Append(currentType.Name);
             }
         }
-        
+
         /// <summary>
         /// Checks to see if checkType is based on baseType
         /// Both inheritance and interface implementation is considered
@@ -201,9 +201,7 @@ namespace Grace.Data
                 return values;
             }
 
-            var array = annonymousObject as Array;
-
-            if (array != null)
+            if (annonymousObject is Array array)
             {
                 var i = 0;
 
@@ -216,9 +214,7 @@ namespace Grace.Data
                 return values;
             }
 
-            var dictionary = annonymousObject as IDictionary<string, object>;
-
-            if (dictionary != null)
+            if (annonymousObject is IDictionary<string, object> dictionary)
             {
                 return dictionary.Aggregate(values,
                     (v, kvp) => v.Add(kvp.Key, kvp.Value));
@@ -251,13 +247,13 @@ namespace Grace.Data
             switch (casing)
             {
                 case PropertyCasing.Default:
-                    _propertyDelegates = _propertyDelegates.Add(objectType, propertyDelegate);
+                    ImmutableHashTree.ThreadSafeAdd(ref _propertyDelegates, objectType, propertyDelegate);
                     break;
                 case PropertyCasing.Lower:
-                    _lowerCasePropertyDelegates = _lowerCasePropertyDelegates.Add(objectType, propertyDelegate);
+                    ImmutableHashTree.ThreadSafeAdd(ref _lowerCasePropertyDelegates, objectType, propertyDelegate);
                     break;
                 case PropertyCasing.Upper:
-                    _upperCasePropertyDelegates = _upperCasePropertyDelegates.Add(objectType, propertyDelegate);
+                    ImmutableHashTree.ThreadSafeAdd(ref _upperCasePropertyDelegates, objectType, propertyDelegate);
                     break;
             }
 
@@ -353,7 +349,7 @@ namespace Grace.Data
             var scopeParameter = Expression.Parameter(typeof(IExportLocatorScope));
             var staticParameter = Expression.Parameter(typeof(StaticInjectionContext));
             var injectionParameter = Expression.Parameter(typeof(IInjectionContext));
-            var delegateParameter  = Expression.Parameter(typeof(Delegate));
+            var delegateParameter = Expression.Parameter(typeof(Delegate));
 
             var method = @delegate.GetType().GetRuntimeMethods().First(m => m.Name == "Invoke");
 
@@ -384,7 +380,7 @@ namespace Grace.Data
                             Expression.Constant(null, typeof(object)),
                             Expression.Constant(false)
                         );
-                    
+
                     expressions.Add(locateParameter);
                 }
             }
@@ -404,6 +400,6 @@ namespace Grace.Data
         }
 
         private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
-            new[] {typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool)});
+            new[] { typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool) });
     }
 }

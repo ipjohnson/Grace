@@ -49,8 +49,7 @@ namespace Grace.DependencyInjection.Impl
             _scopeConfiguration = scopeConfiguration;
             _whereFilter = new GenericFilterGroup<Type>(ShouldSkipType, ExcludeTypesFilter);
         }
-
-
+        
         /// <summary>
         /// Add conditions for export
         /// </summary>
@@ -342,6 +341,11 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var type in types)
             {
+                if (!type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic && !c.IsAbstract))
+                {
+                    continue;
+                }
+
                 var exportTypes = GetExportedTypes(type);
                 var keyedExports = GetKeyedExportTypes(type);
                 var names = GetExportNames(type);
@@ -576,7 +580,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
                     {
-                        if (implementedInterface.GetTypeInfo().IsGenericTypeDefinition &&
+                        if (implementedInterface.GetTypeInfo().IsGenericType &&
                              implementedInterface.GetGenericTypeDefinition() == exportInterface)
                         {
                             returnList = returnList.Add(type.GetTypeInfo().IsGenericTypeDefinition ? exportInterface : implementedInterface);

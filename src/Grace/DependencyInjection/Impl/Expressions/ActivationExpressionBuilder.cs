@@ -371,7 +371,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var configuration = request.WrapperPathNode.Strategy.GetActivationConfiguration(activationType);
 
-                if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+                if (configuration.ActivationType != null && 
+                    activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
                 {
                     var wrapper = request.PopWrapperPathNode();
 
@@ -382,7 +383,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var configuration = request.DecoratorPathNode.Strategy.GetActivationConfiguration(activationType);
 
-                if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+                if (configuration.ActivationType != null &&
+                    activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
                 {
                     var decorator = request.PopDecoratorPathNode();
 

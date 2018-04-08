@@ -143,9 +143,14 @@ namespace Grace.Tests.DependencyInjection.Generics
                 expression = Expression.Call(_factory.GetMethodInfo(), Expression.Constant(activationType));
             }
 
+            if(expression.Type != activationType)
+            {
+                expression = Expression.Convert(expression, activationType);
+            }
+
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
-
+        
         /// <summary>
         /// Add a secondary strategy for this export strategy
         /// </summary>
@@ -229,6 +234,31 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.ThrowsAny<Exception>(() => container.Locate<ITestGenericService<double>>());
 
 
+        }
+
+        public class Outer
+        {
+            public GenericFactoryTests.ITestGenericService<int> IntService { get; }
+
+            public Outer(GenericFactoryTests.ITestGenericService<int> intService)
+            {
+                IntService = intService;
+            }
+        }
+
+        [Fact]
+        public void GenericFactoryIntoConstructor()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.AddActivationStrategy(new GenericFatoryExportStrategy(container,
+                typeof(ITestGenericService<>), FactoryMethod)));
+
+            var outer = container.Locate<Outer>();
+            Assert.NotNull(outer);
+            Assert.IsType<Outer>(outer);
+            Assert.NotNull(outer.IntService);
+            Assert.IsType<GenericFactoryTests.Impl1>(outer.IntService);
         }
 
         private static object FactoryMethod(Type type)
