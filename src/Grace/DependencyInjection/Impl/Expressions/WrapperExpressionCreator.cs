@@ -181,7 +181,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             var primary = request.Filter == null ? collection.GetPrimary() : null;
 
-                            if (primary != null)
+                            if (primary != null && primary != request.RequestingStrategy)
                             {
                                 wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
                                     .Add(new WrapperActivationPathNode(primary, wrappedType, null))
@@ -207,6 +207,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                     }
 
                                     if (pass &&
+                                        request.RequestingStrategy != strategy &&
                                         (request.Filter == null || request.Filter(strategy)))
                                     {
                                         wrappers = ImmutableLinkedList<IActivationPathNode>.Empty

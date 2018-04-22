@@ -576,7 +576,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     var strategy = request.Filter == null ? collection.GetPrimary() : null;
 
-                    if (strategy != null)
+                    if (strategy != null && 
+                        strategy != request.RequestingStrategy)
                     {
                         var result = ActivationExpressionForStrategy(scope, request, strategy);
 
@@ -620,6 +621,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     {
                         continue;
                     }
+                }
+
+                if (request.RequestingStrategy == strategy)
+                {
+                    continue;
                 }
 
                 result = strategy.GetActivationExpression(scope, request);

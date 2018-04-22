@@ -54,7 +54,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         protected virtual IActivationExpressionResult CreateExpression(IInjectionScope scope,
             IActivationExpressionRequest request)
         {
-            return ExpressionUtilities.CreateExpressionForDelegate(DelegateInstance, ShouldTrackDisposable(scope), scope, request);
+            return ExpressionUtilities.CreateExpressionForDelegate(DelegateInstance, ShouldTrackDisposable(scope), scope, request, this);
         }
         
         private bool ShouldTrackDisposable(IInjectionScope scope)
