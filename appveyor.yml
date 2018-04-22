@@ -24,6 +24,7 @@ after_build:
 test_script:
 - cmd: cd tests/Grace.Tests/
 - cmd: CodeCoverageAppVeyor.cmd
+- ps: dotnet test tests/Grace.Tests/Grace.Tests.csproj
 artifacts:
 - path: Grace*.nupkg
   name: Grace
