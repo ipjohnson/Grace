@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get data from injection context
         /// </summary>
-        /// <param name="scope"></param>
+        /// <param name="locator"></param>
         /// <param name="type"></param>
         /// <param name="key"></param>
         /// <param name="context"></param>
