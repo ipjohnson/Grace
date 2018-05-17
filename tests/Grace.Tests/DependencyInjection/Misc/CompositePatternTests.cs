@@ -58,5 +58,26 @@ namespace Grace.Tests.DependencyInjection.Misc
         }
 
 
+        [Fact]
+        public void CompositeDecoratorFactoryFuncTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<TestContext>();
+                c.ExportDecoratorFactory<Func<TestContext>, TestContext>(func =>
+                {
+                    var context = func();
+                    context.Id = Guid.NewGuid();
+                    return context;
+                });
+            });
+
+            var instance = container.Locate<TestContext>();
+
+            Assert.NotNull(instance);
+            Assert.NotEqual(instance.Id, Guid.Empty);
+        }
     }
 }
