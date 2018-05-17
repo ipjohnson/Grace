@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
@@ -115,6 +116,12 @@ namespace Grace.DependencyInjection
             }
 
             throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
+        }
+
+        public static void ExportDecoratorFactory<T, TResult>(this IExportRegistrationBlock registrationBlock,
+            Func<T, TResult> factory)
+        {
+            registrationBlock.AddActivationStrategy(new CompiledFactoryDecoratorStrategy<TResult>(factory, registrationBlock.OwningScope));
         }
 
         /// <summary>
@@ -280,11 +287,11 @@ namespace Grace.DependencyInjection
         public static IExportRegistrationBlock ExportInitialize<T>(this IExportRegistrationBlock block,
             Action<T> initializeAction)
         {
-            var func = new Func<object,object>(instance =>
-            {
-                initializeAction((T) instance);
-                return instance;
-            });
+            var func = new Func<object, object>(instance =>
+             {
+                 initializeAction((T)instance);
+                 return instance;
+             });
 
             block.AddInspector(new ExportInitializeInspector(func, typeof(T)));
 

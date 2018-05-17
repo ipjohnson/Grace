@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection
         /// <param name="apply">decorator logic</param>
         /// <param name="applyAfterLifestyle"></param>
         void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true);
-
+        
         /// <summary>
         /// Export an expression tree
         /// </summary>
