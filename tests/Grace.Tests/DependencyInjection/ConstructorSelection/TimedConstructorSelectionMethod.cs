@@ -28,7 +28,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             var createDelegate = request.Services.Compiler.CompileDelegate(scope, timedCreateExpression);
 
-            return ExpressionUtilities.CreateExpressionForDelegate(createDelegate, false, scope, request);
+            return ExpressionUtilities.CreateExpressionForDelegate(createDelegate, false, scope, request, activationConfiguration.ActivationStrategy);
         }
 
         private IActivationExpressionResult CreateTimedCreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult expression)

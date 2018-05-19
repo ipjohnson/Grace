@@ -18,8 +18,7 @@ namespace Grace.DependencyInjection.Impl
         {
             _strategy = strategy;
         }
-
-
+        
         /// <summary>
         /// Apply decorator after lifestyle, by default it's before
         /// </summary>

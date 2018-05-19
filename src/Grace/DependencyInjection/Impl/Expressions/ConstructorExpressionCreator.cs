@@ -208,7 +208,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,
                 RequestType.ConstructorParameter, parameter, false, true);
 
-            return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned, injectionScope, strategy), injectionScope, newRequest);
+            return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned, injectionScope, strategy), injectionScope, newRequest, strategy);
         }
 
         /// <summary>

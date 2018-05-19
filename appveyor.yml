@@ -1,6 +1,6 @@
 environment:
-  build_version: 6.3.3
-  Version: $(build_version)
+  build_version: 6.3.4
+  Version: $(build_version)-Nightly%APPVEYOR_BUILD_NUMBER%
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
 version: $(build_version)-{build}
@@ -24,7 +24,10 @@ after_build:
 test_script:
 - cmd: cd tests/Grace.Tests/
 - cmd: CodeCoverageAppVeyor.cmd
+- sh: dotnet test tests/Grace.Tests/Grace.Tests.csproj
 artifacts:
 - path: Grace*.nupkg
   name: Grace
-os: Visual Studio 2017
+image:
+- Visual Studio 2017
+- Ubuntu

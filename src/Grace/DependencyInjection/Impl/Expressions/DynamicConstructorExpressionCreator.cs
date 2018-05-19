@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected virtual IActivationExpressionResult CreateCallExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, ActivationStrategyDelegate activationDelegate)
         {
             return ExpressionUtilities.CreateExpressionForDelegate(activationDelegate, activationConfiguration.ExternallyOwned,
-                scope, request);
+                scope, request, activationConfiguration.ActivationStrategy);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var delegateValue = (Delegate)parameterInfo.ExportFunc;
 
                 var expressionCall = ExpressionUtilities.CreateExpressionForDelegate(delegateValue,
-                    activationConfiguration.ExternallyOwned, scope, newRequest);
+                    activationConfiguration.ExternallyOwned, scope, newRequest, activationConfiguration.ActivationStrategy);
 
                 var standardParameters = delegateValue.GetMethodInfo()
                     .GetParameters()
@@ -255,7 +255,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var compiledDelegate = request.Services.Compiler.CompileDelegate(scope, expressionCall);
 
                 expressionCall =
-                    ExpressionUtilities.CreateExpressionForDelegate(compiledDelegate, false, scope, newRequest);
+                    ExpressionUtilities.CreateExpressionForDelegate(compiledDelegate, false, scope, newRequest, activationConfiguration.ActivationStrategy);
 
                 return expressionCall.Expression;
             }

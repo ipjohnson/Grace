@@ -49,9 +49,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="allowDisposableTracking"></param>
         /// <param name="scope"></param>
         /// <param name="request"></param>
+        /// <param name="requestingStrategy"></param>
         /// <returns></returns>
         public static IActivationExpressionResult CreateExpressionForDelegate(Delegate delegateInstance, bool allowDisposableTracking, IInjectionScope scope,
-            IActivationExpressionRequest request)
+            IActivationExpressionRequest request, IActivationStrategy requestingStrategy)
         {
             var methodInfo = delegateInstance.GetMethodInfo();
 
@@ -61,7 +62,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             // Handle closure based delegates differently
             if (delegateInstance.Target != null && delegateInstance.Target.GetType().FullName == _closureName)
             {
-                resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
+                resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
                     methodInfo.GetParameters().
                         Where(p => !(p.Position == 0 && p.ParameterType.FullName == "System.Runtime.CompilerServices.Closure")).
                         Select(p => p.ParameterType).ToArray());
@@ -72,7 +73,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
             else
             {
-                resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
+                resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
                     methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
 
                 expression = methodInfo.IsStatic
