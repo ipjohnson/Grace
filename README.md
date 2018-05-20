@@ -46,4 +46,4 @@ Features in Grace
 * [ASP.Net MVC 4 & 5](https://github.com/ipjohnson/Grace.MVC) support
 * [Source Link](https://github.com/dotnet/sourcelink) support enabled.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Build Status](https://travis-ci.org/ipjohnson/Grace.svg?branch=master)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
