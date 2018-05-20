@@ -16,7 +16,6 @@ before_build:
 build:
   project: Grace.sln
   publish_nuget: true
-  publish_nuget_symbols: true
   verbosity: minimal
 test_script:
 - cmd: cd tests/Grace.Tests/
