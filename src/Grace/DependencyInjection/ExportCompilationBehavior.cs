@@ -107,16 +107,8 @@ namespace Grace.DependencyInjection
         /// </summary>
         public Func<Type, bool> KeyedTypeSelector
         {
-            get { return _keyedTypeSelector; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(KeyedTypeSelector), "value must not be null");
-                }
-
-                _keyedTypeSelector = value;
-            }
+            get => _keyedTypeSelector;
+            set => _keyedTypeSelector = value ?? throw new ArgumentNullException(nameof(KeyedTypeSelector), "value must not be null");
         }
 
         /// <summary>
