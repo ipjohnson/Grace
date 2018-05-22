@@ -121,14 +121,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
             foreach (var parameter in methodInjection.Method.GetParameters())
             {
                 object key = null;
-                bool isOptinal = false;
 
                 if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
                 {
                     key = parameter.Name;
                 }
 
-                var found = parameter.ParameterType.IsGenericParameter || isOptinal ||
+                var found = parameter.ParameterType.IsGenericParameter ||
                             request.RequestingScope.CanLocate(parameter.ParameterType, key: key);
 
                 list =
