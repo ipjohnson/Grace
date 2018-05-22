@@ -121,13 +121,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
             foreach (var parameter in methodInjection.Method.GetParameters())
             {
                 object key = null;
+                bool isOptinal = false;
 
                 if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
                 {
                     key = parameter.Name;
                 }
 
-                var found = parameter.ParameterType.IsGenericParameter ||
+                var found = parameter.ParameterType.IsGenericParameter || isOptinal ||
                             request.RequestingScope.CanLocate(parameter.ParameterType, key: key);
 
                 list =
@@ -159,6 +160,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
                 {
                     parameterRequest.SetLocateKey(parameter.Name);
+                }
+
+                var parameterInfo = methodInjectionInfo.ParameterInfos()
+                    .Where(p => p.ParameterName == parameter.Name)
+                    .FirstOrDefault();
+
+                if (parameterInfo != null)
+                {
+                    parameterRequest.SetIsRequired(parameterInfo.IsRequired);
+                    parameterRequest.SetLocateKey(parameterInfo.LocateKey);
                 }
 
                 var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, parameterRequest);
