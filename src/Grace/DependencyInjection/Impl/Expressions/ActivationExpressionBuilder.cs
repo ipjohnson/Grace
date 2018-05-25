@@ -231,7 +231,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 key = ((string)key).ToLowerInvariant();
             }
 
-            var expresion = Expression.Call(Expression.Constant(_contextValueProvider),
+            var expression = Expression.Call(Expression.Constant(_contextValueProvider),
                                             closedMethod,
                                             request.ScopeParameter,
                                             Expression.Constant(request.GetStaticInjectionContext()),
@@ -241,7 +241,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                             Expression.Constant(request.DefaultValue != null),
                                             Expression.Constant(request.IsRequired));
 
-            var result = request.Services.Compiler.CreateNewResult(request, expresion);
+            var result = request.Services.Compiler.CreateNewResult(request, expression);
 
             result.UsingFallbackExpression = true;
 
