@@ -161,6 +161,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     parameterRequest.SetLocateKey(parameter.Name);
                 }
 
+                var parameterInfo = methodInjectionInfo.ParameterInfos()
+                    .Where(p => p.ParameterName == parameter.Name)
+                    .FirstOrDefault();
+
+                if (parameterInfo != null)
+                {
+                    parameterRequest.SetIsRequired(parameterInfo.IsRequired);
+                    parameterRequest.SetLocateKey(parameterInfo.LocateKey);
+                }
+
                 var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, parameterRequest);
 
                 parameterResults.Add(result);
