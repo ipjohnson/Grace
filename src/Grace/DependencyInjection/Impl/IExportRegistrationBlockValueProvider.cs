@@ -38,6 +38,12 @@ namespace Grace.DependencyInjection.Impl
         IEnumerable<IMissingExportStrategyProvider> GetMissingExportStrategyProviders();
 
         /// <summary>
+        /// Get list of missing dependency expression providers
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IMissingDependencyExpressionProvider> GetMissingDependencyExpressionProviders();
+
+        /// <summary>
         /// Get list of value providers
         /// </summary>
         /// <returns></returns>

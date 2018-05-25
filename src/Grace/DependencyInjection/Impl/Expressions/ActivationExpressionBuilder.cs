@@ -154,9 +154,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
             }
 
-            var parent = scope.Parent as IInjectionScope;
+            foreach (var scopeMissingDependencyExpressionProvider in scope.MissingDependencyExpressionProviders)
+            {
+                var result = scopeMissingDependencyExpressionProvider.ProvideExpression(scope, request);
 
-            if (parent != null)
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            if (scope.Parent is IInjectionScope parent)
             {
                 return GetActivationExpression(parent, request);
             }
@@ -321,9 +329,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (key is string keyString)
                     {
-                        knownValue = 
-                            knownValues.FirstOrDefault(v => 
-                                string.Compare(keyString, v.Key as string,StringComparison.CurrentCultureIgnoreCase) == 0);
+                        knownValue =
+                            knownValues.FirstOrDefault(v =>
+                                string.Compare(keyString, v.Key as string, StringComparison.CurrentCultureIgnoreCase) == 0);
                     }
                     else
                     {
@@ -363,7 +371,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         return knownValue.ValueExpression(request);
                     }
                 }
-                
+
                 return knownValues[0].ValueExpression(request);
             }
 
@@ -371,7 +379,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var configuration = request.WrapperPathNode.Strategy.GetActivationConfiguration(activationType);
 
-                if (configuration.ActivationType != null && 
+                if (configuration.ActivationType != null &&
                     activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
                 {
                     var wrapper = request.PopWrapperPathNode();
@@ -412,7 +420,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return request.Services.Compiler.CreateNewResult(request, request.ScopeParameter);
             }
 
-            if (request.ActivationType == typeof(IDisposalScope) || 
+            if (request.ActivationType == typeof(IDisposalScope) ||
                 (request.ActivationType == typeof(IDisposable) &&
                  request.RequestingScope.ScopeConfiguration.InjectIDisposable))
             {
@@ -576,7 +584,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     var strategy = request.Filter == null ? collection.GetPrimary() : null;
 
-                    if (strategy != null && 
+                    if (strategy != null &&
                         strategy != request.RequestingStrategy)
                     {
                         var result = ActivationExpressionForStrategy(scope, request, strategy);
