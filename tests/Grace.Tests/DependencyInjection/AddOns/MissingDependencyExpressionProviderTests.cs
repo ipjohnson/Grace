@@ -7,6 +7,7 @@ using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
+using Grace.Tests.DependencyInjection.Lifestyle;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.AddOns
@@ -25,11 +26,16 @@ namespace Grace.Tests.DependencyInjection.AddOns
                 }
             };
 
-            var childContainer = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>());
+            using (var childContainer = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+            {
+                using (var secondChild = childContainer.CreateChildScope())
+                {
+                    var instance = secondChild.Locate<IDependentService<IBasicService>>();
 
-            var instance = childContainer.Locate<IDependentService<IBasicService>>();
+                    Assert.NotNull(instance);
 
-            Assert.NotNull(instance);
+                }
+            }
         }
 
         [Fact]
@@ -74,7 +80,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
                 Expression expression = Expression.Call(Expression.Constant(this),
                     locateFromChildMethod,
                     Expression.Constant(valueProvider),
-                    request.Constants.ScopeParameter,
+                    request.ScopeParameter,
                     Expression.Constant(request.GetStaticInjectionContext()),
                     Expression.Constant(request.ActivationType),
                     Expression.Constant(key),
