@@ -747,6 +747,12 @@ namespace Grace.DependencyInjection.Impl
                 return injectionScopeParent.LocateFromChildScope(scope, disposalScope, type, injectionContext, consider, key, allowNull, isDynamic);
             }
 
+            if (type == typeof(IInjectionScope) && 
+                ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+            {
+                return scope;
+            }
+
             var value = ScopeConfiguration.Implementation.Locate<IInjectionContextValueProvider>()
                 .GetValueFromInjectionContext(scope, type, null, injectionContext, !allowNull);
 

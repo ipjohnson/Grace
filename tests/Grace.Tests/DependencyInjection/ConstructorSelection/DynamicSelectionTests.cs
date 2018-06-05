@@ -340,5 +340,21 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             Assert.NotNull(instance);
         }
+
+
+        [Fact]
+        public void DynamicConstructorSelection_InjectionScope_Dependency()
+        {
+            var container = 
+                new DependencyInjectionContainer(c =>
+                {
+                    c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic;
+                    c.Behaviors.AllowInjectionScopeLocation = true;
+                }); // ß not sure about the Dynamic strategy
+
+            container.Configure(c => c.Export<DependentService<IInjectionScope>>().As<IDependentService<IInjectionScope>>());
+
+            var instance = container.Locate<IDependentService<IInjectionScope>>();
+        }
     }
 }
