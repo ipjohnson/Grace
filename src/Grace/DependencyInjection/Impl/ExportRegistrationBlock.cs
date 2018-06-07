@@ -216,7 +216,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetConstantStrategy(instance);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -233,7 +233,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -250,7 +250,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithScopeStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -267,7 +267,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithStaticContextStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -285,7 +285,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithInjectionContextStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -303,7 +303,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetExpressionExportStrategy(expression);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -320,7 +320,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -338,7 +338,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -357,7 +357,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -377,7 +377,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -398,7 +398,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -420,7 +420,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }

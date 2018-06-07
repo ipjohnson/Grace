@@ -8,11 +8,21 @@ namespace Grace.Tests.DependencyInjection.Factory
     public class NoArgFactoryTests
     {
         [Fact]
-        public void NoArgFactory_Null_Return_Allowed()
+        public void NoArgFactory_Null_Return_Allowed_Container_Wide()
         {
             var container = new DependencyInjectionContainer(c => c.Behaviors.AllowInstanceAndFactoryToReturnNull = true);
 
             container.Configure(c => c.ExportFactory<IBasicService>(() => null));
+
+            Assert.Null(container.Locate<IBasicService>());
+        }
+
+        [Fact]
+        public void NoArgFactory_Null_Return_Allowed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.ExportFactory<IBasicService>(() => null).AllowNullReturn());
 
             Assert.Null(container.Locate<IBasicService>());
         }
