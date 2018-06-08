@@ -345,16 +345,30 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
         [Fact]
         public void DynamicConstructorSelection_InjectionScope_Dependency()
         {
-            var container = 
+            var container =
                 new DependencyInjectionContainer(c =>
                 {
                     c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic;
                     c.Behaviors.AllowInjectionScopeLocation = true;
                 }); // ß not sure about the Dynamic strategy
 
-            container.Configure(c => c.Export<DependentService<IInjectionScope>>().As<IDependentService<IInjectionScope>>());
+            container.Configure(c =>
+                c.Export<DependentService<IInjectionScope>>().As<IDependentService<IInjectionScope>>());
 
             var instance = container.Locate<IDependentService<IInjectionScope>>();
+        }
+
+        [Fact]
+        public void DynamicConstructorSelection_ChildScope()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+
+            container.Configure(c => c.Export<DependentService<IBasicService>>().As<IDependentService<IBasicService>>());
+
+            using (var childContainer = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
+            {
+                var instance = childContainer.Locate<IDependentService<IBasicService>>();
+            }
         }
     }
 }
