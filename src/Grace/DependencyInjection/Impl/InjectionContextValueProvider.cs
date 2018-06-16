@@ -58,7 +58,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="context"></param>
         /// <param name="isRequired"></param>
         /// <returns></returns>
-        public virtual object GetValueFromInjectionContext(IExportLocatorScope locator,Type type, object key, IInjectionContext context, bool isRequired)
+        public virtual object GetValueFromInjectionContext(IExportLocatorScope locator, Type type, object key, IInjectionContext context, bool isRequired)
         {
             object value = null;
 

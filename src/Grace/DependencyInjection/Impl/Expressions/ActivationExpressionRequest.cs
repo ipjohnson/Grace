@@ -209,7 +209,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
         private string _uniqueId;
-        private InjectionTargetInfo _targetInfo;
+        private ImmutableLinkedList<InjectionTargetInfo> _targetInfoList;
 
         /// <summary>
         /// Default constructor
@@ -581,7 +581,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public StaticInjectionContext GetStaticInjectionContext()
         {
-            var currentTargetInfo = CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo>.Empty);
+            var currentTargetInfo = CreateTargetInfo();
 
             return new StaticInjectionContext(ActivationType, currentTargetInfo);
         }
@@ -589,32 +589,33 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Create target info for request
         /// </summary>
-        /// <param name="targetInfos">child targets</param>
         /// <returns></returns>
-        public ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo> targetInfos)
+        public ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo()
         {
-            targetInfos = Parent?.CreateTargetInfo(targetInfos) ?? targetInfos;
-
-            if (_targetInfo != null)
+            if (_targetInfoList != null)
             {
-                return targetInfos.Add(_targetInfo);
+                return _targetInfoList;
             }
 
             var targetName = "";
 
-            if (Info is ParameterInfo)
+            if (Info is ParameterInfo info)
             {
-                targetName = ((ParameterInfo)Info).Name;
+                targetName = info.Name;
             }
-            else if (Info is MemberInfo)
+            else if (Info is MemberInfo memberInfo)
             {
-                targetName = ((MemberInfo)Info).Name;
+                targetName = memberInfo.Name;
             }
 
-            _targetInfo = 
+            var targetInfo = 
                 new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, targetName, RequestType, ActivationType, false, null, UniqueId);
 
-            return targetInfos.Add(_targetInfo);
+            _targetInfoList = Parent?.CreateTargetInfo() ?? ImmutableLinkedList<InjectionTargetInfo>.Empty;
+
+            _targetInfoList = _targetInfoList.Add(targetInfo);
+
+            return _targetInfoList;
         }
         
         /// <summary>

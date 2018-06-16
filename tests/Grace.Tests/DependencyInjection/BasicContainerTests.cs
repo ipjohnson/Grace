@@ -227,6 +227,17 @@ namespace Grace.Tests.DependencyInjection
             Assert.Same(container, instance.InjectionScope);
         }
 
+
+        [Fact]
+        public void DependencyInjectionContainer_Locate_InjectionScope()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.AllowInjectionScopeLocation = true);
+
+            var instance = container.Locate<IInjectionScope>();
+
+            Assert.NotNull(instance);
+        }
+
         [Fact]
         public void DependencyInjectionContainer_Locate_With_Filter()
         {

@@ -91,12 +91,28 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     parameterInfo = FindParameterInfoExpression(parameter, configuration);
                 }
 
-                var expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request);
+                var expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request, out var newRequest);
+
+                expression = OverrideExpression(injectionScope, configuration, newRequest, constructor, expression);
 
                 returnList.Add(expression);
             }
 
             return returnList;
+        }
+
+        /// <summary>
+        /// Allow constructor selector to override method
+        /// </summary>
+        /// <param name="injectionScope"></param>
+        /// <param name="configuration"></param>
+        /// <param name="request"></param>
+        /// <param name="constructor"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        protected virtual IActivationExpressionResult OverrideExpression(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo constructor, IActivationExpressionResult expression)
+        {
+            return expression;
         }
 
         /// <summary>
@@ -135,14 +151,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
+        protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request,out IActivationExpressionRequest newRequest)
         {
             if (parameterInfo?.ExportFunc != null)
             {
+                newRequest = null;
+
                 return CallExportFunc(configuration.ActivationStrategy, parameter, parameterInfo, injectionScope, request, configuration.ExternallyOwned);
             }
 
-            var newRequest = request.NewRequest(parameterInfo?.UseType ?? parameter.ParameterType,
+            newRequest = request.NewRequest(parameterInfo?.UseType ?? parameter.ParameterType,
                 configuration.ActivationStrategy,
                 configuration.ActivationType,
                 RequestType.ConstructorParameter,

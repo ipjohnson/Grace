@@ -125,6 +125,11 @@ namespace Grace.Data.Immutable
         public static readonly ImmutableLinkedList<T> Empty = new ImmutableLinkedList<T>(default(T), null, 0);
 
         /// <summary>
+        /// Empty enumerator
+        /// </summary>
+        private static readonly EmptyLinkedListEnumerator EmptyEnumerator = new EmptyLinkedListEnumerator();
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="value"></param>
@@ -187,7 +192,7 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return new LinkedListEnumerator(this);
+            return Count == 0 ? (IEnumerator<T>)EmptyEnumerator : new LinkedListEnumerator(this);
         }
 
         /// <summary>
@@ -266,6 +271,41 @@ namespace Grace.Data.Immutable
         }
 
         private string DebuggerDisplayString => $"Count: {Count}";
+
+        /// <summary>
+        /// Empty enumerator
+        /// </summary>
+        private class EmptyLinkedListEnumerator : IEnumerator<T>
+        {
+            /// <summary>Advances the enumerator to the next element of the collection.</summary>
+            /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+            /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+            public bool MoveNext()
+            {
+                return false;
+            }
+
+            /// <summary>Sets the enumerator to its initial position, which is before the first element in the collection.</summary>
+            /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+            public void Reset()
+            {
+
+            }
+
+            /// <summary>Gets the element in the collection at the current position of the enumerator.</summary>
+            /// <returns>The element in the collection at the current position of the enumerator.</returns>
+            public T Current { get; }
+
+            /// <summary>Gets the current element in the collection.</summary>
+            /// <returns>The current element in the collection.</returns>
+            object IEnumerator.Current => Current;
+
+            /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+            public void Dispose()
+            {
+
+            }
+        }
 
         private class LinkedListEnumerator : IEnumerator<T>
         {

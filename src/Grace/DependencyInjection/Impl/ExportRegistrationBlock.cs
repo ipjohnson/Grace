@@ -17,6 +17,7 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableLinkedList<IActivationStrategyInspector> _inspectors = ImmutableLinkedList<IActivationStrategyInspector>.Empty;
         private ImmutableLinkedList<IInjectionValueProvider> _valueProviders = ImmutableLinkedList<IInjectionValueProvider>.Empty;
         private ImmutableLinkedList<IMissingExportStrategyProvider> _missingExportStrategyProviders = ImmutableLinkedList<IMissingExportStrategyProvider>.Empty;
+        private ImmutableLinkedList<IMissingDependencyExpressionProvider> _missingDependencyExpressionProviders = ImmutableLinkedList<IMissingDependencyExpressionProvider>.Empty;
         private ImmutableLinkedList<IMemberInjectionSelector> _globalSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
         private readonly IActivationStrategyCreator _strategyCreator;
         private IExportStrategyProvider _currentProvider;
@@ -104,6 +105,15 @@ namespace Grace.DependencyInjection.Impl
         public IEnumerable<IMissingExportStrategyProvider> GetMissingExportStrategyProviders()
         {
             return _missingExportStrategyProviders;
+        }
+
+        /// <summary>
+        /// Get list of missing dependency expression provider
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IMissingDependencyExpressionProvider> GetMissingDependencyExpressionProviders()
+        {
+            return _missingDependencyExpressionProviders;
         }
 
         /// <summary>
@@ -206,7 +216,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetConstantStrategy(instance);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -223,7 +233,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -240,7 +250,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithScopeStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -257,7 +267,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithStaticContextStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -275,7 +285,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFuncWithInjectionContextStrategy(instanceFunc);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<T>(strategy, this);
         }
@@ -293,7 +303,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetExpressionExportStrategy(expression);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -310,7 +320,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -328,7 +338,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -347,7 +357,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -367,7 +377,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -388,7 +398,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -410,7 +420,7 @@ namespace Grace.DependencyInjection.Impl
 
             var strategy = _strategyCreator.GetFactoryStrategy(factory);
 
-            AddExportStrategy(strategy);
+            AddActivationStrategy(strategy);
 
             return new FluentExportInstanceConfiguration<TResult>(strategy, this);
         }
@@ -579,6 +589,15 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Add missing dependency expression provider
+        /// </summary>
+        /// <param name="provider"></param>
+        public void AddMissingDependencyExpressionProvider(IMissingDependencyExpressionProvider provider)
+        {
+            _missingDependencyExpressionProviders = _missingDependencyExpressionProviders.Add(provider);
+        }
+
+        /// <summary>
         /// Add your own custom activation strategy
         /// </summary>
         /// <param name="activationStrategy">activation strategy</param>
@@ -633,5 +652,6 @@ namespace Grace.DependencyInjection.Impl
                 _currentProvider = null;
             }
         }
+
     }
 }

@@ -400,6 +400,12 @@ namespace Grace.DependencyInjection.Impl
                     InternalFieldStorage.MissingExportStrategyProviders = InternalFieldStorage.MissingExportStrategyProviders.Add(missingExportStrategyProvider);
                 }
 
+                foreach (var expressionProvider in provider.GetMissingDependencyExpressionProviders())
+                {
+                    InternalFieldStorage.MissingDependencyExpressionProviders =
+                        InternalFieldStorage.MissingDependencyExpressionProviders.Add(expressionProvider);
+                }
+
                 foreach (var injectionValueProvider in provider.GetValueProviders())
                 {
                     InternalFieldStorage.ValueProviders = InternalFieldStorage.ValueProviders.Add(injectionValueProvider);
@@ -470,6 +476,12 @@ namespace Grace.DependencyInjection.Impl
         /// List of missing export strategy providers
         /// </summary>
         public IEnumerable<IMissingExportStrategyProvider> MissingExportStrategyProviders => InternalFieldStorage.MissingExportStrategyProviders;
+
+        /// <summary>
+        /// List of missing dependency expression providers
+        /// </summary>
+        public IEnumerable<IMissingDependencyExpressionProvider> MissingDependencyExpressionProviders =>
+            InternalFieldStorage.MissingDependencyExpressionProviders;
 
         /// <summary>
         /// List of value providers that can be used during construction of linq expression
@@ -732,7 +744,13 @@ namespace Grace.DependencyInjection.Impl
             {
                 var injectionScopeParent = (IInjectionScope)Parent;
 
-                return injectionScopeParent.LocateFromChildScope(this, disposalScope, type, injectionContext, consider, key, allowNull, isDynamic);
+                return injectionScopeParent.LocateFromChildScope(scope, disposalScope, type, injectionContext, consider, key, allowNull, isDynamic);
+            }
+
+            if (type == typeof(IInjectionScope) && 
+                ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+            {
+                return scope;
             }
 
             var value = ScopeConfiguration.Implementation.Locate<IInjectionContextValueProvider>()
@@ -853,6 +871,11 @@ namespace Grace.DependencyInjection.Impl
             /// List of member injection selectors
             /// </summary>
             public ImmutableLinkedList<IMemberInjectionSelector> MemberInjectionSelectors = ImmutableLinkedList<IMemberInjectionSelector>.Empty;
+
+            /// <summary>
+            /// List of missing dependency expression providers
+            /// </summary>
+            public ImmutableLinkedList<IMissingDependencyExpressionProvider> MissingDependencyExpressionProviders = ImmutableLinkedList<IMissingDependencyExpressionProvider>.Empty;
 
             /// <summary>
             /// Dynamic array locator

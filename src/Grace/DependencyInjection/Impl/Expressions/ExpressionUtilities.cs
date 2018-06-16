@@ -82,7 +82,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         methodInfo, resultsExpressions.Select(e => e.Expression));
             }
 
-            expression = ApplyNullCheckAndAddDisposal(scope, request, expression, allowDisposableTracking);
+            var allowNull = (requestingStrategy as IInstanceActivationStrategy)?.AllowNullReturn ?? false;
+
+            expression = ApplyNullCheckAndAddDisposal(scope, request, expression, allowDisposableTracking, allowNull);
 
             var result = request.Services.Compiler.CreateNewResult(request, expression);
 
@@ -96,6 +98,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         #endregion
 
         #region Apply null check
+
         /// <summary>
         /// Applies null check and disposal scope tracking logic to an expression
         /// </summary>
@@ -103,8 +106,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="expression"></param>
         /// <param name="allowDisposableTracking"></param>
+        /// <param name="allowNull"></param>
         /// <returns></returns>
-        public static Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope, IActivationExpressionRequest request, Expression expression, bool allowDisposableTracking)
+        public static Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope,
+            IActivationExpressionRequest request, Expression expression, bool allowDisposableTracking, bool allowNull)
         {
             if (expression.Type != request.ActivationType &&
                !ReflectionService.CheckTypeIsBasedOnAnotherType(expression.Type, request.ActivationType))
@@ -124,7 +129,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     return Expression.Call(closedMethod, expression, Expression.Constant(request.DefaultValue.DefaultValue, request.ActivationType));
                 }
 
-                if (!scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull &&
+                if (!allowNull &&
+                    !scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull &&
                     request.IsRequired)
                 {
                     var closedMethod = CheckForNullMethodInfo.MakeGenericMethod(request.ActivationType);
@@ -137,6 +143,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return expression;
 
             }
+
             if (request.DefaultValue != null)
             {
                 var method = typeof(ExpressionUtilities).GetRuntimeMethods()
@@ -147,7 +154,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return Expression.Call(closedMethod, request.DisposalScopeExpression, expression, Expression.Constant(request.DefaultValue.DefaultValue, request.ActivationType));
             }
 
-            if (scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull ||
+            if (allowNull ||
+                scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull ||
                 !request.IsRequired)
             {
                 var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);

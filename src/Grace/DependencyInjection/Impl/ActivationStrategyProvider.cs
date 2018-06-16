@@ -34,7 +34,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type of constant</typeparam>
         /// <param name="value">constant value</param>
         /// <returns>constant export strategy</returns>
-        ICompiledExportStrategy GetConstantStrategy<T>(T value);
+        IInstanceActivationStrategy GetConstantStrategy<T>(T value);
 
         /// <summary>
         /// Get new factory strategy no arg
@@ -42,7 +42,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>new factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<TResult>(Func<TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<TResult>(Func<TResult> factory);
 
         /// <summary>
         /// Get new factory strategy one arg
@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<T1, TResult>(Func<T1, TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<T1, TResult>(Func<T1, TResult> factory);
 
         /// <summary>
         /// Get new factory strategy two arg
@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<T1, T2, TResult>(Func<T1, T2, TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<T1, T2, TResult>(Func<T1, T2, TResult> factory);
 
         /// <summary>
         /// Get new factory strategy three arg
@@ -72,7 +72,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> factory);
 
         /// <summary>
         /// Get new factory strategy four arg
@@ -84,7 +84,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> factory);
 
         /// <summary>
         /// Get new factory strategy five arg
@@ -97,7 +97,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory);
+        IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory);
 
         /// <summary>
         /// Get new decorator strategy
@@ -113,7 +113,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        ICompiledExportStrategy GetFuncStrategy<T>(Func<T> func);
+        IInstanceActivationStrategy GetFuncStrategy<T>(Func<T> func);
 
         /// <summary>
         /// Get new func strategy
@@ -121,7 +121,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        ICompiledExportStrategy GetFuncWithScopeStrategy<T>(Func<IExportLocatorScope, T> func);
+        IInstanceActivationStrategy GetFuncWithScopeStrategy<T>(Func<IExportLocatorScope, T> func);
 
         /// <summary>
         /// Get new func strategy
@@ -129,7 +129,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        ICompiledExportStrategy GetFuncWithStaticContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, T> func);
+        IInstanceActivationStrategy GetFuncWithStaticContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, T> func);
 
         /// <summary>
         /// Get new func strategy
@@ -137,7 +137,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        ICompiledExportStrategy GetFuncWithInjectionContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func);
+        IInstanceActivationStrategy GetFuncWithInjectionContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func);
 
         /// <summary>
         /// Get expression export strategy
@@ -145,7 +145,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        ICompiledExportStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression);
+        IInstanceActivationStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression);
 
         /// <summary>
         /// Get new compiled wrapper strategy
@@ -188,7 +188,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public ICompiledExportStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression)
+        public IInstanceActivationStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression)
         {
             return new ExpressionExportStrategy<T>(expression, _injectionScope);
         }
@@ -254,7 +254,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type of constant</typeparam>
         /// <param name="value">constant value</param>
         /// <returns>constant export strategy</returns>
-        public virtual ICompiledExportStrategy GetConstantStrategy<T>(T value)
+        public virtual IInstanceActivationStrategy GetConstantStrategy<T>(T value)
         {
             return new ConstantInstanceExportStrategy<T>(value, _injectionScope);
         }
@@ -265,7 +265,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>new factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<TResult>(Func<TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<TResult>(Func<TResult> factory)
         {
             return new FactoryNoArgStrategy<TResult>(factory, _injectionScope);
         }
@@ -276,7 +276,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        public virtual ICompiledExportStrategy GetFuncStrategy<T>(Func<T> func)
+        public virtual IInstanceActivationStrategy GetFuncStrategy<T>(Func<T> func)
         {
             return new FuncInstanceExportStrategy<T>(func, _injectionScope);
         }
@@ -287,7 +287,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        public virtual ICompiledExportStrategy GetFuncWithScopeStrategy<T>(Func<IExportLocatorScope, T> func)
+        public virtual IInstanceActivationStrategy GetFuncWithScopeStrategy<T>(Func<IExportLocatorScope, T> func)
         {
             return new FuncWithScopeInstanceExportStrategy<T>(func, _injectionScope);
         }
@@ -298,7 +298,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        public virtual ICompiledExportStrategy GetFuncWithStaticContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, T> func)
+        public virtual IInstanceActivationStrategy GetFuncWithStaticContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, T> func)
         {
             return new FuncWithStaticContextInstanceExportStrategy<T>(func, _injectionScope);
         }
@@ -309,7 +309,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type being created</typeparam>
         /// <param name="func">create func</param>
         /// <returns>new strategy</returns>
-        public virtual ICompiledExportStrategy GetFuncWithInjectionContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func)
+        public virtual IInstanceActivationStrategy GetFuncWithInjectionContextStrategy<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func)
         {
             return new FuncWithInjectionContextInstanceExportStrategy<T>(func, _injectionScope);
         }
@@ -321,7 +321,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<T1, TResult>(Func<T1, TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<T1, TResult>(Func<T1, TResult> factory)
         {
             return new FactoryOneArgStrategy<T1, TResult>(factory, _injectionScope);
         }
@@ -334,7 +334,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<T1, T2, TResult>(Func<T1, T2, TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<T1, T2, TResult>(Func<T1, T2, TResult> factory)
         {
             return new FactoryTwoArgStrategy<T1, T2, TResult>(factory, _injectionScope);
         }
@@ -348,7 +348,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> factory)
         {
             return new FactoryThreeArgStrategy<T1, T2, T3, TResult>(factory, _injectionScope);
         }
@@ -363,7 +363,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> factory)
         {
             return new FactoryFourArgStrategy<T1, T2, T3, T4, TResult>(factory, _injectionScope);
         }
@@ -379,7 +379,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
-        public virtual ICompiledExportStrategy GetFactoryStrategy<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory)
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory)
         {
             return new FactoryFiveArgStrategy<T1, T2, T3, T4, T5, TResult>(factory, _injectionScope);
         }

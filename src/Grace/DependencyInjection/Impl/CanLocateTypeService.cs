@@ -107,6 +107,12 @@ namespace Grace.DependencyInjection.Impl
                 return true;
             }
 
+            if (type == typeof(IInjectionScope) &&
+                injectionScope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+            {
+                return true;
+            }
+
             if (includeProviders)
             {
                 var request = injectionScope.StrategyCompiler.CreateNewRequest(type, 0, injectionScope);
