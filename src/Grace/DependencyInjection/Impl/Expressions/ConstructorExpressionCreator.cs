@@ -110,7 +110,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private ConstructorParameterInfo ProcessImportAttributes(ParameterInfo parameter)
         {
-            var importAttribute = parameter.GetCustomAttributes().FirstOrDefault(a => a is IImportAttribute) as IImportAttribute;
+            var importAttribute = parameter.GetCustomAttributes()?.FirstOrDefault(a => a is IImportAttribute) as IImportAttribute;
 
             if (importAttribute != null)
             {
