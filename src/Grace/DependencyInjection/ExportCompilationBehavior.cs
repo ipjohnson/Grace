@@ -116,5 +116,10 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <returns></returns>
         public bool AllowInstanceAndFactoryToReturnNull { get; set; } = false;
+
+        /// <summary>
+        /// Process ImportAttribute for parameteres
+        /// </summary>
+        public bool ProcessImportAttributeForParameters { get; set; } = true;
     }
 }

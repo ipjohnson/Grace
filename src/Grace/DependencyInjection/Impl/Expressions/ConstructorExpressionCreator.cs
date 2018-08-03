@@ -5,6 +5,7 @@ using System.Text;
 using Grace.Data.Immutable;
 using System.Linq.Expressions;
 using System.Linq;
+using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -91,6 +92,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     parameterInfo = FindParameterInfoExpression(parameter, configuration);
                 }
 
+                if (parameterInfo == null &&
+                    injectionScope.ScopeConfiguration.Behaviors.ProcessImportAttributeForParameters)
+                {
+                    parameterInfo = ProcessImportAttributes(parameter);
+                }
+
                 var expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request, out var newRequest);
 
                 expression = OverrideExpression(injectionScope, configuration, newRequest, constructor, expression);
@@ -99,6 +106,27 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return returnList;
+        }
+
+        private ConstructorParameterInfo ProcessImportAttributes(ParameterInfo parameter)
+        {
+            var importAttribute = parameter.GetCustomAttributes().FirstOrDefault(a => a is IImportAttribute) as IImportAttribute;
+
+            if (importAttribute != null)
+            {
+                var info = importAttribute.ProvideImportInfo(parameter.ParameterType, parameter.Name);
+
+                return new ConstructorParameterInfo(null)
+                {
+                    LocateWithKey = info.ImportKey,
+                    DefaultValue = info.DefaultValue,
+                    EnumerableComparer = info.Comparer,
+                    ExportStrategyFilter = info.ExportStrategyFilter,
+                    IsRequired = info.IsRequired
+                };
+            }
+
+            return null;
         }
 
         /// <summary>
