@@ -153,7 +153,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.Same(basicService, container.Locate<IBasicService>());
         }
-        
+
 
         [Fact]
         public void ExportTypeSet_WithInspector()
@@ -167,7 +167,7 @@ namespace Grace.Tests.DependencyInjection.Registration
                     .WithInspector(new StrategyInspectorTests.StrategyInspectorInjectProperty());
             });
 
-            var instance = container.Locate<IPropertyInjectionService>(new {Count = 5});
+            var instance = container.Locate<IPropertyInjectionService>(new { Count = 5 });
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
@@ -373,5 +373,45 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.False(disposed);
         }
+
+        [Fact]
+        public void ExportTypeSet_UsingLifestyle()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+                {
+                    c.Export(new[] { typeof(BasicService), typeof(CustomBasicService) }).ByInterface<IBasicService>()
+                        .UsingLifestyle(CustomLifestylePicker);
+                });
+
+            var instances = container.Locate<List<IBasicService>>();
+
+            Assert.Equal(2, instances.Count);
+
+            var basicInstance = instances.First(i => i is BasicService);
+            var customInstance = instances.First(i => i is CustomBasicService);
+
+            var instances2 = container.Locate<List<IBasicService>>();
+
+            Assert.Equal(2, instances2.Count);
+
+            var basicInstance2 = instances2.First(i => i is BasicService);
+            var customInstance2 = instances2.First(i => i is CustomBasicService);
+
+            Assert.Same(basicInstance, basicInstance2);
+            Assert.NotSame(customInstance, customInstance2);
+        }
+
+        private ICompiledLifestyle CustomLifestylePicker(Type arg)
+        {
+            if (arg == typeof(BasicService))
+            {
+                return new SingletonLifestyle();
+            }
+
+            return null;
+        }
     }
 }
+
