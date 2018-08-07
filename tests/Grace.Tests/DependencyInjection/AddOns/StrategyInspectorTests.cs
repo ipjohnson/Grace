@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Lifestyle;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -116,6 +117,37 @@ namespace Grace.Tests.DependencyInjection.AddOns
                 Assert.Equal("Success", injected.Dep.Value);
             }
         }
+
+
+        public class ConcreteInspector : IActivationStrategyInspector
+        {
+            /// <summary>
+            /// Inspect the activation strategy
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="strategy"></param>
+            public void Inspect<T>(T strategy) where T : class, IActivationStrategy
+            {
+                if (strategy is ICompiledExportStrategy compiledExportStrategy)
+                {
+                    compiledExportStrategy.Lifestyle = new SingletonLifestyle();
+                }
+            }
+        }
+
+        [Fact]
+        public void InspectConcreteType()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.AddInspector(new ConcreteInspector()));
+
+            var instance = container.Locate<BasicService>();
+            var instance2 = container.Locate<BasicService>();
+
+            Assert.Same(instance, instance2);
+        }
+
     }
 }
 
