@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using Grace.Data;
+using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -244,16 +245,22 @@ namespace Grace.DependencyInjection.Impl
                 return true;
             }
 
-            foreach (var o in dataProvider.Values)
+            foreach (var o in dataProvider.KeyValuePairs)
             {
-                if (o is T)
+                if (o.Key is string stringKey && 
+                    stringKey.StartsWith(UniqueStringId.Prefix))
+                {
+                    continue;
+                }
+
+                if (o.Value is T)
                 {
                     tValue = o;
 
                     return true;
                 }
 
-                var delegateInstance = o as Delegate;
+                var delegateInstance = o.Value as Delegate;
 
                 if (delegateInstance != null && 
                     delegateInstance.GetMethodInfo().ReturnType == typeof(T))
