@@ -255,17 +255,15 @@ namespace Grace.DependencyInjection.Impl
 
                 if (o.Value is T)
                 {
-                    tValue = o;
+                    tValue = o.Value;
 
                     return true;
                 }
 
-                var delegateInstance = o.Value as Delegate;
-
-                if (delegateInstance != null && 
+                if (o.Value is Delegate delegateInstance && 
                     delegateInstance.GetMethodInfo().ReturnType == typeof(T))
                 {
-                    tValue = o;
+                    tValue = o.Value;
 
                     return true;
                 }
