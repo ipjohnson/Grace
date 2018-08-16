@@ -438,6 +438,18 @@ namespace Grace.DependencyInjection.Impl
                 {
                     return strategy.GetActivationStrategyDelegate(scope, this, locateType);
                 }
+                else
+                {
+                    var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(openGeneric);
+                    if (wrapperCollection != null)
+                    {
+                        var wrapperStrategy = wrapperCollection.GetStrategies()
+                            .OfType<IKeyWrapperActivationStrategy>()
+                            .FirstOrDefault();
+
+                        return wrapperStrategy?.GetActivationStrategyDelegate(scope, this, locateType, key);
+                    }
+                }
             }
 
             return null;
