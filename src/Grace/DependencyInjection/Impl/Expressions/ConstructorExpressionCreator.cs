@@ -5,6 +5,7 @@ using System.Text;
 using Grace.Data.Immutable;
 using System.Linq.Expressions;
 using System.Linq;
+using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -48,7 +49,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return GetDependenciesForConstructor(configuration, request, constructor);
         }
-        
+
         /// <summary>
         /// Create instantiation expression
         /// </summary>
@@ -91,6 +92,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     parameterInfo = FindParameterInfoExpression(parameter, configuration);
                 }
 
+                if (parameterInfo == null &&
+                    injectionScope.ScopeConfiguration.Behaviors.ProcessImportAttributeForParameters)
+                {
+                    parameterInfo = ProcessImportAttributes(parameter);
+                }
+
                 var expression = GetParameterExpression(parameter, parameterInfo, injectionScope, configuration, request, out var newRequest);
 
                 expression = OverrideExpression(injectionScope, configuration, newRequest, constructor, expression);
@@ -99,6 +106,30 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return returnList;
+        }
+
+        private ConstructorParameterInfo ProcessImportAttributes(ParameterInfo parameter)
+        {
+            var importAttribute = (IImportAttribute)parameter.GetCustomAttributes()?.FirstOrDefault(a => a is IImportAttribute);
+
+            if (importAttribute != null)
+            {
+                var info = importAttribute.ProvideImportInfo(parameter.ParameterType, parameter.Name);
+
+                if (info != null)
+                {
+                    return new ConstructorParameterInfo(null)
+                    {
+                        LocateWithKey = info.ImportKey,
+                        DefaultValue = info.DefaultValue,
+                        EnumerableComparer = info.Comparer,
+                        ExportStrategyFilter = info.ExportStrategyFilter,
+                        IsRequired = info.IsRequired
+                    };
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -127,7 +158,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
                 p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
-                     (p.ParameterType == null || 
+                     (p.ParameterType == null ||
                       p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo) ||
                       parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo())));
 
@@ -138,7 +169,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
                                                                         p.ParameterType != null &&
-                                                                        (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) || 
+                                                                        (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) ||
                                                                         p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo)));
         }
 
@@ -151,7 +182,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request,out IActivationExpressionRequest newRequest)
+        protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, out IActivationExpressionRequest newRequest)
         {
             if (parameterInfo?.ExportFunc != null)
             {
@@ -381,7 +412,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return result;
         }
-        
+
         /// <summary>
         /// Test if the parameter was specified 
         /// </summary>
@@ -390,14 +421,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
         {
-            var matchedParameter = FindParameterInfoExpression(parameter,configuration);
+            var matchedParameter = FindParameterInfoExpression(parameter, configuration);
 
             if (matchedParameter == null)
             {
                 return false;
             }
 
-            return matchedParameter.ExportFunc != null || 
+            return matchedParameter.ExportFunc != null ||
                   !matchedParameter.IsRequired.GetValueOrDefault(true) ||
                    matchedParameter.UseType != null ||
                    matchedParameter.DefaultValue != null;

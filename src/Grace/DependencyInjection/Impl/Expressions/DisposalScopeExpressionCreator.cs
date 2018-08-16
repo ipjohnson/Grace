@@ -50,16 +50,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
             MethodInfo closedGeneric;
             Expression[] parameterExpressions;
 
+            var resultExpression = result.Expression;
+
+            if (resultExpression.Type != activationConfiguration.ActivationType)
+            {
+                resultExpression = Expression.Convert(resultExpression, activationConfiguration.ActivationType);
+            }
+
             if (disposalDelegate != null)
             {
                 closedGeneric = AddMethodWithCleanup.MakeGenericMethod(activationConfiguration.ActivationType);
-                parameterExpressions = new[] { result.Expression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType) };
+                parameterExpressions = new[] { resultExpression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType) };
 
             }
             else
             {
                 closedGeneric = AddMethod.MakeGenericMethod(activationConfiguration.ActivationType);
-                parameterExpressions = new[] { result.Expression };
+                parameterExpressions = new[] { resultExpression };
             }
 
             var disposalCall = Expression.Call(request.DisposalScopeExpression, closedGeneric, parameterExpressions);

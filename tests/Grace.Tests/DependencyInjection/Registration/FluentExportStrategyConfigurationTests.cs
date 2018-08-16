@@ -1,5 +1,6 @@
 ﻿using System;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Attributes;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
 using SimpleFixture.NSubstitute;
@@ -56,7 +57,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance);
             Assert.IsType<BasicService>(instance);
         }
-        
+
         [Fact]
         public void FluentExportStrategyConfiguration_ByInterfaces_Generic()
         {
@@ -140,6 +141,56 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(metadata.Value);
 
             Assert.Equal("Value", metadata.Metadata["Data"]);
+        }
+
+        #endregion
+
+        #region ImportAttribute tests
+
+        [Fact]
+        public void ImportAttribute_Honored_On_Constructor()
+        {
+            var container = new DependencyInjectionContainer
+            {
+                _ =>
+                {
+                    _.ExportFactory(() => new BasicService {Count = 10}).AsKeyed<IBasicService>("A");
+                    _.ExportFactory(() => new BasicService {Count = 5}).AsKeyed<IBasicService>("B");
+                }
+            };
+
+            var classA = container.Locate<ImportClassA>();
+
+            Assert.NotNull(classA);
+            Assert.NotNull(classA.BasicService);
+            Assert.Equal(10, classA.BasicService.Count);
+            
+            var classB = container.Locate<ImportClassB>();
+
+            Assert.NotNull(classB);
+            Assert.NotNull(classB.BasicService);
+            Assert.Equal(5, classB.BasicService.Count);
+        }
+
+        public class ImportClassA
+        {
+            public ImportClassA([Import(Key = "A")]IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
+        }
+
+
+        public class ImportClassB
+        {
+            public ImportClassB([Import(Key = "B")]IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
         }
 
         #endregion

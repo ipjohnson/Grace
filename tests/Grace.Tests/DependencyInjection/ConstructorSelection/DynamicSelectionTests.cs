@@ -370,5 +370,15 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 var instance = childContainer.Locate<IDependentService<IBasicService>>();
             }
         }
+
+        [Fact]
+        public void DynamicConstructorSelection_Disposable_Singleton()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+                
+            container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.Singleton());
+
+            var instance = container.Locate<IDisposableService>();
+        }
     }
 }
