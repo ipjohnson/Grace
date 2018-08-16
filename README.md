@@ -42,8 +42,7 @@ Features in Grace
 * Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerObjectGraph, SingletonPerAncestor&lt;T&gt;, and WeakSingleton. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
 * Built in support for the decorator pattern
 * Support for custom wrappers (Func&lt;T&gt; and Meta&lt;T&gt; are examples of built in wrappers)
-* [ASP.Net Core](https://github.com/ipjohnson/Grace.DependencyInjection.Extensions) support
-* [ASP.Net MVC 4 & 5](https://github.com/ipjohnson/Grace.MVC) support
+* [ASP.Net Core](https://github.com/ipjohnson/Grace.DependencyInjection.Extensions) supports
 * [Source Link](https://github.com/dotnet/sourcelink) support enabled.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
