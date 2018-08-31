@@ -86,5 +86,37 @@ namespace Grace.Tests.DependencyInjection.Conditions
             Assert.NotNull(attributedInstance);
             Assert.IsType<AttributedSimpleObjectB>(attributedInstance);
         }
+
+        public class SimpleObjectDecorator : IAttributedSimpleObject
+        {
+            private IAttributedSimpleObject _decorated;
+
+            public SimpleObjectDecorator(IAttributedSimpleObject decorated)
+            {
+                _decorated = decorated;
+            }
+        }
+
+        [Fact]
+        public void WhenInjectedInto_Wrapped()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<AttributedSimpleObjectA>().As<IAttributedSimpleObject>();
+                c.ExportDecorator(typeof(SimpleObjectDecorator)).As(typeof(IAttributedSimpleObject)).When
+                    .InjectedInto(typeof(DependentService<>));
+            });
+
+            var instanceFunc = container.Locate<DependentService<Func<IAttributedSimpleObject>>>();
+
+            Assert.NotNull(instanceFunc);
+
+            var instance = instanceFunc.Value();
+
+            Assert.NotNull(instance);
+            Assert.IsType<SimpleObjectDecorator>(instance);
+        }
     }
 }

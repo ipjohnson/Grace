@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Grace.DependencyInjection.Conditions
 {
@@ -27,7 +28,8 @@ namespace Grace.DependencyInjection.Conditions
         /// <returns>meets condition</returns>
         public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
         {
-            var targetInfo = staticInjectionContext.TargetInfo;
+            var targetInfo = staticInjectionContext.InjectionStack.FirstOrDefault(
+                info => info.RequestingStrategy?.StrategyType == ActivationStrategyType.ExportStrategy);
 
             if (targetInfo != null)
             {
