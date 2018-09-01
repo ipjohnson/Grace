@@ -25,11 +25,9 @@ namespace Grace.DependencyInjection.Conditions
         /// <param name="t">T to return</param>
         public WhenConditionConfiguration(Action<ICompiledCondition> addAction, T t)
         {
-            if (addAction == null) throw new ArgumentNullException(nameof(addAction));
-
             if (t == null) throw new ArgumentNullException(nameof(t));
 
-            AddAction = addAction;
+            AddAction = addAction ?? throw new ArgumentNullException(nameof(addAction));
 
             TValue = t;
         }

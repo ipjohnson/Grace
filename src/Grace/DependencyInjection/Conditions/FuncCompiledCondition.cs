@@ -15,9 +15,7 @@ namespace Grace.DependencyInjection.Conditions
         /// <param name="condition">condition function</param>
         public FuncCompiledCondition(Func<IActivationStrategy, StaticInjectionContext, bool> condition)
         {
-            if (condition == null) throw new ArgumentNullException(nameof(condition));
-
-            _condition = condition;
+            _condition = condition ?? throw new ArgumentNullException(nameof(condition));
         }
         
         /// <summary>

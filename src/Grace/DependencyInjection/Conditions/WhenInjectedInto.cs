@@ -28,9 +28,7 @@ namespace Grace.DependencyInjection.Conditions
         /// <param name="typeTest"></param>
         public WhenInjectedInto(Func<Type, bool> typeTest)
         {
-            if (typeTest == null) throw new ArgumentNullException(nameof(typeTest));
-
-            _typeTest = typeTest;
+            _typeTest = typeTest ?? throw new ArgumentNullException(nameof(typeTest));
         }
         /// <summary>
         /// Test if being injected into a specific type

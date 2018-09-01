@@ -217,9 +217,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method)
         {
-            if (method == null) throw new ArgumentNullException(nameof(method));
-
-            _constructorSelectionMethod = method;
+            _constructorSelectionMethod = method ?? throw new ArgumentNullException(nameof(method));
 
             return this;
         }
@@ -249,9 +247,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration UsingLifestyle(Func<Type, ICompiledLifestyle> lifestyleFunc)
         {
-            if (lifestyleFunc == null) throw new ArgumentNullException(nameof(lifestyleFunc));
-
-            _lifestyleFunc = lifestyleFunc;
+            _lifestyleFunc = lifestyleFunc ?? throw new ArgumentNullException(nameof(lifestyleFunc));
 
             return this;
         }
