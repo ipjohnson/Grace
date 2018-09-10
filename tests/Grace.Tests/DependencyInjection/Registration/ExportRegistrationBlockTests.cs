@@ -159,5 +159,18 @@ namespace Grace.Tests.DependencyInjection.Registration
         {
             Assert.Throws<ArgumentNullException>(() => block.AddExportStrategyProvider(null));
         }
+
+        [Fact]
+        public void ExportRegistrionBlock_ExportAsKeyed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.ExportAsKeyed<BasicService,IBasicService>(5));
+
+            var service = container.Locate<IBasicService>(withKey: 5);
+
+            Assert.NotNull(service);
+            Assert.IsType<BasicService>(service);
+        }
     }
 }
