@@ -96,6 +96,13 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Configure constructor parameter
         /// </summary>
+        /// <param name="parameterType">parameter type</param>
+        /// <returns></returns>
+        IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null);
+
+        /// <summary>
+        /// Configure constructor parameter
+        /// </summary>
         /// <typeparam name="TParam"></typeparam>
         /// <param name="paramFunc"></param>
         /// <returns></returns>

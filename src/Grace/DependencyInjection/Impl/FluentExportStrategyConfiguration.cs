@@ -195,6 +195,21 @@ namespace Grace.DependencyInjection.Impl
         public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When =>
             new WhenConditionConfiguration<IFluentExportStrategyConfiguration>(condition => _exportConfiguration.AddCondition(condition), this);
 
+
+        /// <summary>
+        /// Configure constructor parameter
+        /// </summary>
+        /// <param name="parameterType">parameter type</param>
+        /// <returns></returns>
+        public IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null)
+        {
+            var constructorInfo = new ConstructorParameterInfo(null) { ParameterType = parameterType };
+
+            _exportConfiguration.ConstructorParameter(constructorInfo);
+
+            return new FluentWithCtorConfiguration(this, constructorInfo);
+        }
+
         /// <summary>
         /// Configure constructor parameter
         /// </summary>
@@ -268,6 +283,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _exportConfiguration;
         }
+
     }
 
     /// <summary>
@@ -825,7 +841,7 @@ namespace Grace.DependencyInjection.Impl
 
             return this;
         }
-        
+
         /// <summary>
         /// Get stragey from configuration
         /// </summary>
