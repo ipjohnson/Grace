@@ -158,6 +158,27 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Import property by name
+        /// </summary>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public IFluentImportPropertyConfiguration ImportProperty(string propertyName)
+        {
+            var property = _exportConfiguration.ActivationType.GetRuntimeProperty(propertyName);
+
+            if (property == null)
+            {
+                throw new Exception($"Could not find property named {propertyName} on type {_exportConfiguration.ActivationType.Name}");
+            }
+
+            var memberInjection = new MemberInjectionInfo { MemberInfo = property };
+
+            _exportConfiguration.MemberInjectionSelector(new KnownMemberInjectionSelector(memberInjection));
+
+            return new FluentImportPropertyConfiguration(this, memberInjection);
+        }
+
+        /// <summary>
         /// Apply a lifestlye to export strategy
         /// </summary>
         public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => new LifestylePicker<IFluentExportStrategyConfiguration>(this, lifestlye => UsingLifestyle(lifestlye));

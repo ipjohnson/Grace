@@ -70,6 +70,13 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool includeMethods = false);
 
         /// <summary>
+        /// Import property by name
+        /// </summary>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration ImportProperty(string propertyName);
+
+        /// <summary>
         /// Apply a lifestlye to export strategy
         /// </summary>
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }

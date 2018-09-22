@@ -105,6 +105,16 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Import property by name
+        /// </summary>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public IFluentImportPropertyConfiguration ImportProperty(string propertyName)
+        {
+            return _strategy.ImportProperty(propertyName);
+        }
+
+        /// <summary>
         /// Apply a lifestlye to export strategy
         /// </summary>
         public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => _strategy.Lifestyle;
