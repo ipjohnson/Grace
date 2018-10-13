@@ -267,7 +267,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         #endregion
 
         #region Use Tests
-        
+
         [Fact]
         public void WithCtor_Use()
         {
@@ -294,6 +294,25 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             container.Configure(c =>
             {
+                c.Export(typeof(DependentService<IBasicService[]>))
+                    .WithCtorParam(typeof(IBasicService[]))
+                    .Use(typeof(BasicService[]));
+            });
+
+            var instance = container.Locate<DependentService<IBasicService[]>>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(1, instance.Value.Length);
+            Assert.IsType<BasicService>(instance.Value[0]);
+        }
+
+        [Fact]
+        public void WithCtor_GenericExport_Use()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
                 c.Export<DependentService<IBasicService[]>>()
                     .WithCtorParam<IBasicService[]>()
                     .Use(typeof(BasicService[]));
@@ -304,6 +323,29 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance);
             Assert.Equal(1, instance.Value.Length);
             Assert.IsType<BasicService>(instance.Value[0]);
+        }
+
+        #endregion
+
+        #region LocateWithKey
+
+        [Fact]
+        public void WithCtor_LocateWithKey()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<BasicService>().AsKeyed<IBasicService>('A');
+                c.Export(typeof(DependentService<IBasicService>)).WithCtorParam(typeof(IBasicService))
+                        .LocateWithKey('A');
+            });
+
+            var insance = container.Locate<DependentService<IBasicService>>();
+
+            Assert.NotNull(insance);
+            Assert.NotNull(insance.Value);
+            Assert.IsType<BasicService>(insance.Value);
         }
 
         #endregion

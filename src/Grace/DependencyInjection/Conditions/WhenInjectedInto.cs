@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Grace.Data;
 
 namespace Grace.DependencyInjection.Conditions
@@ -27,9 +28,7 @@ namespace Grace.DependencyInjection.Conditions
         /// <param name="typeTest"></param>
         public WhenInjectedInto(Func<Type, bool> typeTest)
         {
-            if (typeTest == null) throw new ArgumentNullException(nameof(typeTest));
-
-            _typeTest = typeTest;
+            _typeTest = typeTest ?? throw new ArgumentNullException(nameof(typeTest));
         }
         /// <summary>
         /// Test if being injected into a specific type
@@ -39,7 +38,9 @@ namespace Grace.DependencyInjection.Conditions
         /// <returns></returns>
         public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
         {
-            var targetInfo = staticInjectionContext.TargetInfo;
+            var targetInfo = 
+                staticInjectionContext.InjectionStack.FirstOrDefault(
+                    info => info.RequestingStrategy?.StrategyType == ActivationStrategyType.ExportStrategy);
 
             return targetInfo?.InjectionType != null && _typeTest(targetInfo.InjectionType);
         }

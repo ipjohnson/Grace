@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method)
         {
-            throw new NotImplementedException();
+            return _strategy.ImportConstructorSelection(method);
         }
 
         /// <summary>
@@ -102,6 +102,16 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         {
             return _strategy.ImportMembers(selector,injectMethods);
+        }
+
+        /// <summary>
+        /// Import property by name
+        /// </summary>
+        /// <param name="propertyName">property name</param>
+        /// <returns>configuration object</returns>
+        public IFluentImportPropertyConfiguration ImportProperty(string propertyName)
+        {
+            return _strategy.ImportProperty(propertyName);
         }
 
         /// <summary>
@@ -133,6 +143,16 @@ namespace Grace.DependencyInjection.Impl
         /// Apply a condition on when to use strategy
         /// </summary>
         public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When => _strategy.When;
+
+        /// <summary>
+        /// Configure constructor parameter
+        /// </summary>
+        /// <param name="parameterType">parameter type</param>
+        /// <returns></returns>
+        public IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null)
+        {
+            return _strategy.WithCtorParam(parameterType);
+        }
 
         /// <summary>
         /// Configure constructor parameter

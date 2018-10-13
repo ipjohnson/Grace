@@ -265,8 +265,7 @@ namespace Grace.Tests.Dynamic
 
             public Dependent1(IBasicService basicService1)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                _basicService1 = basicService1;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
             }
         }
 
@@ -277,11 +276,8 @@ namespace Grace.Tests.Dynamic
 
             public Dependent2(IBasicService basicService1, IBasicService basicService2)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
             }
         }
 
@@ -293,13 +289,9 @@ namespace Grace.Tests.Dynamic
 
             public Dependent3(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
             }
         }
 
@@ -313,15 +305,10 @@ namespace Grace.Tests.Dynamic
 
             public Dependent4(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
             }
         }
 
@@ -335,17 +322,11 @@ namespace Grace.Tests.Dynamic
 
             public Dependent5(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-                if (basicService5 == null) throw new ArgumentNullException(nameof(basicService5));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
-                _basicService5 = basicService5;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
+                _basicService5 = basicService5 ?? throw new ArgumentNullException(nameof(basicService5));
             }
         }
 
@@ -360,19 +341,12 @@ namespace Grace.Tests.Dynamic
 
             public Dependent6(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-                if (basicService5 == null) throw new ArgumentNullException(nameof(basicService5));
-                if (basicService6 == null) throw new ArgumentNullException(nameof(basicService6));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
-                _basicService5 = basicService5;
-                _basicService6 = basicService6;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
+                _basicService5 = basicService5 ?? throw new ArgumentNullException(nameof(basicService5));
+                _basicService6 = basicService6 ?? throw new ArgumentNullException(nameof(basicService6));
             }
         }
 
@@ -388,21 +362,13 @@ namespace Grace.Tests.Dynamic
 
             public Dependent7(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-                if (basicService5 == null) throw new ArgumentNullException(nameof(basicService5));
-                if (basicService6 == null) throw new ArgumentNullException(nameof(basicService6));
-                if (basicService7 == null) throw new ArgumentNullException(nameof(basicService7));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
-                _basicService5 = basicService5;
-                _basicService6 = basicService6;
-                _basicService7 = basicService7;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
+                _basicService5 = basicService5 ?? throw new ArgumentNullException(nameof(basicService5));
+                _basicService6 = basicService6 ?? throw new ArgumentNullException(nameof(basicService6));
+                _basicService7 = basicService7 ?? throw new ArgumentNullException(nameof(basicService7));
             }
         }
 
@@ -419,23 +385,14 @@ namespace Grace.Tests.Dynamic
 
             public Dependent8(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7, IBasicService basicService8)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-                if (basicService5 == null) throw new ArgumentNullException(nameof(basicService5));
-                if (basicService6 == null) throw new ArgumentNullException(nameof(basicService6));
-                if (basicService7 == null) throw new ArgumentNullException(nameof(basicService7));
-                if (basicService8 == null) throw new ArgumentNullException(nameof(basicService8));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
-                _basicService5 = basicService5;
-                _basicService6 = basicService6;
-                _basicService7 = basicService7;
-                _basicService8 = basicService8;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
+                _basicService5 = basicService5 ?? throw new ArgumentNullException(nameof(basicService5));
+                _basicService6 = basicService6 ?? throw new ArgumentNullException(nameof(basicService6));
+                _basicService7 = basicService7 ?? throw new ArgumentNullException(nameof(basicService7));
+                _basicService8 = basicService8 ?? throw new ArgumentNullException(nameof(basicService8));
             }
         }
 
@@ -453,25 +410,15 @@ namespace Grace.Tests.Dynamic
 
             public Dependent9(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7, IBasicService basicService8, IBasicService basicService9)
             {
-                if (basicService1 == null) throw new ArgumentNullException(nameof(basicService1));
-                if (basicService2 == null) throw new ArgumentNullException(nameof(basicService2));
-                if (basicService3 == null) throw new ArgumentNullException(nameof(basicService3));
-                if (basicService4 == null) throw new ArgumentNullException(nameof(basicService4));
-                if (basicService5 == null) throw new ArgumentNullException(nameof(basicService5));
-                if (basicService6 == null) throw new ArgumentNullException(nameof(basicService6));
-                if (basicService7 == null) throw new ArgumentNullException(nameof(basicService7));
-                if (basicService8 == null) throw new ArgumentNullException(nameof(basicService8));
-                if (basicService9 == null) throw new ArgumentNullException(nameof(basicService9));
-
-                _basicService1 = basicService1;
-                _basicService2 = basicService2;
-                _basicService3 = basicService3;
-                _basicService4 = basicService4;
-                _basicService5 = basicService5;
-                _basicService6 = basicService6;
-                _basicService7 = basicService7;
-                _basicService8 = basicService8;
-                _basicService9 = basicService9;
+                _basicService1 = basicService1 ?? throw new ArgumentNullException(nameof(basicService1));
+                _basicService2 = basicService2 ?? throw new ArgumentNullException(nameof(basicService2));
+                _basicService3 = basicService3 ?? throw new ArgumentNullException(nameof(basicService3));
+                _basicService4 = basicService4 ?? throw new ArgumentNullException(nameof(basicService4));
+                _basicService5 = basicService5 ?? throw new ArgumentNullException(nameof(basicService5));
+                _basicService6 = basicService6 ?? throw new ArgumentNullException(nameof(basicService6));
+                _basicService7 = basicService7 ?? throw new ArgumentNullException(nameof(basicService7));
+                _basicService8 = basicService8 ?? throw new ArgumentNullException(nameof(basicService8));
+                _basicService9 = basicService9 ?? throw new ArgumentNullException(nameof(basicService9));
             }
         }
         #endregion
