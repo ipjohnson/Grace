@@ -64,6 +64,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             }
         }
 
+#if NETCOREAPP
         [Fact]
         public void InjectBasicServiceIntoAutoProperty()
         {
@@ -80,6 +81,6 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
         }
-
+#endif
     }
 }
