@@ -40,6 +40,16 @@ namespace Grace.Tests.DependencyInjection
             Assert.NotNull(instance);
             Assert.Equal(10, instance.Value);
         }
-        
+
+        [Fact]
+        public void DefaultStructureParameter()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var instance = container.Locate<DefaultStructParameterService>();
+
+            Assert.NotNull(instance);
+           
+        }
     }
 }
