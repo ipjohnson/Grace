@@ -290,5 +290,18 @@ namespace Grace.DependencyInjection.Impl
         {
             return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, allowNull, isDynamic);
         }
+
+#if !NETSTANDARD1_0
+        object IServiceProvider.GetService(Type type)
+        {
+            var hashCode = type.GetHashCode();
+
+            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+
+            return func != null
+                ? func(this, this, null)
+                : LocateFromParent(type, null, null, null, allowNull: true, isDynamic: false);
+        }
+#endif
     }
 }

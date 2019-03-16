@@ -45,8 +45,6 @@ namespace Grace.DependencyInjection
                     ImmutableHashTree.ThreadSafeAdd(ref value.Delegates, instanceType, injectionDelegate);
             }
 
-            var disposalScope = injectionScope.ScopeConfiguration.DisposalScopeProvider?.ProvideDisposalScope(scope) ?? scope;
-
             IInjectionContext context = null;
 
             if (extraData != null)
@@ -54,7 +52,7 @@ namespace Grace.DependencyInjection
                 context = injectionScope.CreateContext(extraData);
             }
 
-            injectionDelegate(scope, disposalScope, context, instance);
+            injectionDelegate(scope, scope, context, instance);
         }
 
         /// <summary>

@@ -6,7 +6,11 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Represents a class that can locate types, classes should not implement this interface directly rather IExportLocatorScope
     /// </summary>
+#if NETSTANDARD1_0
     public interface ILocatorService
+#else
+    public interface ILocatorService : IServiceProvider
+#endif
     {
         /// <summary>
         /// Can Locator type
