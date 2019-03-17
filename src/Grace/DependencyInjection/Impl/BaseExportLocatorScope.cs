@@ -20,28 +20,29 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// length of the activation delegates array minus one
         /// </summary>
-        protected readonly int ArrayLengthMinusOne;
+        //protected readonly int ArrayLengthMinusOne;
 
         /// <summary>
         /// array of activation delegates
         /// </summary>
-        protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
+        //protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
+
+        protected readonly ActivationStrategyDelegateCache DelegateCache;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="parent">parent scope</param>
         /// <param name="name">name of scope</param>
-        /// <param name="activationDelegates">activation delegates</param>
+        /// <param name="delegateCache">delegate cache</param>
         protected BaseExportLocatorScope(IExportLocatorScope parent,
                                       string name,
-                                      ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
+                                      ActivationStrategyDelegateCache delegateCache)
         {
             Parent = parent;
             ScopeName = name ?? "";
 
-            ActivationDelegates = activationDelegates;
-            ArrayLengthMinusOne = activationDelegates.Length - 1;
+            DelegateCache = delegateCache;
         }
 
         /// <summary>

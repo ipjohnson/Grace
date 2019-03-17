@@ -58,7 +58,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parent"></param>
         /// <param name="name"></param>
         public InjectionScope(IInjectionScopeConfiguration configuration, IInjectionScope parent, string name) :
-            base(parent, name, new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize])
+            base(parent, name, new ActivationStrategyDelegateCache())
         {
             configuration.SetInjectionScope(this);
 
@@ -75,11 +75,6 @@ namespace Grace.DependencyInjection.Impl
 
             InternalFieldStorage.DecoratorCollectionContainer =
                 AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>());
-
-            for (var i = 0; i <= ArrayLengthMinusOne; i++)
-            {
-                ActivationDelegates[i] = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
-            }
 
             if (configuration.AutoRegisterUnknown && Parent == null)
             {
@@ -128,13 +123,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>located instance</returns>
         public object Locate(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                   func(this, this, null) :
-                   InternalLocate(this, this, type, null, null, null, false, false);
+            return DelegateCache.ExecuteActivationStrategyDelegate(type, this);
         }
 
         /// <summary>
@@ -145,13 +134,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object LocateOrDefault(Type type, object defaultValue)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                   func(this, this, null) :
-                   InternalLocate(this, this, type, null, null, null, true,false) ?? defaultValue;
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this) ?? defaultValue;
         }
 
         /// <summary>
@@ -187,18 +170,12 @@ namespace Grace.DependencyInjection.Impl
         // ReSharper disable once MethodOverloadWithOptionalParameter
         public object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            var context = CreateInjectionContextFromExtraData(type, extraData);
+            IInjectionContext context = extraData == null ? 
+                null : CreateInjectionContextFromExtraData(type, extraData);
 
             if (withKey == null && consider == null && !isDynamic)
             {
-                var hash = type.GetHashCode();
-
-                var func = ActivationDelegates[hash & ArrayLengthMinusOne].GetValueOrDefault(type, hash);
-
-                if (func != null)
-                {
-                    return func(this, this, context);
-                }
+                return DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, false, context);
             }
 
             return InternalLocate(this, this, type, consider, withKey, context, false, isDynamic);
@@ -348,7 +325,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new scope</returns>
         public virtual IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return new LifetimeScope(this, this, scopeName, ActivationDelegates);
+            return new LifetimeScope(this, this, scopeName, DelegateCache);
         }
 
         /// <summary>
@@ -667,13 +644,7 @@ namespace Grace.DependencyInjection.Impl
 #if !NETSTANDARD1_0
         object IServiceProvider.GetService(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                func(this, this, null) :
-                InternalLocate(this, this, type, null, null, null, true, false);
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
         }
 #endif
 
@@ -735,7 +706,7 @@ namespace Grace.DependencyInjection.Impl
                     compiledDelegate = AddObjectFactory(type, compiledDelegate);
                 }
 
-                return compiledDelegate(scope, disposalScope ?? this, injectionContext);
+                return compiledDelegate(scope, disposalScope ?? scope, injectionContext);
             }
 
             if (Parent != null)
@@ -791,11 +762,9 @@ namespace Grace.DependencyInjection.Impl
 
         private ActivationStrategyDelegate AddObjectFactory(Type type, ActivationStrategyDelegate activationStrategyDelegate)
         {
-            var hashCode = type.GetHashCode();
+            DelegateCache.AddDelegate(type, activationStrategyDelegate);
 
-            return ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates[hashCode & ArrayLengthMinusOne],
-                                                   type,
-                                                   activationStrategyDelegate);
+            return activationStrategyDelegate;
         }
 
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> GetWrappers()
