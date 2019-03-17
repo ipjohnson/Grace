@@ -40,6 +40,11 @@ namespace Grace.DependencyInjection.Impl
             var hashCode = type.GetHashCode();
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
 
+            if (ReferenceEquals(currentNode.Key, type))
+            {
+                return currentNode.Value(scope, scope, null);
+            }
+
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
             {
                 currentNode = hashCode < currentNode.Hash ? currentNode.Left : currentNode.Right;
