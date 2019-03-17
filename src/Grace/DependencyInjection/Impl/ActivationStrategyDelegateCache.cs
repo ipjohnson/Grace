@@ -95,7 +95,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (ReferenceEquals(currentNode.Key, type))
             {
-                return currentNode.Value(scope, scope, null);
+                return currentNode.Value(scope, scope, context);
             }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
