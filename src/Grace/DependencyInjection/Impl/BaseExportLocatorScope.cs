@@ -9,33 +9,40 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// base locator scope used by InjectionScope and LifetimeScope
     /// </summary>
-    public abstract class BaseExportLocatorScope : DisposalScope, IExtraDataContainer, IExportLocatorScope
+    public abstract class BaseExportLocatorScope : DisposalScope, IExtraDataContainer
     {
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
-        protected const int ActivationDelegatesLengthMinusOne = 63;
+
         private string _scopeIdString;
         private Guid _scopeId = Guid.Empty;
         
         /// <summary>
+        /// length of the activation delegates array minus one
+        /// </summary>
+        //protected readonly int ArrayLengthMinusOne;
+
+        /// <summary>
         /// array of activation delegates
         /// </summary>
-        protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
+        //protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
 
+        protected readonly ActivationStrategyDelegateCache DelegateCache;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="parent">parent scope</param>
         /// <param name="name">name of scope</param>
-        /// <param name="activationDelegates"></param>
+        /// <param name="delegateCache">delegate cache</param>
         protected BaseExportLocatorScope(IExportLocatorScope parent,
-                                      string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates)
+                                      string name,
+                                      ActivationStrategyDelegateCache delegateCache)
         {
             Parent = parent;
-            
             ScopeName = name ?? "";
-            ActivationDelegates = activationDelegates;
+
+            DelegateCache = delegateCache;
         }
 
         /// <summary>
@@ -112,131 +119,6 @@ namespace Grace.DependencyInjection.Impl
         {
             return _lockObjects.GetValueOrDefault(lockName) ??
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
-        }
-        
-        /// <inheritdoc />
-        public object GetService(Type type)
-        {
-            var hashCode = type.GetHashCode();
-            var currentNode = ActivationDelegates[hashCode & ActivationDelegatesLengthMinusOne];
-
-            if (ReferenceEquals(currentNode.Key, type))
-            {
-                return currentNode.Value(this, this, null);
-            }
-
-            while (currentNode.Hash != hashCode && currentNode.Height != 0)
-            {
-                currentNode = hashCode < currentNode.Hash ? currentNode.Left : currentNode.Right;
-            }
-
-            return ReferenceEquals(currentNode.Key, type) ?
-                currentNode.Value(this, this, null) :
-                FallbackExecution(currentNode, type, true, null);
-        }
-
-        /// <inheritdoc />
-        public abstract bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null);
-
-        /// <inheritdoc />
-        public virtual object Locate(Type type)
-        {
-            var hashCode = type.GetHashCode();
-            var currentNode = ActivationDelegates[hashCode & ActivationDelegatesLengthMinusOne];
-
-            if (ReferenceEquals(currentNode.Key, type))
-            {
-                return currentNode.Value(this, this, null);
-            }
-
-            while (currentNode.Hash != hashCode && currentNode.Height != 0)
-            {
-                currentNode = hashCode < currentNode.Hash ? currentNode.Left : currentNode.Right;
-            }
-
-            return ReferenceEquals(currentNode.Key, type) ?
-                currentNode.Value(this, this, null) :
-                FallbackExecution(currentNode, type, false, null);
-        }
-
-        /// <inheritdoc />
-        public abstract object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
-
-        /// <inheritdoc />
-        public object LocateOrDefault(Type type, object defaultValue) => GetService(type) ?? defaultValue;
-
-        /// <inheritdoc />
-        public T Locate<T>() => (T)Locate(typeof(T));
-
-        /// <inheritdoc />
-        public T LocateOrDefault<T>(T defaultValue = default(T)) => (T)(GetService(typeof(T)) ?? defaultValue);
-
-        /// <inheritdoc />
-        public T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null,object withKey = null,bool isDynamic = false) => 
-            (T) Locate(typeof(T),extraData, consider, withKey, isDynamic);
-
-        /// <inheritdoc />
-        public abstract List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null);
-
-        /// <inheritdoc />
-        public abstract List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null,
-            IComparer<T> comparer = null);
-
-        /// <inheritdoc />
-        public bool TryLocate<T>(out T value, object extraData = null,
-            ActivationStrategyFilter consider = null, object withKey = null,
-            bool isDynamic = false)
-        {
-            var returnValue = TryLocate(typeof(T), out var oValue, extraData, consider, withKey, isDynamic);
-
-            value = (T) oValue;
-
-            return returnValue;
-        }
-
-        /// <inheritdoc />
-        public abstract bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null,
-            object withKey = null, bool isDynamic = false);
-
-        /// <inheritdoc />
-        public abstract object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
-
-        /// <inheritdoc />
-        public abstract List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
-        
-        /// <inheritdoc />
-        public abstract bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null);
-
-        /// <inheritdoc />
-        public abstract IExportLocatorScope BeginLifetimeScope(string scopeName = "");
-
-        /// <inheritdoc />
-        public abstract IInjectionContext CreateContext(object extraData = null);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="currentNode"></param>
-        /// <param name="type"></param>
-        /// <param name="allowNull"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected object FallbackExecution(ImmutableHashTree<Type, ActivationStrategyDelegate> currentNode, Type type, bool allowNull, IInjectionContext context)
-        {
-            if (currentNode.Height != 0)
-            {
-                foreach (var kvp in currentNode.Conflicts)
-                {
-                    if (ReferenceEquals(kvp.Key, type))
-                    {
-                        return kvp.Value(this, this, context);
-                    }
-                }
-            }
-
-            var injectionScope = this.GetInjectionScope();
-
-            return injectionScope.LocateFromChildScope(this, this, type, context, null, null, allowNull, false);
         }
     }
 }
