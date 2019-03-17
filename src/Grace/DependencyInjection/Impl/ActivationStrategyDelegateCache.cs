@@ -34,7 +34,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="scope"></param>
         /// <returns></returns>
-        [MethodImpl(InlineMethod.Value)]
         public object ExecuteActivationStrategyDelegate(Type type, IExportLocatorScope scope)
         {
             var hashCode = type.GetHashCode();
@@ -61,11 +60,15 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="scope"></param>
         /// <returns></returns>
-        [MethodImpl(InlineMethod.Value)]
         public object ExecuteActivationStrategyDelegateAllowNull(Type type, IExportLocatorScope scope)
         {
             var hashCode = type.GetHashCode();
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
+
+            if (ReferenceEquals(currentNode.Key, type))
+            {
+                return currentNode.Value(scope, scope, null);
+            }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
             {
@@ -85,11 +88,15 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="allowNull"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        [MethodImpl(InlineMethod.Value)]
         public object ExecuteActivationStrategyDelegateWithContext(Type type, IExportLocatorScope scope, bool allowNull, IInjectionContext context)
         {
             var hashCode = type.GetHashCode();
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
+
+            if (ReferenceEquals(currentNode.Key, type))
+            {
+                return currentNode.Value(scope, scope, null);
+            }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
             {
