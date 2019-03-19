@@ -19,6 +19,8 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         protected readonly string UniqueId = UniqueStringId.Generate();
 
+        protected readonly int UniqueIntIdValue = UniqueIntId.GetId();
+
         /// <summary>
         /// Compiled delegate
         /// </summary>
@@ -79,29 +81,45 @@ namespace Grace.DependencyInjection.Lifestyle
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
 
-            var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod(ThreadSafe ? "GetValueFromScopeThreadSafe" : "GetValueFromScope", new[]
+            Expression createExpression;
+
+            if (ThreadSafe)
             {
-                typeof(IExportLocatorScope),
-                typeof(ActivationStrategyDelegate),
-                typeof(string),
-                typeof(bool),
-                typeof(IInjectionContext)
-            });
+                var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod("GetValueFromScopeThreadSafe", new[]
+                    {
+                        typeof(IExportLocatorScope),
+                        typeof(ActivationStrategyDelegate),
+                        typeof(string),
+                        typeof(bool),
+                        typeof(IInjectionContext)
+                    });
 
-            var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
+                var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
-            var expression = Expression.Call(closedMethod,
-                                             request.ScopeParameter,
-                                             Expression.Constant(CompiledDelegate),
-                                             Expression.Constant(UniqueId),
-                                             Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
-                                             request.InjectionContextParameter);
+                createExpression = Expression.Call(closedMethod,
+                    request.ScopeParameter,
+                    Expression.Constant(CompiledDelegate),
+                    Expression.Constant(UniqueId),
+                    Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
+                    request.InjectionContextParameter);
+            }
+            else
+            {
+                var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod("GetOrCreateScopedService",
+                    new[] {typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext)});
+
+                var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
+
+                createExpression = Expression.Call(request.ScopeParameter, closedMethod,
+                    Expression.Constant(UniqueIntIdValue), Expression.Constant(CompiledDelegate),
+                    request.InjectionContextParameter);
+            }
 
             local = Expression.Variable(request.ActivationType);
 
             request.PerDelegateData.SetExtraData("local" + UniqueId, local);
 
-            var assignExpression = Expression.Assign(local, expression);
+            var assignExpression = Expression.Assign(local, createExpression);
 
             var result = request.Services.Compiler.CreateNewResult(request, local);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -54,6 +55,85 @@ namespace Grace.DependencyInjection.Impl
         public IInjectionContext CreateContext(object extraData = null)
         {
             return _injectionScope.CreateContext(extraData);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="createDelegate"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var initialStorage = InternalScopedStorage;
+
+            if (ReferenceEquals(initialStorage, ScopedStorage.Empty))
+            {
+                return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+            }
+
+            if (initialStorage.Id == id)
+            {
+                return (T)initialStorage.ScopedService;
+            }
+
+            var storage = initialStorage.Next;
+
+            while (!ReferenceEquals(storage, ScopedStorage.Empty))
+            {
+                if (storage.Id == id)
+                {
+                    return (T)storage.ScopedService;
+                }
+
+                storage = storage.Next;
+            }
+
+            return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+        }
+
+        private T CreateAndSaveScopedService<T>(ScopedStorage initialStorage, int id,
+            ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var value = createDelegate(this, this, context);
+
+            var newStorage = new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value };
+
+            if (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) == initialStorage)
+            {
+                return (T)value;
+            }
+
+            return HandleScopedStorageCollision<T>(initialStorage, id, newStorage, value);
+        }
+
+        private T HandleScopedStorageCollision<T>(ScopedStorage initialStorage, int id, ScopedStorage newStorage, object value)
+        {
+            SpinWait spinWait = new SpinWait();
+
+            while (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) != initialStorage)
+            {
+                var current = InternalScopedStorage;
+
+                while (!ReferenceEquals(current, ScopedStorage.Empty))
+                {
+                    if (current.Id == id)
+                    {
+                        return (T)current.ScopedService;
+                    }
+
+                    current = current.Next;
+                }
+
+                initialStorage = InternalScopedStorage;
+                newStorage.Next = initialStorage;
+
+                spinWait.SpinOnce();
+            }
+
+            return (T)value;
         }
 
         /// <summary>

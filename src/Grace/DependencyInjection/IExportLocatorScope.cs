@@ -43,5 +43,15 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data</param>
         /// <returns></returns>
         IInjectionContext CreateContext(object extraData = null);
+
+        /// <summary>
+        /// Get or create scoped service
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="createDelegate"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context);
     }
 }

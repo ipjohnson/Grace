@@ -9,11 +9,11 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// base locator scope used by InjectionScope and LifetimeScope
     /// </summary>
-    public abstract class BaseExportLocatorScope : DisposalScope, IExtraDataContainer
+    public abstract partial class BaseExportLocatorScope : DisposalScope, IExtraDataContainer
     {
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
-
+        
         private string _scopeIdString;
         private Guid _scopeId = Guid.Empty;
         
@@ -28,6 +28,8 @@ namespace Grace.DependencyInjection.Impl
         //protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
 
         protected readonly ActivationStrategyDelegateCache DelegateCache;
+
+        protected ScopedStorage InternalScopedStorage = ScopedStorage.Empty;
 
         /// <summary>
         /// Default constructor
@@ -119,6 +121,24 @@ namespace Grace.DependencyInjection.Impl
         {
             return _lockObjects.GetValueOrDefault(lockName) ??
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
+        }
+        
+        protected class ScopedStorage
+        {
+            public int Id;
+
+            public object ScopedService;
+
+            public ScopedStorage Next;
+
+            public static ScopedStorage Empty;
+
+            static ScopedStorage()
+            {
+                var empty = new ScopedStorage();
+                empty.Next = empty;
+                Empty = empty;
+            }
         }
     }
 }
