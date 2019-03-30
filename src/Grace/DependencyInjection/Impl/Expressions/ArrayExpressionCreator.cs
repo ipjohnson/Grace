@@ -141,9 +141,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.LocateKey != null)
             {
-                var enumerableKey = request.LocateKey as IEnumerable;
-
-                if (enumerableKey != null && !(request.LocateKey is string))
+                if (request.LocateKey is IEnumerable enumerableKey &&
+                    !(request.LocateKey is string))
                 {
                     keys = new List<object>();
 
@@ -158,31 +157,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
             }
 
-            if (collection != null)
+            IEnumerable<ICompiledExportStrategy> exportList = ImmutableArray<ICompiledExportStrategy>.Empty;
+
+            if (keys != null)
             {
-                if (keys != null)
+                var collectionList = new List<ICompiledExportStrategy>();
+
+                if (collection != null)
                 {
                     for (var i = 0; i < keys.Count;)
                     {
                         var strategy = collection.GetKeyedStrategy(keys[i]);
 
-                        if (strategy != null && parentStrategy != strategy)
+                        if (strategy != null)
                         {
-                            
-                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                                request.Info, true, true);
-
-                            var expression = strategy.GetActivationExpression(scope, newRequest);
-
-                            if(expression != null)
-                            {
-                                expressions.Add(expression);
-                                keys.RemoveAt(i);
-                            }
-                            else
-                            {
-                                i++;
-                            }
+                            collectionList.Add(strategy);
+                            keys.RemoveAt(i);
                         }
                         else
                         {
@@ -190,67 +180,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         }
                     }
                 }
-                else
+
+                if (arrayElementType.IsConstructedGenericType)
                 {
-                    foreach (var strategy in collection.GetStrategies())
-                    {
-                        // skip as part of the composite pattern
-                        if (strategy == parentStrategy)
-                        {
-                            continue;
-                        }
+                    var genericType = arrayElementType.GetGenericTypeDefinition();
+                    var strategies = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
 
-                        // filter strategies
-                        if (request.Filter != null && !request.Filter(strategy))
-                        {
-                            continue;
-                        }
-
-                        var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                            request.Info, true, true);
-
-                        var expression = strategy.GetActivationExpression(scope, newRequest);
-
-                        if (expression != null)
-                        {
-                            expressions.Add(expression);
-                        }
-                    }
-                }
-            }
-
-            // check for generic
-            if (arrayElementType.IsConstructedGenericType)
-            {
-                var genericType = arrayElementType.GetGenericTypeDefinition();
-
-                var strategies = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
-
-                if (strategies != null)
-                {
-                    if (keys != null)
+                    if (strategies != null)
                     {
                         for (var i = 0; i < keys.Count;)
                         {
                             var strategy = strategies.GetKeyedStrategy(keys[i]);
 
-                            if (strategy != null && strategy != parentStrategy)
+                            if (strategy != null)
                             {
-                                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
-                                    request.RequestingStrategy?.ActivationType, request.RequestType,
-                                    request.Info, true, true);
-
-                                var expression = strategy.GetActivationExpression(scope, newRequest);
-
-                                if (expression != null)
-                                {
-                                    expressions.Add(expression);
-                                    keys.RemoveAt(i);
-                                }
-                                else
-                                {
-                                    i++;
-                                }
+                                collectionList.Add(strategy);
+                                keys.RemoveAt(i);
                             }
                             else
                             {
@@ -258,34 +203,75 @@ namespace Grace.DependencyInjection.Impl.Expressions
                             }
                         }
                     }
+
+                    if (collectionList.Any(e => e.Priority != 0))
+                    {
+                        collectionList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
+                    }
                     else
                     {
-                        foreach (var strategy in strategies.GetStrategies())
-                        {
-                            // skip as part of the composite pattern
-                            if (strategy == parentStrategy)
-                            {
-                                continue;
-                            }
-                            
-                            // filter strategies
-                            if (request.Filter != null && !request.Filter(strategy))
-                            {
-                                continue;
-                            }
-
-                            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
-                                request.RequestingStrategy?.ActivationType, request.RequestType,
-                                request.Info, true, true);
-
-                            var expression = strategy.GetActivationExpression(scope, newRequest);
-
-                            if (expression != null)
-                            {
-                                expressions.Add(expression);
-                            }
-                        }
+                        collectionList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
                     }
+                }
+
+                exportList = collectionList;
+            }
+            else
+            {
+                if (collection != null)
+                {
+                    exportList = collection.GetStrategies();
+                }
+                
+                if (arrayElementType.IsConstructedGenericType)
+                {
+                    var genericType = arrayElementType.GetGenericTypeDefinition();
+
+                    var strategies = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
+
+                    if (strategies != null)
+                    {
+                        var completeList = new List<ICompiledExportStrategy>(exportList);
+
+                        completeList.AddRange(strategies.GetStrategies());
+
+                        if (completeList.Any(e => e.Priority != 0))
+                        {
+                            completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
+                        }
+                        else
+                        {
+                            completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
+                        }
+
+                        exportList = completeList;
+                    }
+                }
+            }
+
+            foreach (var strategy in exportList)
+            {
+                // skip as part of the composite pattern
+                if (strategy == parentStrategy)
+                {
+                    continue;
+                }
+
+                // filter strategies
+                if (request.Filter != null && !request.Filter(strategy))
+                {
+                    continue;
+                }
+
+                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                    request.RequestingStrategy?.ActivationType, request.RequestType,
+                    request.Info, true, true);
+
+                var expression = strategy.GetActivationExpression(scope, newRequest);
+
+                if (expression != null)
+                {
+                    expressions.Add(expression);
                 }
             }
 
@@ -304,7 +290,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return null;
             }
 
-            if (request.RequestingStrategy != null && 
+            if (request.RequestingStrategy != null &&
                 request.RequestingStrategy.StrategyType == ActivationStrategyType.ExportStrategy)
             {
                 return request.RequestingStrategy;

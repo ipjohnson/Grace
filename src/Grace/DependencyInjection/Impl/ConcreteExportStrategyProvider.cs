@@ -248,7 +248,7 @@ namespace Grace.DependencyInjection.Impl
                 return false;
             }
 
-            if (!type.IsByRef && 
+            if (type.GetTypeInfo().IsValueType && 
                 (type.Namespace == "System" || (type.Namespace?.StartsWith("System") ?? false)))
             {
                 return false;

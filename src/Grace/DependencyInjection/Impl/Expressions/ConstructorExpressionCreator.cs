@@ -241,7 +241,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     var defaultValue = parameter.DefaultValue;
 
-                    if (defaultValue == null)
+                    if (defaultValue == null && 
+                        parameter.ParameterType.GetTypeInfo().IsValueType)
                     {
                         defaultValue = Activator.CreateInstance(parameter.ParameterType);
                     }
