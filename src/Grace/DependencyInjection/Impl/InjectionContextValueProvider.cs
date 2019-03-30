@@ -205,7 +205,24 @@ namespace Grace.DependencyInjection.Impl
                 {
                     try
                     {
-                        value = Convert.ChangeType(value, typeof(T));
+                        if (typeof(T).IsConstructedGenericType &&
+                            typeof(T).GetTypeInfo().GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            var type = typeof(T).GetTypeInfo().GenericTypeArguments[0];
+
+                            if (type.GetTypeInfo().IsEnum)
+                            {
+                                value = Enum.ToObject(type, value);
+                            }
+                            else
+                            {
+                                value = Convert.ChangeType(value, typeof(T).GetTypeInfo().GenericTypeArguments[0]);
+                            }
+                        }
+                        else
+                        {
+                            value = Convert.ChangeType(value, typeof(T));
+                        }
                     }
                     catch (Exception exp)
                     {

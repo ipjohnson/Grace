@@ -208,14 +208,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 newRequest.SetLocateKey(parameter.Name);
             }
 
-            if (parameterInfo?.DefaultValue != null)
-            {
-                newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameterInfo.DefaultValue });
-            }
-            else if (parameter.HasDefaultValue)
-            {
-                newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameter.DefaultValue });
-            }
+            SetDefaultValue(parameter, parameterInfo, newRequest);
 
             if (parameterInfo != null)
             {
@@ -233,6 +226,33 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return newRequest.Services.ExpressionBuilder.GetActivationExpression(injectionScope, newRequest);
+        }
+
+        private static void SetDefaultValue(ParameterInfo parameter, ConstructorParameterInfo parameterInfo,
+            IActivationExpressionRequest newRequest)
+        {
+            try
+            {
+                if (parameterInfo?.DefaultValue != null)
+                {
+                    newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameterInfo.DefaultValue });
+                }
+                else if (parameter.HasDefaultValue)
+                {
+                    var defaultValue = parameter.DefaultValue;
+
+                    if (defaultValue == null)
+                    {
+                        defaultValue = Activator.CreateInstance(parameter.ParameterType);
+                    }
+
+                    newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = defaultValue});
+                }
+            }
+            catch (FormatException) when (parameter.ParameterType == typeof(DateTime))
+            {
+                newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = default(DateTime) });
+            }
         }
 
         /// <summary>

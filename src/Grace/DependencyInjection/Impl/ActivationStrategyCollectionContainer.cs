@@ -17,6 +17,8 @@ namespace Grace.DependencyInjection.Impl
     [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDebuggerView<>))]
     public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
     {
+        protected static int TotalExportCount = 0;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -79,6 +81,11 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="strategy">strategy</param>
         public void AddStrategy(T strategy)
         {
+            if (strategy.ExportOrder == 0)
+            {
+                strategy.ExportOrder = Interlocked.Increment(ref TotalExportCount);
+            }
+
             Inspectors.Visit(inspector => inspector.Inspect(strategy), true);
 
             var types = ImmutableHashTree<Type, bool>.Empty;
