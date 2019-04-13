@@ -27,6 +27,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     public class DisposalScopeExpressionCreator : IDisposalScopeExpressionCreator
     {
         private MethodInfo _addMethod;
+        private MethodInfo _addMethodWithCleanup;
 
         /// <summary>
         /// Create expression to add instance to disposal scope
@@ -61,7 +62,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 closedGeneric = AddMethodWithCleanup.MakeGenericMethod(activationConfiguration.ActivationType);
                 parameterExpressions = new[] { resultExpression, Expression.Convert(Expression.Constant(disposalDelegate), closedActionType) };
-
             }
             else
             {
@@ -89,8 +89,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Method info for add method on IDisposalScope with cleanup delegate
         /// </summary>
-        protected MethodInfo AddMethodWithCleanup =>  _addMethod ??
-                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && 
+        protected MethodInfo AddMethodWithCleanup => _addMethodWithCleanup ??
+                    (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && 
                                                                                                   m.GetParameters().Length == 2));
     }
 }
