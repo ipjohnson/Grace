@@ -256,5 +256,8 @@ namespace Grace.Tests.Factory
             Assert.NotNull(secondInstance);
             Assert.NotSame(instance, secondInstance);
         }
+
+
+
     }
 }

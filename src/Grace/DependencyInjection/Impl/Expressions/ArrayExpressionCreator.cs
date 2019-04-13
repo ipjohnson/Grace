@@ -218,11 +218,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
             else
             {
+                List<ICompiledExportStrategy> completeList = null;
+
                 if (collection != null)
                 {
                     exportList = collection.GetStrategies();
+
+                    if (scope.ScopeConfiguration.ReturnKeyedInEnumerable)
+                    {
+                        completeList = new List<ICompiledExportStrategy>(exportList);
+
+                        completeList.AddRange(collection.GetKeyedStrategies().Select(kvp => kvp.Value));
+                    }
                 }
-                
+
                 if (arrayElementType.IsConstructedGenericType)
                 {
                     var genericType = arrayElementType.GetGenericTypeDefinition();
@@ -231,21 +240,32 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (strategies != null)
                     {
-                        var completeList = new List<ICompiledExportStrategy>(exportList);
+                        if (completeList == null)
+                        {
+                            completeList = new List<ICompiledExportStrategy>(exportList);
+                        }
 
                         completeList.AddRange(strategies.GetStrategies());
 
-                        if (completeList.Any(e => e.Priority != 0))
+                        if (scope.ScopeConfiguration.ReturnKeyedInEnumerable)
                         {
-                            completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
+                            completeList.AddRange(strategies.GetKeyedStrategies().Select(kvp => kvp.Value));
                         }
-                        else
-                        {
-                            completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
-                        }
-
-                        exportList = completeList;
                     }
+                }
+
+                if (completeList != null)
+                {
+                    if (completeList.Any(e => e.Priority != 0))
+                    {
+                        completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
+                    }
+                    else
+                    {
+                        completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
+                    }
+
+                    exportList = completeList;
                 }
             }
 

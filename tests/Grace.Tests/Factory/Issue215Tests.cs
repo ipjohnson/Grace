@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Castle.DynamicProxy;
 using Grace.DependencyInjection;
 using Grace.Factory;
 using Xunit;
@@ -15,7 +16,19 @@ namespace Grace.Tests.Factory
         {
             var container = new DependencyInjectionContainer();
 
-            container.Configure(c => { c.ExportFactory<IExampleClassFactory>(); });
+            var proxyType = new DefaultProxyBuilder().CreateClassProxyType(
+                typeof(ExampleClass),
+                new Type[0],
+                ProxyGenerationOptions.Default);
+
+            container.Configure(c =>
+            {
+                c.ExportFactory<IExampleClassFactory>();
+                c.ExportDecorator(proxyType)
+                    .As(typeof(ExampleClass))
+                    .WithCtorParam<IExportLocatorScope, IInterceptor[]>(
+                        scope => new IInterceptor[0]);
+            });
 
             var factory = container.Locate<IExampleClassFactory>();
 

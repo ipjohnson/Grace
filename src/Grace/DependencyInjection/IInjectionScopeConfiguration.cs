@@ -90,6 +90,11 @@ namespace Grace.DependencyInjection
         bool InjectIDisposable { get; }
 
         /// <summary>
+        /// Return keyed exports in IEnumerable&lt;T&gt;
+        /// </summary>
+        bool ReturnKeyedInEnumerable { get; }
+
+        /// <summary>
         /// Clone configuration
         /// </summary>
         /// <returns></returns>

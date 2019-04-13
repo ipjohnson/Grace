@@ -26,6 +26,7 @@ namespace Grace.DependencyInjection
             TrackDisposableTransients = true;
             SupportFuncType = true;
             InjectIDisposable = true;
+            ReturnKeyedInEnumerable = false;
 
             ExportByInterfaceFilter = DefaultInterfaceFilter;
         }
@@ -114,6 +115,9 @@ namespace Grace.DependencyInjection
         /// 
         /// </summary>
         public bool InjectIDisposable { get; set; }
+
+        /// <inheritdoc />
+        public bool ReturnKeyedInEnumerable { get; set; }
 
         /// <summary>
         /// 

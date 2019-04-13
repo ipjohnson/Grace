@@ -867,37 +867,53 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var strategy in collection.GetStrategies())
             {
-                if (strategy.HasConditions)
-                {
-                    var pass = true;
+                ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, strategy);
+            }
 
-                    foreach (var condition in strategy.Conditions)
+            if (InternalFieldStorage.ScopeConfiguration.ReturnKeyedInEnumerable)
+            {
+                foreach (var keyValuePair in collection.GetKeyedStrategies())
+                {
+                    ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, keyValuePair.Value);
+                }
+            }
+        }
+
+        private void ProcessStrategyForCollection<TStrategy, TValue>(IExportLocatorScope scope, IDisposalScope disposalScope,
+            Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList, TStrategy strategy)
+            where TStrategy : IWrapperOrExportActivationStrategy
+        {
+            if (strategy.HasConditions)
+            {
+                var pass = true;
+
+                foreach (var condition in strategy.Conditions)
+                {
+                    if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
                     {
-                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
-                        {
-                            pass = false;
-                            break;
-                        }
-                    }
-
-                    if (!pass)
-                    {
-                        continue;
+                        pass = false;
+                        break;
                     }
                 }
 
-                if (filter != null && !filter(strategy))
+                if (!pass)
                 {
-                    continue;
+                    return;
                 }
+            }
 
-                var activationDelegate = strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
+            if (filter != null && !filter(strategy))
+            {
+                return;
+            }
 
-                if (activationDelegate != null)
-                {
-                    returnList.Add(
-                        (TValue)activationDelegate(scope, disposalScope, context?.Clone()));
-                }
+            var activationDelegate =
+                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
+
+            if (activationDelegate != null)
+            {
+                returnList.Add(
+                    (TValue) activationDelegate(scope, disposalScope, context?.Clone()));
             }
         }
 
