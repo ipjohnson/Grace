@@ -19,6 +19,9 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         protected readonly string UniqueId = UniqueStringId.Generate();
 
+        /// <summary>
+        /// Unique int id value
+        /// </summary>
         protected readonly int UniqueIntIdValue = UniqueIntId.GetId();
 
         /// <summary>
@@ -127,23 +130,6 @@ namespace Grace.DependencyInjection.Lifestyle
             result.AddExtraExpression(assignExpression);
 
             return result;
-        }
-
-        /// <summary>
-        /// Get value from scope with no lock 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="scope"></param>
-        /// <param name="creationDelegate"></param>
-        /// <param name="uniqueId"></param>
-        /// <param name="shareContext"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
-            string uniqueId, bool shareContext, IInjectionContext context)
-        {
-            return (T) (scope.GetExtraData(uniqueId) ?? 
-                        scope.SetExtraData(uniqueId, creationDelegate(scope, scope, shareContext ? context : null), false));
         }
 
         /// <summary>
