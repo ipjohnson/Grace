@@ -17,8 +17,6 @@ namespace Grace.DependencyInjection.Impl
     [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDebuggerView<>))]
     public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
     {
-        protected static int TotalExportCount = 0;
-
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -83,7 +81,7 @@ namespace Grace.DependencyInjection.Impl
         {
             if (strategy.ExportOrder == 0)
             {
-                strategy.ExportOrder = Interlocked.Increment(ref TotalExportCount);
+                strategy.ExportOrder = ActivationStrategyCollectionContainerCounter.IncrementCount();
             }
 
             Inspectors.Visit(inspector => inspector.Inspect(strategy), true);
@@ -160,14 +158,25 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public IEnumerable<T> GetAllStrategies()
         {
-            var returnList = new List<T>();
+            var returnList = new Dictionary<int,T>();
 
             foreach (var hashEntry in Collections)
             {
-                hashEntry.IterateInOrder((type, export) => returnList.AddRange(export.GetStrategies()));
+                hashEntry.IterateInOrder((type, export) =>
+                {
+                    foreach (var strategy in export.GetStrategies())
+                    {
+                        returnList[strategy.ExportOrder] = strategy;
+                    }
+
+                    foreach (var valuePair in export.GetKeyedStrategies())
+                    {
+                        returnList[valuePair.Value.ExportOrder] = valuePair.Value;
+                    }
+                });
             }
 
-            return returnList;
+            return returnList.Values;
         }
 
         /// <summary>
@@ -329,6 +338,26 @@ namespace Grace.DependencyInjection.Impl
                     strategyCollection.Dispose();
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Class to wrap a counter for all exports including wrappers and decorators
+    /// </summary>
+    public class ActivationStrategyCollectionContainerCounter
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        private static int _totalExportCount = 0;
+
+        /// <summary>
+        /// Increment the count of total 
+        /// </summary>
+        /// <returns></returns>
+        public static int IncrementCount()
+        {
+            return Interlocked.Increment(ref _totalExportCount);
         }
     }
 }

@@ -107,7 +107,8 @@ namespace Grace.DependencyInjection
         IActivationStrategyMetadata Metadata { get; }
 
         /// <summary>
-        /// This is a value set by the container at registration time. 
+        /// This is a value set by the container at registration time.
+        /// Do not set this yourself.
         /// </summary>
         int ExportOrder { get; set; }
 
