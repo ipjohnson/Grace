@@ -43,10 +43,16 @@ namespace Grace.DependencyInjection.Impl
         /// Export as a specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration As(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
+
+            if (type.GetTypeInfo().IsGenericTypeDefinition &&
+                !_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+            {
+                throw new ArgumentException("Exported type is not open generic but As type is open");
+            }
 
             _exportConfiguration.AddExportAs(type);
 
@@ -63,6 +69,12 @@ namespace Grace.DependencyInjection.Impl
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             if (key == null) throw new ArgumentNullException(nameof(key));
+
+            if (type.GetTypeInfo().IsGenericTypeDefinition &&
+                !_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+            {
+                throw new ArgumentException("Exported type is not open generic but As type is open");
+            }
 
             _exportConfiguration.AddExportAsKeyed(type, key);
 
