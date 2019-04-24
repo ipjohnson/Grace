@@ -19,5 +19,22 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
 
             Assert.NotNull(instance);
         }
+
+        [Fact]
+        public void Metadata_Locate()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.ExportAssemblyContaining<ExportAttributeTests>().
+                ExportAttributedTypes().
+                Where(TypesThat.AreInTheSameNamespaceAs<TestAttribute>()));
+
+            var instance = container.Locate<Meta<IAttributeBasicService>>();
+
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+            Assert.Equal("Hello", instance.Metadata[123]);
+            Assert.Equal("World", instance.Metadata[456]);
+        }
     }
 }
