@@ -18,17 +18,13 @@ namespace Grace.DependencyInjection.Impl
         private Guid _scopeId = Guid.Empty;
         
         /// <summary>
-        /// length of the activation delegates array minus one
+        /// Cache delegate for base scopes
         /// </summary>
-        //protected readonly int ArrayLengthMinusOne;
-
-        /// <summary>
-        /// array of activation delegates
-        /// </summary>
-        //protected readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] ActivationDelegates;
-
         protected readonly ActivationStrategyDelegateCache DelegateCache;
 
+        /// <summary>
+        /// Internal scoped storage used by Scoped Lifestyle
+        /// </summary>
         protected ScopedStorage InternalScopedStorage = ScopedStorage.Empty;
 
         /// <summary>
@@ -123,20 +119,35 @@ namespace Grace.DependencyInjection.Impl
                    ImmutableHashTree.ThreadSafeAdd(ref _lockObjects, lockName, new object());
         }
         
+        /// <summary>
+        /// class for storing scoped instances
+        /// </summary>
         protected class ScopedStorage
         {
+            /// <summary>
+            /// storage id
+            /// </summary>
             public int Id;
 
+            /// <summary>
+            /// Scoped service instance
+            /// </summary>
             public object ScopedService;
 
+            /// <summary>
+            /// Next scoped storage in list
+            /// </summary>
             public ScopedStorage Next;
 
+            /// <summary>
+            /// 
+            /// </summary>
             public static ScopedStorage Empty;
 
             static ScopedStorage()
             {
                 var empty = new ScopedStorage();
-                empty.Next = empty;
+                empty.Next = empty; // this is intentional and need so you can make the assumption that Next is never null
                 Empty = empty;
             }
         }
