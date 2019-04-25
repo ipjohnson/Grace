@@ -12,7 +12,7 @@ namespace Grace.Utilities
         /// <summary>
         /// Prefix for all string id's
         /// </summary>
-        public const string Prefix = "*-g";
+        public const string Prefix = "^-";
 
         /// <summary>
         /// Generate string that is unique to this process

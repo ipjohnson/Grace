@@ -107,6 +107,12 @@ namespace Grace.DependencyInjection
         IActivationStrategyMetadata Metadata { get; }
 
         /// <summary>
+        /// This is a value set by the container at registration time.
+        /// Do not set this yourself.
+        /// </summary>
+        int ExportOrder { get; set; }
+
+        /// <summary>
         /// Dependencies needed to activate strategy given a specific request
         /// </summary>
         IEnumerable<ActivationStrategyDependency> GetDependencies(IActivationExpressionRequest request = null);

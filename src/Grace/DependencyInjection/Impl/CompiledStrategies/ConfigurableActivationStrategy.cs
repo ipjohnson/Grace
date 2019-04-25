@@ -195,6 +195,12 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             }
         }
 
+
+        /// <summary>
+        /// Order assigned by the container
+        /// </summary>
+        public int ExportOrder { get; set; }
+
         /// <summary>
         /// Dependencies needed to activate strategy
         /// </summary>

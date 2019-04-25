@@ -35,6 +35,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
                 c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton();
                 c.Export<DependentService<IBasicService>>().As<IDependentService<IBasicService>>();
                 c.Export<ImportPropertyClass>().ImportProperty(i => i.BasicService);
+                c.Export<MultipleService1>().AsKeyed<IMultipleService>(1);
             });
 
             using (var child = container.CreateChildScope())
@@ -43,8 +44,9 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
 
                 Assert.False(string.IsNullOrEmpty(whatDoIHave));
 
-                Assert.True(whatDoIHave.Contains("Singleton"));
-                Assert.True(whatDoIHave.Contains("Member Name"));
+                Assert.Contains("Singleton", whatDoIHave);
+                Assert.Contains("Member Name", whatDoIHave);
+                Assert.Contains( "As Keyed Type: 1", whatDoIHave);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -19,7 +20,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="injectionScope"></param>
         /// <param name="name">name of scope</param>
         /// <param name="activationDelegates">activation delegate cache</param>
-        public LifetimeScope(IExportLocatorScope parent, IInjectionScope injectionScope, string name, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationDelegates) : base(parent, name, activationDelegates)
+        public LifetimeScope(IExportLocatorScope parent, IInjectionScope injectionScope, string name, ActivationStrategyDelegateCache activationDelegates) : base(parent, name, activationDelegates)
         {
             _injectionScope = injectionScope;
         }
@@ -31,7 +32,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>new scope</returns>
         public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return new LifetimeScope(this,_injectionScope, scopeName, ActivationDelegates);
+            return new LifetimeScope(this, _injectionScope, scopeName, DelegateCache);
         }
 
         /// <summary>
@@ -57,19 +58,92 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="createDelegate"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var initialStorage = InternalScopedStorage;
+
+            if (ReferenceEquals(initialStorage, ScopedStorage.Empty))
+            {
+                return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+            }
+
+            if (initialStorage.Id == id)
+            {
+                return (T)initialStorage.ScopedService;
+            }
+
+            var storage = initialStorage.Next;
+
+            while (!ReferenceEquals(storage, ScopedStorage.Empty))
+            {
+                if (storage.Id == id)
+                {
+                    return (T)storage.ScopedService;
+                }
+
+                storage = storage.Next;
+            }
+
+            return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+        }
+
+        private T CreateAndSaveScopedService<T>(ScopedStorage initialStorage, int id,
+            ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var value = createDelegate(this, this, context);
+
+            var newStorage = new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value };
+
+            if (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) == initialStorage)
+            {
+                return (T)value;
+            }
+
+            return HandleScopedStorageCollision<T>(initialStorage, id, newStorage, value);
+        }
+
+        private T HandleScopedStorageCollision<T>(ScopedStorage initialStorage, int id, ScopedStorage newStorage, object value)
+        {
+            SpinWait spinWait = new SpinWait();
+
+            while (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) != initialStorage)
+            {
+                var current = InternalScopedStorage;
+
+                while (!ReferenceEquals(current, ScopedStorage.Empty))
+                {
+                    if (current.Id == id)
+                    {
+                        return (T)current.ScopedService;
+                    }
+
+                    current = current.Next;
+                }
+
+                initialStorage = InternalScopedStorage;
+                newStorage.Next = initialStorage;
+
+                spinWait.SpinOnce();
+            }
+
+            return (T)value;
+        }
+
+        /// <summary>
         /// Locate a specific type
         /// </summary>
         /// <param name="type">type to locate</param>
         /// <returns>located instance</returns>
         public object Locate(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ? 
-                   func(this, this, null) : 
-                   LocateFromParent(type, null, null, null, allowNull: false, isDynamic: false);
+            return DelegateCache.ExecuteActivationStrategyDelegate(type, this);
         }
 
         /// <summary>
@@ -80,13 +154,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object LocateOrDefault(Type type, object defaultValue)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ? 
-                   func(this, this, null) : 
-                   LocateFromParent(type, null, null, null, allowNull: true, isDynamic: false) ?? defaultValue;
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this) ?? defaultValue;
         }
 
         /// <summary>
@@ -127,13 +195,7 @@ namespace Grace.DependencyInjection.Impl
                 return LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
             }
 
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                   func(this, this, extraData == null ? null : CreateContext(extraData)) :
-                   LocateFromParent(type, extraData, null, null, allowNull: false, isDynamic: false);
+            return DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, false,extraData != null ? CreateContext(extraData) : null);
         }
 
         /// <summary>
@@ -222,14 +284,9 @@ namespace Grace.DependencyInjection.Impl
             {
                 var hashCode = type.GetHashCode();
 
-                var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
+                value = DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, true, extraData == null ? null : CreateContext(extraData));
 
-                if (func != null)
-                {
-                    value = func(this, this, extraData == null ? null : CreateContext(extraData));
-
-                    return value != null;
-                }
+                return value != null;
             }
 
             value = LocateFromParent(type, extraData, consider, withKey, true, isDynamic);
@@ -290,5 +347,12 @@ namespace Grace.DependencyInjection.Impl
         {
             return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, allowNull, isDynamic);
         }
+
+#if !NETSTANDARD1_0
+        object IServiceProvider.GetService(Type type)
+        {
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
+        }
+#endif
     }
 }

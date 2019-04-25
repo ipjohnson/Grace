@@ -143,6 +143,22 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.Equal("Value", metadata.Metadata["Data"]);
         }
 
+        [Fact]
+        public void FluentExportStrategyConfiguration_As_Throws_Exception_Open_Closed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Assert.Throws<ArgumentException>(() => container.Configure(c => c.Export(typeof(DependentService<IBasicService>)).As(typeof(IDependentService<>))));
+        }
+
+
+        [Fact]
+        public void FluentExportStrategyConfiguration_AsKeyed_Throws_Exception_Open_Closed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            Assert.Throws<ArgumentException>(() => container.Configure(c => c.Export(typeof(DependentService<IBasicService>)).AsKeyed(typeof(IDependentService<>), 1)));
+        }
         #endregion
 
         #region ImportAttribute tests
@@ -164,7 +180,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(classA);
             Assert.NotNull(classA.BasicService);
             Assert.Equal(10, classA.BasicService.Count);
-            
+
             var classB = container.Locate<ImportClassB>();
 
             Assert.NotNull(classB);

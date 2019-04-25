@@ -242,7 +242,19 @@ namespace Grace.DependencyInjection.Impl
         {
             var type = request.ActivationType;
 
-            if(type == typeof(string) || type.GetTypeInfo().IsPrimitive || type == typeof(DateTime))
+            if(type == typeof(string) || 
+               type.GetTypeInfo().IsPrimitive)
+            {
+                return false;
+            }
+
+            if (type.GetTypeInfo().IsValueType && 
+                (type.Namespace == "System" || (type.Namespace?.StartsWith("System") ?? false)))
+            {
+                return false;
+            }
+
+            if (type.IsConstructedGenericType && type.GetTypeInfo().GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 return false;
             }

@@ -25,16 +25,6 @@ namespace Grace.DependencyInjection.Impl
         protected InternalFieldStorageClass InternalFieldStorage = new InternalFieldStorageClass();
 
         /// <summary>
-        /// Disposal scope providers, this or DisposalScope must be set
-        /// </summary>
-        protected IDisposalScopeProvider DisposalScopeProvider;
-
-        /// <summary>
-        /// Default disposal scope, this or DisposalScopeProdiver must be set
-        /// </summary>
-        protected IDisposalScope DisposalScope;
-
-        /// <summary>
         /// string constant that is used to locate a lock for adding strategies to the container
         /// Note: Do not use this unless you are working on container internals
         /// </summary>
@@ -68,7 +58,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parent"></param>
         /// <param name="name"></param>
         public InjectionScope(IInjectionScopeConfiguration configuration, IInjectionScope parent, string name) :
-            base(parent, name, new ImmutableHashTree<Type, ActivationStrategyDelegate>[configuration.CacheArraySize])
+            base(parent, name, new ActivationStrategyDelegateCache())
         {
             configuration.SetInjectionScope(this);
 
@@ -86,11 +76,6 @@ namespace Grace.DependencyInjection.Impl
             InternalFieldStorage.DecoratorCollectionContainer =
                 AddDisposable(configuration.Implementation.Locate<IActivationStrategyCollectionContainer<ICompiledDecoratorStrategy>>());
 
-            for (var i = 0; i <= ArrayLengthMinusOne; i++)
-            {
-                ActivationDelegates[i] = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
-            }
-
             if (configuration.AutoRegisterUnknown && Parent == null)
             {
                 InternalFieldStorage.MissingExportStrategyProviders =
@@ -103,9 +88,6 @@ namespace Grace.DependencyInjection.Impl
                 StrategyCollectionContainer.AddStrategy(new FuncTypeStrategy(this));
             }
 
-            DisposalScopeProvider = configuration.DisposalScopeProvider;
-
-            DisposalScope = DisposalScopeProvider == null ? this : null;
         }
 
         #endregion
@@ -141,13 +123,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>located instance</returns>
         public object Locate(Type type)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                   func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) :
-                   InternalLocate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, null, null, null, false, false);
+            return DelegateCache.ExecuteActivationStrategyDelegate(type, this);
         }
 
         /// <summary>
@@ -158,13 +134,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object LocateOrDefault(Type type, object defaultValue)
         {
-            var hashCode = type.GetHashCode();
-
-            var func = ActivationDelegates[hashCode & ArrayLengthMinusOne].GetValueOrDefault(type, hashCode);
-
-            return func != null ?
-                   func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), null) :
-                   InternalLocate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, null, null, null, true,false) ?? defaultValue;
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this) ?? defaultValue;
         }
 
         /// <summary>
@@ -200,21 +170,15 @@ namespace Grace.DependencyInjection.Impl
         // ReSharper disable once MethodOverloadWithOptionalParameter
         public object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            var context = CreateInjectionContextFromExtraData(type, extraData);
+            IInjectionContext context = extraData == null ? 
+                null : CreateInjectionContextFromExtraData(type, extraData);
 
             if (withKey == null && consider == null && !isDynamic)
             {
-                var hash = type.GetHashCode();
-
-                var func = ActivationDelegates[hash & ArrayLengthMinusOne].GetValueOrDefault(type, hash);
-
-                if (func != null)
-                {
-                    return func(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), context);
-                }
+                return DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, false, context);
             }
 
-            return InternalLocate(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, consider, withKey, context, false, isDynamic);
+            return InternalLocate(this, this, type, consider, withKey, context, false, isDynamic);
         }
 
         /// <summary>
@@ -242,7 +206,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>list of all type</returns>
         public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
         {
-            return ((IInjectionScope)this).InternalLocateAll(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type, extraData, consider, comparer);
+            return ((IInjectionScope)this).InternalLocateAll(this, this, type, extraData, consider, comparer);
         }
 
         /// <summary>
@@ -256,7 +220,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>list of all located</returns>
         public List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
         {
-            return ((IInjectionScope)this).InternalLocateAll(this, DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), type ?? typeof(T), extraData, consider, comparer);
+            return ((IInjectionScope)this).InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
         }
 
         /// <summary>
@@ -319,7 +283,7 @@ namespace Grace.DependencyInjection.Impl
         public object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return ((IInjectionScope)this).LocateByNameFromChildScope(this,
-                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, false);
+                this, name, extraData, consider, false);
         }
 
         /// <summary>
@@ -331,8 +295,8 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
-            return ((IInjectionScope)this).InternalLocateAllByName(this, 
-                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), 
+            return ((IInjectionScope)this).InternalLocateAllByName(this,
+                this, 
                 name,
                 extraData, 
                 consider);
@@ -349,7 +313,7 @@ namespace Grace.DependencyInjection.Impl
         public bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
         {
             value = ((IInjectionScope)this).LocateByNameFromChildScope(this,
-                DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(this), name, extraData, consider, true);
+                this, name, extraData, consider, true);
 
             return value != null;
         }
@@ -359,11 +323,9 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="scopeName">scope name</param>
         /// <returns>new scope</returns>
-        public IExportLocatorScope BeginLifetimeScope(string scopeName = "")
+        public virtual IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
-            return InternalFieldStorage.LifetimeScopeProvider == null
-                ? new LifetimeScope(this, this, scopeName, ActivationDelegates)
-                : InternalFieldStorage.LifetimeScopeProvider.CreateScope(this, scopeName, ActivationDelegates);
+            return new LifetimeScope(this, this, scopeName, DelegateCache);
         }
 
         /// <summary>
@@ -679,6 +641,92 @@ namespace Grace.DependencyInjection.Impl
             return newScope;
         }
 
+#if !NETSTANDARD1_0
+        object IServiceProvider.GetService(Type type)
+        {
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
+        }
+#endif
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="createDelegate"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var initialStorage = InternalScopedStorage;
+
+            if (ReferenceEquals(initialStorage, ScopedStorage.Empty))
+            {
+                return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+            }
+            
+            if (initialStorage.Id == id)
+            {
+                return (T)initialStorage.ScopedService;
+            }
+
+            var storage = initialStorage.Next;
+
+            while (!ReferenceEquals(storage, ScopedStorage.Empty))
+            {
+                if (storage.Id == id)
+                {
+                    return (T)storage.ScopedService;
+                }
+
+                storage = storage.Next;
+            }
+
+            return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
+        }
+
+        private T CreateAndSaveScopedService<T>(ScopedStorage initialStorage, int id,
+            ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var value = createDelegate(this, this, context);
+
+            var newStorage = new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value };
+
+            if (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) == initialStorage)
+            {
+                return (T)value;
+            }
+
+            return HandleScopedStorageCollision<T>(initialStorage, id, newStorage, value);
+        }
+
+        private T HandleScopedStorageCollision<T>(ScopedStorage initialStorage, int id, ScopedStorage newStorage, object value)
+        {
+            SpinWait spinWait = new SpinWait();
+
+            while (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) != initialStorage)
+            {
+                var current = InternalScopedStorage;
+
+                while (!ReferenceEquals(current, ScopedStorage.Empty))
+                {
+                    if (current.Id == id)
+                    {
+                        return (T)current.ScopedService;
+                    }
+
+                    current = current.Next;
+                }
+
+                initialStorage = InternalScopedStorage;
+                newStorage.Next = initialStorage;
+
+                spinWait.SpinOnce();
+            }
+
+            return (T)value;
+        }
+
         #endregion
 
         #region Non public members
@@ -737,7 +785,7 @@ namespace Grace.DependencyInjection.Impl
                     compiledDelegate = AddObjectFactory(type, compiledDelegate);
                 }
 
-                return compiledDelegate(scope, disposalScope ?? (DisposalScope ?? DisposalScopeProvider.ProvideDisposalScope(scope)), injectionContext);
+                return compiledDelegate(scope, disposalScope ?? scope, injectionContext);
             }
 
             if (Parent != null)
@@ -793,11 +841,9 @@ namespace Grace.DependencyInjection.Impl
 
         private ActivationStrategyDelegate AddObjectFactory(Type type, ActivationStrategyDelegate activationStrategyDelegate)
         {
-            var hashCode = type.GetHashCode();
+            DelegateCache.AddDelegate(type, activationStrategyDelegate);
 
-            return ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates[hashCode & ArrayLengthMinusOne],
-                                                   type,
-                                                   activationStrategyDelegate);
+            return activationStrategyDelegate;
         }
 
         private IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> GetWrappers()
@@ -821,39 +867,56 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var strategy in collection.GetStrategies())
             {
-                if (strategy.HasConditions)
+                ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, strategy);
+            }
+
+            if (InternalFieldStorage.ScopeConfiguration.ReturnKeyedInEnumerable)
+            {
+                foreach (var keyValuePair in collection.GetKeyedStrategies())
                 {
-                    var pass = true;
-
-                    foreach (var condition in strategy.Conditions)
-                    {
-                        if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
-                        {
-                            pass = false;
-                            break;
-                        }
-                    }
-
-                    if (!pass)
-                    {
-                        continue;
-                    }
-                }
-
-                if (filter != null && !filter(strategy))
-                {
-                    continue;
-                }
-
-                var activationDelegate = strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
-
-                if (activationDelegate != null)
-                {
-                    returnList.Add(
-                        (TValue)activationDelegate(scope, disposalScope, context?.Clone()));
+                    ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, keyValuePair.Value);
                 }
             }
         }
+
+        private void ProcessStrategyForCollection<TStrategy, TValue>(IExportLocatorScope scope, IDisposalScope disposalScope,
+            Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList, TStrategy strategy)
+            where TStrategy : IWrapperOrExportActivationStrategy
+        {
+            if (strategy.HasConditions)
+            {
+                var pass = true;
+
+                foreach (var condition in strategy.Conditions)
+                {
+                    if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
+                    {
+                        pass = false;
+                        break;
+                    }
+                }
+
+                if (!pass)
+                {
+                    return;
+                }
+            }
+
+            if (filter != null && !filter(strategy))
+            {
+                return;
+            }
+
+            var activationDelegate =
+                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
+
+            if (activationDelegate != null)
+            {
+                returnList.Add(
+                    (TValue) activationDelegate(scope, disposalScope, context?.Clone()));
+            }
+        }
+
 
         private string DebugDisplayString => "Exports: " + StrategyCollectionContainer.GetAllStrategies().Count();
 
@@ -922,12 +985,7 @@ namespace Grace.DependencyInjection.Impl
             /// Scope configuration
             /// </summary>
             public IInjectionScopeConfiguration ScopeConfiguration;
-
-            /// <summary>
-            /// Provides IExportLocatorScope when requested
-            /// </summary>
-            public ILifetimeScopeProvider LifetimeScopeProvider;
-
+            
             /// <summary>
             /// Creates injection context when needed
             /// </summary>

@@ -2,12 +2,14 @@
 
 namespace Grace.Tests.Classes.Attributes
 {
-	public interface IAttributeBasicService
-	{
-	}
+    public interface IAttributeBasicService
+    {
+    }
 
-	[Export(typeof(IAttributeBasicService))]
-	public class AttributeBasicService : IAttributeBasicService
-	{
-	}
+    [Metadata(123, "Hello")]
+    [Metadata(456, "World")]
+    [Export(typeof(IAttributeBasicService))]
+    public class AttributeBasicService : IAttributeBasicService
+    {
+    }
 }

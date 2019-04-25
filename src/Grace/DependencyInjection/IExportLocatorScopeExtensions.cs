@@ -73,55 +73,7 @@ namespace Grace.DependencyInjection
 
             foreach (var exportStrategy in locator.StrategyCollectionContainer.GetAllStrategies())
             {
-                builder.AppendLine(new string('-', 80));
-
-                builder.AppendLine("Export Type: " + exportStrategy.ActivationType.FullName);
-
-                foreach (var exportType in exportStrategy.ExportAs)
-                {
-                    builder.AppendLine("As Type: " + exportType);
-                }
-
-                builder.AppendLine("Priority: " + exportStrategy.Priority);
-
-                builder.AppendLine("Externally Owned: " + exportStrategy.ExternallyOwned);
-
-                if (exportStrategy.Lifestyle != null)
-                {
-                    builder.AppendLine("Lifestyle: " + exportStrategy.Lifestyle.GetType().Name);
-                }
-                else
-                {
-                    builder.AppendLine("Lifestyle: Transient");
-                }
-
-                builder.AppendLine("Depends On");
-
-                var hasDependency = false;
-
-                foreach (var exportStrategyDependency in exportStrategy.GetDependencies())
-                {
-                    builder.AppendLine("\tDependency Type: " + exportStrategyDependency.DependencyType);
-
-                    builder.AppendLine("\tMember Name: " + exportStrategyDependency.MemberName);
-
-                    builder.AppendLine("\tImport Type: " + exportStrategyDependency.TypeBeingImported.FullName);
-
-                    builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
-
-                    builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);
-
-                    builder.AppendLine("\tIs Satisfied: " + exportStrategyDependency.IsSatisfied);
-
-                    builder.AppendLine();
-
-                    hasDependency = true;
-                }
-
-                if (!hasDependency)
-                {
-                    builder.AppendLine("\tNone");
-                }
+                ProcessExportStrategy(builder, exportStrategy);
             }
 
             if (includeParent && locator.Parent != null)
@@ -131,6 +83,64 @@ namespace Grace.DependencyInjection
 
             return builder.ToString();
 
+        }
+
+        private static void ProcessExportStrategy(StringBuilder builder, ICompiledExportStrategy exportStrategy)
+        {
+            builder.AppendLine(new string('-', 80));
+
+            builder.AppendLine("Export Type: " + exportStrategy.ActivationType.FullName);
+
+            foreach (var exportType in exportStrategy.ExportAs)
+            {
+                builder.AppendLine("As Type: " + exportType.FullName);
+            }
+
+            foreach (var valuePair in exportStrategy.ExportAsKeyed)
+            {
+                builder.AppendLine($"As Keyed Type: {valuePair.Value} {valuePair.Key.FullName}");
+            }
+
+            builder.AppendLine("Priority: " + exportStrategy.Priority);
+
+            builder.AppendLine("Externally Owned: " + exportStrategy.ExternallyOwned);
+
+            if (exportStrategy.Lifestyle != null)
+            {
+                builder.AppendLine("Lifestyle: " + exportStrategy.Lifestyle.GetType().Name);
+            }
+            else
+            {
+                builder.AppendLine("Lifestyle: Transient");
+            }
+
+            builder.AppendLine("Depends On");
+
+            var hasDependency = false;
+
+            foreach (var exportStrategyDependency in exportStrategy.GetDependencies())
+            {
+                builder.AppendLine("\tDependency Type: " + exportStrategyDependency.DependencyType);
+
+                builder.AppendLine("\tMember Name: " + exportStrategyDependency.MemberName);
+
+                builder.AppendLine("\tImport Type: " + exportStrategyDependency.TypeBeingImported.FullName);
+
+                builder.AppendLine("\tHas Filter: " + exportStrategyDependency.HasFilter);
+
+                builder.AppendLine("\tHas Value Provider: " + exportStrategyDependency.HasValueProvider);
+
+                builder.AppendLine("\tIs Satisfied: " + exportStrategyDependency.IsSatisfied);
+
+                builder.AppendLine();
+
+                hasDependency = true;
+            }
+
+            if (!hasDependency)
+            {
+                builder.AppendLine("\tNone");
+            }
         }
     }
 }

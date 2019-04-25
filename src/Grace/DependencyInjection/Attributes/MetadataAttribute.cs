@@ -7,6 +7,7 @@ namespace Grace.DependencyInjection.Attributes
     /// <summary>
     /// Attribute used to add metadata for attributed export
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class MetadataAttribute : Attribute, IExportMetadataAttribute
     {
         private readonly object _key;

@@ -178,5 +178,47 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             Assert.Equal(3, instance.Count);
         }
 
+        [Fact]
+        public void Container_IEnumerable_Keyed_Return()
+        {
+            var container = new DependencyInjectionContainer(c => c.ReturnKeyedInEnumerable = true);
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().AsKeyed<IMultipleService>(1);
+                c.Export<MultipleService2>().AsKeyed<IMultipleService>(2);
+                c.Export<MultipleService3>().AsKeyed<IMultipleService>(3);
+            });
+
+            var enumerable = container.Locate<IEnumerable<IMultipleService>>().ToArray();
+
+            Assert.Equal(3, enumerable.Length);
+            Assert.IsType<MultipleService1>(enumerable[0]);
+            Assert.IsType<MultipleService2>(enumerable[1]);
+            Assert.IsType<MultipleService3>(enumerable[2]);
+
+        }
+
+
+        [Fact]
+        public void Container_LocateAll_Keyed_Return()
+        {
+            var container = new DependencyInjectionContainer(c => c.ReturnKeyedInEnumerable = true);
+
+            container.Configure(c =>
+            {
+                c.Export<MultipleService1>().AsKeyed<IMultipleService>(1);
+                c.Export<MultipleService2>().AsKeyed<IMultipleService>(2);
+                c.Export<MultipleService3>().AsKeyed<IMultipleService>(3);
+            });
+
+            var enumerable = container.LocateAll(typeof(IMultipleService));
+
+            Assert.Equal(3, enumerable.Count);
+            Assert.IsType<MultipleService1>(enumerable[0]);
+            Assert.IsType<MultipleService2>(enumerable[1]);
+            Assert.IsType<MultipleService3>(enumerable[2]);
+
+        }
     }
 }
