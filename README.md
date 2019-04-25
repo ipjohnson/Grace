@@ -1,17 +1,19 @@
+# Grace
 
-Grace
-=====
+<img src="https://raw.githubusercontent.com/silkfire/Grace/e0415b74141fbc17c88cbec7dd978460b3c9300a/img/logo.svg?sanitize=true" width="76">
 
-Grace is a feature rich Dependency Injection Container designed with ease of use and performance in mind. 
+[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
+
+Grace is a feature-rich dependency injection container designed with ease of use and performance in mind. 
 
 ```csharp 
-   using Grace.DependencyInjection;
+using Grace.DependencyInjection;
 
-   var container = new DependencyInjectionContainer();
+var container = new DependencyInjectionContainer();
 
-   container.Configure(c => c.Export<BasicService>().As<IBasicService>());
+container.Configure(c => c.Export<BasicService>().As<IBasicService>());
 
-   var basicService = container.Locate<IBasicService>();
+var basicService = container.Locate<IBasicService>();
 ```
 
 It's as easy as create, configure, and locate.
@@ -35,14 +37,12 @@ Features in Grace
    * IEnumerable&lt;T&gt; - supports resolving collections as IEnumerable&lt;T&gt; as well as most other types of collections List&lt;T&gt;, ReadOnlyCollection&lt;T&gt;, T[] and any collection that implements ICollection&lt;T&gt;
    * Func&lt;T&gt; - supports resolving Func<T&gt; automatically
    * Lazy&lt;T&gt; - when resolved a Lazy&lt;T&gt; will be created that resolves T from the scope it was created in
-   * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to autofac)
+   * Owned&lt;T&gt; - object resolved within a Owned&lt;T&gt; will have their disposal lifecycle tied to the Owned&lt;T&gt; (similar to Autofac)
    * Meta&lt;T&gt; - objects resolved within a Meta&lt;T&gt; are resolved along with their metadata
    * Custom Delegates - any delegate that returns a type can be automatically resolved. 
    * Custom interface factories with Grace.Factory
 * Many LifeStyles supported including Singleton, SingletonPerScope, SingletonPerRequest (MVC4, MVC5 & WCF packages), SingletonPerObjectGraph, SingletonPerAncestor&lt;T&gt;, and WeakSingleton. If none of the provided life styles meet your need you can always implement your own ICompiledLifeStyle class.
 * Built in support for the decorator pattern
-* Support for custom wrappers (Func&lt;T&gt; and Meta&lt;T&gt; are examples of built in wrappers)
+* Support for custom wrappers (Func&lt;T&gt; and Meta&lt;T&gt; are examples of built-in wrappers)
 * [ASP.Net Core](https://github.com/ipjohnson/Grace.DependencyInjection.Extensions) supports
-* [Source Link](https://github.com/dotnet/sourcelink) support enabled.
-
-[![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
+* [Source Link](https://github.com/dotnet/sourcelink) support enabled
