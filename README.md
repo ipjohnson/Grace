@@ -46,3 +46,5 @@ Features in Grace
 * Support for custom wrappers (Func&lt;T&gt; and Meta&lt;T&gt; are examples of built-in wrappers)
 * [ASP.Net Core](https://github.com/ipjohnson/Grace.DependencyInjection.Extensions) supports
 * [Source Link](https://github.com/dotnet/sourcelink) support enabled
+
+Special thanks to @silkfire for the logo
