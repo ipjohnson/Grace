@@ -1,6 +1,6 @@
 # Grace
 
-<img src="https://raw.githubusercontent.com/silkfire/Grace/e0415b74141fbc17c88cbec7dd978460b3c9300a/img/logo.svg?sanitize=true" width="76">
+<img src="https://raw.githubusercontent.com/ipjohnson/Grace/master/img/logo.svg?sanitize=true" width="76">
 
 [![Build status](https://ci.appveyor.com/api/projects/status/rpgdoopau4hh1ltn?svg=true)](https://ci.appveyor.com/project/ipjohnson/grace) [![Coverage Status](https://coveralls.io/repos/github/ipjohnson/Grace/badge.svg)](https://coveralls.io/github/ipjohnson/Grace) [![Stack Overflow](https://img.shields.io/badge/StackOverflow-QnA-green.svg)](http://stackoverflow.com/questions/tagged/grace-ioc)
 
