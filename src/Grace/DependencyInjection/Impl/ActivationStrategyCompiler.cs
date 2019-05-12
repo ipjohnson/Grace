@@ -164,6 +164,11 @@ namespace Grace.DependencyInjection.Impl
             return compiled;
         }
 
+        public Delegate CompileFastDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Create injection delegate 
         /// </summary>

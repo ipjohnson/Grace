@@ -87,6 +87,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (methodName == nameof(Arg.Scope))
                 {
+                    _request.RequireExportScope();
+                    
                     return _request.ScopeParameter;
                 }
 

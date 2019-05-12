@@ -239,6 +239,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 key = ((string)key).ToLowerInvariant();
             }
 
+            request.RequireExportScope();
+            
             var expression = Expression.Call(Expression.Constant(_contextValueProvider),
                                             closedMethod,
                                             request.ScopeParameter,
@@ -407,6 +409,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     throw new ImportInjectionScopeException(request.GetStaticInjectionContext());
                 }
 
+                request.RequireExportScope();
+
                 var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod("GetInjectionScope", new[] { typeof(IExportLocatorScope) });
 
                 var expression = Expression.Call(method, request.ScopeParameter);
@@ -417,6 +421,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
             if (request.ActivationType == typeof(IExportLocatorScope) ||
                 request.ActivationType == typeof(ILocatorService))
             {
+                request.RequireExportScope();
+
                 return request.Services.Compiler.CreateNewResult(request, request.ScopeParameter);
             }
 
@@ -424,6 +430,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 (request.ActivationType == typeof(IDisposable) &&
                  request.RequestingScope.ScopeConfiguration.InjectIDisposable))
             {
+                request.RequireDisposalScope();
+
                 return request.Services.Compiler.CreateNewResult(request, request.DisposalScopeExpression);
             }
 
@@ -463,6 +471,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 Expression defaultExpression =
                     Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
+
+                request.RequireExportScope();
+                request.RequireDisposalScope();
+                request.RequireInjectionContext();
 
                 var expression = Expression.Call(closedMethod,
                                                  request.ScopeParameter,

@@ -67,7 +67,9 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             Expression expression;
 
-            if(_func.Target != null)
+            request.RequireExportScope();
+
+            if (_func.Target != null)
             {
                 expression = Expression.Call(Expression.Constant(_func.Target), _func.GetMethodInfo(),
                     request.ScopeParameter);
@@ -76,6 +78,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             {
                 expression = Expression.Call(_func.GetMethodInfo(), request.ScopeParameter);
             }
+
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
 

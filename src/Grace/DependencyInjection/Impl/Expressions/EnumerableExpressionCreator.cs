@@ -92,6 +92,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 
+            request.RequireExportScope();
+
             var enumerableExpression = 
                 Expression.Call(Expression.Constant(enumerableCreator),
                     CreateEnumerableMethod.MakeGenericMethod(enumerableType),

@@ -147,6 +147,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             if (ActivationConfiguration.CustomScopeName != null)
             {
+                request.RequireExportScope();
+
                 newScope = Expression.Variable(typeof(IExportLocatorScope));
 
                 var beginScopeMethod =

@@ -52,6 +52,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var closedMethod = closedClass.GetRuntimeMethod("CreateDelegate", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
+            
+            request.RequireExportScope();
+            request.RequireDisposalScope();
 
             var callExpression =
                 Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,

@@ -24,6 +24,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             TypeActivationConfiguration activationConfiguration)
         {
+            request.RequireExportScope();
+            
             // manipulate scope parameter rather 
             var currentScope = request.ScopeParameter;
 

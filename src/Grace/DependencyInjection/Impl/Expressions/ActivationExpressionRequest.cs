@@ -159,7 +159,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// </summary>
     public class PerDelegateData : IDataPerDelegate
     {
-        private ImmutableHashTree<object,object> _data = ImmutableHashTree<object, object>.Empty;
+        private ImmutableHashTree<object, object> _data = ImmutableHashTree<object, object>.Empty;
 
         /// <summary>
         /// Keys for data
@@ -198,16 +198,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return ImmutableHashTree.ThreadSafeAdd(ref _data, key, newValue, replaceIfExists);
         }
     }
-    
+
     /// <summary>
     /// Expression request object
     /// </summary>
     public class ActivationExpressionRequest : IActivationExpressionRequest
     {
         private bool _injectionContextRequired;
+        private bool _exportScopeRequired;
+        private bool _disposalScopeRequired;
         private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
-        private ImmutableHashTree<object,object> _extraData = ImmutableHashTree<object, object>.Empty;
+        private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private string _uniqueId;
         private ImmutableLinkedList<InjectionTargetInfo> _targetInfoList;
 
@@ -486,6 +488,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return pathNode?.Strategy as ICompiledExportStrategy;
         }
 
+        public bool DisposalScopeRequired()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Create new request from this request
         /// </summary>
@@ -551,8 +558,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var returnValue = new ActivationExpressionRequest(activationType,
                                                    RequestType.Root,
                                                    Services,
-                                                   Constants, 
-                                                   ObjectGraphDepth + 1, 
+                                                   Constants,
+                                                   ObjectGraphDepth + 1,
                                                    requestingScope,
                                                    new PerDelegateData());
 
@@ -608,7 +615,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 targetName = memberInfo.Name;
             }
 
-            var targetInfo = 
+            var targetInfo =
                 new InjectionTargetInfo(Services.AttributeDiscoveryService, InjectedType, RequestingStrategy, Info, targetName, RequestType, ActivationType, false, null, UniqueId);
 
             _targetInfoList = Parent?.CreateTargetInfo() ?? ImmutableLinkedList<InjectionTargetInfo>.Empty;
@@ -617,7 +624,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return _targetInfoList;
         }
-        
+
         /// <summary>
         /// Known values that can be used in request
         /// </summary>
@@ -642,9 +649,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         public void RequireInjectionContext()
         {
-            _injectionContextRequired = true;
+            if (!_injectionContextRequired)
+            {
+                _injectionContextRequired = true;
 
-            Parent?.RequireInjectionContext();
+                Parent?.RequireInjectionContext();
+            }
         }
 
         /// <summary>
@@ -654,6 +664,38 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public bool InjectionContextRequired()
         {
             return _injectionContextRequired;
+        }
+
+        /// <summary>
+        /// Require export scope
+        /// </summary>
+        public void RequireExportScope()
+        {
+            if (!_exportScopeRequired)
+            {
+                _exportScopeRequired = true;
+                Parent?.RequireExportScope();
+            }
+        }
+
+        /// <summary>
+        /// Is export scope required
+        /// </summary>
+        /// <returns></returns>
+        public bool ExportScopeRequired()
+        {
+            return _exportScopeRequired;
+        }
+
+        /// <summary>
+        /// Require disposal scope
+        /// </summary>
+        public void RequireDisposalScope()
+        {
+            if (!_disposalScopeRequired)
+            {
+                _disposalScopeRequired = true;
+            }
         }
 
         /// <summary>
