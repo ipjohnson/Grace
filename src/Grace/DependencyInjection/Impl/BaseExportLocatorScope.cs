@@ -14,9 +14,6 @@ namespace Grace.DependencyInjection.Impl
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
         
-        private string _scopeIdString;
-        private Guid _scopeId = Guid.Empty;
-        
         /// <summary>
         /// Cache delegate for base scopes
         /// </summary>
@@ -56,20 +53,9 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Scope id
         /// </summary>
-        public Guid ScopeId
-        {
-            get
-            {
-                if (_scopeId != Guid.Empty)
-                {
-                    return _scopeId;
-                }
-
-                Interlocked.CompareExchange(ref _scopeIdString, Guid.NewGuid().ToString(), null);
-
-                return _scopeId = new Guid(_scopeIdString);
-            }
-        }
+        public Guid ScopeId =>
+            (Guid)( GetExtraData("LocatorScopeId") ??
+                    SetExtraData("LocatorScopeId", Guid.NewGuid(), false));
 
         /// <summary>
         /// Keys for data
