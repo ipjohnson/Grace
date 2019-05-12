@@ -68,18 +68,7 @@ namespace Grace.DependencyInjection.Impl
         public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
         {
             var initialStorage = InternalScopedStorage;
-
-            if (ReferenceEquals(initialStorage, ScopedStorage.Empty))
-            {
-                return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
-            }
-
-            if (initialStorage.Id == id)
-            {
-                return (T)initialStorage.ScopedService;
-            }
-
-            var storage = initialStorage.Next;
+            var storage = initialStorage;
 
             while (!ReferenceEquals(storage, ScopedStorage.Empty))
             {
@@ -91,49 +80,50 @@ namespace Grace.DependencyInjection.Impl
                 storage = storage.Next;
             }
 
-            return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
-        }
-
-        private T CreateAndSaveScopedService<T>(ScopedStorage initialStorage, int id,
-            ActivationStrategyDelegate createDelegate, IInjectionContext context)
-        {
             var value = createDelegate(this, this, context);
 
-            var newStorage = new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value };
-
-            if (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) == initialStorage)
+            if (Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage) == initialStorage)
             {
                 return (T)value;
             }
 
-            return HandleScopedStorageCollision<T>(initialStorage, id, newStorage, value);
+            return HandleScopedStorageCollision<T>(id, (T)value);
         }
 
-        private T HandleScopedStorageCollision<T>(ScopedStorage initialStorage, int id, ScopedStorage newStorage, object value)
-        {
-            SpinWait spinWait = new SpinWait();
 
-            while (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) != initialStorage)
+        private T HandleScopedStorageCollision<T>(int id, T value)
+        {
+            ScopedStorage newStorage = new ScopedStorage { Id = id, ScopedService = value };
+
+            SpinWait spinWait = new SpinWait();
+            var initialStorage = InternalScopedStorage;
+
+            do
             {
-                var current = InternalScopedStorage;
+                var current = initialStorage;
+                newStorage.Next = current;
 
                 while (!ReferenceEquals(current, ScopedStorage.Empty))
                 {
                     if (current.Id == id)
                     {
-                        return (T)current.ScopedService;
+                        return value;
                     }
 
                     current = current.Next;
                 }
 
-                initialStorage = InternalScopedStorage;
-                newStorage.Next = initialStorage;
+                if (ReferenceEquals(
+                        Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage), 
+                        initialStorage))
+                {
+                    return value;
+                }
 
                 spinWait.SpinOnce();
+                initialStorage = InternalScopedStorage;
             }
-
-            return (T)value;
+            while (true);
         }
 
         /// <summary>
@@ -195,7 +185,7 @@ namespace Grace.DependencyInjection.Impl
                 return LocateFromParent(type, extraData, consider, withKey, false, isDynamic);
             }
 
-            return DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, false,extraData != null ? CreateContext(extraData) : null);
+            return DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, false, extraData != null ? CreateContext(extraData) : null);
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl
             while (!ReferenceEquals(entry, DisposeEntry.Empty))
             {
                 entry.CleanupDelegate?.Invoke();
-                entry.DisposeItem?.Dispose();
+                entry.DisposeItem.Dispose();
 
                 entry = entry.Next;
             }
@@ -62,16 +62,13 @@ namespace Grace.DependencyInjection.Impl
         public T AddDisposable<T>(T disposable) where T : IDisposable
         {
             var current = _entry;
-            var entry = new DisposeEntry { DisposeItem = disposable, Next = current };
 
-            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, entry, current), current))
+            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, new DisposeEntry { DisposeItem = disposable, Next = current }, current), current))
             {
                 return disposable;
             }
 
-            SwapWaitAdd(entry);
-
-            return disposable;
+            return SwapWaitAdd(disposable);
         }
 
         /// <summary>
@@ -107,6 +104,13 @@ namespace Grace.DependencyInjection.Impl
             SwapWaitAdd(entry);
 
             return disposable;
+        }
+
+        private T SwapWaitAdd<T>(T value) where T : IDisposable
+        {
+            SwapWaitAdd(new DisposeEntry {DisposeItem = value, Next = _entry});
+
+            return value;
         }
 
         private void SwapWaitAdd(DisposeEntry entry)
