@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object ExecuteActivationStrategyDelegate(Type type, IExportLocatorScope scope)
         {
-            var hashCode = type.GetHashCode();
+            var hashCode = RuntimeHelpers.GetHashCode(type);
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
 
             if (ReferenceEquals(currentNode.Key, type))
@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object ExecuteActivationStrategyDelegateAllowNull(Type type, IExportLocatorScope scope)
         {
-            var hashCode = type.GetHashCode();
+            var hashCode = RuntimeHelpers.GetHashCode(type);
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
 
             if (ReferenceEquals(currentNode.Key, type))
@@ -90,7 +90,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns></returns>
         public object ExecuteActivationStrategyDelegateWithContext(Type type, IExportLocatorScope scope, bool allowNull, IInjectionContext context)
         {
-            var hashCode = type.GetHashCode();
+            var hashCode = RuntimeHelpers.GetHashCode(type);
             var currentNode = _activationDelegates[hashCode & _activationDelegatesLengthMinusOne];
 
             if (ReferenceEquals(currentNode.Key, type))
