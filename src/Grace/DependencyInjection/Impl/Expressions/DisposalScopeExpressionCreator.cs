@@ -69,6 +69,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 parameterExpressions = new[] { resultExpression };
             }
 
+            request.RequireDisposalScope();
+
             var disposalCall = Expression.Call(request.DisposalScopeExpression, closedGeneric, parameterExpressions);
 
             var disposalResult = request.Services.Compiler.CreateNewResult(request, disposalCall);

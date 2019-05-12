@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl
                                                    new ActivationServices(this, _builder, _attributeDiscoveryService, _exportExpressionBuilder, _injectionContextCreator),
                                                    _constants,
                                                    objectGraphDepth,
-                                                   requestingScope, 
+                                                   requestingScope,
                                                    new PerDelegateData());
         }
 
@@ -145,7 +145,7 @@ namespace Grace.DependencyInjection.Impl
 
             return null;
         }
-        
+
         /// <summary>
         /// Compile a delegate
         /// </summary>
@@ -164,10 +164,19 @@ namespace Grace.DependencyInjection.Impl
             return compiled;
         }
 
-        public Delegate CompileFastDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
+
+        public T CompileOptimizedDelegate<T>(IInjectionScope scope, IActivationExpressionResult expressionContext)
         {
-            throw new NotImplementedException();
+            ParameterExpression[] parameters;
+            Expression[] extraExpressions;
+
+            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out parameters, out extraExpressions);
+
+            var compiled = CompileExpressionResultToOpitimzed<T>(expressionContext, parameters, extraExpressions, finalExpression);
+
+            return compiled;
         }
+
 
         /// <summary>
         /// Create injection delegate 
@@ -181,15 +190,15 @@ namespace Grace.DependencyInjection.Impl
 
             var objectParameter = Expression.Parameter(typeof(object));
 
-            var result = 
+            var result =
                 _injectionStrategyDelegateCreator.CreateInjectionDelegate(scope, locateType, request, objectParameter);
 
             if (request.InjectionContextRequired())
             {
                 AddInjectionContextExpression(result);
             }
-            
-            var methodBlock = Expression.Block(result.ExtraParameters(),result.ExtraExpressions());
+
+            var methodBlock = Expression.Block(result.ExtraParameters(), result.ExtraExpressions());
 
             var compiled =
                 Expression.Lambda<InjectionStrategyDelegate>(methodBlock,
@@ -223,12 +232,12 @@ namespace Grace.DependencyInjection.Impl
                 finalExpression = Expression.Convert(finalExpression, typeof(object));
             }
 
-            if (finalExpression.NodeType == ExpressionType.Convert && 
+            if (finalExpression.NodeType == ExpressionType.Convert &&
                !expressionContext.Expression.Type.GetTypeInfo().IsValueType)
             {
-                finalExpression = ((UnaryExpression) finalExpression).Operand;
+                finalExpression = ((UnaryExpression)finalExpression).Operand;
             }
-            
+
             parameters = expressionContext.ExtraParameters().ToArray();
             extraExpressions = expressionContext.ExtraExpressions().ToArray();
 
@@ -269,6 +278,59 @@ namespace Grace.DependencyInjection.Impl
                         expressionContext.Request.Constants.ScopeParameter,
                         expressionContext.Request.Constants.RootDisposalScope,
                         expressionContext.Request.Constants.InjectionContextParameter).Compile();
+
+            return compiled;
+        }
+
+
+        protected virtual T CompileExpressionResultToOpitimzed<T>(
+            IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions,
+            Expression finalExpression)
+        {
+            Expression compileExpression;
+
+            if (parameters.Length == 0 &&
+                extraExpressions.Length == 0)
+            {
+                compileExpression = finalExpression;
+            }
+            else
+            {
+                var list = new List<Expression>(expressionContext.ExtraExpressions())
+                {
+                    finalExpression
+                };
+
+                compileExpression = Expression.Block(expressionContext.ExtraParameters(), list);
+            }
+
+            var parameterList = new List<ParameterExpression>();
+
+            var invokeMethod = typeof(T).GetTypeInfo().GetDeclaredMethod("Invoke");
+            var parameterInfos = invokeMethod.GetParameters();
+
+            if (parameterInfos.Length > 3)
+            {
+                throw new Exception("Delegat type not supported: " + typeof(T).Name);
+            }
+
+            if (parameterInfos.Length > 0)
+            {
+                parameterList.Add(expressionContext.Request.Constants.ScopeParameter);
+            }
+
+            if (parameterInfos.Length > 1)
+            {
+                parameterList.Add(expressionContext.Request.Constants.RootDisposalScope);
+            }
+
+            if (parameterInfos.Length > 2)
+            {
+                parameterList.Add(expressionContext.Request.Constants.InjectionContextParameter);
+            }
+
+            var compiled =
+                Expression.Lambda<T>(compileExpression, parameterList).Compile();
 
             return compiled;
         }
@@ -321,7 +383,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (strategyCollection != null)
             {
-                var primary = consider == null ? 
+                var primary = consider == null ?
                     strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                 if (primary != null)
@@ -347,7 +409,7 @@ namespace Grace.DependencyInjection.Impl
 
                 if (strategyCollection != null)
                 {
-                    var primary = consider == null ? 
+                    var primary = consider == null ?
                         strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                     if (primary != null)
@@ -368,7 +430,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (wrapperCollection != null)
             {
-                var primary = consider == null ? 
+                var primary = consider == null ?
                     wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                 if (primary != null)
@@ -392,7 +454,7 @@ namespace Grace.DependencyInjection.Impl
 
                 if (wrapperCollection != null)
                 {
-                    var primary = consider == null ? 
+                    var primary = consider == null ?
                         wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
 
                     if (primary != null)
@@ -459,7 +521,7 @@ namespace Grace.DependencyInjection.Impl
 
             return null;
         }
-        
+
         private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
         {
             var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
@@ -467,7 +529,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         typeof(object)
                     });
-            
+
             var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
                                                 method,
                                                 Expression.Constant(null, typeof(object)));
@@ -537,5 +599,6 @@ namespace Grace.DependencyInjection.Impl
 
             return null;
         }
+
     }
 }

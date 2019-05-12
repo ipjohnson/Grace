@@ -487,12 +487,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             return pathNode?.Strategy as ICompiledExportStrategy;
         }
-
-        public bool DisposalScopeRequired()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         /// <summary>
         /// Create new request from this request
         /// </summary>
@@ -695,7 +690,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
             if (!_disposalScopeRequired)
             {
                 _disposalScopeRequired = true;
+                Parent?.RequireDisposalScope();
             }
+        }
+
+        /// <summary>
+        /// Disposal scope is required
+        /// </summary>
+        /// <returns></returns>
+        public bool DisposalScopeRequired()
+        {
+            return _disposalScopeRequired;
         }
 
         /// <summary>

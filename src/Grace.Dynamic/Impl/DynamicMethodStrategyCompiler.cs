@@ -40,10 +40,10 @@ namespace Grace.Dynamic.Impl
         protected override ActivationStrategyDelegate CompileExpressionResultToDelegate(IActivationExpressionResult expressionContext,
             ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression)
         {
-            ActivationStrategyDelegate dynamicDelegate;
+            ActivationStrategyDelegate dynamicDelegate =
+                (ActivationStrategyDelegate)_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, parameters, extraExpressions, finalExpression, typeof(ActivationStrategyDelegate));
 
-            // try to create delegate, if not fall back to normal Linq Expression compile
-            if (_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, parameters, extraExpressions, finalExpression, out dynamicDelegate))
+            if (dynamicDelegate != null)
             {
                 return dynamicDelegate;
             }
@@ -51,6 +51,22 @@ namespace Grace.Dynamic.Impl
             expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Could not generate delegate for {expressionContext.Request.ActivationType.FullName} using DynamicMethod falling back to linq expressions");
 
             return base.CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
+        }
+
+        protected override T CompileExpressionResultToOpitimzed<T>(IActivationExpressionResult expressionContext, ParameterExpression[] parameters,
+            Expression[] extraExpressions, Expression finalExpression)
+        {
+            T delegateValue = 
+                (T)(object)_linqToDynamicMethodConverter.TryCreateDelegate(expressionContext, parameters, extraExpressions, finalExpression, typeof(T));
+
+            if (delegateValue != null)
+            {
+                return delegateValue;
+            }
+
+            expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Could not generate delegate for {expressionContext.Request.ActivationType.FullName} using DynamicMethod falling back to linq expressions");
+
+            return base.CompileExpressionResultToOpitimzed<T>(expressionContext, parameters, extraExpressions, finalExpression);
         }
     }
 }

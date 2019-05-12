@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Compiled delegate
         /// </summary>
-        protected ActivationStrategyDelegate CompiledDelegate;
+        protected Delegate CompiledDelegate;
 
         /// <summary>
         /// Thread safe
@@ -81,7 +82,23 @@ namespace Grace.DependencyInjection.Lifestyle
                 // new request as we don't want to carry any info over from parent request
                 var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
 
-                var localDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
+                var newResult = activationExpression(newRequest);
+
+                Delegate localDelegate = null;
+
+                if (ThreadSafe || newRequest.ExportScopeRequired() || newRequest.DisposalScopeRequired() ||
+                    newRequest.InjectionContextRequired())
+                {
+                    localDelegate = request.Services.Compiler.CompileDelegate(scope, newResult);
+                }
+                else
+                {
+                    var openMethod = GetType().GetTypeInfo().GetDeclaredMethod("CompileFuncDelage");
+
+                    var closed = openMethod.MakeGenericMethod(newResult.Expression.Type);
+
+                    localDelegate = (Delegate)closed.Invoke(null, new object[] {request, scope, newResult});
+                }
 
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
@@ -110,14 +127,29 @@ namespace Grace.DependencyInjection.Lifestyle
             }
             else
             {
-                var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod("GetOrCreateScopedService",
-                    new[] {typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext)});
+                var invokeMethodFastLane = CompiledDelegate.GetMethodInfo().GetParameters().Length == 1;
 
-                var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
+                if (invokeMethodFastLane)
+                {
+                    var getOrCreateMethod = typeof(IExportLocatorScope).GetTypeInfo()
+                        .GetDeclaredMethods("GetOrCreateScopedService").First(m => m.GetParameters().Length == 2);
 
-                createExpression = Expression.Call(request.ScopeParameter, closedMethod,
-                    Expression.Constant(UniqueIntIdValue), Expression.Constant(CompiledDelegate),
-                    request.InjectionContextParameter);
+                    var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
+
+                    createExpression = Expression.Call(request.ScopeParameter, closedMethod,
+                        Expression.Constant(UniqueIntIdValue), Expression.Constant(CompiledDelegate));
+                }
+                else
+                {
+                    var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod("GetOrCreateScopedService",
+                        new[] {typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext)});
+
+                    var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
+
+                    createExpression = Expression.Call(request.ScopeParameter, closedMethod,
+                        Expression.Constant(UniqueIntIdValue), Expression.Constant(CompiledDelegate),
+                        request.InjectionContextParameter);
+                }
             }
 
             local = Expression.Variable(request.ActivationType);
@@ -166,6 +198,12 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             return (T)value;
+        }
+
+        private static Delegate CompileFuncDelage<T>(IActivationExpressionRequest request, IInjectionScope scope,
+            IActivationExpressionResult result)
+        {
+            return request.Services.Compiler.CompileOptimizedDelegate<Func<T>>(scope, result);
         }
     }
 }

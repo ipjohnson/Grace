@@ -146,6 +146,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.DefaultValue != null)
             {
+                request.RequireDisposalScope();
+
                 var method = typeof(ExpressionUtilities).GetRuntimeMethods()
                     .FirstOrDefault(m => m.Name == "AddToDisposableScopeOrDefault");
 
@@ -158,12 +160,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 scope.ScopeConfiguration.Behaviors.AllowInstanceAndFactoryToReturnNull ||
                 !request.IsRequired)
             {
+                request.RequireDisposalScope();
+
                 var closedMethod = AddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
 
                 return Expression.Call(closedMethod, request.DisposalScopeExpression, expression);
             }
             else
             {
+                request.RequireDisposalScope();
+
                 var closedMethod = CheckForNullAndAddToDisposalScopeMethodInfo.MakeGenericMethod(request.ActivationType);
 
                 return Expression.Call(closedMethod,

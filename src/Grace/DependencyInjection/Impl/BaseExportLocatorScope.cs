@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// base locator scope used by InjectionScope and LifetimeScope
     /// </summary>
-    public abstract partial class BaseExportLocatorScope : DisposalScope, IExtraDataContainer, IExportLocatorScope
+    public abstract partial class BaseExportLocatorScope : DisposalScope, IExportLocatorScope
     {
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
         private ImmutableHashTree<string, object> _lockObjects = ImmutableHashTree<string, object>.Empty;
@@ -149,6 +149,102 @@ namespace Grace.DependencyInjection.Impl
             return (T)LocateOrDefault(typeof(T), defaultValue);
         }
 
+        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        {
+            var initialStorage = InternalScopedStorage;
+            var storage = initialStorage;
+
+            while (!ReferenceEquals(storage, ScopedStorage.Empty))
+            {
+                if (storage.Id == id)
+                {
+                    return (T)storage.ScopedService;
+                }
+
+                storage = storage.Next;
+            }
+
+            var value = createDelegate(this, this, context);
+
+            if (Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage) == initialStorage)
+            {
+                return (T)value;
+            }
+
+            return HandleScopedStorageCollision<T>(id, (T)value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="createDelegate"></param>
+        /// <returns></returns>
+        public virtual T GetOrCreateScopedService<T>(int id, Func<T> createDelegate)
+        {
+            var initialStorage = InternalScopedStorage;
+            var storage = initialStorage;
+
+            while (!ReferenceEquals(storage, ScopedStorage.Empty))
+            {
+                if (storage.Id == id)
+                {
+                    return (T)storage.ScopedService;
+                }
+
+                storage = storage.Next;
+            }
+
+            var value = createDelegate();
+
+            if (ReferenceEquals(
+                Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage), 
+                initialStorage))
+            {
+                return (T)value;
+            }
+
+            return HandleScopedStorageCollision<T>(id, (T)value);
+
+        }
+
+
+        private T HandleScopedStorageCollision<T>(int id, T value)
+        {
+            ScopedStorage newStorage = new ScopedStorage { Id = id, ScopedService = value };
+
+            SpinWait spinWait = new SpinWait();
+            var initialStorage = InternalScopedStorage;
+
+            do
+            {
+                var current = initialStorage;
+                newStorage.Next = current;
+
+                while (!ReferenceEquals(current, ScopedStorage.Empty))
+                {
+                    if (current.Id == id)
+                    {
+                        return value;
+                    }
+
+                    current = current.Next;
+                }
+
+                if (ReferenceEquals(
+                        Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage),
+                        initialStorage))
+                {
+                    return value;
+                }
+
+                spinWait.SpinOnce();
+                initialStorage = InternalScopedStorage;
+            }
+            while (true);
+        }
+
 
 #if !NETSTANDARD1_0
         object IServiceProvider.GetService(Type type)
@@ -176,9 +272,6 @@ namespace Grace.DependencyInjection.Impl
 
         public abstract bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null);
 
-        public abstract T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context);
-
-        public virtual T GetOrCreateScopedService<T>(int id, Func<T> createDelegate) => default(T);
         public abstract bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null);
 
 

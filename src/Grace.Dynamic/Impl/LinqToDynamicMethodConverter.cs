@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Reflection.Emit;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
@@ -21,7 +23,7 @@ namespace Grace.Dynamic.Impl
         /// <param name="finalExpression">final expression to convert</param>
         /// <param name="newDelegate">created delegate</param>
         /// <returns>true if delegate was created</returns>
-        bool TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, out ActivationStrategyDelegate newDelegate);
+        Delegate TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, Type newDelegateType);
     }
 
     /// <summary>
@@ -50,12 +52,10 @@ namespace Grace.Dynamic.Impl
         /// <param name="parameters"></param>
         /// <param name="extraExpressions"></param>
         /// <param name="finalExpression">final expression to convert</param>
-        /// <param name="newDelegate">created delegate</param>
+        /// <param name="newDelegateType">created delegate</param>
         /// <returns>true if delegate was created</returns>
-        public virtual bool TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, out ActivationStrategyDelegate newDelegate)
+        public virtual Delegate TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, Type newDelegateType)
         {
-            newDelegate = null;
-
             try
             {
                 var request = new DynamicMethodGenerationRequest(expressionContext, TryGenerateIL, parameters);
@@ -66,13 +66,13 @@ namespace Grace.Dynamic.Impl
                 {
                     if (!ImplementationFactory.Locate<IConstantExpressionCollector>().GetConstantExpressions(expression, constants))
                     {
-                        return false;
+                        return null;
                     }
                 }
 
                 if (!ImplementationFactory.Locate<IConstantExpressionCollector>().GetConstantExpressions(finalExpression, constants))
                 {
-                    return false;
+                    return null;
                 }
 
                 request.Constants = constants;
@@ -81,20 +81,20 @@ namespace Grace.Dynamic.Impl
 
                 if (target == null)
                 {
-                    return false;
+                    return null;
                 }
 
                 request.Target = target;
 
+                var invokeMethod = newDelegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
+
+                var parameterTypes = new List<Type> { target.GetType() };
+
+                parameterTypes.AddRange(invokeMethod.GetParameters().Select(p => p.ParameterType));
+
                 var method = new DynamicMethod(string.Empty,
-                    typeof(object),
-                    new[]
-                    {
-                        target.GetType(),
-                        typeof(IExportLocatorScope),
-                        typeof(IDisposalScope),
-                        typeof(IInjectionContext)
-                    },
+                    invokeMethod.ReturnType,
+                    parameterTypes.ToArray(),
                     target.GetType(),
                     true);
 
@@ -105,32 +105,29 @@ namespace Grace.Dynamic.Impl
                     request.ILGenerator.DeclareLocal(parameter.Type);
                 }
 
-
                 foreach (var expression in extraExpressions)
                 {
                     if (!TryGenerateIL(request, expression))
                     {
-                        return false;
+                        return null;
                     }
                 }
 
                 if (!TryGenerateIL(request, finalExpression))
                 {
-                    return false;
+                    return null;
                 }
-                
+
                 request.ILGenerator.Emit(OpCodes.Ret);
 
-                newDelegate = (ActivationStrategyDelegate)method.CreateDelegate(typeof(ActivationStrategyDelegate), target);
-
-                return true;
+                return method.CreateDelegate(newDelegateType, target);
             }
             catch (Exception exp)
             {
                 expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Exception thrown while compiling dynamic method {exp.Message}");
             }
 
-            return false;
+            return null;
         }
 
         /// <summary>

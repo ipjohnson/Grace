@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection
         /// <param name="scope"></param>
         /// <param name="expressionContext"></param>
         /// <returns></returns>
-        Delegate CompileFastDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext);
+        T CompileOptimizedDelegate<T>(IInjectionScope scope, IActivationExpressionResult expressionContext);
 
         /// <summary>
         /// Create injection delegate 

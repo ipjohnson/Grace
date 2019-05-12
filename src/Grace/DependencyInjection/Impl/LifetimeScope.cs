@@ -56,76 +56,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _injectionScope.CreateContext(extraData);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="createDelegate"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public override T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
-        {
-            var initialStorage = InternalScopedStorage;
-            var storage = initialStorage;
-
-            while (!ReferenceEquals(storage, ScopedStorage.Empty))
-            {
-                if (storage.Id == id)
-                {
-                    return (T)storage.ScopedService;
-                }
-
-                storage = storage.Next;
-            }
-
-            var value = createDelegate(this, this, context);
-
-            if (Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage) == initialStorage)
-            {
-                return (T)value;
-            }
-
-            return HandleScopedStorageCollision<T>(id, (T)value);
-        }
-
-
-        private T HandleScopedStorageCollision<T>(int id, T value)
-        {
-            ScopedStorage newStorage = new ScopedStorage { Id = id, ScopedService = value };
-
-            SpinWait spinWait = new SpinWait();
-            var initialStorage = InternalScopedStorage;
-
-            do
-            {
-                var current = initialStorage;
-                newStorage.Next = current;
-
-                while (!ReferenceEquals(current, ScopedStorage.Empty))
-                {
-                    if (current.Id == id)
-                    {
-                        return value;
-                    }
-
-                    current = current.Next;
-                }
-
-                if (ReferenceEquals(
-                        Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage), 
-                        initialStorage))
-                {
-                    return value;
-                }
-
-                spinWait.SpinOnce();
-                initialStorage = InternalScopedStorage;
-            }
-            while (true);
-        }
-
+        
         
         /// <summary>
         /// Locate specific type using extra data or key
