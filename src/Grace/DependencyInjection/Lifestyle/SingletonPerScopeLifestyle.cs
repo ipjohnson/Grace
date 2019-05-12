@@ -74,6 +74,8 @@ namespace Grace.DependencyInjection.Lifestyle
                 return request.Services.Compiler.CreateNewResult(request, local);
             }
 
+            request.RequireExportScope();
+
             if (CompiledDelegate == null)
             {
                 // new request as we don't want to carry any info over from parent request

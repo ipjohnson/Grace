@@ -52,6 +52,14 @@ namespace Grace.DependencyInjection
         ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext);
 
         /// <summary>
+        /// Compile fast instance creation delegate that can be used when certain parameters aren't needed.
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="expressionContext"></param>
+        /// <returns></returns>
+        Delegate CompileFastDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext);
+
+        /// <summary>
         /// Create injection delegate 
         /// </summary>
         /// <param name="scope"></param>

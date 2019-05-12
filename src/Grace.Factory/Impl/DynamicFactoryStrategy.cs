@@ -47,6 +47,10 @@ namespace Grace.Factory.Impl
                 }
             }
 
+            request.RequireExportScope();
+            request.RequireDisposalScope();
+            request.RequireInjectionContext();
+
             var parameters = new List<Expression>
             {
                 request.ScopeParameter,

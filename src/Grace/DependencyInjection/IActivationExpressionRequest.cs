@@ -373,6 +373,28 @@ namespace Grace.DependencyInjection
         bool InjectionContextRequired();
 
         /// <summary>
+        /// Require export scope for resolution
+        /// </summary>
+        void RequireExportScope();
+
+        /// <summary>
+        /// Export scope is required
+        /// </summary>
+        /// <returns></returns>
+        bool ExportScopeRequired();
+
+        /// <summary>
+        /// Require disposal scope 
+        /// </summary>
+        void RequireDisposalScope();
+
+        /// <summary>
+        /// Disposal scope required
+        /// </summary>
+        /// <returns></returns>
+        bool DisposalScopeRequired();
+
+        /// <summary>
         /// Create new request from this request
         /// </summary>
         /// <param name="activationType">request type</param>

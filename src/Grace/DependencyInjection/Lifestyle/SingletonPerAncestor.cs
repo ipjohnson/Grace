@@ -91,7 +91,8 @@ namespace Grace.DependencyInjection.Lifestyle
                 Expression.Constant(newDelegate), Expression.Constant(ancestorId));
 
             request.RequireInjectionContext();
-
+            request.RequireExportScope();
+            
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
 
