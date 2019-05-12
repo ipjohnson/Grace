@@ -79,23 +79,23 @@ namespace Grace.Dynamic.Impl
 
                 var target = ImplementationFactory.Locate<IDynamicMethodTargetCreator>().CreateMethodTarget(request);
 
-                if (target == null)
-                {
-                    return null;
-                }
-
                 request.Target = target;
 
                 var invokeMethod = newDelegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
 
-                var parameterTypes = new List<Type> { target.GetType() };
+                var parameterTypes = new List<Type>();
+
+                if (target != null)
+                {
+                    parameterTypes.Add(target.GetType());
+                }
 
                 parameterTypes.AddRange(invokeMethod.GetParameters().Select(p => p.ParameterType));
 
                 var method = new DynamicMethod(string.Empty,
                     invokeMethod.ReturnType,
                     parameterTypes.ToArray(),
-                    target.GetType(),
+                    typeof(LinqToDynamicMethodConverter),
                     true);
 
                 request.ILGenerator = method.GetILGenerator();

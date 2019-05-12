@@ -127,7 +127,7 @@ namespace Grace.DependencyInjection.Lifestyle
             }
             else
             {
-                var invokeMethodFastLane = CompiledDelegate.GetMethodInfo().GetParameters().Length == 1;
+                var invokeMethodFastLane = CompiledDelegate.GetMethodInfo().GetParameters().Length < 3;
 
                 if (invokeMethodFastLane)
                 {
