@@ -232,5 +232,21 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.NotNull(moreClosed);
             Assert.IsType<EvenMoreClosedInterface<string, int>>(moreClosed);
         }
+
+        [Fact]
+        public void OpenGenericClassConstraintTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(ClassConstraint<,>)).As(typeof(IClassConstraint<,>));
+                c.Export<BasicService>();
+            });
+
+
+            var instance = container.Locate<DependentService<IClassConstraint<Hub<BasicService>, BasicService>>>();
+
+        }
     }
 }

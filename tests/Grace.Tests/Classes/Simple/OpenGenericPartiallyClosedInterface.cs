@@ -19,4 +19,19 @@
 	{
 		
 	}
+
+    public interface IClassConstraint<THub, T> where THub : Hub<T> where T : class
+    {
+
+    }
+
+    public class ClassConstraint<THub, T> : IClassConstraint<THub, T> where THub : Hub<T> where T : class
+    {
+
+    }
+
+    public class Hub<T>
+    {
+
+    }
 }

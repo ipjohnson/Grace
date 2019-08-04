@@ -43,8 +43,19 @@ namespace Grace.Utilities
 
                 if (!constraint.GetTypeInfo().IsAssignableFrom(exported.GetTypeInfo()))
                 {
-                    meets = false;
-                    break;
+                    if (constraint.IsConstructedGenericType &&
+                        exported.IsConstructedGenericType &&
+                        constraint.GenericTypeArguments[0].GetTypeInfo().GUID == Guid.Empty &&
+                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
+                    {
+                        // do nothing as it matches
+                    }
+                    else
+                    {
+                        meets = false;
+                        break;
+                    }
+                    
                 }
             }
 
