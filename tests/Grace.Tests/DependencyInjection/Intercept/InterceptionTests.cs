@@ -1,5 +1,6 @@
 ﻿using Castle.DynamicProxy;
 using Grace.DependencyInjection;
+using Grace.Tests.Classes.Simple;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Intercept
@@ -121,5 +122,44 @@ namespace Grace.Tests.DependencyInjection.Intercept
             Assert.Equal(2, interceptor.Arguements[0]);
             Assert.Equal(3, interceptor.Arguements[1]);
         }
+
+        [Fact]
+        public void InterceptUsingAttribute()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().As<ISimpleObject>();
+                c.Export<SimpleObjectB>().As<ISimpleObject>();
+            });
+
+            container.InterceptAttribute<SimpleFilterAttribute, CustomInterceptor>();
+
+            var all = container.LocateAll<ISimpleObject>();
+
+            Assert.Equal(2, all.Count);
+            Assert.IsNotType<SimpleObjectA>(all[0]);
+            Assert.IsType<SimpleObjectB>(all[1]);
+
+            Assert.Equal(CustomInterceptor.InterceptedString, all[0].TestString);
+            Assert.Equal("B", all[1].TestString);
+        }
+
+        public class CustomInterceptor : IInterceptor
+        {
+            public CustomInterceptor()
+            {
+
+            }
+
+            public const string InterceptedString = "intercepted";
+
+            public void Intercept(IInvocation invocation)
+            {
+                invocation.ReturnValue = InterceptedString;
+            }
+        }
+        
     }
 }
