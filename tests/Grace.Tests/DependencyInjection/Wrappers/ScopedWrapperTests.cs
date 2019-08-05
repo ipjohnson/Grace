@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
@@ -76,5 +77,40 @@ namespace Grace.Tests.DependencyInjection.Wrappers
                 var instance = scoped.Instance;
             });
         }
+
+        [Fact]
+        public void Scoped_Complex_Wrapper()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<CountValueMultipleService1>().As<ICountValueMultipleService>().WithMetadata("tag", "1");
+                c.Export<CountValueMultipleService2>().As<ICountValueMultipleService>().WithMetadata("tag", "2");
+                c.Export<CountValueMultipleService3>().As<ICountValueMultipleService>().WithMetadata("tag", "3");
+            });
+
+            var instanceList = container.Locate<IEnumerable<Meta<Scoped<Func<int, ICountValueMultipleService>>>>>();
+
+            var i = 1;
+
+            foreach (var meta in instanceList)
+            {
+                Assert.Equal(meta.Metadata["tag"], i.ToString());
+
+                var func = meta.Value.Instance;
+
+                var instance = func(i);
+
+                Assert.Equal(instance.Count, i);
+
+                i++;
+
+                meta.Value.Dispose();
+            }
+        }
+
+       
+
     }
 }

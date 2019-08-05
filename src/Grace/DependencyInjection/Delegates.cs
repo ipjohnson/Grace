@@ -10,6 +10,16 @@
     public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
 
     /// <summary>
+    /// Delegate for activating a strongly typed strategy
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="scope"></param>
+    /// <param name="disposalScope"></param>
+    /// <param name="injectionContext"></param>
+    /// <returns></returns>
+    public delegate T TypedActivationStrategyDelegate<out T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
+
+    /// <summary>
     /// Delegate for injecting value
     /// </summary>
     /// <param name="scope">injection scope</param>

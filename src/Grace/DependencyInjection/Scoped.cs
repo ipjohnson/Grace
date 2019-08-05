@@ -9,6 +9,8 @@ namespace Grace.DependencyInjection
     public class Scoped<T> : IDisposable
     {
         private readonly IExportLocatorScope _scope;
+        private readonly IInjectionContext _context;
+        private readonly TypedActivationStrategyDelegate<T> _activationDelegate;
         private readonly string _scopeName;
         private IExportLocatorScope _childScope;
         private T _instance;
@@ -17,10 +19,14 @@ namespace Grace.DependencyInjection
         /// Default constructor
         /// </summary>
         /// <param name="scope"></param>
+        /// <param name="context"></param>
+        /// <param name="activationDelegate"></param>
         /// <param name="scopeName"></param>
-        public Scoped(IExportLocatorScope scope, string scopeName = null)
+        public Scoped(IExportLocatorScope scope,  IInjectionContext context, TypedActivationStrategyDelegate<T> activationDelegate, string scopeName = null)
         {
             _scope = scope;
+            _context = context;
+            _activationDelegate = activationDelegate;
             _scopeName = scopeName;
         }
 
@@ -35,7 +41,7 @@ namespace Grace.DependencyInjection
                 {
                     _childScope = _scope.BeginLifetimeScope(_scopeName);
 
-                    _instance = _childScope.Locate<T>();
+                    _instance = _activationDelegate(_childScope, _childScope, _context);
                 }
 
                 return _instance;

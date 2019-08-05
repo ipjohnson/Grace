@@ -36,6 +36,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             collection.AddStrategy(new FuncFourArgWrapperStrategy(scope));
             collection.AddStrategy(new FuncFiveArgWrapperStrategy(scope));
 
+            collection.AddStrategy(new TypedActivationStrategyDelegateWrapperStrategy(scope));
+
             return collection;
         }
     }
