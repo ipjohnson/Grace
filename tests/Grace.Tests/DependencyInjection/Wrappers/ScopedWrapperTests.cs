@@ -90,27 +90,51 @@ namespace Grace.Tests.DependencyInjection.Wrappers
                 c.Export<CountValueMultipleService3>().As<ICountValueMultipleService>().WithMetadata("tag", "3");
             });
 
-            var instanceList = container.Locate<IEnumerable<Meta<Scoped<Func<int, ICountValueMultipleService>>>>>();
+            var instanceList = container.Locate<List<Meta<Scoped<Func<int, ICountValueMultipleService>>>>>();
 
-            var i = 1;
+            Assert.Equal(3, instanceList.Count);
 
-            foreach (var meta in instanceList)
-            {
-                Assert.Equal(meta.Metadata["tag"], i.ToString());
+            // instance 1
+            var meta = instanceList[0];
 
-                var func = meta.Value.Instance;
+            Assert.Equal("1", meta.Metadata["tag"]);
 
-                var instance = func(i);
+            var func = meta.Value.Instance;
 
-                Assert.Equal(instance.Count, i);
+            var instance = func(1);
 
-                i++;
+            Assert.IsType<CountValueMultipleService1>(instance);
+            Assert.Equal(1, instance.Count);
 
-                meta.Value.Dispose();
-            }
+            meta.Value.Dispose();
+
+            // instance 2
+            meta = instanceList[1];
+
+            Assert.Equal("2", meta.Metadata["tag"]);
+
+            func = meta.Value.Instance;
+
+            instance = func(2);
+
+            Assert.IsType<CountValueMultipleService2>(instance);
+            Assert.Equal(2, instance.Count);
+
+            meta.Value.Dispose();
+
+            // instance 2
+            meta = instanceList[2];
+
+            Assert.Equal("3", meta.Metadata["tag"]);
+
+            func = meta.Value.Instance;
+
+            instance = func(3);
+
+            Assert.IsType<CountValueMultipleService3>(instance);
+            Assert.Equal(3, instance.Count);
+
+            meta.Value.Dispose();
         }
-
-       
-
     }
 }

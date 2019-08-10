@@ -1,5 +1,6 @@
 ﻿using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
+using Grace.DependencyInjection.Impl.KnownTypeStrategies;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -27,7 +28,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             collection.AddStrategy(new MetaWrapperStrategy(scope));
             collection.AddStrategy(new StronglyTypedMetadataWrapperStrategy(scope, metadataProvider));
             
-            collection.AddStrategy(new GenericCompiledWrapperStrategy(typeof(Scoped<>), scope, scope.StrategyCompiler.DefaultStrategyExpressionBuilder) { ExternallyOwned = false });
+            //collection.AddStrategy(new GenericCompiledWrapperStrategy(typeof(Scoped<>), scope, scope.StrategyCompiler.DefaultStrategyExpressionBuilder) { ExternallyOwned = false });
+
+            collection.AddStrategy(new ScopedActivationStrategy(scope));
 
             collection.AddStrategy(new FuncWrapperStrategy(scope));
             collection.AddStrategy(new FuncOneArgWrapperStrategy(scope));

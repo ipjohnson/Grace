@@ -86,6 +86,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     return true;
                 }
+  
 
                 if (genericType.FullName == "System.Collections.Immutable.ImmutableList`1" ||
                     genericType.FullName == "System.Collections.Immutable.ImmutableArray`1" ||
@@ -167,6 +168,7 @@ namespace Grace.DependencyInjection.Impl
                     yield return new KeyedLocateDelegateStrategy(scope);
                     yield break;
                 }
+
 
                 if (genericType.FullName == "System.Collections.Immutable.ImmutableList`1" ||
                     genericType.FullName == "System.Collections.Immutable.ImmutableArray`1" ||

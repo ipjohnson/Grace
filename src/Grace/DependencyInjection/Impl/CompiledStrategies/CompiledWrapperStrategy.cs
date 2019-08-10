@@ -12,7 +12,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     public class CompiledWrapperStrategy : ConfigurableActivationStrategy, IConfigurableCompiledWrapperStrategy
     {
         private readonly IDefaultStrategyExpressionBuilder _builder;
-        private ActivationStrategyDelegate _delegate;
         private Type _wrappedType;
         private int _genericArgPosition = -1;
 
@@ -42,18 +41,9 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
-            if (_delegate != null)
-            {
-                return _delegate;
-            }
-
             var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
 
-            var compiledDelegate = compiler.CompileDelegate(scope, request);
-
-            Interlocked.CompareExchange(ref _delegate, compiledDelegate, null);
-
-            return _delegate;
+            return compiler.CompileDelegate(scope, request);
         }
 
         /// <summary>
