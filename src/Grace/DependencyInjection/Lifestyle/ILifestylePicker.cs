@@ -66,6 +66,13 @@ namespace Grace.DependencyInjection.Lifestyle
         T SingletonPerScope(bool locking = false);
 
         /// <summary>
+        /// Singleton per key
+        /// </summary>
+        /// <param name="keyFunc"></param>
+        /// <returns></returns>
+        T SingletonPerKey(Func<IExportLocatorScope, IInjectionContext, object> keyFunc);
+
+        /// <summary>
         /// Create one instance per container but don't hold a strong reference
         /// </summary>
         /// <returns></returns>

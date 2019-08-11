@@ -86,6 +86,18 @@ namespace Grace.DependencyInjection.Lifestyle
         }
 
         /// <summary>
+        /// Create one instance per key
+        /// </summary>
+        /// <param name="keyFunc"></param>
+        /// <returns></returns>
+        public T SingletonPerKey(Func<IExportLocatorScope, IInjectionContext, object> keyFunc)
+        {
+            _addLifestyle(new SingletonPerKeyLifestyle(keyFunc));
+
+            return _returnValue;
+        }
+
+        /// <summary>
         /// Create one instance per named scope, 
         /// </summary>
         /// <param name="scopeName">scope name</param>
