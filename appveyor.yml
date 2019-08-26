@@ -4,7 +4,7 @@ environment:
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
 version: $(build_version)-{build}
-configuration: Release
+configuration: Debug
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
