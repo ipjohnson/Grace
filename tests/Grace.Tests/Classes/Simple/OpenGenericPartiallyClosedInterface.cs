@@ -1,4 +1,6 @@
-﻿namespace Grace.UnitTests.Classes.Simple
+﻿using Grace.Tests.Classes.Simple;
+
+namespace Grace.UnitTests.Classes.Simple
 {
 	public interface IOpenGenericPartiallyClosedInterface<T,T2,T3,T4>
 	{
@@ -31,6 +33,11 @@
     }
 
     public class Hub<T>
+    {
+
+    }
+
+    public class InheritHub : Hub<BasicService>
     {
 
     }

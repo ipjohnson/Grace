@@ -247,6 +247,26 @@ namespace Grace.Tests.DependencyInjection.Generics
 
             var instance = container.Locate<DependentService<IClassConstraint<Hub<BasicService>, BasicService>>>();
 
+            Assert.NotNull(instance);
+        }
+
+
+        [Fact]
+        public void InheritOpenGenericClassConstraintTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export(typeof(ClassConstraint<,>)).As(typeof(IClassConstraint<,>));
+                c.Export<InheritHub>();
+                c.Export<BasicService>();
+            });
+
+
+            var instance = container.Locate<DependentService<IClassConstraint<InheritHub, BasicService>>>();
+
+            Assert.NotNull(instance);
         }
     }
 }

@@ -43,19 +43,47 @@ namespace Grace.Utilities
 
                 if (!constraint.GetTypeInfo().IsAssignableFrom(exported.GetTypeInfo()))
                 {
-                    if (constraint.IsConstructedGenericType &&
-                        exported.IsConstructedGenericType &&
-                        constraint.GenericTypeArguments[0].GetTypeInfo().GUID == Guid.Empty &&
-                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
+                    if (constraint.IsConstructedGenericType)
                     {
-                        // do nothing as it matches
+                        if (exported.IsConstructedGenericType)
+                        {
+                            if (constraint.GenericTypeArguments[0].GetTypeInfo().GUID != Guid.Empty ||
+                                constraint.GetGenericTypeDefinition() != exported.GetGenericTypeDefinition())
+                            {
+                                meets = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            var genericConstraintType = constraint.GetGenericTypeDefinition();
+                            var found = false;
+                            var parentType = exported.GetTypeInfo().BaseType;
+
+                            while (parentType != typeof(object))
+                            {
+                                if (parentType.IsConstructedGenericType && 
+                                    parentType.GetGenericTypeDefinition() == genericConstraintType)
+                                {
+                                    found = true;
+                                    break;
+                                }
+
+                                parentType = parentType.GetTypeInfo().BaseType;
+                            }
+
+                            if (!found)
+                            {
+                                meets = false;
+                                break;
+                            }
+                        }
                     }
                     else
                     {
                         meets = false;
                         break;
                     }
-                    
                 }
             }
 
