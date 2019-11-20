@@ -286,32 +286,39 @@ namespace Grace.Data
                     new ImmutableHashTree<string, object>.UpdateDelegate((oldValue, newValue) => newValue));
 
             Expression tree = treeParameter;
+            var currentType = objectType;
 
-            foreach (var property in objectType.GetTypeInfo().DeclaredProperties)
+            while (currentType != null && currentType != typeof(object))
             {
-                if (property.CanRead &&
-                  !property.GetMethod.IsStatic &&
-                   property.GetMethod.IsPublic &&
-                   property.GetMethod.GetParameters().Length == 0)
+                foreach (var property in currentType.GetTypeInfo().DeclaredProperties)
                 {
-                    var propertyAccess = Expression.Property(tVariable, property.GetMethod);
-
-                    var propertyCast = Expression.Convert(propertyAccess, typeof(object));
-
-                    var propertyName = property.Name;
-
-                    switch (casing)
+                    if (property.CanRead &&
+                        !property.GetMethod.IsStatic &&
+                        property.GetMethod.IsPublic &&
+                        property.GetMethod.GetParameters().Length == 0)
                     {
-                        case PropertyCasing.Lower:
-                            propertyName = propertyName.ToLowerInvariant();
-                            break;
-                        case PropertyCasing.Upper:
-                            propertyName = propertyName.ToUpperInvariant();
-                            break;
-                    }
+                        var propertyAccess = Expression.Property(tVariable, property.GetMethod);
 
-                    tree = Expression.Call(tree, ImmutableTreeAdd, Expression.Constant(propertyName), propertyCast, updateDelegate);
+                        var propertyCast = Expression.Convert(propertyAccess, typeof(object));
+
+                        var propertyName = property.Name;
+
+                        switch (casing)
+                        {
+                            case PropertyCasing.Lower:
+                                propertyName = propertyName.ToLowerInvariant();
+                                break;
+                            case PropertyCasing.Upper:
+                                propertyName = propertyName.ToUpperInvariant();
+                                break;
+                        }
+
+                        tree = Expression.Call(tree, ImmutableTreeAdd, Expression.Constant(propertyName), propertyCast,
+                            updateDelegate);
+                    }
                 }
+
+                currentType = currentType.GetTypeInfo().BaseType;
             }
 
             bodyExpressions.Add(tree);
