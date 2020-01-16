@@ -121,7 +121,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
         public static IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string hintName = null, int? position = null)
         {
-            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
+            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(nameof(GetExtraData), new[] { typeof(object) });
 
             var callExpression = Expression.Call(request.InjectionContextParameter, getMethod,
                 Expression.Constant(valueId));

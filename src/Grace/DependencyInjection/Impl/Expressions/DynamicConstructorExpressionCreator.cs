@@ -149,7 +149,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var labelArray = Expression.Constant(testValues.Select(t => t.Item2).ToArray());
 
                 var createErrorStringMethod = typeof(DynamicConstructorExpressionCreator).GetTypeInfo()
-                    .GetDeclaredMethod("CreateMissingErrorMessage");
+                    .GetDeclaredMethod(nameof(CreateMissingErrorMessage));
 
                 testExpressions.Add(Expression.Throw(Expression.New(constructor,
                     Expression.Constant(request.GetStaticInjectionContext()),
@@ -431,13 +431,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Method to use for can locate
         /// </summary>
         public virtual MethodInfo DynamicCanLocateMethodInfo =>
-            GetType().GetTypeInfo().GetDeclaredMethod("DynamicCanLocate");
+            GetType().GetTypeInfo().GetDeclaredMethod(nameof(DynamicCanLocate));
 
         /// <summary>
         /// Method to use for locate
         /// </summary>
         public virtual MethodInfo DynamicLocateMethodInfo =>
-            GetType().GetTypeInfo().GetDeclaredMethod("DynamicLocate");
+            GetType().GetTypeInfo().GetDeclaredMethod(nameof(DynamicLocate));
 
     }
 }

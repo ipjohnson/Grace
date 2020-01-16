@@ -524,7 +524,7 @@ namespace Grace.DependencyInjection.Impl
 
         private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
         {
-            var method = typeof(IInjectionContextCreator).GetRuntimeMethod("CreateContext",
+            var method = typeof(IInjectionContextCreator).GetRuntimeMethod(nameof(IInjectionContextCreator.CreateContext),
                     new[]
                     {
                         typeof(object)

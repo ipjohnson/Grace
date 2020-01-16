@@ -46,7 +46,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
 
                 _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
-                var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod("SingletonActivation");
+                var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(SingletonActivation));
 
                 ConstantExpression = Expression.Call(Expression.Constant(this), singletonMethod,
                     request.Constants.ScopeParameter, request.Constants.RootDisposalScope,

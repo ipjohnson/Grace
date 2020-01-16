@@ -15,7 +15,7 @@ namespace Grace.Data
     public class ReflectionService
     {
         private static readonly MethodInfo ImmutableTreeAdd =
-            typeof(ImmutableHashTree<string, object>).GetRuntimeMethods().First(m => m.Name == "Add");
+            typeof(ImmutableHashTree<string, object>).GetRuntimeMethods().First(m => m.Name == nameof(ImmutableHashTree<string, object>.Add));
 
         private static ImmutableHashTree<Type, PropertyDictionaryDelegate> _propertyDelegates =
             ImmutableHashTree<Type, PropertyDictionaryDelegate>.Empty;
@@ -406,7 +406,7 @@ namespace Grace.Data
                     injectionParameter, delegateParameter).Compile();
         }
 
-        private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
+        private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod(nameof(ILocatorService.Locate),
             new[] { typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool) });
     }
 }

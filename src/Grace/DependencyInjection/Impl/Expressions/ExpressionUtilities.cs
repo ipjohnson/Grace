@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullMethodInfo ??
                        (_checkForNullMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "CheckForNull"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNull)));
             }
         }
 
@@ -245,7 +245,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _addToDisposalScopeMethodInfo ??
                        (_addToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "AddToDisposalScope"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(AddToDisposalScope)));
             }
         }
         #endregion
@@ -289,7 +289,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullAndAddToDisposalScopeMethodInfo ??
                        (_checkForNullAndAddToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "CheckForNullAndAddToDisposalScope"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNullAndAddToDisposalScope)));
             }
         }
         #endregion
