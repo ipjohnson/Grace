@@ -122,7 +122,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 if (request.DefaultValue != null)
                 {
                     var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                           .FirstOrDefault(m => m.Name == "ValueOrDefault");
+                           .FirstOrDefault(m => m.Name == nameof(ValueOrDefault));
 
                     var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
@@ -149,7 +149,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 request.RequireDisposalScope();
 
                 var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                    .FirstOrDefault(m => m.Name == "AddToDisposableScopeOrDefault");
+                    .FirstOrDefault(m => m.Name == nameof(AddToDisposableScopeOrDefault));
 
                 var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
