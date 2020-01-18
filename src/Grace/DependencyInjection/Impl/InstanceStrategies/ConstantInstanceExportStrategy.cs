@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// </summary>
         /// <param name="constant"></param>
         /// <param name="injectionScope"></param>
-        public ConstantInstanceExportStrategy(T constant, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
+        public ConstantInstanceExportStrategy(T constant, IInjectionScope injectionScope) : base(constant?.GetType() ?? typeof(T), injectionScope)
         {
             _constant = constant;
         }

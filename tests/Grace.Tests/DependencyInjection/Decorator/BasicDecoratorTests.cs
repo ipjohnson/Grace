@@ -110,5 +110,20 @@ namespace Grace.Tests.DependencyInjection.Decorator
             Assert.IsType<LoggingComand<int>>(instances[0]);
             Assert.IsType<LoggingComand<int>>(instances[1]);
         }
+
+        [Fact]
+        public void StringDecoratorTest()
+        {
+            var container = new DependencyInjectionContainer
+            {
+                _ =>
+                {
+                    _.ExportInstance<object>("Hello World!").As(typeof(string)).Lifestyle.Singleton();
+                    _.ExportDecorator<string>(x => $"{x} Good Bye World!");
+                }
+            };
+
+            var stringValue = container.Locate<string>();
+        }
     }
 }
