@@ -83,7 +83,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
-            var closedMethod = closedClass.GetRuntimeMethod("CreateLazy", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(nameof(LazyExpression<object,object>.CreateLazy), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
             var wrappedStrategy = request.GetWrappedStrategy();
 

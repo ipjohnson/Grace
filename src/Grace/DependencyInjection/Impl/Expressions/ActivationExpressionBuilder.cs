@@ -219,7 +219,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var valueMethod = _contextValueProvider.GetType().GetRuntimeMethod("GetValueFromInjectionContext", new[]
+            var valueMethod = _contextValueProvider.GetType().GetRuntimeMethod(nameof(GetValueFromInjectionContext), new[]
             {
                 typeof(IExportLocatorScope),
                 typeof(StaticInjectionContext),
@@ -413,7 +413,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 request.RequireExportScope();
 
-                var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod("GetInjectionScope", new[] { typeof(IExportLocatorScope) });
+                var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod(nameof(IExportLocatorScopeExtensions.GetInjectionScope), new[] { typeof(IExportLocatorScope) });
 
                 var expression = Expression.Call(method, request.ScopeParameter);
 
@@ -456,7 +456,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             if (request.IsDynamic)
             {
                 var dynamicMethod =
-                    typeof(ActivationExpressionBuilder).GetRuntimeMethod("GetDynamicValue",
+                    typeof(ActivationExpressionBuilder).GetRuntimeMethod(nameof(GetDynamicValue),
                         new[]
                         {
                             typeof(IExportLocatorScope),

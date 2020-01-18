@@ -96,7 +96,7 @@ namespace Grace.Factory.Impl
 
             var newStatement = Expression.New(constructor, parameters);
 
-            var setMethod = typeof(IExtraDataContainer).GetRuntimeMethod("SetExtraData",
+            var setMethod = typeof(IExtraDataContainer).GetRuntimeMethod(nameof(IExtraDataContainer.SetExtraData),
                 new[] { typeof(object), typeof(object), typeof(bool) });
 
             var invokeStatement = Expression.Call(request.InjectionContextParameter, setMethod,
@@ -109,7 +109,7 @@ namespace Grace.Factory.Impl
 
         private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string nameHint = null, int? position = null)
         {
-            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod("GetExtraData", new[] { typeof(object) });
+            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(nameof(IExtraDataContainer.GetExtraData), new[] { typeof(object) });
 
             var callExpression = Expression.Call(request.InjectionContextParameter, getMethod,
                 Expression.Constant(valueId));

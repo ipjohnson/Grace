@@ -17,10 +17,10 @@ namespace Grace.Tests.DependencyInjection.Helpers
         [Fact]
         public void MembersThat_Match()
         {
-            Func<MemberInfo, bool> filter = MembersThat.Match(m => m.Name == "Count");
+            Func<MemberInfo, bool> filter = MembersThat.Match(m => m.Name == nameof(MemberClass.Count));
 
-            var countMember = typeof(MemberClass).GetProperty("Count");
-            var customStringMember = typeof(MemberClass).GetProperty("CustomString");
+            var countMember = typeof(MemberClass).GetProperty(nameof(MemberClass.Count));
+            var customStringMember = typeof(MemberClass).GetProperty(nameof(MemberClass.CustomString));
 
             Assert.True(filter(countMember));
             Assert.False(filter(customStringMember));

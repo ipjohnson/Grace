@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
             var fromMethod =
-                typeof(ImmutableArray).GetRuntimeMethods().First(m => m.Name == "From" && m.GetParameters().Length == 2);
+                typeof(ImmutableArray).GetRuntimeMethods().First(m => m.Name == nameof(ImmutableArray.From) && m.GetParameters().Length == 2);
 
             var closedMethod = fromMethod.MakeGenericMethod(elementType);
 

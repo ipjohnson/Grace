@@ -83,7 +83,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return arrayInit;
             }
 
-            var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods().First(m => m.Name == "SortArray");
+            var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods().First(m => m.Name == nameof(SortArray));
 
             var closedMethod = openMethod.MakeGenericMethod(arrayElementType);
 

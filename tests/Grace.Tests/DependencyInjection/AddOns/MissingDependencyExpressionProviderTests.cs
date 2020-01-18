@@ -75,7 +75,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
                     key = ((string)key).ToLowerInvariant();
                 }
 
-                var locateFromChildMethod = GetType().GetTypeInfo().GetDeclaredMethod("LocateFromChildContainer");
+                var locateFromChildMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(LocateFromChildContainer));
 
                 Expression expression = Expression.Call(Expression.Constant(this),
                     locateFromChildMethod,

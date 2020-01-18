@@ -50,7 +50,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var closedClass = typeof(DelegateExpression<,,,,>).MakeGenericType(list.ToArray());
 
-            var closedMethod = closedClass.GetRuntimeMethod("CreateDelegate", new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(nameof(DelegateExpression<object,object,object,object,object>.CreateDelegate), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
@@ -106,7 +106,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 _action = request.Services.Compiler.CompileDelegate(scope, activationExpression);
 
-                _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod("Func");
+                _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod(nameof(FuncClass.Func));
             }
             
             /// <summary>

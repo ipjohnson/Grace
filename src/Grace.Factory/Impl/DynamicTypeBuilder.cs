@@ -17,11 +17,11 @@ namespace Grace.Factory.Impl
         private static readonly object BuilderLock = new object();
         private static ModuleBuilder _moduleBuilder;
         private static int _proxyCount = 0;
-        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod("Clone",new Type[0]);
-        private static MethodInfo DelegateInvoke = typeof(ActivationStrategyDelegate).GetRuntimeMethod("Invoke",
+        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod(nameof(IInjectionContext.Clone),new Type[0]);
+        private static MethodInfo DelegateInvoke = typeof(ActivationStrategyDelegate).GetRuntimeMethod(nameof(ActivationStrategyDelegate.Invoke),
             new[] {typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext)});
         private static MethodInfo SetExtraDataMethod =
-            typeof(IExtraDataContainer).GetRuntimeMethod("SetExtraData", new[] { typeof(object), typeof(object), typeof(bool) });
+            typeof(IExtraDataContainer).GetRuntimeMethod(nameof(IExtraDataContainer.SetExtraData), new[] { typeof(object), typeof(object), typeof(bool) });
 
         /// <summary>
         /// Default constructor

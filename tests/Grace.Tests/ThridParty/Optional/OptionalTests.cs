@@ -221,7 +221,7 @@ namespace Grace.Tests.ThridParty.Optional
 
             var callExpression = Expression.Call(
                 Expression.Constant(factory),
-                factory.GetType().GetMethod("CreateOptional"),
+                factory.GetType().GetMethod(nameof(GraceOptionalFactory<object>.CreateOptional)),
                 request.ScopeParameter,
                 request.DisposalScopeExpression,
                 request.InjectionContextParameter);

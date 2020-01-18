@@ -63,10 +63,10 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
         }
         
         private MethodInfo PreBuildUpMethodInfo =>
-            _preMethodInfo ?? (_preMethodInfo = GetType().GetMethod("PreBuildUp"));
+            _preMethodInfo ?? (_preMethodInfo = GetType().GetMethod(nameof(PreBuildUp)));
 
         private MethodInfo PostBuildUpMethodInfo =>
-            _postMethodInfo ?? (_postMethodInfo = GetType().GetMethod("PostBuildUp"));
+            _postMethodInfo ?? (_postMethodInfo = GetType().GetMethod(nameof(PostBuildUp)));
 
         public virtual object PreBuildUp(StaticInjectionContext staticContext, IExportLocatorScope scope,
             IInjectionContext injectionContext)

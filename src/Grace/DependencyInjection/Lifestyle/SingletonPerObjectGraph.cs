@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             if (_guaranteeOnlyOne)
             {
-                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod("GetValueGuaranteeOnce",
+                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod(nameof(GetValueGuaranteeOnce),
                     new[]
                     {
                         typeof(IExportLocatorScope),
@@ -67,7 +67,7 @@ namespace Grace.DependencyInjection.Lifestyle
             }
             else
             {
-                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod("GetValue",
+                var openMethod = typeof(SingletonPerObjectGraph).GetRuntimeMethod(nameof(GetValue),
                     new[]
                     {
                         typeof(IExportLocatorScope),

@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
             var listResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
             var createMethod =
-                typeof(ImmutableLinkListStrategy).GetTypeInfo().GetDeclaredMethod("CreateImmutableLinkedList");
+                typeof(ImmutableLinkListStrategy).GetTypeInfo().GetDeclaredMethod(nameof(CreateImmutableLinkedList));
 
             var closedMethod = createMethod.MakeGenericMethod(elementType);
 

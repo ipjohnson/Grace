@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var openMethod = typeof(KeyedLocateDelegateStrategy).GetRuntimeMethod("CreateKeyedDelegate",
+            var openMethod = typeof(KeyedLocateDelegateStrategy).GetRuntimeMethod(nameof(CreateKeyedDelegate),
                 new[] { typeof(IExportLocatorScope) });
 
             var closedMethod = openMethod.MakeGenericMethod(request.ActivationType.GenericTypeArguments);
