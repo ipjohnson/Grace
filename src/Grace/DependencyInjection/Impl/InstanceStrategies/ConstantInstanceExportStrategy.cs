@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
@@ -16,7 +17,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// </summary>
         /// <param name="constant"></param>
         /// <param name="injectionScope"></param>
-        public ConstantInstanceExportStrategy(T constant, IInjectionScope injectionScope) : base(constant?.GetType() ?? typeof(T), injectionScope)
+        public ConstantInstanceExportStrategy(T constant, IInjectionScope injectionScope) : base(GetBaseType(constant), injectionScope)
         {
             _constant = constant;
         }
@@ -48,6 +49,11 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             var expressionStatement = Expression.Constant(_constant);
 
             return request.Services.Compiler.CreateNewResult(request, expressionStatement);
+        }
+
+        private static Type GetBaseType(T constant)
+        {
+            return typeof(T) == typeof(object) && constant != null ? constant.GetType() : typeof(T);
         }
     }
 }
