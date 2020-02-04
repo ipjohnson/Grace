@@ -10,7 +10,7 @@ namespace Grace.DependencyInjection.Lifestyle
     public class SingletonPerKeyLifestyle : ICompiledLifestyle
     {
         private static MethodInfo getInstanceMethodInfo =
-            typeof(SingletonPerKeyLifestyle).GetTypeInfo().GetDeclaredMethod("GetInstance");
+            typeof(SingletonPerKeyLifestyle).GetTypeInfo().GetDeclaredMethod(nameof(GetInstance));
 
         private Func<IExportLocatorScope, IInjectionContext, object> _keyFunc;
         private ImmutableHashTree<object,object> _singletons = ImmutableHashTree<object, object>.Empty;

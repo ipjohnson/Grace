@@ -93,7 +93,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 }
                 else
                 {
-                    var openMethod = GetType().GetTypeInfo().GetDeclaredMethod("CompileFuncDelage");
+                    var openMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(CompileFuncDelage));
 
                     var closed = openMethod.MakeGenericMethod(newResult.Expression.Type);
 
@@ -107,7 +107,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             if (ThreadSafe)
             {
-                var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod("GetValueFromScopeThreadSafe", new[]
+                var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod(nameof(GetValueFromScopeThreadSafe), new[]
                     {
                         typeof(IExportLocatorScope),
                         typeof(ActivationStrategyDelegate),
@@ -132,7 +132,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 if (invokeMethodFastLane)
                 {
                     var getOrCreateMethod = typeof(IExportLocatorScope).GetTypeInfo()
-                        .GetDeclaredMethods("GetOrCreateScopedService").First(m => m.GetParameters().Length == 2);
+                        .GetDeclaredMethods(nameof(IExportLocatorScope.GetOrCreateScopedService)).First(m => m.GetParameters().Length == 2);
 
                     var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
 
@@ -141,7 +141,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 }
                 else
                 {
-                    var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod("GetOrCreateScopedService",
+                    var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod(nameof(IExportLocatorScope.GetOrCreateScopedService),
                         new[] {typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext)});
 
                     var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);

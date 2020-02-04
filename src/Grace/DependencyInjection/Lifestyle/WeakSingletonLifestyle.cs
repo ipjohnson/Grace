@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 Interlocked.CompareExchange(ref _delegate, newDelegate, null);
             }
 
-            var getMethod = typeof(WeakSingletonLifestyle).GetRuntimeMethod("GetValue", new[] {typeof(IInjectionScope)});
+            var getMethod = typeof(WeakSingletonLifestyle).GetRuntimeMethod(nameof(GetValue), new[] {typeof(IInjectionScope)});
 
             var closedMethod = getMethod.MakeGenericMethod(request.ActivationType);
 

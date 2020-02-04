@@ -84,7 +84,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Method info for add method on IDisposalScope
         /// </summary>
         protected MethodInfo AddMethod=> _addMethod ??
-                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && 
+                    (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddDisposable) && 
                                                                                                   m.GetParameters().Length == 1));
          
 
@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Method info for add method on IDisposalScope with cleanup delegate
         /// </summary>
         protected MethodInfo AddMethodWithCleanup => _addMethodWithCleanup ??
-                    (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == "AddDisposable" && 
+                    (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddDisposable) && 
                                                                                                   m.GetParameters().Length == 2));
     }
 }

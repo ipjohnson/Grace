@@ -122,7 +122,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 if (request.DefaultValue != null)
                 {
                     var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                           .FirstOrDefault(m => m.Name == "ValueOrDefault");
+                           .FirstOrDefault(m => m.Name == nameof(ValueOrDefault));
 
                     var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
@@ -149,7 +149,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 request.RequireDisposalScope();
 
                 var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                    .FirstOrDefault(m => m.Name == "AddToDisposableScopeOrDefault");
+                    .FirstOrDefault(m => m.Name == nameof(AddToDisposableScopeOrDefault));
 
                 var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
@@ -207,7 +207,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullMethodInfo ??
                        (_checkForNullMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "CheckForNull"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNull)));
             }
         }
 
@@ -245,7 +245,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _addToDisposalScopeMethodInfo ??
                        (_addToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "AddToDisposalScope"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(AddToDisposalScope)));
             }
         }
         #endregion
@@ -289,7 +289,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullAndAddToDisposalScopeMethodInfo ??
                        (_checkForNullAndAddToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == "CheckForNullAndAddToDisposalScope"));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNullAndAddToDisposalScope)));
             }
         }
         #endregion

@@ -69,7 +69,7 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             var getValueFromScopeMethod =
-                typeof(SingletonPerNamedScopeLifestyle).GetRuntimeMethod("GetValueFromScope",
+                typeof(SingletonPerNamedScopeLifestyle).GetRuntimeMethod(nameof(GetValueFromScope),
                     new[]
                     {
                         typeof(IExportLocatorScope),

@@ -152,7 +152,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
                 newScope = Expression.Variable(typeof(IExportLocatorScope));
 
                 var beginScopeMethod =
-                    typeof(IExportLocatorScope).GetTypeInfo().GetDeclaredMethod("BeginLifetimeScope");
+                    typeof(IExportLocatorScope).GetTypeInfo().GetDeclaredMethod(nameof(IExportLocatorScope.BeginLifetimeScope));
 
                 assignStatement =
                     Expression.Assign(newScope,
