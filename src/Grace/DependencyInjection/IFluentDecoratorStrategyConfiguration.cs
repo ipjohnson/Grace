@@ -26,7 +26,14 @@ namespace Grace.DependencyInjection
         IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When { get; }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Sets priority for decorator
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        IFluentDecoratorStrategyConfiguration Priority(int priority);
+
+        /// <summary>
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <param name="paramValue">Func(T) value for the parameter</param>
@@ -34,7 +41,7 @@ namespace Grace.DependencyInjection
         IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
         
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -43,7 +50,7 @@ namespace Grace.DependencyInjection
         IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -53,7 +60,7 @@ namespace Grace.DependencyInjection
         IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -64,7 +71,7 @@ namespace Grace.DependencyInjection
         IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -76,7 +83,7 @@ namespace Grace.DependencyInjection
         IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>

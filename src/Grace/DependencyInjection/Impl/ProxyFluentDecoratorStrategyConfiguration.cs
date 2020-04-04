@@ -42,6 +42,13 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         public IWhenConditionConfiguration<IFluentDecoratorStrategyConfiguration> When => _configuration.When;
 
+
+        /// <inheritdoc />
+        public IFluentDecoratorStrategyConfiguration Priority(int priority)
+        {
+            return _configuration.Priority(priority);
+        }
+
         /// <summary>
         /// Add a specific value for a particuar parameter in the constructor
         /// </summary>
