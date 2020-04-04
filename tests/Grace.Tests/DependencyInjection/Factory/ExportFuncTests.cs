@@ -48,6 +48,8 @@ namespace Grace.Tests.DependencyInjection.Factory
             Assert.Throws<NotSupportedException>(() => strategy.AddSecondaryStrategy(null));
         }
 
+        public delegate object ServiceFactory(Type serviceType);
+
         [Fact]
         public void SimpleFuncExportStrategy_GetStrategyActivationDelegate()
         {
@@ -56,11 +58,17 @@ namespace Grace.Tests.DependencyInjection.Factory
             container.Configure(c =>
             {
                 c.ExportFunc<IBasicService>(scope => new BasicService());
+                c.ExportFunc<ServiceFactory>(scope => type => scope.Locate(type));
             });
 
             var instance = container.Locate<IBasicService>();
 
             Assert.NotNull(instance);
+
+            var factory = container.Locate<ServiceFactory>();
+
+            var instance2 = factory(typeof(IBasicService));
         }
+
     }
 }
