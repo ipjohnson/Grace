@@ -1,4 +1,5 @@
 ﻿using Grace.DependencyInjection;
+using Grace.Tests.Classes.Attributes;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -127,6 +128,60 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
             Assert.NotNull(instance);
             Assert.Equal(10, instance.Count);
+        }
+
+
+        [Fact]
+        public void FuncDecorator_ExportFactory_When()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportFactory(() => new BasicService { Count = 5 }).As<IBasicService>();
+                c.ExportDecorator<IBasicService>(service =>
+                {
+                    service.Count += 5;
+                    return service;
+                }).When.ClassHas<TestAttribute>();
+                c.ExportDecorator<IBasicService>(service =>
+                {
+                    service.Count += 15;
+                    return service;
+                }).When.ClassHas<SomeTestAttribute>();
+            });
+
+            var instance = container.Locate<DependencyOne>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(10, instance.BasicService.Count);
+
+            var instance2 = container.Locate<DependencyTwo>();
+
+            Assert.NotNull(instance2);
+            Assert.Equal(20, instance2.BasicService.Count);
+        }
+
+        [Test]
+        public class DependencyOne
+        {
+            public DependencyOne(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
+        }
+
+        [SomeTest]
+        public class DependencyTwo
+        {
+            public DependencyTwo(IBasicService basicService)
+            {
+                BasicService = basicService;
+            }
+
+            public IBasicService BasicService { get; }
         }
     }
 }

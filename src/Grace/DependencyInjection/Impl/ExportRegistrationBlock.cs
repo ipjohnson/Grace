@@ -543,7 +543,7 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">decorator logic</param>
         /// <param name="applyAfterLifestyle"></param>
-        public void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true)
+        public IFluentDecoratorFactoryStrategyConfiguration ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true)
         {
             if (apply == null) throw new ArgumentNullException(nameof(apply));
 
@@ -552,6 +552,8 @@ namespace Grace.DependencyInjection.Impl
             strategy.ApplyAfterLifestyle = applyAfterLifestyle;
 
             _decoratorStrategyProviders = _decoratorStrategyProviders.Add(new SimpleDecoratorStrategyProvider(strategy));
+
+            return new FluentDecoratorStrategyConfiguration(strategy);
         }
         
         /// <summary>

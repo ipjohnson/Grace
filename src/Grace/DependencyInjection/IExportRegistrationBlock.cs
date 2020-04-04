@@ -97,7 +97,7 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">type to decorate</typeparam>
         /// <param name="apply">decorator logic</param>
         /// <param name="applyAfterLifestyle"></param>
-        void ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true);
+        IFluentDecoratorFactoryStrategyConfiguration ExportDecorator<T>(Func<T, T> apply, bool applyAfterLifestyle = true);
         
         /// <summary>
         /// Export an expression tree

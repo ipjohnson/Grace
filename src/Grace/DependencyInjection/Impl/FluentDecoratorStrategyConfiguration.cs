@@ -6,7 +6,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>
     /// configuration object for decorator
     /// </summary>
-    public class FluentDecoratorStrategyConfiguration : IFluentDecoratorStrategyConfiguration
+    public class FluentDecoratorStrategyConfiguration : IFluentDecoratorStrategyConfiguration, IFluentDecoratorFactoryStrategyConfiguration
     {
         private readonly ICompiledDecoratorStrategy _strategy;
 
