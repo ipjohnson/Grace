@@ -291,9 +291,9 @@ namespace Grace.Data.Immutable
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj is ImmutableArray<T>)
+            if (obj is ImmutableArray<T> immutableArray)
             {
-                return Equals((ImmutableArray<T>)obj, this);
+                return Equals(immutableArray, this);
             }
 
             return false;
@@ -323,9 +323,9 @@ namespace Grace.Data.Immutable
         {
             var compareArray = other as Array;
 
-            if (compareArray == null && other is ImmutableArray<T>)
+            if (compareArray == null && other is ImmutableArray<T> immutableArray)
             {
-                compareArray = ((ImmutableArray<T>)other)._list;
+                compareArray = immutableArray._list;
 
                 if (compareArray == null && _list == null)
                 {
@@ -393,9 +393,9 @@ namespace Grace.Data.Immutable
         {
             var compareArray = other as Array;
 
-            if (compareArray == null && other is ImmutableArray<T>)
+            if (compareArray == null && other is ImmutableArray<T> immutableArray)
             {
-                compareArray = ((ImmutableArray<T>)other)._list;
+                compareArray = immutableArray._list;
 
                 if (compareArray == null && _list == null)
                 {
@@ -429,7 +429,7 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="left">left side of statement</param>
         /// <param name="right">right side of statement</param>
-        /// <returns>true if euqal</returns>
+        /// <returns>true if equal</returns>
         public static bool operator ==(ImmutableArray<T> left, ImmutableArray<T> right)
         {
             return left.Equals(right);
