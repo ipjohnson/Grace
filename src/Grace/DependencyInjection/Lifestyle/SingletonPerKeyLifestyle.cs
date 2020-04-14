@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Lifestyle
             _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
             ConstantExpression = Expression.Convert(Expression.Call(Expression.Constant(this), getInstanceMethodInfo,
-                Expression.Constant(scope), Expression.Constant(scope), request.InjectionContextParameter,
+                newRequest.ScopeParameter, Expression.Constant(scope), request.InjectionContextParameter,
                 Expression.Constant(_activationDelegate)), request.ActivationType);
 
             var result = request.Services.Compiler.CreateNewResult(request, ConstantExpression);
