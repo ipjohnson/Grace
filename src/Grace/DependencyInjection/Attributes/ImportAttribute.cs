@@ -5,6 +5,8 @@ namespace Grace.DependencyInjection.Attributes
 {
 	/// <summary>
 	/// This attribute can be used to attribute properties, methods, constructors or parameters
+	///
+	/// When applied to method or constructor 
 	/// </summary>
 	[AttributeUsage(
 		AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Parameter)]

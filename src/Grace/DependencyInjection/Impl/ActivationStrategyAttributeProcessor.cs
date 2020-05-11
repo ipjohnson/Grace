@@ -34,6 +34,33 @@ namespace Grace.DependencyInjection.Impl
             ProcessProperties(strategy);
 
             ProcessMethods(strategy);
+
+            ProcessConstructors(strategy);
+        }
+
+        private void ProcessConstructors(IConfigurableActivationStrategy strategy)
+        {
+            foreach (var constructorInfo in strategy.ActivationType.GetTypeInfo().DeclaredConstructors)
+            {
+                if (constructorInfo.IsPublic)
+                {
+                    foreach (var customAttribute in constructorInfo.GetCustomAttributes())
+                    {
+                        if (customAttribute is IImportAttribute importAttribute)
+                        {
+                            var importInfo = importAttribute.ProvideImportInfo(strategy.ActivationType,
+                                strategy.ActivationType.Name);
+
+                            if (importInfo != null)
+                            {
+                                strategy.SelectedConstructor = constructorInfo;
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void ProcessMethods(IConfigurableActivationStrategy strategy)
