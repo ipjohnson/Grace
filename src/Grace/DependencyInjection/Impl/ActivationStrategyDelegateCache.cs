@@ -108,6 +108,7 @@ namespace Grace.DependencyInjection.Impl
                 FallbackExecution(currentNode, type, scope, allowNull, context);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private object FallbackExecution(ImmutableHashTree<Type, ActivationStrategyDelegate> currentNode, Type type,
             IExportLocatorScope scope, bool allowNull, IInjectionContext context)
         {
