@@ -210,6 +210,14 @@ namespace Grace.DependencyInjection.Impl
             return this;
         }
 
+        /// <inheritdoc />
+        public IFluentExportStrategyConfiguration ProcessAttributes()
+        {
+            _exportConfiguration.ProcessAttributeForStrategy();
+
+            return this;
+        }
+
         /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
@@ -698,6 +706,14 @@ namespace Grace.DependencyInjection.Impl
             {
                 _registrationBlock.ClearExports(export => export == _exportConfiguration);
             }
+
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IFluentExportStrategyConfiguration<T> ProcessAttributes()
+        {
+            _exportConfiguration.ProcessAttributeForStrategy();
 
             return this;
         }

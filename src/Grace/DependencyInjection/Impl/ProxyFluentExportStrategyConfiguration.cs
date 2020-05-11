@@ -129,6 +129,12 @@ namespace Grace.DependencyInjection.Impl
             return _strategy.OnlyIf(filter);
         }
 
+        /// <inheritdoc />
+        public IFluentExportStrategyConfiguration ProcessAttributes()
+        {
+            return _strategy.ProcessAttributes();
+        }
+
         /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
@@ -422,6 +428,12 @@ namespace Grace.DependencyInjection.Impl
         public IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
         {
             return _strategy.OnlyIf(filter);
+        }
+
+        /// <inheritdoc />
+        public IFluentExportStrategyConfiguration<T> ProcessAttributes()
+        {
+            return _strategy.ProcessAttributes();
         }
 
         /// <summary>

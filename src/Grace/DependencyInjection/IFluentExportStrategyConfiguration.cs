@@ -89,6 +89,12 @@ namespace Grace.DependencyInjection
         IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter);
 
         /// <summary>
+        /// Process attribute on type as well as fluent interface
+        /// </summary>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration ProcessAttributes();
+
+        /// <summary>
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
@@ -293,6 +299,12 @@ namespace Grace.DependencyInjection
         /// <param name="filter"></param>
         /// <returns></returns>
         IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
+
+        /// <summary>
+        /// Process attribute on type as well as fluent interface
+        /// </summary>
+        /// <returns></returns>
+        IFluentExportStrategyConfiguration<T> ProcessAttributes();
 
         /// <summary>
         /// Export using a specific lifestyle
