@@ -171,6 +171,11 @@ namespace Grace.DependencyInjection.Impl
                 {
                     strategy.AddExportAsKeyed(tuple.Item1, tuple.Item2);
                 }
+
+                if (attribute is IExportPriorityAttribute priorityAttribute)
+                {
+                    strategy.Priority = priorityAttribute.ProvidePriority(strategy.ActivationType);
+                }
             }
         }
     }
