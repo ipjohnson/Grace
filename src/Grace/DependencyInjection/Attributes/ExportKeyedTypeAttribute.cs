@@ -6,6 +6,7 @@ namespace Grace.DependencyInjection.Attributes
     /// <summary>
     /// Adds a key to an exported class
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ExportKeyedTypeAttribute : Attribute, IExportKeyedTypeAttribute
     {
         private readonly Type _type;

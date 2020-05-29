@@ -7,6 +7,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// <summary>
 	/// Limits an export to only be used when the class it's being injected into has the specified attribute
 	/// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class ExportWhenClassHasAttribute : Attribute, IExportConditionAttribute
 	{
 		private readonly Type _attributeType;

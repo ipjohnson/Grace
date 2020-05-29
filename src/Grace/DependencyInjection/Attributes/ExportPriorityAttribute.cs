@@ -7,6 +7,7 @@ namespace Grace.DependencyInjection.Attributes
 	/// This attribute can be used to control the priority for the export
 	/// Note: ranked high to low
 	/// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class ExportPriorityAttribute : Attribute, IExportPriorityAttribute
 	{
 		private readonly int _priority;
