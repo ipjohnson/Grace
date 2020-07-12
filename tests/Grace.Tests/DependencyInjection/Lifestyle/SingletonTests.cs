@@ -94,5 +94,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
                 Assert.Same(container, instance.Value);
             }
         }
+
+
     }
 }

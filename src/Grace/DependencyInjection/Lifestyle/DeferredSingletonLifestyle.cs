@@ -24,6 +24,13 @@ namespace Grace.DependencyInjection.Lifestyle
 
         public LifestyleType LifestyleType => LifestyleType.Singleton;
 
+        /// <summary>
+        /// Dependency will be created without knowledge of the object graph it's being injected into.
+        /// This is true by default because it protects against weird issues that can arise if the order of a requested dependency changes.
+        /// This is an advance lifestyle option and comes with risk (YMMV).
+        /// </summary>
+        public bool RootedRequest { get; set; } = true;
+
         public ICompiledLifestyle Clone()
         {
             return new DeferredSingletonLifestyle();
@@ -38,21 +45,34 @@ namespace Grace.DependencyInjection.Lifestyle
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
 
-            // Create new request as we shouldn't carry over anything from the previous request
-            var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            var newRequest = request;
+
+            if (RootedRequest)
+            {
+                // Create new request as we shouldn't carry over anything from the previous request
+                newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            }
 
             _activationDelegate =
                 request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
             var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(SingletonActivation));
 
-            ConstantExpression = Expression.Call(Expression.Constant(this), singletonMethod,
+            Expression lifestyleExpression = Expression.Call(Expression.Constant(this), singletonMethod,
                 request.Constants.ScopeParameter, request.Constants.RootDisposalScope,
                 request.Constants.InjectionContextParameter);
 
-            ConstantExpression = Expression.Convert(ConstantExpression, request.ActivationType);
+            if (lifestyleExpression.Type != request.ActivationType)
+            {
+                lifestyleExpression = Expression.Convert(lifestyleExpression, request.ActivationType);
+            }
 
-            return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
+            if (RootedRequest)
+            {
+                ConstantExpression = lifestyleExpression;
+            }
+
+            return request.Services.Compiler.CreateNewResult(request, lifestyleExpression);
         }
 
         private object SingletonActivation(IExportLocatorScope scope, IDisposalScope disposalScope,
