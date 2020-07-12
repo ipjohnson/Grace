@@ -126,23 +126,26 @@ namespace Grace.Utilities
         /// </summary>
         /// <param name="memberInfo"></param>
         /// <returns></returns>
-        public static Type GetMemeberType(this MemberInfo memberInfo)
+        public static Type GetMemberType(this MemberInfo memberInfo)
         {
-            var propertyInfo = memberInfo as PropertyInfo;
-
-            if (propertyInfo != null)
+            if (memberInfo is PropertyInfo propertyInfo)
             {
                 return propertyInfo.PropertyType;
             }
 
-            var fieldInfo = memberInfo as FieldInfo;
-
-            if (fieldInfo != null)
+            if (memberInfo is FieldInfo fieldInfo)
             {
                 return fieldInfo.FieldType;
             }
 
             throw new NotSupportedException($"Not supported for MemberInfo of type: {memberInfo.GetType().Name}");
+        }
+
+
+        [Obsolete("This method name has a typo and will be removed at some point. Please use GetMemberType")]
+        public static Type GetMemeberType(this MemberInfo memberInfo)
+        {
+            return GetMemberType(memberInfo);
         }
 
         private static Type CreateClosedExportTypeFromClassRequestingType(Type exportedType, Type requestedType)

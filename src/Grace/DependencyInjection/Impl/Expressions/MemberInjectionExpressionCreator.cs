@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             foreach (var kvp in GetMemberInjectionInfoForConfiguration(request.RequestingScope, request, configuration))
             {
-                var memberType = kvp.Key.GetMemeberType();
+                var memberType = kvp.Key.GetMemberType();
                 object key = null;
 
                 if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
@@ -64,7 +64,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     returnValue.Add(new ActivationStrategyDependency(kvp.Key is PropertyInfo ? DependencyType.Property : DependencyType.Field,
                                                                      configuration.ActivationStrategy,
                                                                      kvp.Key,
-                                                                     kvp.Key.GetMemeberType(),
+                                                                     kvp.Key.GetMemberType(),
                                                                      kvp.Key.Name,
                                                                      false,
                                                                      false,
@@ -131,7 +131,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (expression == null)
                 {
-                    var memberType = memberKVP.Key.GetMemeberType();
+                    var memberType = memberKVP.Key.GetMemberType();
 
                     var newRequest =
                         request.NewRequest(memberType, activationConfiguration.ActivationStrategy,
@@ -235,7 +235,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (expression == null)
                 {
-                    var memberType = memberKVP.Key.GetMemeberType();
+                    var memberType = memberKVP.Key.GetMemberType();
 
                     var newRequest =
                         request.NewRequest(memberType, activationConfiguration.ActivationStrategy, activationConfiguration.ActivationType, RequestType.Member, memberKVP.Key, false, true);
