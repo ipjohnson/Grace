@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -147,6 +148,12 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="methodInjection"></param>
         public void MethodInjection(MethodInjectionInfo methodInjection)
         {
+            if (MethodInjectionList != ImmutableLinkedList<MethodInjectionInfo>.Empty && 
+                MethodInjectionList.Any(m => Equals(m.Method, methodInjection.Method)))
+            {
+                return;
+            }
+
             MethodInjectionList = MethodInjectionList.Add(methodInjection);
         }
 
