@@ -363,6 +363,11 @@ namespace Grace.DependencyInjection.Impl
                         {
                             keyedExports = keyedExports.Add(value);
                         }
+
+                        if (attribute is IExportStrategyProviderAttribute providerAttribute)
+                        {
+                            yield return providerAttribute.ProvideStrategy(type, _strategyCreator);
+                        }
                     }
                 }
 
