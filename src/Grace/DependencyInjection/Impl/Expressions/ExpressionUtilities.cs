@@ -224,9 +224,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public static T AddToDisposalScope<T>(IDisposalScope disposalScope, T value)
         {
-            var disposable = value as IDisposable;
 
-            if (disposable != null)
+#if NETSTANDARD2_1
+            if (value is IAsyncDisposable asyncDisposable)
+            {
+                disposalScope.AddAsyncDisposable(asyncDisposable);
+            }
+#endif
+
+            if (value is IDisposable disposable)
             {
                 disposalScope.AddDisposable(disposable);
             }
@@ -268,14 +274,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 throw new NullValueProvidedException(context);
             }
 
-            var disposable = value as IDisposable;
-
-            if (disposable != null)
-            {
-                disposalScope.AddDisposable(disposable);
-            }
-
-            return value;
+            return AddToDisposalScope(disposalScope, value);
         }
 
         private static MethodInfo _checkForNullAndAddToDisposalScopeMethodInfo;
@@ -320,14 +319,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             if (tValue != null)
             {
-                var disposable = tValue as IDisposable;
-
-                if (disposable != null)
-                {
-                    disposalScope.AddDisposable(disposable);
-                }
-
-                return tValue;
+                return AddToDisposalScope(disposalScope, tValue);
             }
 
             return defaultValue;
