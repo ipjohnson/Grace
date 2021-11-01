@@ -25,5 +25,5 @@ artifacts:
 - path: Grace*.nupkg
   name: Grace
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
