@@ -4,10 +4,13 @@ using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
-using Grace.Diagnostics;
 using Grace.Tests.Classes.Simple;
 using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
+
+#if NET5_0
+using System.Threading.Tasks;
+#endif
 
 namespace Grace.Tests.DependencyInjection.Registration
 {
@@ -334,6 +337,48 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance1);
         }
 
+#if NET5_0
+        [Fact]
+        public async Task ExportTypeSet_ExternallyOwned()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>()
+                    .ByInterfaces();
+            });
+
+            var disposed = false;
+
+            await using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.True(disposed);
+
+            container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces().ExternallyOwned();
+            });
+
+            disposed = false;
+
+            await using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.False(disposed);
+        }
+#else
         [Fact]
         public void ExportTypeSet_ExternallyOwned()
         {
@@ -341,7 +386,8 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             container.Configure(c =>
             {
-                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces();
+                c.ExportAssemblyContaining<IMultipleService>()
+                    .ByInterfaces();
             });
 
             var disposed = false;
@@ -373,6 +419,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.False(disposed);
         }
+#endif
 
         [Fact]
         public void ExportTypeSet_UsingLifestyle()

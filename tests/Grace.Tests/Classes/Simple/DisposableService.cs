@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Grace.Tests.Classes.Simple
 {
@@ -19,4 +20,21 @@ namespace Grace.Tests.Classes.Simple
 
         public event EventHandler<EventArgs> Disposing;
     }
+
+#if NET5_0
+    public class AsyncDisposableService : IDisposableService, IAsyncDisposable
+    {
+        public ValueTask DisposeAsync()
+        {
+            if (Disposing != null)
+            {
+                Disposing(this, EventArgs.Empty);
+            }
+
+            return ValueTask.CompletedTask;
+        }
+
+        public event EventHandler<EventArgs> Disposing;
+    }
+#endif
 }

@@ -1,5 +1,5 @@
 environment:
-  build_version: 7.2.1
+  build_version: 8.0.0
   Version: $(build_version)
   COVERALLS_REPO_TOKEN:
     secure: +OWHMxYHaMp6iRNNLZcMZq423PhYWxMky+B2C0p3U8v7tpdoKRMzWZKJ1LuYO60O
@@ -25,5 +25,5 @@ artifacts:
 - path: Grace*.nupkg
   name: Grace
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
