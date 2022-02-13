@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net5.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net6.0;net452</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp1.0</TargetFrameworks>
     <AssemblyName>Grace.Tests</AssemblyName>
     <PackageId>Grace.Tests</PackageId>
