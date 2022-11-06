@@ -80,7 +80,32 @@ namespace Grace.DependencyInjection.Impl
 
                     if (importInfo != null)
                     {
-                        strategy.MethodInjectionInfo(new MethodInjectionInfo { Method = methodInfo });
+                        var methodInjection = new MethodInjectionInfo { Method = methodInfo };
+
+                        foreach (var parameterInfo in methodInfo.GetParameters())
+                        {
+                            foreach (var customAttribute in parameterInfo.GetCustomAttributes())
+                            {
+                                if (customAttribute is IImportAttribute)
+                                {
+                                    var parameterImportInfo =
+                                        ((IImportAttribute)customAttribute).ProvideImportInfo(strategy.ActivationType,
+                                            parameterInfo.Name);
+
+                                    if (parameterImportInfo  != null)
+                                    {
+                                        methodInjection.MethodParameterInfo(
+                                            new MethodParameterInfo(parameterInfo.Name)
+                                            {
+                                                IsRequired = parameterImportInfo.IsRequired,
+                                                LocateKey = parameterImportInfo.ImportKey?.ToString()
+                                            });
+                                    }
+                                }
+                            }   
+                        }
+
+                        strategy.MethodInjectionInfo(methodInjection);
                     }
                 }
             }
