@@ -18,8 +18,6 @@ build:
   publish_nuget: true
   verbosity: minimal
 test_script:
-- cmd: cd tests/Grace.Tests/
-- cmd: CodeCoverageAppVeyor.cmd
 - sh: dotnet test tests/Grace.Tests/Grace.Tests.csproj
 artifacts:
 - path: Grace*.nupkg
