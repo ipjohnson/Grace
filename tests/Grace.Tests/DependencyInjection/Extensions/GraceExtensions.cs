@@ -20,6 +20,7 @@ namespace Grace.Tests.DependencyInjection.Extensions
         {
             exportLocator.Configure(c =>
             {
+                c.Export<ServiceProviderIsServiceImpl>().As<IServiceProviderIsService>();
                 c.Export<GraceServiceProvider>().As<IServiceProvider>();
                 c.Export<GraceLifetimeScopeServiceScopeFactory>().As<IServiceScopeFactory>();
                 Register(c, descriptors);
@@ -40,9 +41,9 @@ namespace Grace.Tests.DependencyInjection.Extensions
                 }
                 else if (descriptor.ImplementationFactory != null)
                 {
-                    c.ExportInstance((scope, context) => descriptor.ImplementationFactory(new GraceServiceProvider(scope))).
-                        As(descriptor.ServiceType).
-                        ConfigureLifetime(descriptor.Lifetime);
+                    c.ExportFactory<IExportLocatorScope, StaticInjectionContext, object>((scope, _) => descriptor.ImplementationFactory(new GraceServiceProvider(scope)))
+                     .As(descriptor.ServiceType)
+                     .ConfigureLifetime(descriptor.Lifetime);
                 }
                 else
                 {
