@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection.Specification;
 
 namespace Grace.Tests.DependencyInjection.Extensions
 {
+#if NET6_0
+    
     /// <summary>
     /// These tests are from microsoft to make sure it conforms to it's container specifications
     /// </summary>
@@ -37,4 +39,5 @@ namespace Grace.Tests.DependencyInjection.Extensions
             return _exportLocatorScope.CanLocate(serviceType);
         }
     }
+#endif
 }

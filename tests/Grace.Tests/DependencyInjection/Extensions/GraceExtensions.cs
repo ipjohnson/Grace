@@ -2,11 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Grace.Tests.DependencyInjection.Extensions
 {
 
-    /// <summary>
+        /// <summary>
     /// static class for MVC registration
     /// </summary>
     public static class GraceRegistration
@@ -16,14 +17,20 @@ namespace Grace.Tests.DependencyInjection.Extensions
         /// </summary>
         /// <param name="exportLocator">export locator</param>
         /// <param name="descriptors">descriptors</param>
-        public static IServiceProvider Populate(this IInjectionScope exportLocator, IEnumerable<ServiceDescriptor> descriptors)
+        public static IServiceProvider Populate(this IInjectionScope exportLocator,
+            IEnumerable<ServiceDescriptor> descriptors)
         {
             exportLocator.Configure(c =>
             {
+#if NET6_0
                 c.Export<ServiceProviderIsServiceImpl>().As<IServiceProviderIsService>();
-                c.Export<GraceServiceProvider>().As<IServiceProvider>();
-                c.Export<GraceLifetimeScopeServiceScopeFactory>().As<IServiceScopeFactory>();
+#endif
+
+                c.ExcludeTypeFromAutoRegistration(nameof(Microsoft) + ".*");
+                c.Export<GraceServiceProvider>().As<IServiceProvider>().ExternallyOwned();
+                c.Export<GraceLifetimeScopeServiceScopeFactory>().As<IServiceScopeFactory>().Lifestyle.Singleton();
                 Register(c, descriptors);
+
             });
 
             return exportLocator.Locate<IServiceProvider>();
@@ -35,26 +42,27 @@ namespace Grace.Tests.DependencyInjection.Extensions
             {
                 if (descriptor.ImplementationType != null)
                 {
-                    c.Export(descriptor.ImplementationType).
-                      As(descriptor.ServiceType).
-                      ConfigureLifetime(descriptor.Lifetime);
+                    c.Export(descriptor.ImplementationType)
+                        .As(descriptor.ServiceType)
+                        .ConfigureLifetime(descriptor.Lifetime);
                 }
                 else if (descriptor.ImplementationFactory != null)
                 {
-                    c.ExportFactory<IExportLocatorScope, StaticInjectionContext, object>((scope, _) => descriptor.ImplementationFactory(new GraceServiceProvider(scope)))
-                     .As(descriptor.ServiceType)
-                     .ConfigureLifetime(descriptor.Lifetime);
+                    c.ExportFactory(descriptor.ImplementationFactory)
+                        .As(descriptor.ServiceType)
+                        .ConfigureLifetime(descriptor.Lifetime);
                 }
                 else
                 {
-                    c.ExportInstance(descriptor.ImplementationInstance).
-                      As(descriptor.ServiceType).
-                      ConfigureLifetime(descriptor.Lifetime);
+                    c.ExportInstance(descriptor.ImplementationInstance)
+                        .As(descriptor.ServiceType)
+                        .ConfigureLifetime(descriptor.Lifetime);
                 }
             }
         }
 
-        private static IFluentExportStrategyConfiguration ConfigureLifetime(this IFluentExportStrategyConfiguration configuration, ServiceLifetime lifetime)
+        private static IFluentExportStrategyConfiguration ConfigureLifetime(
+            this IFluentExportStrategyConfiguration configuration, ServiceLifetime lifetime)
         {
             switch (lifetime)
             {
@@ -68,7 +76,8 @@ namespace Grace.Tests.DependencyInjection.Extensions
             return configuration;
         }
 
-        private static IFluentExportInstanceConfiguration<T> ConfigureLifetime<T>(this IFluentExportInstanceConfiguration<T> configuration, ServiceLifetime lifecycleKind)
+        private static IFluentExportInstanceConfiguration<T> ConfigureLifetime<T>(
+            this IFluentExportInstanceConfiguration<T> configuration, ServiceLifetime lifecycleKind)
         {
             switch (lifecycleKind)
             {
@@ -85,7 +94,12 @@ namespace Grace.Tests.DependencyInjection.Extensions
         /// <summary>
         /// Service provider for Grace
         /// </summary>
-        private class GraceServiceProvider : IServiceProvider, ISupportRequiredService
+        private class GraceServiceProvider 
+            : IServiceProvider
+            , IDisposable
+#if NETSTANDARD2_1
+            , IAsyncDisposable
+#endif
         {
             private readonly IExportLocatorScope _injectionScope;
 
@@ -98,30 +112,28 @@ namespace Grace.Tests.DependencyInjection.Extensions
                 _injectionScope = injectionScope;
             }
 
-            /// <summary>
-            /// Gets service of type <paramref name="serviceType" /> from the <see cref="T:System.IServiceProvider" /> implementing
-            /// this interface.
-            /// </summary>
-            /// <param name="serviceType">An object that specifies the type of service object to get.</param>
-            /// <returns>A service object of type <paramref name="serviceType" />.
-            /// Throws an exception if the <see cref="T:System.IServiceProvider" /> cannot create the object.</returns>
-            public object GetRequiredService(Type serviceType)
-            {
-                return _injectionScope.Locate(serviceType);
-            }
-
             /// <summary>Gets the service object of the specified type.</summary>
             /// <returns>A service object of type <paramref name="serviceType" />.-or- null if there is no service object of type <paramref name="serviceType" />.</returns>
             /// <param name="serviceType">An object that specifies the type of service object to get. </param>
             /// <filterpriority>2</filterpriority>
             public object GetService(Type serviceType)
             {
-                object returnValue;
-
-                _injectionScope.TryLocate(serviceType, out returnValue);
-
-                return returnValue;
+                return _injectionScope.LocateOrDefault(serviceType, null);
             }
+
+            /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+            public void Dispose()
+            {
+                _injectionScope.Dispose();
+            }
+
+#if NETSTANDARD2_1
+            /// <summary>Asynchonously performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+            public ValueTask DisposeAsync()
+            {
+                return _injectionScope.DisposeAsync();
+            }
+#endif
         }
 
         /// <summary>
@@ -161,9 +173,11 @@ namespace Grace.Tests.DependencyInjection.Extensions
         /// Grace service scope
         /// </summary>
         private class GraceServiceScope : IServiceScope
+#if NETSTANDARD2_1
+            , IAsyncDisposable
+#endif
         {
             private readonly IExportLocatorScope _injectionScope;
-            private bool _disposedValue = false; // To detect redundant calls
 
             /// <summary>
             /// Default constructor
@@ -172,7 +186,8 @@ namespace Grace.Tests.DependencyInjection.Extensions
             public GraceServiceScope(IExportLocatorScope injectionScope)
             {
                 _injectionScope = injectionScope;
-                ServiceProvider = _injectionScope.Locate<IServiceProvider>();
+
+                ServiceProvider = injectionScope;
             }
 
             /// <summary>
@@ -180,27 +195,43 @@ namespace Grace.Tests.DependencyInjection.Extensions
             /// </summary>
             public IServiceProvider ServiceProvider { get; }
 
-            protected virtual void Dispose(bool disposing)
-            {
-                if (!_disposedValue)
-                {
-                    _disposedValue = disposing;
-
-                    if (disposing)
-                    {
-                        _injectionScope.Dispose();
-                    }
-                }
-            }
-
             // This code added to correctly implement the disposable pattern.
             public void Dispose()
             {
-                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-                Dispose(true);
-                // TODO: tell GC not to call its finalizer when the above finalizer is overridden.
-                // GC.SuppressFinalize(this);
+                _injectionScope.Dispose();
+            }
+
+#if NETSTANDARD2_1
+            // This code added to correctly and asynchronously implement the disposable pattern.
+            public ValueTask DisposeAsync()
+            {
+                return _injectionScope.DisposeAsync();
+            }
+#endif
+        }
+
+
+#if NET6_0
+        private class ServiceProviderIsServiceImpl : IServiceProviderIsService
+        {
+            private readonly IExportLocatorScope exportLocatorScope;
+
+            public ServiceProviderIsServiceImpl(IExportLocatorScope exportLocatorScope)
+            {
+                this.exportLocatorScope = exportLocatorScope;
+            }
+
+            public bool IsService(Type serviceType)
+            {
+                if (serviceType.IsGenericTypeDefinition)
+                {
+                    return false;
+                }
+
+                return exportLocatorScope.CanLocate(serviceType);
             }
         }
+#endif
     }
+
 }
