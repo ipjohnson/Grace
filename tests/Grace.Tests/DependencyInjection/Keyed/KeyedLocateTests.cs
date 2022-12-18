@@ -78,8 +78,8 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             container.Configure(c =>
             {
-                c.ExportInstance((scope, context) => "Hello");
-                c.ExportInstance((scope, context) => "HelloAgain").AsKeyed<string>("Key");
+                c.ExportFactory(() => "Hello");
+                c.ExportFactory(() => "HelloAgain").AsKeyed<string>("Key");
             });
 
             Assert.Equal("Hello", container.Locate<string>());
