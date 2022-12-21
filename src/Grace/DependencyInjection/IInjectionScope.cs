@@ -84,7 +84,6 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="allowNull"></param>
-        /// <returns></returns>
         object LocateByNameFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope, string name,
             object extraData, ActivationStrategyFilter consider, bool allowNull);
 
@@ -98,7 +97,6 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        /// <returns></returns>
         List<T> InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer);
 
         /// <summary>
@@ -109,7 +107,6 @@ namespace Grace.DependencyInjection
         /// <param name="exportName"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         List<object> InternalLocateAllByName(IExportLocatorScope scope, IDisposalScope disposalScope,string exportName, object extraData,
             ActivationStrategyFilter consider);
 
@@ -119,7 +116,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="configure">configure scope</param>
         /// <param name="scopeName">scope name </param>
-        /// <returns></returns>
         IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "");
 
         /// <summary>

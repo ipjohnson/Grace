@@ -21,7 +21,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="resultType"></param>
         /// <param name="types"></param>
-        /// <returns></returns>
         public static IActivationExpressionResult[] CreateExpressionsForTypes(IActivationStrategy strategy, IInjectionScope scope,
             IActivationExpressionRequest request, Type resultType, params Type[] types)
         {
@@ -50,7 +49,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="requestingStrategy"></param>
-        /// <returns></returns>
         public static IActivationExpressionResult CreateExpressionForDelegate(Delegate delegateInstance, bool allowDisposableTracking, IInjectionScope scope,
             IActivationExpressionRequest request, IActivationStrategy requestingStrategy)
         {
@@ -107,7 +105,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="expression"></param>
         /// <param name="allowDisposableTracking"></param>
         /// <param name="allowNull"></param>
-        /// <returns></returns>
         public static Expression ApplyNullCheckAndAddDisposal(IInjectionScope scope,
             IActivationExpressionRequest request, Expression expression, bool allowDisposableTracking, bool allowNull)
         {
@@ -205,9 +202,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             get
             {
-                return _checkForNullMethodInfo ??
-                       (_checkForNullMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNull)));
+                return _checkForNullMethodInfo = _checkForNullMethodInfo ?? typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNull));
             }
         }
 
@@ -221,11 +216,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <typeparam name="T"></typeparam>
         /// <param name="disposalScope"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
         public static T AddToDisposalScope<T>(IDisposalScope disposalScope, T value)
         {
 
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
             if (value is IAsyncDisposable asyncDisposable)
             {
                 disposalScope.AddAsyncDisposable(asyncDisposable);
@@ -249,9 +243,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             get
             {
-                return _addToDisposalScopeMethodInfo ??
-                       (_addToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(AddToDisposalScope)));
+                return _addToDisposalScopeMethodInfo = _addToDisposalScopeMethodInfo ?? typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(AddToDisposalScope));
             }
         }
         #endregion
@@ -265,7 +257,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="disposalScope"></param>
         /// <param name="context"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
         public static T CheckForNullAndAddToDisposalScope<T>(IDisposalScope disposalScope,
             StaticInjectionContext context, T value)
         {
@@ -286,9 +277,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             get
             {
-                return _checkForNullAndAddToDisposalScopeMethodInfo ??
-                       (_checkForNullAndAddToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNullAndAddToDisposalScope)));
+                return _checkForNullAndAddToDisposalScopeMethodInfo = _checkForNullAndAddToDisposalScopeMethodInfo ?? typeof(ExpressionUtilities).GetRuntimeMethods().First(m => m.Name == nameof(CheckForNullAndAddToDisposalScope));
             }
         }
         #endregion
@@ -299,7 +288,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <typeparam name="T"></typeparam>
         /// <param name="tValue"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         public static T ValueOrDefault<T>(T tValue, T defaultValue)
         {
             return tValue != null ? tValue : defaultValue;
@@ -314,7 +302,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="disposalScope"></param>
         /// <param name="tValue"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         public static T AddToDisposableScopeOrDefault<T>(IDisposalScope disposalScope, T tValue, T defaultValue)
         {
             if (tValue != null)

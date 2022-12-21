@@ -155,7 +155,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get all strategies
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<T> GetAllStrategies()
         {
             var returnList = new Dictionary<int,T>();
@@ -183,7 +182,6 @@ namespace Grace.DependencyInjection.Impl
         /// Get collection for a specific type
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IActivationStrategyCollection<T> GetActivationStrategyCollection(Type type)
         {
             var hashCode = type.GetHashCode();
@@ -195,7 +193,6 @@ namespace Grace.DependencyInjection.Impl
         /// Get collection for a specific name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IActivationStrategyCollection<T> GetActivationStrategyCollectionByName(string name)
         {
             return StrategiesByName.GetValueOrDefault(name);
@@ -204,7 +201,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get all activation types
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<Type> GetActivationTypes()
         {
             var returnList = ImmutableLinkedList<Type>.Empty;
@@ -220,7 +216,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Clone the container
         /// </summary>
-        /// <returns></returns>
         public IActivationStrategyCollectionContainer<T> Clone()
         {
             var newArray = new ImmutableHashTree<Type, IActivationStrategyCollection<T>>[ArrayLengthMinusOne + 1];
@@ -256,7 +251,6 @@ namespace Grace.DependencyInjection.Impl
         /// Create a collection of activation strategy
         /// </summary>
         /// <param name="exportType"></param>
-        /// <returns></returns>
         protected virtual IActivationStrategyCollection<T> CreateCollection(Type exportType)
         {
             return new ActivationStrategyCollection<T>(exportType);
@@ -354,7 +348,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Increment the count of total 
         /// </summary>
-        /// <returns></returns>
         public static int IncrementCount()
         {
             return Interlocked.Increment(ref _totalExportCount);

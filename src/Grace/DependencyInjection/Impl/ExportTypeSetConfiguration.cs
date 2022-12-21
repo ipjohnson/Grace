@@ -54,7 +54,6 @@ namespace Grace.DependencyInjection.Impl
         /// Add conditions for export
         /// </summary>
         /// <param name="conditionFunc"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
         {
             if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
@@ -135,7 +134,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export by name
         /// </summary>
         /// <param name="nameFunc"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByName(Func<Type, IEnumerable<string>> nameFunc = null)
         {
             if (nameFunc == null)
@@ -161,7 +159,6 @@ namespace Grace.DependencyInjection.Impl
         /// Exports by a set of types
         /// </summary>
         /// <param name="typeDelegate"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate)
         {
             if (typeDelegate == null) throw new ArgumentNullException(nameof(typeDelegate));
@@ -175,7 +172,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export a type by a set of keyed types
         /// </summary>
         /// <param name="keyedDelegate">keyed types</param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate)
         {
             if (keyedDelegate == null) throw new ArgumentNullException(nameof(keyedDelegate));
@@ -202,7 +198,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export types using their attributes
         /// </summary>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ExportAttributedTypes()
         {
             _exportByAttributes = true;
@@ -214,7 +209,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set constructor selection method for individual exports
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method)
         {
             _constructorSelectionMethod = method ?? throw new ArgumentNullException(nameof(method));
@@ -256,7 +250,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export only types that match the filter provided
         /// </summary>
         /// <param name="typeFilter"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter)
         {
             if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
@@ -270,7 +263,6 @@ namespace Grace.DependencyInjection.Impl
         /// Add inspector for type set
         /// </summary>
         /// <param name="inspector"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector)
         {
             if (inspector == null) throw new ArgumentNullException(nameof(inspector));
@@ -283,7 +275,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Mark all types as externally owned
         /// </summary>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ExternallyOwned()
         {
             _externallyOwned = true;

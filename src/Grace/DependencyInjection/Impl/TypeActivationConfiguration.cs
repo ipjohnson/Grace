@@ -161,7 +161,6 @@ namespace Grace.DependencyInjection.Impl
         /// Clone configuration
         /// </summary>
         /// <param name="activationType"></param>
-        /// <returns></returns>
         public TypeActivationConfiguration CloneToType(Type activationType)
         {
             return new TypeActivationConfiguration(activationType, ActivationStrategy)

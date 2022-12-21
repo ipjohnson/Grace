@@ -38,7 +38,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">type to export as</param>
         /// <param name="key">key to export under</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration AsKeyed(Type type, object key)
         {
             return _strategy.AsKeyed(type, key);
@@ -48,7 +47,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as Name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration AsName(string name)
         {
             return _strategy.AsName(name);
@@ -58,7 +56,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export by interfaces
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration ByInterfaces(Func<Type, bool> filter = null)
         {
             return _strategy.ByInterfaces(filter);
@@ -77,7 +74,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use specific constructor for use
         /// </summary>
         /// <param name="constructorInfo">constructor to use</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo)
         {
             return _strategy.ImportConstructor(constructorInfo);
@@ -87,7 +83,6 @@ namespace Grace.DependencyInjection.Impl
         /// Specify the constructor selection algorithm
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             return _strategy.ImportConstructorSelection(method);
@@ -123,7 +118,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export only if function returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter)
         {
             return _strategy.OnlyIf(filter);
@@ -154,7 +148,6 @@ namespace Grace.DependencyInjection.Impl
         /// Configure constructor parameter
         /// </summary>
         /// <param name="parameterType">parameter type</param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null)
         {
             return _strategy.WithCtorParam(parameterType);
@@ -165,7 +158,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TParam"></typeparam>
         /// <param name="paramFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null)
         {
             return _strategy.WithCtorParam(paramFunc);
@@ -186,7 +178,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set the priority for the export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration WithPriority(int priority)
         {
             return _strategy.WithPriority(priority);
@@ -196,7 +187,6 @@ namespace Grace.DependencyInjection.Impl
         /// Defines a custom scope when creating instance
         /// </summary>
         /// <param name="customscope"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration DefinesNamedScope(string customscope)
         {
             return _strategy.DefinesNamedScope(customscope);
@@ -226,7 +216,6 @@ namespace Grace.DependencyInjection.Impl
         /// Mark a particular Action() as the activation action
         /// </summary>
         /// <param name="activationMethod"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod)
         {
             return _strategy.ActivationMethod(activationMethod);
@@ -246,7 +235,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as a specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> As(Type type)
         {
             return _strategy.As(type);
@@ -267,7 +255,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">export type</param>
         /// <param name="key">key</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> AsKeyed(Type type, object key)
         {
             return _strategy.AsKeyed(type, key);
@@ -288,7 +275,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as specific name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> AsName(string name)
         {
             return _strategy.AsName(name);
@@ -297,7 +283,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export the type by the interfaces it implements
         /// </summary>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ByInterfaces(Func<Type, bool> filter = null)
         {
             return _strategy.ByInterfaces(filter);
@@ -307,7 +292,6 @@ namespace Grace.DependencyInjection.Impl
         /// Creates a new scope and then resolves decorators inside of it.
         /// </summary>
         /// <param name="namedScope"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope)
         {
             return _strategy.DefinesNamedScope(namedScope);
@@ -317,7 +301,6 @@ namespace Grace.DependencyInjection.Impl
         /// You can provide a cleanup method to be called 
         /// </summary>
         /// <param name="disposalCleanupDelegate"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> DisposalCleanupDelegate(Action<T> disposalCleanupDelegate)
         {
             return _strategy.DisposalCleanupDelegate(disposalCleanupDelegate);
@@ -327,7 +310,6 @@ namespace Grace.DependencyInjection.Impl
         /// Enrich with delegate
         /// </summary>
         /// <param name="enrichmentDelegate">enrichment delegate</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, T, T> enrichmentDelegate)
         {
             return _strategy.EnrichWithDelegate(enrichmentDelegate);
@@ -338,7 +320,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TValue">type to export</typeparam>
         /// <param name="memberExpression">member expression</param>
-        /// <returns></returns>
         public IFluentExportMemberConfiguration<T> ExportMember<TValue>(Expression<Func<T, TValue>> memberExpression)
         {
             return _strategy.ExportMember(memberExpression);
@@ -347,7 +328,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Mark an export as externally owned means the container will not track and dispose the instance
         /// </summary>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ExternallyOwned()
         {
             return _strategy.ExternallyOwned();
@@ -357,7 +337,6 @@ namespace Grace.DependencyInjection.Impl
         /// This method allows you to specify which constructor to use ( () => new MyTypeName("Specific", "Constructor") )
         /// </summary>
         /// <param name="constructorExpression">constructor expression ( () => new MyTypeName("Specific", "Constructor") )</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression)
         {
             return _strategy.ImportConstructor(constructorExpression);
@@ -367,7 +346,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use specific constructor for use
         /// </summary>
         /// <param name="constructorInfo">constructor to use</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo)
         {
             return _strategy.ImportConstructor(constructorInfo);
@@ -377,7 +355,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use a specific constructor selection method
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ImportConstructorSelection(IConstructorExpressionCreator method)
         {
             return _strategy.ImportConstructorSelection(method);
@@ -399,7 +376,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TProp"></typeparam>
         /// <param name="property">property expression</param>
-        /// <returns></returns>
         public IFluentImportPropertyConfiguration<T, TProp> ImportProperty<TProp>(Expression<Func<T, TProp>> property)
         {
             return _strategy.ImportProperty(property);
@@ -409,7 +385,6 @@ namespace Grace.DependencyInjection.Impl
         /// Import a specific method on the type
         /// </summary>
         /// <param name="method">method to import</param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> ImportMethod(Expression<Action<T>> method)
         {
             return _strategy.ImportMethod(method);
@@ -424,7 +399,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export only if function returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
         {
             return _strategy.OnlyIf(filter);
@@ -467,7 +441,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TParam"></typeparam>
         /// <typeparam name="TItem"></typeparam>
-        /// <returns></returns>
         public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
         {
             return _strategy.WithCtorCollectionParam<TParam, TItem>();
@@ -558,7 +531,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set the priority for the export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         public IFluentExportStrategyConfiguration<T> WithPriority(int priority)
         {
             return _strategy.WithPriority(priority);

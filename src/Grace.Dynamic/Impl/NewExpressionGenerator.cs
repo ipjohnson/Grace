@@ -14,7 +14,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, NewExpression expression);
     }
 
@@ -28,7 +27,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, NewExpression expression)
         {
             if (expression.Arguments.Any(argument => !request.TryGenerateIL(request, argument)))

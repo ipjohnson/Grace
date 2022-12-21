@@ -32,7 +32,6 @@ namespace Grace.Data
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="values"></param>
-        /// <returns></returns>
         public delegate ImmutableHashTree<string, object> PropertyDictionaryDelegate(object instance, ImmutableHashTree<string, object> values);
 
         /// <summary>
@@ -42,7 +41,6 @@ namespace Grace.Data
         /// <param name="context"></param>
         /// <param name="injectionContext"></param>
         /// <param name="delegate"></param>
-        /// <returns></returns>
         public delegate object ExecuteDelegateWithInjection(
             IExportLocatorScope scope, StaticInjectionContext context, IInjectionContext injectionContext,
             Delegate @delegate);
@@ -52,7 +50,6 @@ namespace Grace.Data
         /// </summary>
         /// <param name="type"></param>
         /// <param name="includeNamespace"></param>
-        /// <returns></returns>
         public static string GetFriendlyNameForType(Type type, bool includeNamespace = false)
         {
             if (type.IsConstructedGenericType)
@@ -190,7 +187,6 @@ namespace Grace.Data
         /// <param name="annonymousObject">object to get properties from</param>
         /// <param name="values">collection to add to</param>
         /// <param name="casing">lowercase property names</param>
-        /// <returns></returns>
         public static ImmutableHashTree<string, object> GetPropertiesFromObject(object annonymousObject,
             ImmutableHashTree<string, object> values = null, PropertyCasing casing = PropertyCasing.Default)
         {
@@ -335,7 +331,6 @@ namespace Grace.Data
         /// <param name="context"></param>
         /// <param name="injectionContext"></param>
         /// <param name="delegate"></param>
-        /// <returns></returns>
         public static object InjectAndExecuteDelegate(IExportLocatorScope scope, StaticInjectionContext context,
             IInjectionContext injectionContext, Delegate @delegate)
         {

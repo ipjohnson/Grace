@@ -144,7 +144,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
-        /// <returns></returns>
         IInstanceActivationStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression);
 
         /// <summary>
@@ -187,7 +186,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
-        /// <returns></returns>
         public IInstanceActivationStrategy GetExpressionExportStrategy<T>(Expression<Func<T>> expression)
         {
             return new ExpressionExportStrategy<T>(expression, _injectionScope);

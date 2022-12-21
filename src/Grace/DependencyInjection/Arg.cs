@@ -31,7 +31,6 @@
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
-        /// <returns></returns>
         public static T Locate<T>(object data)
         {
             return default(T);
@@ -40,7 +39,6 @@
         /// <summary>
         /// Get the current scope
         /// </summary>
-        /// <returns></returns>
         public static IExportLocatorScope Scope()
         {
             return null;
@@ -49,7 +47,6 @@
         /// <summary>
         /// Get the current context
         /// </summary>
-        /// <returns></returns>
         public static IInjectionContext Context()
         {
             return null;

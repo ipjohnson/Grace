@@ -19,7 +19,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="lifestyle">lifestyle</param>
-        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, ICompiledLifestyle lifestyle);
     }
 
@@ -49,7 +48,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="lifestyle">lifestyle</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, ICompiledLifestyle lifestyle)
         {
             if (lifestyle == null)

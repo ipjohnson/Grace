@@ -37,7 +37,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             var array = container.Locate<IBasicService[]>();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<BasicService>(array[0]);
         }
 
@@ -72,7 +72,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             var array = container.Locate<IBasicService[]>();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<BasicService>(array[0]);
         }
 
@@ -108,7 +108,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             var array = container.Locate<IBasicService[]>();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<BasicService>(array[0]);
         }
     }

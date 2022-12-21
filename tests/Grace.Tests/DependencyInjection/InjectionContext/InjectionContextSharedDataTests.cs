@@ -15,7 +15,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var keys = data.Keys.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("Key", keys[0]);
         }
 
@@ -28,7 +28,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var values = data.Values.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal("Value", values[0]);
         }
 
@@ -41,7 +41,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var pairs = data.KeyValuePairs.ToArray();
 
-            Assert.Equal(1, pairs.Length);
+            Assert.Single(pairs);
             Assert.Equal("Key", pairs[0].Key);
             Assert.Equal("Value", pairs[0].Value);
         }

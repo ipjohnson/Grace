@@ -52,7 +52,6 @@ namespace Grace.DependencyInjection.Impl
         /// Locate instances
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public T Locate<T>()
         {
             var func = _factories.GetValueOrDefault(typeof(T)) as Func<ImplementationFactory, T>;
@@ -68,7 +67,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Clone implementation factory
         /// </summary>
-        /// <returns></returns>
         public ImplementationFactory Clone()
         {
             return new ImplementationFactory { _factories = _factories };

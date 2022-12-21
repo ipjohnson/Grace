@@ -15,11 +15,11 @@ namespace Grace.Tests.Diagnostics
             var debugger = new ImmutableHashTreeDebuggerView<int, string>(tree);
 
             var keys = debugger.Keys.ToArray();
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal(5, keys[0]);
 
             var values = debugger.Values.ToArray();
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal("Hello", values[0]);
         }
         
@@ -32,7 +32,7 @@ namespace Grace.Tests.Diagnostics
 
             var items = debugger.Items.ToArray();
 
-            Assert.Equal(1, items.Length);
+            Assert.Single(items);
             Assert.Equal(5, items[0].Key);
             Assert.Equal("Hello", items[0].Value);
             Assert.Equal("5", items[0].DebuggerNameDisplayString);

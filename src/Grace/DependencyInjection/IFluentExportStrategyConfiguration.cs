@@ -24,21 +24,18 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type">type to export as</param>
         /// <param name="key">key to export under</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration AsKeyed(Type type, object key);
 
         /// <summary>
         /// Export as Name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration AsName(string name);
 
         /// <summary>
         /// Export by interfaces
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration ByInterfaces(Func<Type, bool> filter = null);
 
         /// <summary>
@@ -51,14 +48,12 @@ namespace Grace.DependencyInjection
         /// Use specific constructor for use
         /// </summary>
         /// <param name="constructorInfo">constructor to use</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo);
 
         /// <summary>
         /// Specify the constructor selection algorithm
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method);
 
         /// <summary>
@@ -85,13 +80,11 @@ namespace Grace.DependencyInjection
         /// Export only if function returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration OnlyIf(Func<IExportRegistrationBlock, bool> filter);
 
         /// <summary>
         /// Process attribute on type as well as fluent interface
         /// </summary>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration ProcessAttributes();
 
         /// <summary>
@@ -110,7 +103,6 @@ namespace Grace.DependencyInjection
         /// Configure constructor parameter
         /// </summary>
         /// <param name="parameterType">parameter type</param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null);
 
         /// <summary>
@@ -118,7 +110,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TParam"></typeparam>
         /// <param name="paramFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramFunc = null);
 
         /// <summary>
@@ -133,14 +124,12 @@ namespace Grace.DependencyInjection
         /// Set the priority for the export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration WithPriority(int priority);
 
         /// <summary>
         /// Defines a custom scope when creating instance
         /// </summary>
         /// <param name="customscope"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration DefinesNamedScope(string customscope);
     }
 
@@ -154,7 +143,6 @@ namespace Grace.DependencyInjection
         /// Mark a particular Action() as the activation action
         /// </summary>
         /// <param name="activationMethod"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod);
 
         /// <summary>
@@ -168,7 +156,6 @@ namespace Grace.DependencyInjection
         /// Export as a specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> As(Type type);
 
         /// <summary>
@@ -183,7 +170,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type">export type</param>
         /// <param name="key">key</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> AsKeyed(Type type, object key);
 
         /// <summary>
@@ -198,7 +184,6 @@ namespace Grace.DependencyInjection
         /// Export as specific name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> AsName(string name);
 
         /// <summary>
@@ -212,7 +197,6 @@ namespace Grace.DependencyInjection
         /// Creates a new scope and then resolves decorators inside of it.
         /// </summary>
         /// <param name="namedScope"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> DefinesNamedScope(string namedScope);
 
         /// <summary>
@@ -226,7 +210,6 @@ namespace Grace.DependencyInjection
         /// Enrich with delegate
         /// </summary>
         /// <param name="enrichmentDelegate">enrichment delegate</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> EnrichWithDelegate(
             Func<IExportLocatorScope, StaticInjectionContext, T, T> enrichmentDelegate);
 
@@ -235,7 +218,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TValue">type to export</typeparam>
         /// <param name="memberExpression">member expression</param>
-        /// <returns></returns>
         IFluentExportMemberConfiguration<T> ExportMember<TValue>(Expression<Func<T, TValue>> memberExpression);
 
         /// <summary>
@@ -248,21 +230,18 @@ namespace Grace.DependencyInjection
         /// This method allows you to specify which constructor to use ( () => new MyTypeName("Specific", "Constructor") )
         /// </summary>
         /// <param name="constructorExpression">constructor expression ( () => new MyTypeName("Specific", "Constructor") )</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression);
 
         /// <summary>
         /// Use specific constructor for use
         /// </summary>
         /// <param name="constructorInfo">constructor to use</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo);
 
         /// <summary>
         /// Use a specific constructor selection method
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ImportConstructorSelection(IConstructorExpressionCreator method);
 
         /// <summary>
@@ -285,7 +264,6 @@ namespace Grace.DependencyInjection
         /// Import a specific method on the type
         /// </summary>
         /// <param name="method">method to import</param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ImportMethod(Expression<Action<T>> method);
 
         /// <summary>
@@ -297,13 +275,11 @@ namespace Grace.DependencyInjection
         /// Export only if function returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
 
         /// <summary>
         /// Process attribute on type as well as fluent interface
         /// </summary>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> ProcessAttributes();
 
         /// <summary>
@@ -331,7 +307,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TParam"></typeparam>
         /// <typeparam name="TItem"></typeparam>
-        /// <returns></returns>
         IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
             where TParam : IEnumerable<TItem>;
 
@@ -402,7 +377,6 @@ namespace Grace.DependencyInjection
         /// Set the priority for the export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         IFluentExportStrategyConfiguration<T> WithPriority(int priority);
     }
 }

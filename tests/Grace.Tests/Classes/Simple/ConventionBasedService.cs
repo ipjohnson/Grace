@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Grace.Tests.Classes.Simple
+﻿namespace Grace.Tests.Classes.Simple
 {
     public interface IConventionBasedService
     {

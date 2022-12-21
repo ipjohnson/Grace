@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Grace.Data.Immutable;
-using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -33,7 +30,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="scope"></param>
-        /// <returns></returns>
         public object ExecuteActivationStrategyDelegate(Type type, IExportLocatorScope scope)
         {
             var hashCode = RuntimeHelpers.GetHashCode(type);
@@ -59,7 +55,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="scope"></param>
-        /// <returns></returns>
         public object ExecuteActivationStrategyDelegateAllowNull(Type type, IExportLocatorScope scope)
         {
             var hashCode = RuntimeHelpers.GetHashCode(type);
@@ -87,7 +82,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="scope"></param>
         /// <param name="allowNull"></param>
         /// <param name="context"></param>
-        /// <returns></returns>
         public object ExecuteActivationStrategyDelegateWithContext(Type type, IExportLocatorScope scope, bool allowNull, IInjectionContext context)
         {
             var hashCode = RuntimeHelpers.GetHashCode(type);

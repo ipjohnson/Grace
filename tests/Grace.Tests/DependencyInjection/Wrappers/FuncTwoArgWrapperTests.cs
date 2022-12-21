@@ -40,7 +40,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         [SubFixtureInitialize]
         public void FuncTwoArg_GetWrappedType_NonGeneric(FuncTwoArgWrapperStrategy strategy)
         {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
+            Assert.Null(strategy.GetWrappedType(typeof(BasicService)));
         }
     }
 }

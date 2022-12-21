@@ -53,7 +53,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// This is here to allow adding configuration modules through object initialization. Always returns empty
         /// </summary>
-        /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IEnumerator<object> GetEnumerator()
         {

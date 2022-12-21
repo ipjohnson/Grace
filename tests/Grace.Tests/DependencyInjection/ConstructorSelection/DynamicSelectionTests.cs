@@ -168,7 +168,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             var instance = container.Locate<DynamicMultipleIntParameters>(new { secondValue = 10, firstValue = 5 });
 
             Assert.NotNull(instance);
-            Assert.Equal(instance.FirstValue, 5);
+            Assert.Equal(5, instance.FirstValue);
             Assert.Equal(10, instance.SecondValue);
         }
 

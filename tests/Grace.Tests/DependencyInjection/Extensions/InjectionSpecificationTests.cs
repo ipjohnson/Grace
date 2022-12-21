@@ -5,8 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Specification;
 
 namespace Grace.Tests.DependencyInjection.Extensions
 {
-#if NET6_0
-    
+#if NET6_0_OR_GREATER
     /// <summary>
     /// These tests are from microsoft to make sure it conforms to it's container specifications
     /// </summary>

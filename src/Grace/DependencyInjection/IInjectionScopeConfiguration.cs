@@ -97,7 +97,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Clone configuration
         /// </summary>
-        /// <returns></returns>
         IInjectionScopeConfiguration Clone();
     }
 }

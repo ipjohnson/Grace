@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="configuration"></param>
         /// <param name="keyFunc"></param>
-        /// <returns></returns>
         public static IExportTypeSetConfiguration ByKeyed<T>(this IExportTypeSetConfiguration configuration, Func<Type, object> keyFunc)
         {
             configuration.ByKeyedTypes(type =>

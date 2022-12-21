@@ -72,7 +72,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
         {
             var context = new Grace.DependencyInjection.Impl.InjectionContext(null);
 
-            Assert.Equal(0, context.Keys.Count());
+            Assert.Empty(context.Keys);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var keys = context.Keys.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("Hello", keys[0]);
         }
 
@@ -97,7 +97,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var keys = context.Values.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("World", keys[0]);
         }
 
@@ -106,7 +106,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
         {
             var context = new Grace.DependencyInjection.Impl.InjectionContext(null);
 
-            Assert.Equal(0, context.Values.Count());
+            Assert.Empty(context.Values);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
 
             var keys = context.KeyValuePairs.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("Hello", keys[0].Key);
             Assert.Equal("World", keys[0].Value);
         }
@@ -129,7 +129,7 @@ namespace Grace.Tests.DependencyInjection.InjectionContext
         {
             var context = new Grace.DependencyInjection.Impl.InjectionContext(null);
 
-            Assert.Equal(0, context.KeyValuePairs.Count());
+            Assert.Empty(context.KeyValuePairs);
         }
 
         [Fact]

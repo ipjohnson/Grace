@@ -15,7 +15,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
         /// <param name="arrayExpressionCreator">array expression creator</param>
-        /// <returns></returns>
         IActivationExpressionResult GetEnumerableExpression(IInjectionScope scope, IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator);
     }
 
@@ -30,7 +29,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
         /// <param name="arrayExpressionCreator">array expression creator</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetEnumerableExpression(IInjectionScope scope, IActivationExpressionRequest request,
             IArrayExpressionCreator arrayExpressionCreator)
         {
@@ -47,7 +45,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayExpressionCreator"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(IInjectionScope scope,
             IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator)
         {
@@ -74,7 +71,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">expression request</param>
         /// <param name="arrayExpressionCreator">array creator</param>
         /// <param name="enumerableCreator">custom enumerable creator</param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(IInjectionScope scope,
             IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator,
             IEnumerableCreator enumerableCreator)
@@ -113,8 +109,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Create enumerable method
         /// </summary>
-        protected MethodInfo CreateEnumerableMethod => _createEnumerableMethod ??
-                                                       (_createEnumerableMethod = typeof(IEnumerableCreator).GetRuntimeMethods().First());
+        protected MethodInfo CreateEnumerableMethod => _createEnumerableMethod = _createEnumerableMethod ?? typeof(IEnumerableCreator).GetRuntimeMethods().First();
 
         #endregion
     }

@@ -17,7 +17,6 @@ namespace Grace.DependencyInjection
         /// Set owned value
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
         public Owned<T> SetValue(T value)
         {
             if (Value == null)

@@ -41,7 +41,7 @@ namespace Grace.Tests.Data.Immutable
 
             list = list.Add(5);
 
-            Assert.Equal(1, list.Count);
+            Assert.Single(list);
         }
 
         [Fact]
@@ -56,9 +56,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -69,9 +69,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -82,9 +82,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -110,9 +110,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
         
         [Fact]
@@ -123,15 +123,15 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
 
             ImmutableLinkedList.ThreadSafeEmpty(ref list);
 
             newList = new List<int>(list);
 
-            Assert.Equal(0, newList.Count);
+            Assert.Empty(newList);
         }
 
         [Fact]
@@ -187,7 +187,8 @@ namespace Grace.Tests.Data.Immutable
         private List<int> _finalList;
         private ManualResetEvent _startEvent;
         private CountdownEvent _countdownEvent;
-        private readonly int _addAmount = 20000;
+
+        private const int AddAmount = 20_000;
 
         [Fact]
         public void ImmutableLinkedList_Multithreaded_Test()
@@ -204,7 +205,7 @@ namespace Grace.Tests.Data.Immutable
             for (var i = 0; i < writerCount; i++)
             {
                 var value = i;
-                var task = Task.Run(() => AddRangeToList(value * _addAmount));
+                var task = Task.Run(() => AddRangeToList(value * AddAmount));
 
                 listOfTasks.Add(task);
             }
@@ -213,13 +214,13 @@ namespace Grace.Tests.Data.Immutable
 
             _startEvent.Set();
 
-            Task.WaitAll(listOfTasks.ToArray(), 60 * 1000);
+            Task.WaitAll(listOfTasks.ToArray(), 60 * 1_000);
 
             _finalList.Sort();
 
-            Assert.Equal(_finalList.Count, _addAmount * writerCount);
+            Assert.Equal(_finalList.Count, AddAmount * writerCount);
 
-            for (var i = 0; i < (_addAmount * writerCount); i++)
+            for (var i = 0; i < (AddAmount * writerCount); i++)
             {
                 Assert.Equal(i, _finalList[i]);
             }
@@ -246,11 +247,11 @@ namespace Grace.Tests.Data.Immutable
         {
             _startEvent.WaitOne();
 
-            for (var i = startValue; i < (startValue + _addAmount); i++)
+            for (var i = startValue; i < (startValue + AddAmount); i++)
             {
                 ImmutableLinkedList.ThreadSafeAdd(ref _linkedList, i);
 
-                if (_addAmount % 1000 == 0)
+                if (AddAmount % 1_000 == 0)
                 {
                     Thread.Sleep(0);
                 }

@@ -43,7 +43,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var requestType = request.ActivationType.GetTypeInfo().GenericTypeArguments[0];
@@ -77,7 +76,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="scope"></param>
         /// <param name="compiler"></param>
         /// <param name="activationType"></param>
-        /// <returns></returns>
         protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {

@@ -4,7 +4,6 @@
     <Description>Grace is a feature-rich dependency injection container designed with ease of use and performance in mind.</Description>
     <Authors>Ian Johnson</Authors>
     <TargetFrameworks>net462;net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard1.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Grace</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>

@@ -108,15 +108,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private bool ShouldTrackForDisposable(IInjectionScope scope, TypeActivationConfiguration activationConfiguration)
         {
-            var implementedInterfaces = activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces;
+            var implementedInterfaces = activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.ToArray();
 
-#if NETSTANDARD2_1
-            if (!implementedInterfaces.Contains(typeof(IAsyncDisposable)) && !implementedInterfaces.Contains(typeof(IDisposable)))
+#if NET6_0_OR_GREATER
+            if (!implementedInterfaces.Any(t => t == typeof(IAsyncDisposable) || t == typeof(IDisposable)))
             {
                 return false;
             }
 #else
-            if (implementedInterfaces.Contains(typeof(IDisposable)) == false)
+            if (implementedInterfaces.All(t => t != typeof(IDisposable)))
             {
                 return false;
             }

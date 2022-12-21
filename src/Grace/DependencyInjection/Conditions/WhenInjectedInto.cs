@@ -35,7 +35,6 @@ namespace Grace.DependencyInjection.Conditions
         /// </summary>
         /// <param name="strategy">strategy to test</param>
         /// <param name="staticInjectionContext">static injection context</param>
-        /// <returns></returns>
         public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
         {
             var targetInfo = 
@@ -50,7 +49,6 @@ namespace Grace.DependencyInjection.Conditions
         /// </summary>
         /// <param name="injectionType"></param>
         /// <param name="types"></param>
-        /// <returns></returns>
         protected bool TestTypes(Type injectionType, Type[] types)
         {
             foreach (var type in types)

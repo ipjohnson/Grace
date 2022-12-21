@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -41,7 +39,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to locate</param>
         /// <param name="consider"></param>
         /// <param name="key">key to use while locating</param>
-        /// <returns></returns>
         public override bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
         {
             return _injectionScope.CanLocate(type, consider, key);
@@ -131,12 +128,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
-        /// <returns></returns>
         public override bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
-            object outValue;
-
-            if (TryLocate(typeof(T), out outValue, extraData, consider, withKey, isDynamic))
+            if (TryLocate(typeof(T), out var outValue, extraData, consider, withKey, isDynamic))
             {
                 value = (T)outValue;
 
@@ -180,7 +174,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return _injectionScope.LocateByNameFromChildScope(this, this, name, extraData, consider, false);
@@ -192,7 +185,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return _injectionScope.InternalLocateAllByName(this, this, name, extraData, consider);
@@ -205,7 +197,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="value"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
         {
             value = _injectionScope.LocateByNameFromChildScope(this, this, name, extraData, consider, true);
@@ -222,17 +213,14 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key">key to use for locate</param>
         /// <param name="allowNull">is null allowed</param>
         /// <param name="isDynamic">is the request dynamic</param>
-        /// <returns></returns>
         protected virtual object LocateFromParent(Type type, object extraData, ActivationStrategyFilter consider, object key, bool allowNull, bool isDynamic)
         {
             return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, allowNull, isDynamic);
         }
 
-#if !NETSTANDARD1_0
         object IServiceProvider.GetService(Type type)
         {
             return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
         }
-#endif
     }
 }

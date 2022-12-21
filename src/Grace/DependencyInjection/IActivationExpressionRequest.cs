@@ -64,7 +64,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope">scope for node</param>
         /// <param name="request">request for activation</param>
-        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
@@ -92,7 +91,6 @@ namespace Grace.DependencyInjection
         /// Expression that represents the known value
         /// </summary>
         /// <param name="request">request for expression</param>
-        /// <returns></returns>
         IActivationExpressionResult ValueExpression(IActivationExpressionRequest request);
     }
 
@@ -280,13 +278,11 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Pop wrapper node off path
         /// </summary>
-        /// <returns></returns>
         IActivationPathNode PopWrapperPathNode();
 
         /// <summary>
         /// Pop decorator node off path
         /// </summary>
-        /// <returns></returns>
         IActivationPathNode PopDecoratorPathNode();
 
         /// <summary>
@@ -316,7 +312,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Get the currently wrapped strategy if one exists
         /// </summary>
-        /// <returns></returns>
         IActivationStrategy GetWrappedStrategy();
 
         /// <summary>
@@ -340,19 +335,16 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Get wrapped strategy
         /// </summary>
-        /// <returns></returns>
         ICompiledExportStrategy GetWrappedExportStrategy();
 
         /// <summary>
         /// Get static injection context for request
         /// </summary>
-        /// <returns></returns>
         StaticInjectionContext GetStaticInjectionContext();
 
         /// <summary>
         /// Create target info for request
         /// </summary>
-        /// <returns></returns>
         ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo();
         
         /// <summary>
@@ -369,7 +361,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Is injection context required
         /// </summary>
-        /// <returns></returns>
         bool InjectionContextRequired();
 
         /// <summary>
@@ -380,7 +371,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export scope is required
         /// </summary>
-        /// <returns></returns>
         bool ExportScopeRequired();
 
         /// <summary>
@@ -391,7 +381,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Disposal scope required
         /// </summary>
-        /// <returns></returns>
         bool DisposalScopeRequired();
 
         /// <summary>
@@ -413,7 +402,6 @@ namespace Grace.DependencyInjection
         /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        /// <returns></returns>
         IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope, bool maintainPaths = false);
 
         /// <summary>

@@ -10,7 +10,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Provide a list of decorator strategies
         /// </summary>
-        /// <returns></returns>
         IEnumerable<ICompiledDecoratorStrategy> ProvideStrategies();
     }
 }

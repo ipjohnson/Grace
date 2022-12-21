@@ -13,7 +13,6 @@ namespace Grace.DependencyInjection
         /// Are named a specific name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration AreNamed(string name)
         {
             return new MembersThatConfiguration().AreNamed(name);
@@ -23,7 +22,6 @@ namespace Grace.DependencyInjection
         /// Members that match method
         /// </summary>
         /// <param name="matchMethod"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration Match(Func<MemberInfo, bool> matchMethod)
         {
             return new MembersThatConfiguration().Match(matchMethod);
@@ -33,7 +31,6 @@ namespace Grace.DependencyInjection
         /// Member name starts with prefix
         /// </summary>
         /// <param name="prefix"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration StartWith(string prefix)
         {
             return new MembersThatConfiguration().StartsWith(prefix);
@@ -43,7 +40,6 @@ namespace Grace.DependencyInjection
         /// Member name ends with
         /// </summary>
         /// <param name="postfix"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration EndsWith(string postfix)
         {
             return new MembersThatConfiguration().EndsWith(postfix);
@@ -53,7 +49,6 @@ namespace Grace.DependencyInjection
         /// Is member a property that matches
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration AreProperty(Func<PropertyInfo, bool> filter = null)
         {
             return new MembersThatConfiguration().AreProperty(filter);
@@ -62,7 +57,6 @@ namespace Grace.DependencyInjection
         /// True if the member is a method and matches optional filter
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration AreMethod(Func<MethodInfo, bool> filter = null)
         {
             return new MembersThatConfiguration().AreMethod(filter);
@@ -73,7 +67,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public static MembersThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {

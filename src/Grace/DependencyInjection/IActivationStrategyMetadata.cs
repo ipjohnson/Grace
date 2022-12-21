@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="key">key to use</param>
         /// <param name="value">value to compare</param>
-        /// <returns></returns>
         bool MetadataMatches(object key, object value);
     }
 }

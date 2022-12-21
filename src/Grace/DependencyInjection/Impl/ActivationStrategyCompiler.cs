@@ -83,7 +83,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         public virtual IActivationExpressionResult CreateNewResult(IActivationExpressionRequest request, Expression expression = null)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -100,7 +99,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="injectionContext"></param>
         /// <param name="checkMissing"></param>
-        /// <returns></returns>
         public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext injectionContext, bool checkMissing)
         {
             var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key, injectionContext);
@@ -151,13 +149,9 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="expressionContext"></param>
-        /// <returns></returns>
         public virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext)
         {
-            ParameterExpression[] parameters;
-            Expression[] extraExpressions;
-
-            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out parameters, out extraExpressions);
+            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out var parameters, out var extraExpressions);
 
             var compiled = CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
 
@@ -167,10 +161,7 @@ namespace Grace.DependencyInjection.Impl
 
         public T CompileOptimizedDelegate<T>(IInjectionScope scope, IActivationExpressionResult expressionContext)
         {
-            ParameterExpression[] parameters;
-            Expression[] extraExpressions;
-
-            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out parameters, out extraExpressions);
+            var finalExpression = ProcessExpressionResultForCompile(expressionContext, out var parameters, out var extraExpressions);
 
             var compiled = CompileExpressionResultToOpitimzed<T>(expressionContext, parameters, extraExpressions, finalExpression);
 
@@ -183,7 +174,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="locateType"></param>
-        /// <returns></returns>
         public InjectionStrategyDelegate CreateInjectionDelegate(IInjectionScope scope, Type locateType)
         {
             var request = CreateNewRequest(locateType, 1, scope);
@@ -216,7 +206,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="expressionContext"></param>
         /// <param name="parameters"></param>
         /// <param name="extraExpressions"></param>
-        /// <returns></returns>
         protected virtual Expression ProcessExpressionResultForCompile(IActivationExpressionResult expressionContext,
             out ParameterExpression[] parameters, out Expression[] extraExpressions)
         {
@@ -251,7 +240,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="parameters"></param>
         /// <param name="extraExpressions"></param>
         /// <param name="finalExpression"></param>
-        /// <returns></returns>
         protected virtual ActivationStrategyDelegate CompileExpressionResultToDelegate(
             IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions,
             Expression finalExpression)
@@ -372,7 +360,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider"></param>
         /// <param name="key"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         protected virtual ActivationStrategyDelegate LocateStrategyFromCollectionContainers(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext injectionContext)
         {
             if (key != null)

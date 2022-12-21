@@ -36,7 +36,6 @@ namespace Grace.Dynamic.Impl
         /// <param name="parameters"></param>
         /// <param name="extraExpressions"></param>
         /// <param name="finalExpression"></param>
-        /// <returns></returns>
         protected override ActivationStrategyDelegate CompileExpressionResultToDelegate(IActivationExpressionResult expressionContext,
             ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression)
         {

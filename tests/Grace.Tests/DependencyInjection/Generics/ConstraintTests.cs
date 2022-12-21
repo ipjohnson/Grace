@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Generics;
@@ -27,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.Generics
             var instances = container.LocateAll<IGenericConstraintService<IMultipleService>>();
 
             Assert.NotNull(instances);
-            Assert.Equal(1, instances.Count);
+            Assert.Single(instances);
         }
 
         [Fact]
@@ -67,7 +66,7 @@ namespace Grace.Tests.DependencyInjection.Generics
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.Value);
-            Assert.Equal(1, instance.Value.Count());
+            Assert.Single(instance.Value);
         }
 
         [Fact]
@@ -98,9 +97,7 @@ namespace Grace.Tests.DependencyInjection.Generics
                 c.Export<BasicService>().ByInterfaces();
             });
 
-            IMultipleOutOfOrderOpenGeneric<DateTime, bool, string, IBasicService> multipleOut;
-
-            container.TryLocate(out multipleOut);
+            container.TryLocate(out IMultipleOutOfOrderOpenGeneric<DateTime, bool, string, IBasicService> multipleOut);
 
             Assert.Null(multipleOut);
 

@@ -72,7 +72,6 @@ namespace Grace.DependencyInjection.Impl
         /// Provide value to be used for property
         /// </summary>
         /// <param name="value">value to use for property</param>
-        /// <returns></returns>
         public IFluentImportPropertyConfiguration Value(object value)
         {
             _memberInjectionInfo.CreateExpression = 
@@ -156,7 +155,6 @@ namespace Grace.DependencyInjection.Impl
         /// Provide value for property
         /// </summary>
         /// <param name="value">property value</param>
-        /// <returns></returns>
         public IFluentImportPropertyConfiguration<T, TProp> Value(TProp value)
         {
             _memberInjectionInfo.CreateExpression = Expression.Constant(value);

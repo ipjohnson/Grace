@@ -24,7 +24,6 @@ namespace Grace.DependencyInjection.Attributes
         /// Provide an export condition for an attirbuted type
         /// </summary>
         /// <param name="attributedType"></param>
-        /// <returns></returns>
         public ICompiledCondition ProvideCondition(Type attributedType)
         {
             return new WhenClassHas(_attributeType);

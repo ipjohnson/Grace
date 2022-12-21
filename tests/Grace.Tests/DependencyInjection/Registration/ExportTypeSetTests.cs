@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET6_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
@@ -8,9 +11,6 @@ using Grace.Tests.Classes.Simple;
 using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
 
-#if NET5_0
-using System.Threading.Tasks;
-#endif
 
 namespace Grace.Tests.DependencyInjection.Registration
 {
@@ -337,7 +337,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance1);
         }
 
-#if NET5_0
+#if NET6_0_OR_GREATER
         [Fact]
         public async Task ExportTypeSet_ExternallyOwned()
         {

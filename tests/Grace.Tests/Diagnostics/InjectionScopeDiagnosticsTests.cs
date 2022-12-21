@@ -24,7 +24,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -49,7 +49,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -74,7 +74,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -100,7 +100,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -122,7 +122,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 

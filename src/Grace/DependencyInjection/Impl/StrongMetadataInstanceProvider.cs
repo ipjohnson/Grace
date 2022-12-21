@@ -16,7 +16,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         object GetMetadata(Type metadataType, IActivationStrategyMetadata metadata);
     }
 
@@ -30,7 +29,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         public virtual object GetMetadata(Type metadataType, IActivationStrategyMetadata metadata)
         {
             if (metadataType == typeof(IReadOnlyDictionary<object, object>) ||
@@ -58,7 +56,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         protected object[] GetConstructorParameters(Type metadataType, IActivationStrategyMetadata metadata)
         {
             var constructors = metadataType.GetTypeInfo().DeclaredConstructors.ToArray();

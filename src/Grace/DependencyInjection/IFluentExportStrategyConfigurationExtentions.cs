@@ -15,7 +15,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="propertyFilter"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration AutoWireProperties(this IFluentExportStrategyConfiguration configuration, Func<PropertyInfo, bool> propertyFilter = null)
         {
             configuration.ImportMembers(MembersThat.AreProperty(propertyFilter));
@@ -29,7 +28,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="configuration"></param>
         /// <param name="propertyFilter"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration<T> AutoWireProperties<T>(this IFluentExportStrategyConfiguration<T> configuration, Func<PropertyInfo, bool> propertyFilter = null)
         {
             configuration.ImportMembers(MembersThat.AreProperty(propertyFilter));

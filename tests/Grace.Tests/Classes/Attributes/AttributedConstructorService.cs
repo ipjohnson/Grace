@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Grace.DependencyInjection.Attributes;
+﻿using Grace.DependencyInjection.Attributes;
 using Grace.Tests.Classes.Simple;
 
 namespace Grace.Tests.Classes.Attributes

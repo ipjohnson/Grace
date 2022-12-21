@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;

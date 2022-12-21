@@ -8,7 +8,6 @@
         /// <summary>
         /// Provide contianer
         /// </summary>
-        /// <returns></returns>
         ICompiledLifestyle ProvideLifestyle();
     }
 }

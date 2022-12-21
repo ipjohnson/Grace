@@ -53,7 +53,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         [SubFixtureInitialize]
         public void DelegateFiveArg_GetWrappedType_Returns_Null(DelegateFiveArgWrapperStrategy strategy)
         {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(IBasicService)));
+            Assert.Null(strategy.GetWrappedType(typeof(IBasicService)));
         }
     }
 }

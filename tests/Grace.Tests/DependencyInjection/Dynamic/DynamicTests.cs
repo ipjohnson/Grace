@@ -112,7 +112,7 @@ namespace Grace.Tests.DependencyInjection.Dynamic
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.Value);
-            Assert.Equal(1, instance.Value.Count());
+            Assert.Single(instance.Value);
         }
 
 
@@ -138,7 +138,7 @@ namespace Grace.Tests.DependencyInjection.Dynamic
             Assert.NotNull(instance);
             Assert.NotNull(instance.Value);
             Assert.IsType<ReadOnlyCollection<IMultipleService>>(instance.Value);
-            Assert.Equal(1, instance.Value.Count());
+            Assert.Single(instance.Value);
         }
 
 
@@ -161,7 +161,7 @@ namespace Grace.Tests.DependencyInjection.Dynamic
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.Value);
-            Assert.Equal(1, instance.Value.Length);
+            Assert.Single(instance.Value);
         }
     }
 }

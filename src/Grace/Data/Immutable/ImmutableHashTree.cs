@@ -21,7 +21,6 @@ namespace Grace.Data.Immutable
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="enumerable"></param>
-        /// <returns></returns>
         public static ImmutableHashTree<TKey, TValue> From<TKey, TValue>(
             IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
         {
@@ -169,7 +168,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="currentValue"></param>
         /// <param name="newValue"></param>
-        /// <returns></returns>
         public delegate TValue UpdateDelegate(TValue currentValue, TValue newValue);
 
         /// <summary>
@@ -209,7 +207,6 @@ namespace Grace.Data.Immutable
         /// <summary>
         /// Return an enumerable of KVP
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<KeyValuePair<TKey, TValue>> IterateInOrder()
         {
             var nodes = new ImmutableHashTree<TKey, TValue>[Height];
@@ -250,7 +247,6 @@ namespace Grace.Data.Immutable
         /// <param name="key">key to add</param>
         /// <param name="value">value to add</param>
         /// <param name="updateDelegate">update delegate, by default will throw key already exits exception</param>
-        /// <returns></returns>
         public ImmutableHashTree<TKey, TValue> Add(TKey key, TValue value, UpdateDelegate updateDelegate = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -262,14 +258,11 @@ namespace Grace.Data.Immutable
         /// Checks to see if a key is contained in the hashtable
         /// </summary>
         /// <param name="key"></param>
-        /// <returns></returns>
         public bool ContainsKey(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            TValue value;
-
-            return TryGetValue(key, out value);
+            return TryGetValue(key, out var value);
         }
 
         /// <summary>
@@ -277,7 +270,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -332,7 +324,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="key">key to use for looking up</param>
         /// <param name="defaultValue">default value if not found</param>
-        /// <returns></returns>
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
         {
@@ -360,7 +351,6 @@ namespace Grace.Data.Immutable
         /// <param name="key">key to use for look up</param>
         /// <param name="keyHash">hash value for key</param>
         /// <param name="defaultValue">default value to return when not found</param>
-        /// <returns></returns>
         [MethodImpl(InlineMethod.Value)]
         public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
         {
@@ -408,14 +398,11 @@ namespace Grace.Data.Immutable
         /// Locate value from hash table, throws exception if not found
         /// </summary>
         /// <param name="key">key for hash table</param>
-        /// <returns></returns>
         public TValue this[TKey key]
         {
             get
             {
-                TValue value;
-
-                if (!TryGetValue(key, out value))
+                if (!TryGetValue(key, out var value))
                 {
                     throw new KeyNotFoundException($"Key {key} was not found");
                 }

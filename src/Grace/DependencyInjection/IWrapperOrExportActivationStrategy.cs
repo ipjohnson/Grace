@@ -21,7 +21,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
     }
 }

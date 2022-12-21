@@ -30,7 +30,7 @@ namespace Grace.Tests.Diagnostics
         {
             metadata.ExportAs.Returns(new[] { typeof(IBasicService) });
 
-            Assert.Equal(1, metadata.ExportAs.Count());
+            Assert.Single(metadata.ExportAs);
         }
 
         [Theory]
@@ -40,7 +40,7 @@ namespace Grace.Tests.Diagnostics
         {
             metadata.ExportAsKeyed.Returns(new[] { new KeyValuePair<Type, object>(typeof(IBasicService), "Blah") });
 
-            Assert.Equal(1, metadata.ExportAsKeyed.Count());
+            Assert.Single(metadata.ExportAsKeyed);
         }
 
         [Theory]
@@ -55,7 +55,7 @@ namespace Grace.Tests.Diagnostics
 
             var metaList = debugger.Data.ToArray();
 
-            Assert.Equal(1, metaList.Length);
+            Assert.Single(metaList);
             Assert.Equal(typeof(IBasicService), metaList[0].Key);
             Assert.Equal("Blah", metaList[0].Value);
 

@@ -29,7 +29,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {

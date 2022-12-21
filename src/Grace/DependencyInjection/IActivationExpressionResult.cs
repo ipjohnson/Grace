@@ -38,7 +38,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Extra parameters for result
         /// </summary>
-        /// <returns></returns>
         IEnumerable<ParameterExpression> ExtraParameters();
 
         /// <summary>
@@ -51,7 +50,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Extra expressions for result
         /// </summary>
-        /// <returns></returns>
         IEnumerable<Expression> ExtraExpressions();
     }
 }
