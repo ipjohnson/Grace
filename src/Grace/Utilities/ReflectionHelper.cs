@@ -141,13 +141,6 @@ namespace Grace.Utilities
             throw new NotSupportedException($"Not supported for MemberInfo of type: {memberInfo.GetType().Name}");
         }
 
-
-        [Obsolete("This method name has a typo and will be removed at some point. Please use GetMemberType")]
-        public static Type GetMemeberType(this MemberInfo memberInfo)
-        {
-            return GetMemberType(memberInfo);
-        }
-
         private static Type CreateClosedExportTypeFromClassRequestingType(Type exportedType, Type requestedType)
         {
             Type returnType = null;

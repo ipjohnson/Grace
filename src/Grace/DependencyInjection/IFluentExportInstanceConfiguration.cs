@@ -73,14 +73,6 @@ namespace Grace.DependencyInjection
         IFluentExportInstanceConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
 
         /// <summary>
-        /// Export using a specific lifestyle
-        /// </summary>
-        /// <param name="lifestyle">lifestlye to use</param>
-        /// <returns>configuration object</returns>
-        [Obsolete("Use Lifestyle.Custom instead")]
-        IFluentExportInstanceConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
-
-        /// <summary>
         /// Use export under specific conditions
         /// </summary>
         IWhenConditionConfiguration<IFluentExportInstanceConfiguration<T>> When { get; }

@@ -143,21 +143,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
-        /// <param name="filter"></param>
-        [Obsolete("Please use ImportMembers")]
-        public static IExportRegistrationBlock ImportMember<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null)
-        {
-            registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, false));
-
-            return registrationBlock;
-        }
-
-
-        /// <summary>
-        /// Import all members of a specific type and can be filtered
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="registrationBlock"></param>
         /// <param name="filter">filter out members to inject</param>
         /// <param name="processAttributes">process import attribute</param>
         public static IExportRegistrationBlock ImportMembers<T>(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool processAttributes = true)
