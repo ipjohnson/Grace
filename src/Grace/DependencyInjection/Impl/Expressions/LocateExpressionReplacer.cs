@@ -27,7 +27,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Replace values in expression
         /// </summary>
         /// <param name="expression"></param>
-        /// <returns></returns>
         public IActivationExpressionResult Replace(Expression expression)
         {
             _result = _request.Services.Compiler.CreateNewResult(_request);

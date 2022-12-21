@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using Grace.Data.Immutable;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Lifestyle;
-using Grace.Utilities;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Generics

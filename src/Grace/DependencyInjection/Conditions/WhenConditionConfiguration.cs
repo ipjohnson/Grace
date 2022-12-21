@@ -50,7 +50,6 @@ namespace Grace.DependencyInjection.Conditions
         /// Adds a condition to strategy that is a function with the signature (strategy, staticContext)
         /// </summary>
         /// <param name="condition">test condition</param>
-        /// <returns></returns>
         public T MeetsCondition(Func<IActivationStrategy, StaticInjectionContext, bool> condition)
         {
             if (condition == null) throw new ArgumentNullException(nameof(condition));
@@ -64,7 +63,6 @@ namespace Grace.DependencyInjection.Conditions
         /// Add a condition to use this export only when Target (parameter, property, method) has an attribute
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <returns></returns>
         public T TargetHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
             Func<Attribute, bool> func = null;
@@ -84,7 +82,6 @@ namespace Grace.DependencyInjection.Conditions
         /// </summary>
         /// <param name="attributeType"></param>
         /// <param name="testFunc"></param>
-        /// <returns></returns>
         public T ClassHas(Type attributeType, Func<Attribute, bool> testFunc = null)
         {
             if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
@@ -99,7 +96,6 @@ namespace Grace.DependencyInjection.Conditions
         /// </summary>
         /// <param name="testFunc"></param>
         /// <typeparam name="TAttribute"></typeparam>
-        /// <returns></returns>
         public T ClassHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
             AddAction(new WhenClassHas<TAttribute>(testFunc));
@@ -112,7 +108,6 @@ namespace Grace.DependencyInjection.Conditions
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="testFunc"></param>
-        /// <returns></returns>
         public T MemberHas<TAttribute>(Func<TAttribute, bool> testFunc = null) where TAttribute : Attribute
         {
             AddAction(new WhenMemberHas<TAttribute>(testFunc));
@@ -124,7 +119,6 @@ namespace Grace.DependencyInjection.Conditions
         /// Use strategy when injected into a specific type
         /// </summary>
         /// <typeparam name="TInjectedType">injected type</typeparam>
-        /// <returns></returns>
         public T InjectedInto<TInjectedType>()
         {
             AddAction(new WhenInjectedInto(typeof(TInjectedType)));
@@ -136,7 +130,6 @@ namespace Grace.DependencyInjection.Conditions
         /// Use strategy when injected into a specific type
         /// </summary>
         /// <param name="types">types allowed to be injected into</param>
-        /// <returns></returns>
         public T InjectedInto(params Type[] types)
         {
             if (types == null) throw new ArgumentNullException(nameof(types));
@@ -152,7 +145,6 @@ namespace Grace.DependencyInjection.Conditions
         /// 
         /// </summary>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public T InjectedInto(Func<Type, bool> consider)
         {
             if (consider == null) throw new ArgumentNullException(nameof(consider));

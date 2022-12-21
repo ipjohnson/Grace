@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Grace.Data;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -122,7 +121,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         public object LocateOrDefault(Type type, object defaultValue)
         {
             return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this) ?? defaultValue;
@@ -143,7 +141,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         public T LocateOrDefault<T>(T defaultValue = default(T))
         {
             return (T)LocateOrDefault(typeof(T), defaultValue);
@@ -180,7 +177,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
         /// <param name="createDelegate"></param>
-        /// <returns></returns>
         public virtual T GetOrCreateScopedService<T>(int id, Func<T> createDelegate)
         {
             var initialStorage = InternalScopedStorage;
@@ -245,13 +241,10 @@ namespace Grace.DependencyInjection.Impl
             while (true);
         }
 
-
-#if !NETSTANDARD1_0
         object IServiceProvider.GetService(Type type)
         {
             return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
         }
-#endif
 
         public abstract IExportLocatorScope BeginLifetimeScope(string scopeName = "");
 

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
-using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -20,7 +16,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
         /// <param name="includeProviders"></param>
-        /// <returns></returns>
         bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeProviders = true);
     }
 
@@ -37,7 +32,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="filter">filter for locate</param>
         /// <param name="key">key to use for locate</param>
         /// <param name="includeProviders"></param>
-        /// <returns></returns>
         public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeProviders = true)
         {
             if (key != null)

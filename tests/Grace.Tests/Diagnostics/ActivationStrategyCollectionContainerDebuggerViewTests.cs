@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.Diagnostics;
 using Grace.Tests.Classes.Simple;
@@ -19,7 +18,7 @@ namespace Grace.Tests.Diagnostics
             Assert.Equal(2, debugger.StrategiesByType.Length);
             Assert.Equal(typeof(IBasicService).FullName, debugger.StrategiesByType[0].TypeName);
             Assert.Equal(typeof(IBasicService), debugger.StrategiesByType[0].Type);
-            Assert.Equal(1, debugger.StrategiesByType[0].Items.Count());
+            Assert.Single(debugger.StrategiesByType[0].Items);
         }
 
         [Fact]

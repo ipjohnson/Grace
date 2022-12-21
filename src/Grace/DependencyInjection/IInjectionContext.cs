@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Clone the extra data provider
         /// </summary>
-        /// <returns></returns>
         IInjectionContext Clone();
     }
 }

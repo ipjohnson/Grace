@@ -36,10 +36,6 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             });
 
             var array = container.Locate<ImmutableArray<IMultipleService>>();
-
-            Assert.NotNull(array);
-            
-            Assert.NotNull(array);
             Assert.Equal(5, array.Length);
             Assert.IsType<MultipleService1>(array[0]);
             Assert.IsType<MultipleService2>(array[1]);
@@ -75,7 +71,6 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             var instance = container.Locate<ImportImmutableArray>();
 
             Assert.NotNull(instance);
-            Assert.NotNull(instance.List);
             var array = instance.List.ToArray();
 
             Assert.NotNull(array);

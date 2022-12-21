@@ -6,11 +6,7 @@ namespace Grace.DependencyInjection
     /// <summary>
     /// Represents a class that can locate types, classes should not implement this interface directly rather IExportLocatorScope
     /// </summary>
-#if NETSTANDARD1_0
-    public interface ILocatorService
-#else
     public interface ILocatorService : IServiceProvider
-#endif
     {
         /// <summary>
         /// Can Locator type
@@ -18,7 +14,6 @@ namespace Grace.DependencyInjection
         /// <param name="type">type to locate</param>
         /// <param name="consider"></param>
         /// <param name="key">key to use while locating</param>
-        /// <returns></returns>
         bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null);
 
         /// <summary>
@@ -33,7 +28,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         object LocateOrDefault(Type type, object defaultValue);
 
         /// <summary>
@@ -48,7 +42,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         T LocateOrDefault<T>(T defaultValue = default(T));
 
         /// <summary>
@@ -82,7 +75,6 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data to be used while locating</param>
         /// <param name="consider">strategy filter</param>
         /// <param name="comparer">comparer to use to sort collection</param>
-        /// <returns></returns>
         List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null);
 
         /// <summary>
@@ -93,7 +85,6 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data to use during locate</param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        /// <returns></returns>
         List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null);
 
         /// <summary>
@@ -105,7 +96,6 @@ namespace Grace.DependencyInjection
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
-        /// <returns></returns>
         bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
@@ -117,7 +107,6 @@ namespace Grace.DependencyInjection
         /// <param name="consider"></param>
         /// <param name="withKey"></param>
         /// <param name="isDynamic"></param>
-        /// <returns></returns>
         bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
         /// <summary>
@@ -126,7 +115,6 @@ namespace Grace.DependencyInjection
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
 
         /// <summary>
@@ -135,7 +123,6 @@ namespace Grace.DependencyInjection
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null);
 
         /// <summary>
@@ -145,8 +132,6 @@ namespace Grace.DependencyInjection
         /// <param name="value"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
-        bool TryLocateByName(string name, out object value, object extraData = null,
-            ActivationStrategyFilter consider = null);
+        bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null);
     }
 }

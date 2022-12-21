@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">expression request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">initialization expression</param>
-        /// <returns></returns>
         IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result);
     }
 
@@ -81,7 +80,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">expression request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">initialization expression</param>
-        /// <returns></returns>
         public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {
             var expression = result.Expression as NewExpression;
@@ -101,7 +99,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationConfiguration"></param>
         /// <param name="result"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateMemberInjectExpressions(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {
             var members = GetMemberInjectionInfoForConfiguration(scope, request, activationConfiguration);
@@ -222,7 +219,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">result from instantation</param>
         /// <param name="newExpression">instantiation expression</param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateNewMemeberInitExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result, NewExpression newExpression)
         {
             var bindings = new List<MemberBinding>();
@@ -295,7 +291,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope</param>
         /// <param name="request">expression request</param>
         /// <param name="activationConfiguration">activation configuration</param>
-        /// <returns></returns>
         protected virtual Dictionary<MemberInfo, MemberInjectionInfo> GetMemberInjectionInfoForConfiguration(IInjectionScope scope,
             IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {

@@ -137,7 +137,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             IEnumerable<IAttributedSimpleObject> simpleObjects = container.LocateAll<IAttributedSimpleObject>();
 
             Assert.NotNull(simpleObjects);
-            Assert.Equal(1, simpleObjects.Count());
+            Assert.Single(simpleObjects);
         }
 
 

@@ -20,7 +20,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateType">type to inject</param>
         /// <param name="request"></param>
         /// <param name="objectParameter"></param>
-        /// <returns></returns>
         IActivationExpressionResult CreateInjectionDelegate(IInjectionScope scope, Type locateType, IActivationExpressionRequest request, ParameterExpression objectParameter);
     }
 
@@ -36,7 +35,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="locateType">type to inject</param>
         /// <param name="request"></param>
         /// <param name="objectParameter"></param>
-        /// <returns></returns>
         public IActivationExpressionResult CreateInjectionDelegate(IInjectionScope scope, Type locateType, IActivationExpressionRequest request, ParameterExpression objectParameter)
         {
             var strategy = new InjectionStrategy(locateType, scope);
@@ -73,7 +71,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="instanceValue"></param>
         /// <param name="strategy"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IEnumerable<IActivationExpressionResult> CreatePropertyInjectionExpressions(IInjectionScope scope, Type locateType, ParameterExpression instanceValue, InjectionStrategy strategy, IActivationExpressionRequest request)
         {
             var properties = new Dictionary<string, bool>();
@@ -158,7 +155,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="instanceValue"></param>
         /// <param name="strategy"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IEnumerable<IActivationExpressionResult> CreateMethodInjectionExpressions(IInjectionScope scope, Type locateType, ParameterExpression instanceValue, InjectionStrategy strategy, IActivationExpressionRequest request)
         {
             foreach (var method in locateType.GetRuntimeMethods())
@@ -190,7 +186,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="request"></param>
         /// <param name="method"></param>
         /// <param name="importInfo"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateMethodInjectionExpression(IInjectionScope scope, Type locateType, ParameterExpression instanceValue, InjectionStrategy strategy, IActivationExpressionRequest request, MethodInfo method, ImportAttributeInfo importInfo)
         {
             var expressionResult = scope.StrategyCompiler.CreateNewResult(request);

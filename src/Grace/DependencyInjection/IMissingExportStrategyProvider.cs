@@ -12,7 +12,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>

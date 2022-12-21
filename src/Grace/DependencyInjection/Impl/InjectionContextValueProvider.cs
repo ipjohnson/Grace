@@ -19,7 +19,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="context"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         object GetValueFromInjectionContext(IExportLocatorScope scope,Type type, object key, IInjectionContext context,
             bool isRequired);
 
@@ -34,7 +33,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="defaultValue"></param>
         /// <param name="useDefault"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         T GetValueFromInjectionContext<T>(
             IExportLocatorScope locator,
             StaticInjectionContext staticContext,
@@ -58,7 +56,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="context"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         public virtual object GetValueFromInjectionContext(IExportLocatorScope locator, Type type, object key, IInjectionContext context, bool isRequired)
         {
             object value = null;
@@ -140,7 +137,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="defaultValue"></param>
         /// <param name="useDefault"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         public virtual T GetValueFromInjectionContext<T>(IExportLocatorScope locator,
                                                  StaticInjectionContext staticContext, 
                                                  object key,
@@ -246,7 +242,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="dataProvider"></param>
         /// <param name="tValue"></param>
-        /// <returns></returns>
         protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
         {
             object value = null;

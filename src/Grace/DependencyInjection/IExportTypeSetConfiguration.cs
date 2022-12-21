@@ -15,7 +15,6 @@ namespace Grace.DependencyInjection
         /// Add conditions for export
         /// </summary>
         /// <param name="conditions"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
 
         /// <summary>
@@ -55,7 +54,6 @@ namespace Grace.DependencyInjection
         /// Export by name
         /// </summary>
         /// <param name="nameFunc"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration ByName(Func<Type, IEnumerable<string>> nameFunc = null);
 
         /// <summary>
@@ -68,14 +66,12 @@ namespace Grace.DependencyInjection
         /// Exports by a set of types
         /// </summary>
         /// <param name="typeDelegate"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate);
 
         /// <summary>
         /// Export a type by a set of keyed types
         /// </summary>
         /// <param name="keyedDelegate">keyed types</param>
-        /// <returns></returns>
         IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate);
 
         /// <summary>
@@ -88,20 +84,17 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export types using their attributes
         /// </summary>
-        /// <returns></returns>
         IExportTypeSetConfiguration ExportAttributedTypes();
 
         /// <summary>
         /// Mark all types as externally owned
         /// </summary>
-        /// <returns></returns>
         IExportTypeSetConfiguration ExternallyOwned();
 
         /// <summary>
         /// Set constructor selection method for individual exports
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method);
 
         /// <summary>
@@ -132,14 +125,12 @@ namespace Grace.DependencyInjection
         /// Export only types that match the filter provided
         /// </summary>
         /// <param name="typeFilter"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter);
 
         /// <summary>
         /// Add inspector for type set
         /// </summary>
         /// <param name="inspector"></param>
-        /// <returns></returns>
         IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector);
     }
 }

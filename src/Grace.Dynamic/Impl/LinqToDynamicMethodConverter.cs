@@ -135,7 +135,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression to convert</param>
-        /// <returns></returns>
         protected virtual bool TryGenerateIL(DynamicMethodGenerationRequest request, Expression expression)
         {
             if (expression == null)

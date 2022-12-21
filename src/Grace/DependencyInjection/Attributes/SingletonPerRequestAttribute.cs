@@ -14,7 +14,6 @@ namespace Grace.DependencyInjection.Attributes
         /// Provide a Lifestyle container for the attributed type
         /// </summary>
         /// <param name="attributedType">attributed type</param>
-        /// <returns></returns>
         public ICompiledLifestyle ProvideLifestyle(Type attributedType)
         {
             return new SingletonPerRequestLifestyle();

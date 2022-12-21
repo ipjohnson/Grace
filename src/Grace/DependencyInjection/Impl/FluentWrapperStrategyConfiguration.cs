@@ -23,7 +23,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as a specific type
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWrapperStrategyConfiguration As(Type type)
         {
             _compiledWrapperStrategy.AddExportAs(type);
@@ -41,7 +40,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set the type that is being wrapped
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWrapperStrategyConfiguration WrappedType(Type type)
         {
             _compiledWrapperStrategy.SetWrappedType(type);
@@ -53,7 +51,6 @@ namespace Grace.DependencyInjection.Impl
         /// set the position of the generic arg being wrapped
         /// </summary>
         /// <param name="genericArgPosition"></param>
-        /// <returns></returns>
         public IFluentWrapperStrategyConfiguration WrappedGenericArg(int genericArgPosition)
         {
             _compiledWrapperStrategy.SetWrappedGenericArgPosition(genericArgPosition);

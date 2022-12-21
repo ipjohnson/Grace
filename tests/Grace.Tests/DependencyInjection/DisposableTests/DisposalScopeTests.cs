@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿#if NET6_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -7,9 +9,7 @@ namespace Grace.Tests.DependencyInjection.DisposableTests
 {
     public class DisposalScopeTests
     {
-
-#if NET5_0
-
+#if NET6_0_OR_GREATER
         [Fact]
         public async Task DisposalScope_DisposeAsyncMixedResourcesTest()
         {

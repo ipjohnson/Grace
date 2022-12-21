@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 
@@ -43,7 +43,7 @@ namespace Grace.DependencyInjection.Impl
         private DisposeEntry _entry = DisposeEntry.Empty;
 
 
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Async Dispose of scope
         /// </summary>
@@ -81,12 +81,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var current = _entry;
 
-            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, new DisposeEntry
-            {
-                DisposeItem =
-                    disposable,
-                Next = current
-            }, current), current))
+            if (ReferenceEquals(Interlocked.CompareExchange(ref _entry, new DisposeEntry { DisposeItem = disposable, Next = current }, current), current))
             {
                 return disposable;
             }

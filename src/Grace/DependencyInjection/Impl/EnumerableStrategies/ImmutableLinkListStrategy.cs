@@ -22,7 +22,6 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];
@@ -53,7 +52,6 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="elements"></param>
-        /// <returns></returns>
         public static ImmutableLinkedList<T> CreateImmutableLinkedList<T>(T[] elements)
         {
             var list = ImmutableLinkedList<T>.Empty;

@@ -26,7 +26,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Use custom lifestyle
         /// </summary>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         public T Custom(ICompiledLifestyle lifestyle)
         {
             if (lifestyle != null)
@@ -53,7 +52,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Create one instance per object graph
         /// </summary>
         /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
-        /// <returns></returns>
         public T SingletonPerObjectGraph(bool locking = false)
         {
             _addLifestyle(new SingletonPerObjectGraph(locking));
@@ -65,7 +63,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Create one instance per request, usually a lock is not needed
         /// </summary>
         /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the request, set to true only if you believe there are multple threads accesing this export</param>
-        /// <returns></returns>
         public T SingletonPerRequest(bool locking = false)
         {
             _addLifestyle(new SingletonPerRequestLifestyle());
@@ -77,7 +74,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Create one instance per scope, by default no lock is used if you think it's possible multiple threads will resolve form a scope then set locking to true
         /// </summary>
         /// <param name="locking">false by default, set to true if you have multiple threads resolving from the </param>
-        /// <returns></returns>
         public T SingletonPerScope(bool locking = false)
         {
             _addLifestyle(new SingletonPerScopeLifestyle(locking));
@@ -89,7 +85,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Create one instance per key
         /// </summary>
         /// <param name="keyFunc"></param>
-        /// <returns></returns>
         public T SingletonPerKey(Func<IExportLocatorScope, IInjectionContext, object> keyFunc)
         {
             _addLifestyle(new SingletonPerKeyLifestyle(keyFunc));
@@ -101,7 +96,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// Create one instance per named scope, 
         /// </summary>
         /// <param name="scopeName">scope name</param>
-        /// <returns></returns>
         public T SingletonPerNamedScope(string scopeName)
         {
             if (scopeName == null) throw new ArgumentNullException(nameof(scopeName));
@@ -114,7 +108,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Create one instance per container but don't hold a strong reference
         /// </summary>
-        /// <returns></returns>
         public T WeakSingleton()
         {
             _addLifestyle(new WeakSingletonLifestyle());
@@ -127,7 +120,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         /// <param name="ancestorType">ancestor type to scope to</param>
         /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
-        /// <returns></returns>
         public T SingletonPerAncestor(Type ancestorType, bool locking = false)
         {
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
@@ -142,7 +134,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         /// <typeparam name="TAncestor">ancestor type to scope to</typeparam>
         /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the object graph, set to true only if you believe there are multiple threads accessing one object graph</param>
-        /// <returns></returns>
         public T SingletonPerAncestor<TAncestor>(bool locking = false)
         {
             return SingletonPerAncestor(typeof(TAncestor), locking);

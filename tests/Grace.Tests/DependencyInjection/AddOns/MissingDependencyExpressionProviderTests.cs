@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl;
 using Grace.Tests.Classes.Simple;
-using Grace.Tests.DependencyInjection.Lifestyle;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.AddOns

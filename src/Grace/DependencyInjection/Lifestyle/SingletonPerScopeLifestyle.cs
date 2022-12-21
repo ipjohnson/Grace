@@ -53,7 +53,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         public virtual ICompiledLifestyle Clone()
         {
             return new SingletonPerScopeLifestyle(ThreadSafe);
@@ -65,7 +64,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public virtual IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             var local = request.PerDelegateData.GetExtraDataOrDefaultValue<ParameterExpression>("local" + UniqueId);
@@ -175,7 +173,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="uniqueId"></param>
         /// <param name="shareContext"></param>
         /// <param name="context"></param>
-        /// <returns></returns>
         public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate, string uniqueId, bool shareContext, IInjectionContext context)
         {
             var value = scope.GetExtraData(uniqueId);

@@ -25,7 +25,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="injectionScope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public IEnumerable<MemberInjectionInfo> GetPropertiesAndFields(Type type, IInjectionScope injectionScope, IActivationExpressionRequest request)
         {
             yield return _memberInfo;

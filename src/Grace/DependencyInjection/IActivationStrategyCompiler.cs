@@ -24,11 +24,10 @@ namespace Grace.DependencyInjection
         IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth, IInjectionScope requestingScope);
 
         /// <summary>
-        /// Create a new expresion result
+        /// Create a new expression result
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         IActivationExpressionResult CreateNewResult(IActivationExpressionRequest request, Expression expression = null);
 
         /// <summary>
@@ -40,7 +39,6 @@ namespace Grace.DependencyInjection
         /// <param name="key"></param>
         /// <param name="forMissingType"></param>
         /// <param name="checkForMissingType"></param>
-        /// <returns></returns>
         ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext forMissingType, bool checkForMissingType);
         
         /// <summary>
@@ -48,7 +46,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="expressionContext"></param>
-        /// <returns></returns>
         ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationExpressionResult expressionContext);
 
         /// <summary>
@@ -56,7 +53,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="expressionContext"></param>
-        /// <returns></returns>
         T CompileOptimizedDelegate<T>(IInjectionScope scope, IActivationExpressionResult expressionContext);
 
         /// <summary>
@@ -64,7 +60,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="locateType"></param>
-        /// <returns></returns>
         InjectionStrategyDelegate CreateInjectionDelegate(IInjectionScope scope, Type locateType);
 
         /// <summary>

@@ -41,7 +41,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export strategies from the registration block
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ICompiledExportStrategy> GetExportStrategies()
         {
             ProcessCurrentProvider();
@@ -52,7 +51,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Decorators from the registration block
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ICompiledDecoratorStrategy> GetDecoratorStrategies()
         {
             if (_decoratorStrategyProviders == ImmutableLinkedList<IDecoratorStrategyProvider>.Empty)
@@ -72,7 +70,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Wrappers from the registration block
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ICompiledWrapperStrategy> GetWrapperStrategies()
         {
             if (_wrapperProviders == ImmutableLinkedList<IWrapperStrategyProvider>.Empty)
@@ -92,7 +89,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get inspectors registered in block
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<IActivationStrategyInspector> GetInspectors()
         {
             return _inspectors;
@@ -101,7 +97,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get list of missing export strategy providers
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<IMissingExportStrategyProvider> GetMissingExportStrategyProviders()
         {
             return _missingExportStrategyProviders;
@@ -110,7 +105,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get list of missing dependency expression provider
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<IMissingDependencyExpressionProvider> GetMissingDependencyExpressionProviders()
         {
             return _missingDependencyExpressionProviders;
@@ -119,7 +113,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get list of value providers
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<IInjectionValueProvider> GetValueProviders()
         {
             return _valueProviders;
@@ -128,7 +121,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get member injection selectors
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<IMemberInjectionSelector> GetMemberInjectionSelectors()
         {
             return _globalSelectors;
@@ -190,7 +182,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export a set of types
         /// </summary>
         /// <param name="types">types to export</param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration Export(IEnumerable<Type> types)
         {
             if (types == null) throw new ArgumentNullException(nameof(types));
@@ -209,7 +200,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instance">instance to export</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(T instance)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
@@ -226,7 +216,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">function to create instance</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<T> instanceFunc)
         {
             if (instanceFunc == null) throw new ArgumentNullException(nameof(instanceFunc));
@@ -243,7 +232,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">instance func</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, T> instanceFunc)
         {
             if (instanceFunc == null) throw new ArgumentNullException(nameof(instanceFunc));
@@ -260,7 +248,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc)
         {
             if (instanceFunc == null) throw new ArgumentNullException(nameof(instanceFunc));
@@ -277,7 +264,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
         /// <param name="instanceFunc">isntance func</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(
             Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc)
         {
@@ -295,7 +281,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="expression"></param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportExpression<TResult>(Expression<Func<TResult>> expression)
         {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
@@ -313,7 +298,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TResult">exported type</typeparam>
         /// <param name="factory">export factory</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<TResult>(Func<TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -331,7 +315,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="TIn">dependency type</typeparam>
         /// <typeparam name="TResult">export type</typeparam>
         /// <param name="factory">export function</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<TIn, TResult>(Func<TIn, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -350,7 +333,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T2">dependency two</typeparam>
         /// <typeparam name="TResult">export type</typeparam>
         /// <param name="factory">export factory</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<T1, T2, TResult>(Func<T1, T2, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -370,7 +352,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T3">dependency three</typeparam>
         /// <typeparam name="TResult">export type</typeparam>
         /// <param name="factory">export factory</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -391,7 +372,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T4">dependency four</typeparam>
         /// <typeparam name="TResult">export type</typeparam>
         /// <param name="factory">export factory</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -413,7 +393,6 @@ namespace Grace.DependencyInjection.Impl
         /// <typeparam name="T5">dependency five</typeparam>
         /// <typeparam name="TResult">export type</typeparam>
         /// <param name="factory">export factory</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<TResult> ExportFactory<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -429,7 +408,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export a type to be used as a wrapper rather than export (types like Func(), Owned, Meta are wrapper types)
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWrapperStrategyConfiguration ExportWrapper(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
@@ -447,7 +425,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="key"></param>
         /// <param name="excludeStrategy"></param>
-        /// <returns></returns>
         public bool IsExported(Type type, object key = null, ICompiledExportStrategy excludeStrategy = null)
         {
             ProcessCurrentProvider();
@@ -491,7 +468,6 @@ namespace Grace.DependencyInjection.Impl
         /// Clears exports from current registration block, this does not unregister exports for previous configuration calls
         /// </summary>
         /// <param name="exportFilter"></param>
-        /// <returns></returns>
         public bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null)
         {
             bool returnValue = false;
@@ -525,7 +501,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export a type that will be used as a decorator for exports
         /// </summary>
         /// <param name="type">decorator type</param>
-        /// <returns></returns>
         public IFluentDecoratorStrategyConfiguration ExportDecorator(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));

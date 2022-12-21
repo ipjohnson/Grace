@@ -10,14 +10,12 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Apply decorator after lifestyle, by default it's before
         /// </summary>
-        /// <returns></returns>
         IFluentDecoratorStrategyConfiguration ApplyAfterLifestyle();
 
         /// <summary>
         /// Export as particular types
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentDecoratorStrategyConfiguration As(Type type);
 
         /// <summary>
@@ -29,7 +27,6 @@ namespace Grace.DependencyInjection
         /// Sets priority for decorator
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         IFluentDecoratorStrategyConfiguration Priority(int priority);
 
         /// <summary>

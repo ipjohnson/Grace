@@ -101,7 +101,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for node</param>
         /// <param name="request">request for activation</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return ((IDecoratorOrExportActivationStrategy)Strategy).GetDecoratorActivationExpression(scope, request, Lifestyle);
@@ -147,7 +146,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for node</param>
         /// <param name="request">request for activation</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return ((IWrapperOrExportActivationStrategy)Strategy).GetActivationExpression(scope, request);
@@ -357,7 +355,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Pop wrapper node off path
         /// </summary>
-        /// <returns></returns>
         public IActivationPathNode PopWrapperPathNode()
         {
             if (_wrapperNodes == ImmutableLinkedList<IActivationPathNode>.Empty)
@@ -375,7 +372,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Pop decorator node off path
         /// </summary>
-        /// <returns></returns>
         public IActivationPathNode PopDecoratorPathNode()
         {
             if (_decoratorNodes == ImmutableLinkedList<IActivationPathNode>.Empty)
@@ -429,7 +425,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Get the currently wrapped strategy if one exists
         /// </summary>
-        /// <returns></returns>
         public IActivationStrategy GetWrappedStrategy()
         {
             IActivationStrategy returnStrategy = null;
@@ -480,7 +475,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Get wrapped strategy
         /// </summary>
-        /// <returns></returns>
         public ICompiledExportStrategy GetWrappedExportStrategy()
         {
             var pathNode = _wrapperNodes?.LastOrDefault();
@@ -541,7 +535,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        /// <returns></returns>
         public IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope,
             bool maintainPaths = false)
         {
@@ -580,7 +573,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Get static injection context for request
         /// </summary>
-        /// <returns></returns>
         public StaticInjectionContext GetStaticInjectionContext()
         {
             var currentTargetInfo = CreateTargetInfo();
@@ -591,7 +583,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Create target info for request
         /// </summary>
-        /// <returns></returns>
         public ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo()
         {
             if (_targetInfoList != null)
@@ -655,7 +646,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Is injection context required
         /// </summary>
-        /// <returns></returns>
         public bool InjectionContextRequired()
         {
             return _injectionContextRequired;
@@ -676,7 +666,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Is export scope required
         /// </summary>
-        /// <returns></returns>
         public bool ExportScopeRequired()
         {
             return _exportScopeRequired;
@@ -697,7 +686,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Disposal scope is required
         /// </summary>
-        /// <returns></returns>
         public bool DisposalScopeRequired()
         {
             return _disposalScopeRequired;

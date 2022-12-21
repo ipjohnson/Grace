@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -23,7 +21,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// Get Wrapped type
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public override Type GetWrappedType(Type type)
         {
             if (type.IsConstructedGenericType)
@@ -39,7 +36,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(TypedDelegateExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments);

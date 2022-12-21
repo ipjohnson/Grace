@@ -14,7 +14,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request for generation</param>
         /// <param name="expression">expression to convert</param>
-        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, NewArrayExpression expression);
     }
 
@@ -28,7 +27,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request for generation</param>
         /// <param name="expression">expression to convert</param>
-        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, NewArrayExpression expression)
         {
             var arrayType = expression.Type;

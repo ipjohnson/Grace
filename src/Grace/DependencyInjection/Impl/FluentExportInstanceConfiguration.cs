@@ -29,7 +29,6 @@ namespace Grace.DependencyInjection.Impl
         /// By default an exception will be thrown if null is returned.
         /// </summary>
         /// <param name="allowNullReturn"></param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> AllowNullReturn(bool allowNullReturn = true)
         {
             _exportConfiguration.AllowNullReturn = allowNullReturn;
@@ -41,7 +40,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> As(Type type)
         {
             _exportConfiguration.AddExportAs(type);
@@ -54,7 +52,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type">export type</param>
         /// <param name="key">export key</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> AsKeyed(Type type, object key)
         {
             _exportConfiguration.AddExportAsKeyed(type, key);
@@ -79,7 +76,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TExportType">type to export as</typeparam>
         /// <param name="key">key to export as</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> AsKeyed<TExportType>(object key)
         {
             _exportConfiguration.AddExportAsKeyed(typeof(TExportType), key);
@@ -91,7 +87,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as specific name
         /// </summary>
         /// <param name="name">export name</param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> AsName(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
@@ -104,7 +99,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Mark an export as externally owned means the container will not track and dispose the instance
         /// </summary>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> ExternallyOwned()
         {
             _exportConfiguration.ExternallyOwned = true;
@@ -116,7 +110,6 @@ namespace Grace.DependencyInjection.Impl
         /// Only export if delegate returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter)
         {
             if (!filter(_registrationBlock))
@@ -149,7 +142,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set priority for export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         public IFluentExportInstanceConfiguration<T> WithPriority(int priority)
         {
             _exportConfiguration.Priority = priority;
@@ -166,7 +158,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get stragey from configuration
         /// </summary>
-        /// <returns></returns>
         public IActivationStrategy GetStrategy()
         {
             return _exportConfiguration;

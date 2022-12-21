@@ -66,7 +66,6 @@ namespace Grace.Factory.Impl
         /// </summary>
         /// <param name="interfaceType">interface type</param>
         /// <param name="methods">delegates that needed for constructor</param>
-        /// <returns></returns>
         public Type CreateType(Type interfaceType, out List<DelegateInfo> methods)
         {
             lock (BuilderLock)

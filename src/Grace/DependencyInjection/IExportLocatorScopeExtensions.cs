@@ -31,7 +31,6 @@ namespace Grace.DependencyInjection
         /// <param name="scope">scope</param>
         /// <param name="scopeName">new scope name</param>
         /// <param name="extraData">extra data to add to scope</param>
-        /// <returns></returns>
         public static IExportLocatorScope BeginLifetimeScope(this IExportLocatorScope scope, string scopeName = "",
             object extraData = null)
         {
@@ -55,7 +54,6 @@ namespace Grace.DependencyInjection
         /// <param name="scope"></param>
         /// <param name="includeParent"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public static string WhatDoIHave(this IExportLocatorScope scope, bool includeParent = true,
             ActivationStrategyFilter consider = null)
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Lifestyle;

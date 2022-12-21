@@ -27,7 +27,6 @@ namespace Grace.Factory
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return request.ActivationType.GetTypeInfo().IsInterface &&

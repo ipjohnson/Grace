@@ -105,7 +105,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 var simpleObject = container.Locate<ISimpleObject>(withKey: locateChar);
 
                 Assert.NotNull(simpleObject);
-                Assert.True(simpleObject.GetType().FullName.EndsWith(locateChar.ToString()));
+                Assert.EndsWith(locateChar.ToString(), simpleObject.GetType().FullName);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotNull(instance);
             var array = instance.Services.ToArray();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
 
@@ -210,7 +210,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
         public class FactoryClass
         {
-            private KeyedLocateDelegate<string, DisposableService> _createDelegate;
+            private readonly KeyedLocateDelegate<string, DisposableService> _createDelegate;
 
             public FactoryClass(KeyedLocateDelegate<string, DisposableService> createDelegate)
             {

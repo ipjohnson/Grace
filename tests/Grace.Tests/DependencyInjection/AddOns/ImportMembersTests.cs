@@ -1,7 +1,6 @@
 ﻿using Grace.DependencyInjection;
 using Grace.DependencyInjection.Attributes;
 using Grace.Tests.Classes.Simple;
-using Grace.Tests.DependencyInjection.MemberInjection;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.AddOns

@@ -58,7 +58,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Extra parameters for result
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ParameterExpression> ExtraParameters()
         {
             return _parameterExpressions.Reverse();
@@ -88,7 +87,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Extra expressions for result
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<Expression> ExtraExpressions()
         {
             return _extraExpressions.Reverse();

@@ -34,7 +34,6 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
@@ -75,7 +74,6 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var openMethod = typeof(KeyedLocateDelegateStrategy).GetRuntimeMethod(nameof(CreateKeyedDelegate),
@@ -114,7 +112,6 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="locatorScope"></param>
-        /// <returns></returns>
         public static KeyedLocateDelegate<TKey, TValue> CreateKeyedDelegate<TKey, TValue>(
             IExportLocatorScope locatorScope)
         {

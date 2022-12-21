@@ -28,7 +28,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone lifestyle
         /// </summary>
-        /// <returns></returns>
         public virtual ICompiledLifestyle Clone()
         {
             return new SingletonLifestyle();
@@ -40,7 +39,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public virtual IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (ConstantExpression != null)

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Grace.DependencyInjection
 {
@@ -12,14 +10,12 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Apply decorator after lifestyle, by default it's before
         /// </summary>
-        /// <returns></returns>
         IFluentDecoratorStrategyConfiguration ApplyAfterLifestyle();
 
         /// <summary>
         /// Export as particular types
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentDecoratorStrategyConfiguration As(Type type);
 
         /// <summary>

@@ -14,14 +14,12 @@ namespace Grace.DependencyInjection
         /// By default an exception will be thrown if null is returned.
         /// </summary>
         /// <param name="allowNullReturn"></param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AllowNullReturn(bool allowNullReturn = true);
 
         /// <summary>
         /// Export as specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> As(Type type);
 
         /// <summary>
@@ -29,7 +27,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="type">export type</param>
         /// <param name="key">export key</param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AsKeyed(Type type, object key);
 
         /// <summary>
@@ -44,20 +41,17 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TExportType">type to export as</typeparam>
         /// <param name="key">key to export as</param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AsKeyed<TExportType>(object key);
 
         /// <summary>
         /// Export as specific name
         /// </summary>
         /// <param name="name">export name</param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> AsName(string name);
         
         /// <summary>
         /// Mark an export as externally owned means the container will not track and dispose the instance
         /// </summary>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> ExternallyOwned();
 
         /// <summary>
@@ -69,7 +63,6 @@ namespace Grace.DependencyInjection
         /// Only export if delegate returns true
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> OnlyIf(Func<IExportRegistrationBlock, bool> filter);
 
         /// <summary>
@@ -81,7 +74,6 @@ namespace Grace.DependencyInjection
         /// Set priority for export
         /// </summary>
         /// <param name="priority"></param>
-        /// <returns></returns>
         IFluentExportInstanceConfiguration<T> WithPriority(int priority);
     }
 }

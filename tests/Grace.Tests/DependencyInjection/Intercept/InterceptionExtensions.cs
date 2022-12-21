@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using Grace.DependencyInjection;
 

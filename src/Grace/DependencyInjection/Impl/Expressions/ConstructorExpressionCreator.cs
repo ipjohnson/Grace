@@ -76,7 +76,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration">configuration for strategy</param>
         /// <param name="request">request</param>
         /// <param name="constructor">constructor</param>
-        /// <returns></returns>
         protected virtual List<IActivationExpressionResult> GetParameterExpressionsForConstructor(
             IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request,
             ConstructorInfo constructor)
@@ -140,7 +139,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="constructor"></param>
         /// <param name="expression"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult OverrideExpression(IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo constructor, IActivationExpressionResult expression)
         {
             return expression;
@@ -151,7 +149,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="configuration"></param>
-        /// <returns></returns>
         protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
         {
             var parameterInfo = parameter.ParameterType.GetTypeInfo();
@@ -181,7 +178,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="injectionScope"></param>
         /// <param name="configuration"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
+        /// <param name="newRequest"></param>
         protected virtual IActivationExpressionResult GetParameterExpression(ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request, out IActivationExpressionRequest newRequest)
         {
             if (parameterInfo?.ExportFunc != null)
@@ -265,7 +262,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="injectionScope"></param>
         /// <param name="request"></param>
         /// <param name="configurationExternallyOwned"></param>
-        /// <returns></returns>
         protected IActivationExpressionResult CallExportFunc(IActivationStrategy strategy, ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, IActivationExpressionRequest request, bool configurationExternallyOwned)
         {
             var exportDelegate = parameterInfo.ExportFunc as Delegate;
@@ -287,7 +283,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configurationExternallyOwned"></param>
         /// <param name="scope"></param>
         /// <param name="strategy"></param>
-        /// <returns></returns>
         protected bool ShouldTrackDisposable(bool configurationExternallyOwned, IInjectionScope scope,
             IActivationStrategy strategy)
         {
@@ -306,7 +301,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="requestingScope"></param>
         /// <param name="configuration"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual ConstructorInfo PickConstructor(IInjectionScope requestingScope, TypeActivationConfiguration configuration, IActivationExpressionRequest request)
         {
             if (configuration.SelectedConstructor != null)
@@ -336,7 +330,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <param name="constructors"></param>
-        /// <returns></returns>
         protected abstract ConstructorInfo PickConstructor(IInjectionScope injectionScope,
             TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo[] constructors);
 
@@ -345,7 +338,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="constructor"></param>
         /// <param name="activationConfiguration"></param>
-        /// <returns></returns>
         protected virtual string CreateTraceMessageForConstructor(ConstructorInfo constructor, TypeActivationConfiguration activationConfiguration)
         {
             StringBuilder builder = new StringBuilder();
@@ -378,7 +370,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <param name="constructor"></param>
-        /// <returns></returns>
         protected virtual IEnumerable<ActivationStrategyDependency> GetDependenciesForConstructor(TypeActivationConfiguration configuration, IActivationExpressionRequest request, ConstructorInfo constructor)
         {
             var dependencies = ImmutableLinkedList<ActivationStrategyDependency>.Empty;
@@ -419,7 +410,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="constructor">constructor</param>
         /// <param name="expressions">parameters</param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateConstructorExpression(IActivationExpressionRequest request, ConstructorInfo constructor, List<IActivationExpressionResult> expressions)
         {
             var newExpression = Expression.New(constructor, expressions.Select(e => e.Expression));
@@ -439,7 +429,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="parameter"></param>
-        /// <returns></returns>
         protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
         {
             var matchedParameter = FindParameterInfoExpression(parameter, configuration);

@@ -38,9 +38,7 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<int?, int>.Empty;
 
-            int value;
-
-            Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out value));
+            Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out var value));
         }
         
         [Fact]
@@ -85,8 +83,7 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<int, int>.Empty.Add(10, 10);
 
-            int testValue;
-            Assert.False(tree.TryGetValue(5, out testValue));
+            Assert.False(tree.TryGetValue(5, out var testValue));
             Assert.Equal(0, testValue);
         }
 
@@ -97,17 +94,17 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 5));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(5, tree["Hello"]);
 
             Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(5, tree["Hello"]);
 
             Assert.Equal(10, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10, updateIfExists: true));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(10, tree["Hello"]);
 
         }
@@ -149,14 +146,14 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
-            Assert.Equal(1000, tree.Count);
+            Assert.Equal(1_000, tree.Count);
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 var conflict = new ConflictClass(i % 5, i);
 
@@ -169,14 +166,14 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
-            Assert.Equal(1000, tree.Count);
+            Assert.Equal(1_000, tree.Count);
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 var conflict = new ConflictClass(i % 5, i);
 
@@ -203,18 +200,18 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
-            Assert.Equal(1000, tree.Count);
+            Assert.Equal(1_000, tree.Count);
 
             var list = new List<int>();
 
             tree.IterateInOrder((k, v) => list.Add(v));
 
-            Assert.Equal(1000, list.Count);
+            Assert.Equal(1_000, list.Count);
         }
 
         [Fact]
@@ -222,14 +219,14 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<ConflictClass, int>.Empty;
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1_000; i++)
             {
                 tree = tree.Add(new ConflictClass(i % 5, i), i);
             }
 
-            Assert.Equal(1000, tree.Count);
+            Assert.Equal(1_000, tree.Count);
 
-            Assert.Equal(1000, tree.IterateInOrder().Count());
+            Assert.Equal(1_000, tree.IterateInOrder().Count());
         }
 
         #endregion
@@ -238,7 +235,8 @@ namespace Grace.Tests.Data.Immutable
 
         private ImmutableHashTree<int, int> _hashTree;
         private ManualResetEvent _startEvent;
-        private readonly int _addAmount = 10000;
+
+        private const int AddAmount = 10_000;
 
         [Fact]
         public void ImmutableHashTree_Threading_Test()
@@ -254,12 +252,12 @@ namespace Grace.Tests.Data.Immutable
             {
                 var value = i;
 
-                tasks.Add(Task.Run(() => AddRangeToTree(value * _addAmount)));
+                tasks.Add(Task.Run(() => AddRangeToTree(value * AddAmount)));
             }
 
             _startEvent.Set();
 
-            Task.WaitAll(tasks.ToArray(), 60 * 1000);
+            Task.WaitAll(tasks.ToArray(), 60 * 1_000);
 
             var values = new List<int>();
 
@@ -267,9 +265,9 @@ namespace Grace.Tests.Data.Immutable
 
             values.Sort();
 
-            Assert.Equal(_addAmount * threadCount, values.Count);
+            Assert.Equal(AddAmount * threadCount, values.Count);
 
-            for (var i = 0; i < (_addAmount * threadCount); i++)
+            for (var i = 0; i < (AddAmount * threadCount); i++)
             {
                 Assert.Equal(i, values[i]);
             }
@@ -279,11 +277,11 @@ namespace Grace.Tests.Data.Immutable
         {
             _startEvent.WaitOne();
 
-            for (var i = startValue; i < (_addAmount + startValue); i++)
+            for (var i = startValue; i < (AddAmount + startValue); i++)
             {
                 ImmutableHashTree.ThreadSafeAdd(ref _hashTree, i, i);
 
-                if (i % 1000 == 0)
+                if (i % 1_000 == 0)
                 {
                     Thread.Sleep(0);
                 }

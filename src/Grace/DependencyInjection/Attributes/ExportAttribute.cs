@@ -32,7 +32,6 @@ namespace Grace.DependencyInjection.Attributes
         /// Provide a list of types to export as
         /// </summary>
         /// <param name="attributedType"></param>
-        /// <returns></returns>
         public IEnumerable<Type> ProvideExportTypes(Type attributedType)
         {
             if (ExportTypes != null)

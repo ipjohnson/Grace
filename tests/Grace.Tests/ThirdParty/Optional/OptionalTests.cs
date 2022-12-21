@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿using Optional;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
-using Optional;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Xunit;
 
-namespace Grace.Tests.ThridParty.Optional
+namespace Grace.Tests.ThirdParty.Optional
 {
     /// <summary>
     /// OPtional strategy provider
@@ -21,7 +20,6 @@ namespace Grace.Tests.ThridParty.Optional
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return request.ActivationType.IsConstructedGenericType &&
@@ -192,7 +190,7 @@ namespace Grace.Tests.ThridParty.Optional
         {
         }
 
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+        public new ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope, 
             IActivationStrategyCompiler compiler, 
             Type activationType, 
@@ -320,7 +318,6 @@ namespace Grace.Tests.ThridParty.Optional
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         public GraceOptional<TResult> CreateOptional(
             IExportLocatorScope scope,
             IDisposalScope disposalScope,

@@ -18,7 +18,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         public ICompiledLifestyle Clone()
         {
             return new SingletonPerRequestLifestyle();
@@ -30,7 +29,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request,
             Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
@@ -39,9 +37,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 return _compiledLifestyle.ProvideLifestyleExpression(scope, request, activationExpression);
             }
 
-            IPerRequestLifestyleProvider provider;
-
-            var lifestyle = scope.TryLocate(out provider) ? 
+            var lifestyle = scope.TryLocate(out IPerRequestLifestyleProvider provider) ? 
                             provider.ProvideLifestyle() : 
                             new SingletonPerScopeLifestyle(false);
 

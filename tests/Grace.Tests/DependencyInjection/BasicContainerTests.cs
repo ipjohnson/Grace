@@ -163,7 +163,7 @@ namespace Grace.Tests.DependencyInjection
 
             var keys = container.Keys.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
         }
         
         [Fact]
@@ -175,7 +175,7 @@ namespace Grace.Tests.DependencyInjection
 
             var values = container.Values.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
         }
         
         [Fact]
@@ -187,7 +187,7 @@ namespace Grace.Tests.DependencyInjection
 
             var values = container.KeyValuePairs.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
         }
 
 
@@ -202,7 +202,7 @@ namespace Grace.Tests.DependencyInjection
             var collection = container.StrategyCollectionContainer.Clone();
 
             Assert.NotNull(collection);
-            Assert.Equal(1, collection.GetAllStrategies().Count());
+            Assert.Single(collection.GetAllStrategies());
         }
 
         public class ImportInjectionScope

@@ -25,7 +25,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Equal(5, instance.Dependency1);
             Assert.Equal(10, instance.Dependency2);
             Assert.Equal("hello", instance.Dependency3);
-            Assert.Equal(true, instance.Dependency4);
+            Assert.True(instance.Dependency4);
         }
         
         [Theory]
@@ -42,7 +42,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         [SubFixtureInitialize]
         public void FuncFourArg_GetWrappedType_NonGeneric(FuncFourArgWrapperStrategy strategy)
         {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
+            Assert.Null(strategy.GetWrappedType(typeof(BasicService)));
         }
     }
 }

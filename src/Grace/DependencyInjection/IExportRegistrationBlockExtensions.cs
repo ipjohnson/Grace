@@ -29,7 +29,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="registrationBlock"></param>
         /// <param name="assembly"></param>
-        /// <returns></returns>
         public static IExportTypeSetConfiguration ExportAssembly(this IExportRegistrationBlock registrationBlock, Assembly assembly)
         {
             return registrationBlock.Export(assembly.ExportedTypes);
@@ -40,7 +39,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
-        /// <returns></returns>
         public static IExportTypeSetConfiguration ExportAssemblyContaining<T>(this IExportRegistrationBlock registrationBlock)
         {
             return registrationBlock.Export(typeof(T).GetTypeInfo().Assembly.ExportedTypes);
@@ -51,7 +49,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="registrationBlock"></param>
         /// <param name="assemblies">assemblies to export</param>
-        /// <returns></returns>
         public static IExportTypeSetConfiguration ExportAssemblies(this IExportRegistrationBlock registrationBlock, IEnumerable<Assembly> assemblies)
         {
             var types = new List<Type>();
@@ -70,7 +67,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T">Type to export</typeparam>
         /// <typeparam name="TInterface">type to export as</typeparam>
         /// <param name="registrationBlock"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration<T> ExportAs<T, TInterface>(this IExportRegistrationBlock registrationBlock) where T : TInterface
         {
             return registrationBlock.Export<T>().As<TInterface>();
@@ -83,7 +79,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="TInterface"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="key"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration<T> ExportAsKeyed<T, TInterface>(
             this IExportRegistrationBlock registrationBlock, object key)
         {
@@ -109,7 +104,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="valueExpression"></param>
-        /// <returns></returns>
         public static IFluentExportInstanceConfiguration<T> ExportNamedValue<T>(
             this IExportRegistrationBlock registrationBlock,
             Expression<Func<T>> valueExpression)
@@ -155,7 +149,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Import all members of a specific type and can be filtered
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
         /// <param name="filter"></param>
         /// <param name="injectMethods">should methods be injected, false by default</param>
@@ -173,7 +166,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="block"></param>
         /// <param name="func"></param>
-        /// <returns></returns>
         public static IFluentExportInstanceConfiguration<T> ExportFuncWithContext<T>(
             this IExportRegistrationBlock block,
             Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> func)
@@ -188,7 +180,6 @@ namespace Grace.DependencyInjection
         /// <param name="configuration"></param>
         /// <param name="type"></param>
         /// <param name="key"></param>
-        /// <returns></returns>
         public static IFluentExportInstanceConfiguration<T> IfNotRegistered<T>(
             this IFluentExportInstanceConfiguration<T> configuration, Type type, object key = null)
         {
@@ -203,7 +194,6 @@ namespace Grace.DependencyInjection
         /// <param name="configuration"></param>
         /// <param name="type"></param>
         /// <param name="key"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration IfNotRegistered(this IFluentExportStrategyConfiguration configuration, Type type, object key = null)
         {
             var activationStrategyProvider = configuration as IActivationStrategyProvider;
@@ -218,7 +208,6 @@ namespace Grace.DependencyInjection
         /// <param name="configuration"></param>
         /// <param name="type"></param>
         /// <param name="key"></param>
-        /// <returns></returns>
         public static IFluentExportStrategyConfiguration<T> IfNotRegistered<T>(this IFluentExportStrategyConfiguration<T> configuration, Type type, object key = null)
         {
             var activationStrategyProvider = configuration as IActivationStrategyProvider;
@@ -231,7 +220,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="block"></param>
         /// <param name="typeName"></param>
-        /// <returns></returns>
         public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, string typeName)
         {
             var provider = (IConcreteExportStrategyProvider)
@@ -265,7 +253,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="block"></param>
         /// <param name="type"></param>
-        /// <returns></returns>
         public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, Type type)
         {
             var provider = (IConcreteExportStrategyProvider)
@@ -282,7 +269,6 @@ namespace Grace.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="block"></param>
         /// <param name="initializeAction"></param>
-        /// <returns></returns>
         public static IExportRegistrationBlock ExportInitialize<T>(this IExportRegistrationBlock block,
             Action<T> initializeAction)
         {

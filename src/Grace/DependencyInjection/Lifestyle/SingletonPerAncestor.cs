@@ -35,7 +35,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         public ICompiledLifestyle Clone()
         {
             return new SingletonPerAncestor(_ancestorType, _guaranteeOnlyOne);
@@ -47,7 +46,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             var context = request.GetStaticInjectionContext();
@@ -131,7 +129,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="context"></param>
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
-        /// <returns></returns>
         public static T GetValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate,
             string uniqueId)
         {
@@ -157,7 +154,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="context"></param>
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
-        /// <returns></returns>
         public static T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
             var value = context.SharedData.GetExtraData(uniqueId);

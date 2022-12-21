@@ -14,7 +14,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="expression">expression</param>
         /// <param name="constants">list of constants</param>
-        /// <returns></returns>
         bool GetConstantExpressions(Expression expression, List<object> constants);
     }
 
@@ -28,7 +27,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="expression">expression</param>
         /// <param name="constants">list of constants</param>
-        /// <returns></returns>
         public bool GetConstantExpressions(Expression expression, List<object> constants)
         {
             if (expression == null)

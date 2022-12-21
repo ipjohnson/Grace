@@ -19,7 +19,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         object Locate(IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext);
     }
 
@@ -36,7 +35,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="disposalScope"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         public delegate object EnumerableCreateDelegate(IInjectionScope injectionScope, 
                                                         IExportLocatorScope scope, 
                                                         IDisposalScope disposalScope,
@@ -54,7 +52,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         public object Locate(IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
         {
             var createDelegate = _delegates.GetValueOrDefault(type);
@@ -85,7 +82,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="disposalScope"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         public static object EnumerableCreateMethod<T>(IInjectionScope injectionScope, IExportLocatorScope scope,
             IDisposalScope disposalScope, ActivationStrategyFilter consider, IInjectionContext injectionContext)
 

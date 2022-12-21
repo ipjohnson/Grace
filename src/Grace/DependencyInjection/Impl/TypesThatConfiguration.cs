@@ -63,7 +63,6 @@ namespace Grace.DependencyInjection.Impl
         /// Filters types based on a particular
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public TypesThatConfiguration AreBasedOn<T>()
         {
             return AreBasedOn(typeof(T));
@@ -73,7 +72,6 @@ namespace Grace.DependencyInjection.Impl
         /// Filters types that are based on
         /// </summary>
         /// <param name="baseType"></param>
-        /// <returns></returns>
         public TypesThatConfiguration AreBasedOn(Type baseType)
         {
             if (baseType == null) throw new ArgumentNullException(nameof(baseType));
@@ -202,7 +200,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="namespace"></param>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public TypesThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
         {
             var notValue = GetNotAndingValue();
@@ -229,7 +226,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public TypesThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
         {
             return AreInTheSameNamespace(type.Namespace, includeSubnamespaces);
@@ -240,7 +236,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public TypesThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
         {
             return AreInTheSameNamespaceAs(typeof(T), includeSubnamespaces);
@@ -252,7 +247,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="attributeType"></param>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public TypesThatConfiguration HaveAttribute(Type attributeType, Func<Attribute, bool> attributeFilter = null)
         {
             var notValue = GetNotAndingValue();
@@ -284,7 +278,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public TypesThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {
@@ -327,7 +320,6 @@ namespace Grace.DependencyInjection.Impl
         /// Adds type filter that filters based uppon a classes attribute
         /// </summary>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)
         {
             var notValue = GetNotAndingValue();
@@ -355,7 +347,6 @@ namespace Grace.DependencyInjection.Impl
         /// Creates a new type filter method that returns true if the Name of the type starts with name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public TypesThatConfiguration StartWith(string name)
         {
             var notValue = GetNotAndingValue();

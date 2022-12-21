@@ -10,15 +10,16 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// Wrapper for Lazy&lt;T,IActivationStrategyMetadata&gt;
     /// </summary>
     public class LazyMetadataWrapperStrategy : BaseWrapperStrategy
-    {
+    {  
         private readonly IStrongMetadataInstanceProvider _strongMetadataInstanceProvider;
         private readonly IWrapperExpressionCreator _wrapperExpressionCreator;
 
         /// <summary>
         /// Default constructor
-        /// </summary>
+        /// </summary> 
         /// <param name="injectionScope"></param>
         /// <param name="strongMetadataInstanceProvider"></param>
+        /// <param name="wrapperExpressionCreator"></param>
         public LazyMetadataWrapperStrategy(IInjectionScope injectionScope, IStrongMetadataInstanceProvider strongMetadataInstanceProvider, IWrapperExpressionCreator wrapperExpressionCreator) : base(typeof(Lazy<,>), injectionScope)
         {
             _strongMetadataInstanceProvider = strongMetadataInstanceProvider;
@@ -50,7 +51,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="scope">scope</param>
         /// <param name="compiler">compiler</param>
         /// <param name="activationType">activation type</param>
-        /// <returns></returns>
         protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
             Type activationType)
         {
@@ -78,7 +78,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments);

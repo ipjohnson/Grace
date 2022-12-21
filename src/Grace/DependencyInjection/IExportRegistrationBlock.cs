@@ -200,6 +200,5 @@ namespace Grace.DependencyInjection
         /// <param name="exportFilter"></param>
         /// <returns></returns>
         bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null);
-        
     }
 }

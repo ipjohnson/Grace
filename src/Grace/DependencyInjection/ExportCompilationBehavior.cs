@@ -69,7 +69,6 @@ namespace Grace.DependencyInjection
         /// Note: string, primitive and datetime are located by key
         /// </summary>
         /// <param name="arg"></param>
-        /// <returns></returns>
         public static bool DefaultKeyedTypeSelector(Type arg)
         {
             if (arg.GetTypeInfo().IsAssignableFrom(typeof(Delegate).GetTypeInfo()))
@@ -83,7 +82,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Max object graph depth, this is what's used to detect a recursive loop
         /// </summary>
-        /// <returns></returns>
         public int MaxObjectGraphDepth { get; set; } = 100;
 
         /// <summary>
@@ -114,7 +112,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// By default ExportInstance and ExportFactory must return a value. 
         /// </summary>
-        /// <returns></returns>
         public bool AllowInstanceAndFactoryToReturnNull { get; set; } = false;
 
         /// <summary>

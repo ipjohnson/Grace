@@ -13,7 +13,6 @@ namespace Grace.DependencyInjection.Attributes.Interfaces
         /// </summary>
         /// <param name="attributedType"></param>
         /// <param name="activationStrategyCreator"></param>
-        /// <returns></returns>
         ICompiledExportStrategy ProvideStrategy(Type attributedType,
             IActivationStrategyCreator activationStrategyCreator);
 	}
