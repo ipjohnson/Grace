@@ -18,25 +18,5 @@ namespace Grace.Tests.DependencyInjection.Extensions
             return container.Populate(serviceCollection);
         }
     }
-
-    internal class ServiceProviderIsServiceImpl : IServiceProviderIsService
-    {
-        private readonly IExportLocatorScope _exportLocatorScope;
-
-        public ServiceProviderIsServiceImpl(IExportLocatorScope exportLocatorScope)
-        {
-            _exportLocatorScope = exportLocatorScope;
-        }
-
-        public bool IsService(Type serviceType)
-        {
-            if (serviceType.IsGenericTypeDefinition)
-            {
-                return false;
-            }
-
-            return _exportLocatorScope.CanLocate(serviceType);
-        }
-    }
 #endif
 }

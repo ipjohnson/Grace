@@ -214,11 +214,11 @@ namespace Grace.Tests.DependencyInjection.Extensions
 #if NET6_0_OR_GREATER
         private class ServiceProviderIsServiceImpl : IServiceProviderIsService
         {
-            private readonly IExportLocatorScope exportLocatorScope;
+            private readonly IExportLocatorScope _exportLocatorScope;
 
             public ServiceProviderIsServiceImpl(IExportLocatorScope exportLocatorScope)
             {
-                this.exportLocatorScope = exportLocatorScope;
+                _exportLocatorScope = exportLocatorScope;
             }
 
             public bool IsService(Type serviceType)
@@ -228,7 +228,7 @@ namespace Grace.Tests.DependencyInjection.Extensions
                     return false;
                 }
 
-                return exportLocatorScope.CanLocate(serviceType);
+                return _exportLocatorScope.CanLocate(serviceType);
             }
         }
 #endif
