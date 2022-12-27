@@ -28,8 +28,7 @@ namespace Grace.Tests.DependencyInjection.Generics
         {
             var container = new DependencyInjectionContainer();
 
-            container.Configure(c => c.AddActivationStrategy(new GenericFactoryExportStrategy(container,
-                typeof(ITestGenericService<>), FactoryMethod){Lifestyle = new SingletonLifestyle()}));
+            container.Configure(c => c.AddActivationStrategy(new GenericFactoryExportStrategy(container, typeof(ITestGenericService<>), FactoryMethod){Lifestyle = new SingletonLifestyle()}));
 
             var instance = container.Locate<ITestGenericService<int>>();
 
@@ -46,15 +45,13 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.Same(instance2, container.Locate<ITestGenericService<string>>());
 
             Assert.ThrowsAny<Exception>(() => container.Locate<ITestGenericService<double>>());
-
-
         }
 
         public class Outer
         {
-            public GenericFactoryTests.ITestGenericService<int> IntService { get; }
+            public ITestGenericService<int> IntService { get; }
 
-            public Outer(GenericFactoryTests.ITestGenericService<int> intService)
+            public Outer(ITestGenericService<int> intService)
             {
                 IntService = intService;
             }
@@ -72,7 +69,7 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.NotNull(outer);
             Assert.IsType<Outer>(outer);
             Assert.NotNull(outer.IntService);
-            Assert.IsType<GenericFactoryTests.Impl1>(outer.IntService);
+            Assert.IsType<Impl1>(outer.IntService);
         }
 
         private static object FactoryMethod(Type type)
@@ -89,6 +86,5 @@ namespace Grace.Tests.DependencyInjection.Generics
 
             throw new Exception("Cannot create");
         }
-
     }
 }
