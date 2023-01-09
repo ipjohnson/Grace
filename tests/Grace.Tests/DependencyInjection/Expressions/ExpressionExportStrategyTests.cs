@@ -67,7 +67,7 @@ namespace Grace.Tests.DependencyInjection.Expressions
             Assert.NotNull(instance);
             Assert.Equal(container.ScopeName, instance.ScopeName);
 
-            var scopeName = "SomeScope";
+            const string scopeName = "SomeScope";
 
             using (var scope = container.BeginLifetimeScope(scopeName))
             {

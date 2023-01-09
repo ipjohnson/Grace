@@ -8,7 +8,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy for creating a delegate with five arguements
+    /// Strategy for creating a delegate with five arguments
     /// </summary>
     public class DelegateFiveArgWrapperStrategy : BaseWrapperStrategy
     {

@@ -1,13 +1,13 @@
 ﻿namespace Grace.Tests.Classes.Generics
 {
-    public interface IGenericServiceA<T>
+    public interface IGenericServiceA<in T>
     {
         string GetValue(T value);
     }
 
     public class GenericServiceA<T> : IGenericServiceA<T>
     {
-        private GenericServiceB<T> _genericServiceB;
+        private readonly GenericServiceB<T> _genericServiceB;
 
         public GenericServiceA(GenericServiceB<T> genericServiceB)
         {
@@ -20,7 +20,7 @@
         }
     }
 
-    public interface IGenericServiceB<T>
+    public interface IGenericServiceB<in T>
     {
         string GetValue(T value);
     }

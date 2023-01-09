@@ -40,7 +40,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
         }
 
         [Fact]
-        public void SingletonPerObjectGraph_SameInstance_Guarnateed_Test()
+        public void SingletonPerObjectGraph_SameInstance_Guaranteed_Test()
         {
             var container = new DependencyInjectionContainer();
 

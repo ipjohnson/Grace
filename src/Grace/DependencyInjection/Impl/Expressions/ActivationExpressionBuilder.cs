@@ -30,7 +30,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     }
 
     /// <summary>
-    /// builder creates linq expression to satify request
+    /// builder creates linq expression to satisfy request
     /// </summary>
     public class ActivationExpressionBuilder : IActivationExpressionBuilder
     {

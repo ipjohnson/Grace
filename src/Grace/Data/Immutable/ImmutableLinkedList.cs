@@ -115,7 +115,7 @@ namespace Grace.Data.Immutable
     /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{" + nameof(DebuggerDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ImmutableLinkedListDebugView<>))]
-    public class ImmutableLinkedList<T> : IEnumerable<T>, IReadOnlyList<T>
+    public class ImmutableLinkedList<T> : IReadOnlyList<T>
     {
         /// <summary>
         /// Empty instance of list
@@ -269,7 +269,7 @@ namespace Grace.Data.Immutable
         /// <summary>
         /// Empty enumerator
         /// </summary>
-        private class EmptyLinkedListEnumerator : IEnumerator<T>
+        private sealed class EmptyLinkedListEnumerator : IEnumerator<T>
         {
             /// <summary>Advances the enumerator to the next element of the collection.</summary>
             /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
@@ -283,7 +283,7 @@ namespace Grace.Data.Immutable
             /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
             public void Reset()
             {
-
+                // Left empty
             }
 
             /// <summary>Gets the element in the collection at the current position of the enumerator.</summary>
@@ -297,11 +297,11 @@ namespace Grace.Data.Immutable
             /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
             public void Dispose()
             {
-
+                // Left empty
             }
         }
 
-        private class LinkedListEnumerator : IEnumerator<T>
+        private sealed class LinkedListEnumerator : IEnumerator<T>
         {
             private readonly ImmutableLinkedList<T> _start;
             private ImmutableLinkedList<T> _current;

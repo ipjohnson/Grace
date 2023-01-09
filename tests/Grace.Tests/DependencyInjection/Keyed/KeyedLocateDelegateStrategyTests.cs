@@ -26,7 +26,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         {
             Assert.Throws<NotSupportedException>(() => strategy.AddSecondaryStrategy(null));
 
-            var array = strategy.SecondaryStrategies().ToArray();
+            _ = strategy.SecondaryStrategies().ToArray();
         }
     }
 }

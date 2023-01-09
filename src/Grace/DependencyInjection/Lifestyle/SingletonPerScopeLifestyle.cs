@@ -82,7 +82,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                 var newResult = activationExpression(newRequest);
 
-                Delegate localDelegate = null;
+                Delegate localDelegate;
 
                 if (ThreadSafe || newRequest.ExportScopeRequired() || newRequest.DisposalScopeRequired() ||
                     newRequest.InjectionContextRequired())

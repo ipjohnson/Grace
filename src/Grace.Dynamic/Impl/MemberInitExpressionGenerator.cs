@@ -5,9 +5,9 @@ using System.Reflection.Emit;
 namespace Grace.Dynamic.Impl
 {
     /// <summary>
-    /// Interface for generating IL for a MemeberInitExpression
+    /// Interface for generating IL for a MemberInitExpression
     /// </summary>
-    public interface IMemeberInitExpressionGenerator
+    public interface IMemberInitExpressionGenerator
     {
         /// <summary>
         /// Generate IL for member init expression
@@ -20,7 +20,7 @@ namespace Grace.Dynamic.Impl
     /// <summary>
     /// Class for generating IL for MemberInit expression
     /// </summary>
-    public class MemeberInitExpressionGenerator : IMemeberInitExpressionGenerator
+    public class MemberInitExpressionGenerator : IMemberInitExpressionGenerator
     {
         /// <summary>
         /// Generate IL for member init expression

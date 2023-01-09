@@ -72,19 +72,14 @@ namespace Grace.Data.Immutable
     /// Immutable List that implements IReadOnlyList(T)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ImmutableArray<T> : IReadOnlyList<T>, IEqualityComparer<ImmutableArray<T>>, IStructuralComparable, IStructuralEquatable
+    public readonly struct ImmutableArray<T> : IReadOnlyList<T>, IEqualityComparer<ImmutableArray<T>>, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] _list;
 
         /// <summary>
         /// Empty list
         /// </summary>
-        public static readonly ImmutableArray<T> Empty;
-
-        static ImmutableArray()
-        {
-            Empty = new ImmutableArray<T>(new T[0]);
-        }
+        public static readonly ImmutableArray<T> Empty = new ImmutableArray<T>(Array.Empty<T>());
 
         internal ImmutableArray(T[] list)
         {

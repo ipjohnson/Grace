@@ -160,7 +160,7 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
         }
 
         [Fact]
-        public void Lifetimescope_CanLocate()
+        public void LifetimeScope_CanLocate()
         {
             var container = new DependencyInjectionContainer();
 

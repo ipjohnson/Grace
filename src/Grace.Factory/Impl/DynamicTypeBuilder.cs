@@ -17,7 +17,7 @@ namespace Grace.Factory.Impl
         private static readonly object BuilderLock = new object();
         private static ModuleBuilder _moduleBuilder;
         private static int _proxyCount = 0;
-        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod(nameof(IInjectionContext.Clone),new Type[0]);
+        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod(nameof(IInjectionContext.Clone),Type.EmptyTypes);
         private static MethodInfo DelegateInvoke = typeof(ActivationStrategyDelegate).GetRuntimeMethod(nameof(ActivationStrategyDelegate.Invoke),
             new[] {typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext)});
         private static MethodInfo SetExtraDataMethod =
@@ -107,7 +107,7 @@ namespace Grace.Factory.Impl
         {
             var constructorParameterTypes = new List<Type> { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) };
 
-            foreach (var method in methods)
+            foreach (var _ in methods)
             {
                 constructorParameterTypes.Add(typeof(ActivationStrategyDelegate));
             }
@@ -151,7 +151,7 @@ namespace Grace.Factory.Impl
         {
             var parameters = method.GetParameters();
 
-            var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot;
+            const MethodAttributes methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot;
 
             var methodBuilder = proxyBuilder.DefineMethod(method.Name, methodAttributes, method.ReturnType, parameters.Select(x => x.ParameterType).ToArray());
 

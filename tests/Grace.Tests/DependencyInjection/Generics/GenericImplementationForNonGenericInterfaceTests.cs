@@ -88,7 +88,7 @@ namespace Grace.Tests.DependencyInjection.Generics
                 var injectionType = context.TargetInfo.InjectionType;
 
                 var locateType = typeLookup.GetOrAdd(injectionType,
-                    type => implementationType.MakeGenericType(injectionType));
+                    _ => implementationType.MakeGenericType(injectionType));
 
                 return (TService)scope.Locate(locateType);
             });

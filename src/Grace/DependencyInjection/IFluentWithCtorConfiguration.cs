@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration LocateWithKey(object locateKey);
 
@@ -119,7 +119,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<TParam> LocateWithKey(object locateKey);
 
@@ -186,7 +186,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey);
         

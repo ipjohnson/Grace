@@ -1,6 +1,6 @@
 ﻿namespace Grace.Tests.Classes.Simple
 {
-    public interface ITwoDependencyService<T1,T2>
+    public interface ITwoDependencyService<out T1, out T2>
     {
         T1 Dependency1 { get; }
 

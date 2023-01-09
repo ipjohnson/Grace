@@ -85,7 +85,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (!foundValues.TryGetValue(paramKey, out var parameterExpression))
                     {
-                        var canLocateInfo = CreateCanLocateStatement(parameter, scope, request, activationConfiguration);
+                        var canLocateInfo = CreateCanLocateStatement(parameter, request, activationConfiguration);
 
                         // only test for required parameters with no default value
                         if (canLocateInfo != null)
@@ -271,7 +271,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 Expression.Default(parameter.ParameterType));
         }
 
-        private Tuple<ParameterExpression, Expression> CreateCanLocateStatement(ParameterInfo parameter, IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
+        private Tuple<ParameterExpression, Expression> CreateCanLocateStatement(ParameterInfo parameter, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var parameterInfo = FindParameterInfoExpression(parameter, activationConfiguration);
 

@@ -39,7 +39,7 @@ namespace Grace.Utilities
         }
 
         /// <summary>
-        /// Automatically convert from TypefilterGroup to Func(Type,bool)
+        /// Automatically convert from TypeFilterGroup to Func(Type,bool)
         /// </summary>
         /// <param name="group"></param>
         public static implicit operator Func<T, bool>(GenericFilterGroup<T> group)

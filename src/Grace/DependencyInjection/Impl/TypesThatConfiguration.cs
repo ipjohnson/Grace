@@ -106,7 +106,7 @@ namespace Grace.DependencyInjection.Impl
                     {
                         if (typeFilter(baseType))
                         {
-                            return true == notValue;
+                            return notValue;
                         }
 
                         baseType = baseType.GetTypeInfo().BaseType;
@@ -120,7 +120,7 @@ namespace Grace.DependencyInjection.Impl
                         }
                     }
 
-                    return false == notValue;
+                    return !notValue;
                 };
 
             Add(basedOnFilter);
@@ -164,7 +164,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var notValue = GetNotAndingValue();
 
-            Add(t => (t.GetTypeInfo().IsPublic == false) == notValue);
+            Add(t => (!t.GetTypeInfo().IsPublic) == notValue);
 
             return this;
         }
@@ -222,7 +222,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <param name="type"></param>
         /// <param name="includeSubnamespaces"></param>
@@ -232,7 +232,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="includeSubnamespaces"></param>
@@ -292,10 +292,8 @@ namespace Grace.DependencyInjection.Impl
                     x =>
                     {
                         var returnValue = false;
-                        var attribute =
-                            x as TAttribute;
 
-                        if (attribute != null)
+                        if (x is TAttribute attribute)
                         {
                             returnValue = attributeFilter(attribute);
                         }
@@ -317,7 +315,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Adds type filter that filters based uppon a classes attribute
+        /// Adds type filter that filters based upon a classes attribute
         /// </summary>
         /// <param name="consider"></param>
         public TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)

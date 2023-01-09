@@ -58,7 +58,7 @@ namespace Grace.Tests.DependencyInjection.Factory
             container.Configure(c =>
             {
                 c.ExportFunc<IBasicService>(scope => new BasicService());
-                c.ExportFunc<ServiceFactory>(scope => type => scope.Locate(type));
+                c.ExportFunc<ServiceFactory>(scope => scope.Locate);
             });
 
             var instance = container.Locate<IBasicService>();

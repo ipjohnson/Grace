@@ -430,7 +430,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
         public class FuncFactoryClass
         {
-            private Func<DisposableService> _func;
+            private readonly Func<DisposableService> _func;
 
             public FuncFactoryClass(Func<DisposableService> func)
             {

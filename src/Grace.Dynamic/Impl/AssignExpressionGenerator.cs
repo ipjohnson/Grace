@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 namespace Grace.Dynamic.Impl
 {
     /// <summary>
-    /// Interface for emiting assign expression
+    /// Interface for emitting assign expression
     /// </summary>
     public interface IAssignExpressionGenerator
     {

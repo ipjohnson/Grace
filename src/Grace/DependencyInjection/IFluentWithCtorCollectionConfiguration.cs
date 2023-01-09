@@ -5,7 +5,7 @@ namespace Grace.DependencyInjection
 {
 
     /// <summary>
-    /// Configuration object for an imoprt collection
+    /// Configuration object for an import collection
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
     /// <typeparam name="T"></typeparam>

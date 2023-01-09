@@ -5,7 +5,7 @@ using Grace.Data.Immutable;
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// C# extenion class to inject object
+    /// C# extension class to inject object
     /// </summary>
     public static class InjectionExtension
     {
@@ -58,7 +58,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// 
         /// </summary>
-        private class InjectionHashTreeHolder
+        private sealed class InjectionHashTreeHolder
         {
             public ImmutableHashTree<Type, InjectionStrategyDelegate> Delegates = ImmutableHashTree<Type, InjectionStrategyDelegate>.Empty;
         }

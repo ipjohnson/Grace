@@ -10,7 +10,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
         public class DependentClass : IDisposable
         {
             private readonly IDisposable _disposable;
-            private IDisposableService _disposableService;
+            private readonly IDisposableService _disposableService;
 
             public DependentClass(IDisposableService disposableService, IDisposable disposable)
             {
@@ -28,7 +28,7 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
         public class GenericDependentClass<T> : IDisposable
         {
             private readonly IDisposable _disposable;
-            private T _disposableService;
+            private readonly T _disposableService;
 
             public GenericDependentClass(T disposableService, IDisposable disposable)
             {

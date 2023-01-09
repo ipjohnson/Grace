@@ -18,7 +18,7 @@ namespace Grace.Tests.Data.Immutable
         }
 
         [Fact]
-        public void ImmutableHashTree_ThreadsafeAdd_Null_Tree()
+        public void ImmutableHashTree_ThreadSafeAdd_Null_Tree()
         {
             ImmutableHashTree<int, int> tree = null;
 
@@ -26,7 +26,7 @@ namespace Grace.Tests.Data.Immutable
         }
 
         [Fact]
-        public void ImmutableHashTree_ThreadsafeAdd_Null_Key()
+        public void ImmutableHashTree_ThreadSafeAdd_Null_Key()
         {
             var tree = ImmutableHashTree<int?, int>.Empty;
 
@@ -38,7 +38,7 @@ namespace Grace.Tests.Data.Immutable
         {
             var tree = ImmutableHashTree<int?, int>.Empty;
 
-            Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out var value));
+            Assert.Throws<ArgumentNullException>(() => tree.TryGetValue(null, out _));
         }
         
         [Fact]
@@ -125,9 +125,7 @@ namespace Grace.Tests.Data.Immutable
 
             public override bool Equals(object obj)
             {
-                var conflictClass = obj as ConflictClass;
-
-                if (conflictClass != null)
+                if (obj is ConflictClass conflictClass)
                 {
                     return conflictClass.FirstInt == FirstInt && conflictClass.SecondInt == SecondInt;
                 }
@@ -209,7 +207,7 @@ namespace Grace.Tests.Data.Immutable
 
             var list = new List<int>();
 
-            tree.IterateInOrder((k, v) => list.Add(v));
+            tree.IterateInOrder((_, v) => list.Add(v));
 
             Assert.Equal(1_000, list.Count);
         }
@@ -261,7 +259,7 @@ namespace Grace.Tests.Data.Immutable
 
             var values = new List<int>();
 
-            _hashTree.IterateInOrder((key, value) => values.Add(key));
+            _hashTree.IterateInOrder((key, _) => values.Add(key));
 
             values.Sort();
 

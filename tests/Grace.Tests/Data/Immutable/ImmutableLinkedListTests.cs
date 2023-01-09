@@ -31,7 +31,7 @@ namespace Grace.Tests.Data.Immutable
         public void ImmutableLinkedList_Create_Returns_Empty_For_Null()
         {
             Assert.Equal(ImmutableLinkedList<int>.Empty, ImmutableLinkedList.Create<int>(null));
-            Assert.Equal(ImmutableLinkedList<int>.Empty, ImmutableLinkedList.Create(new int[0]));
+            Assert.Equal(ImmutableLinkedList<int>.Empty, ImmutableLinkedList.Create(Array.Empty<int>()));
         }
 
         [Fact]
@@ -191,9 +191,9 @@ namespace Grace.Tests.Data.Immutable
         private const int AddAmount = 20_000;
 
         [Fact]
-        public void ImmutableLinkedList_Multithreaded_Test()
+        public void ImmutableLinkedList_MultiThreaded_Test()
         {
-            var writerCount = 4;
+            const int writerCount = 4;
 
             _finalList = new List<int>();
             _linkedList = ImmutableLinkedList<int>.Empty;
@@ -210,7 +210,7 @@ namespace Grace.Tests.Data.Immutable
                 listOfTasks.Add(task);
             }
 
-            listOfTasks.Add(Task.Run(() => RemoveFromList()));
+            listOfTasks.Add(Task.Run(RemoveFromList));
 
             _startEvent.Set();
 

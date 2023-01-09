@@ -12,7 +12,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
     public class MissingDependencyExpressionProviderTests
     {
         [Fact]
-        public void MissingDependenyExpressionProviderTest()
+        public void MissingDependencyExpressionProviderTest()
         {
             var container = new DependencyInjectionContainer
             {
@@ -36,7 +36,7 @@ namespace Grace.Tests.DependencyInjection.AddOns
         }
 
         [Fact]
-        public void MissingDependenyExpressionProviderThrowsExceptionTest()
+        public void MissingDependencyExpressionProviderThrowsExceptionTest()
         {
             var container = new DependencyInjectionContainer
             {

@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection.Impl
     public interface IActivationStrategyCreator
     {
         /// <summary>
-        /// Get new commpiled decorator
+        /// Get new compiled decorator
         /// </summary>
         /// <param name="activationType">type of decorator</param>
         /// <returns>new decorator</returns>
@@ -47,7 +47,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy one arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -56,8 +56,8 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy two arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -66,9 +66,9 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy three arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -77,10 +77,10 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy four arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
-        /// <typeparam name="T4">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
+        /// <typeparam name="T4">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -89,11 +89,11 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy five arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
-        /// <typeparam name="T4">dependeny</typeparam>
-        /// <typeparam name="T5">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
+        /// <typeparam name="T4">dependency</typeparam>
+        /// <typeparam name="T5">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -232,7 +232,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Get new commpiled decorator
+        /// Get new compiled decorator
         /// </summary>
         /// <param name="activationType">type of decorator</param>
         /// <returns>new decorator</returns>
@@ -255,17 +255,6 @@ namespace Grace.DependencyInjection.Impl
         public virtual IInstanceActivationStrategy GetConstantStrategy<T>(T value)
         {
             return new ConstantInstanceExportStrategy<T>(value, _injectionScope);
-        }
-
-        /// <summary>
-        /// Get new factory strategy no arg
-        /// </summary>
-        /// <typeparam name="TResult">type being created</typeparam>
-        /// <param name="factory">factory method</param>
-        /// <returns>new factory strategy</returns>
-        public virtual IInstanceActivationStrategy GetFactoryStrategy<TResult>(Func<TResult> factory)
-        {
-            return new FactoryNoArgStrategy<TResult>(factory, _injectionScope);
         }
 
         /// <summary>
@@ -313,9 +302,20 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Get new factory strategy no arg
+        /// </summary>
+        /// <typeparam name="TResult">type being created</typeparam>
+        /// <param name="factory">factory method</param>
+        /// <returns>new factory strategy</returns>
+        public virtual IInstanceActivationStrategy GetFactoryStrategy<TResult>(Func<TResult> factory)
+        {
+            return new FactoryNoArgStrategy<TResult>(factory, _injectionScope);
+        }
+
+        /// <summary>
         /// Get new factory strategy one arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -327,8 +327,8 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy two arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -340,9 +340,9 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy three arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -354,10 +354,10 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy four arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
-        /// <typeparam name="T4">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
+        /// <typeparam name="T4">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>
@@ -369,11 +369,11 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get new factory strategy five arg
         /// </summary>
-        /// <typeparam name="T1">dependeny</typeparam>
-        /// <typeparam name="T2">dependeny</typeparam>
-        /// <typeparam name="T3">dependeny</typeparam>
-        /// <typeparam name="T4">dependeny</typeparam>
-        /// <typeparam name="T5">dependeny</typeparam>
+        /// <typeparam name="T1">dependency</typeparam>
+        /// <typeparam name="T2">dependency</typeparam>
+        /// <typeparam name="T3">dependency</typeparam>
+        /// <typeparam name="T4">dependency</typeparam>
+        /// <typeparam name="T5">dependency</typeparam>
         /// <typeparam name="TResult">type being created</typeparam>
         /// <param name="factory">factory method</param>
         /// <returns>factory strategy</returns>

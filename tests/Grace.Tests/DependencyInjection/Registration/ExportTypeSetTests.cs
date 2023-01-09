@@ -294,7 +294,7 @@ namespace Grace.Tests.DependencyInjection.Registration
                         return new[] { t };
                     }
 
-                    return new Type[0];
+                    return Type.EmptyTypes;
                 }).Lifestyle.Singleton();
             });
 
@@ -328,7 +328,7 @@ namespace Grace.Tests.DependencyInjection.Registration
                         return new[] { new Tuple<Type, object>(typeof(IMultipleService), t.Name.Last()) };
                     }
 
-                    return new Tuple<Type, object>[0];
+                    return Array.Empty<Tuple<Type, object>>();
                 });
             });
 

@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection.Attributes
 		private readonly int _priority;
 
 		/// <summary>
-		/// Export priority cosntructor
+		/// Export priority constructor
 		/// </summary>
 		/// <param name="priority">priority for export, ranked high to low</param>
 		public ExportPriorityAttribute(int priority)

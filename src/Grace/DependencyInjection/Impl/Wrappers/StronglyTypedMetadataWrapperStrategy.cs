@@ -69,7 +69,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             if (strategy == null)
             {
-                throw new Exception("Could not find export stragegy to get metadata from");
+                throw new Exception("Could not find export strategy to get metadata from");
             }
 
             var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);

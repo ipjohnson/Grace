@@ -518,9 +518,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var injectionParent = Parent as IInjectionScope;
-
-            if (injectionParent != null)
+            if (Parent is IInjectionScope injectionParent)
             {
                 returnList.AddRange(injectionParent.InternalLocateAll<T>(scope, disposalScope, type, context, consider, null));
             }
@@ -560,9 +558,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var injectionScopeParent = Parent as IInjectionScope;
-
-            if (injectionScopeParent != null)
+            if (Parent is IInjectionScope injectionScopeParent)
             {
                 returnList.AddRange(injectionScopeParent.InternalLocateAllByName(scope, disposalScope, exportName, context, consider));
             }

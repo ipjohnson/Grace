@@ -1,6 +1,6 @@
 ﻿namespace Grace.Tests.Classes.Generics
 {
-    public interface IImportGenericService<T>
+    public interface IImportGenericService<out T>
     {
         T Value { get; }
     }

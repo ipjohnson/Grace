@@ -16,7 +16,7 @@ namespace Grace.Data.Immutable
     public static class ImmutableHashTree
     {
         /// <summary>
-        /// Create immutable hash tree from IEnuermable
+        /// Create immutable hash tree from IEnumerable
         /// </summary>
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
@@ -262,7 +262,7 @@ namespace Grace.Data.Immutable
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
-            return TryGetValue(key, out var value);
+            return TryGetValue(key, out _);
         }
 
         /// <summary>
@@ -283,28 +283,28 @@ namespace Grace.Data.Immutable
 
             var keyHash = key.GetHashCode();
 
-            var currenNode = this;
+            var currentNode = this;
 
-            while (currenNode.Hash != keyHash && currenNode.Height != 0)
+            while (currentNode.Hash != keyHash && currentNode.Height != 0)
             {
-                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
+                currentNode = keyHash < currentNode.Hash ? currentNode.Left : currentNode.Right;
             }
 
-            if (currenNode.Height != 0)
+            if (currentNode.Height != 0)
             {
-                if (key.Equals(currenNode.Key))
+                if (key.Equals(currentNode.Key))
                 {
-                    value = currenNode.Value;
+                    value = currentNode.Value;
 
                     return true;
                 }
 
                 // ReSharper disable once ForCanBeConvertedToForeach
-                for (var i = 0; i < currenNode.Conflicts.Count; i++)
+                for (var i = 0; i < currentNode.Conflicts.Count; i++)
                 {
-                    var kvp = currenNode.Conflicts[i];
+                    var kvp = currentNode.Conflicts[i];
 
-                    if (key.Equals(currenNode.Conflicts[i].Key))
+                    if (key.Equals(currentNode.Conflicts[i].Key))
                     {
                         value = kvp.Value;
 
@@ -333,16 +333,16 @@ namespace Grace.Data.Immutable
             }
 
             var keyHash = key.GetHashCode();
-            var currenNode = this;
+            var currentNode = this;
 
-            while (currenNode.Hash != keyHash && currenNode.Height != 0)
+            while (currentNode.Hash != keyHash && currentNode.Height != 0)
             {
-                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
+                currentNode = keyHash < currentNode.Hash ? currentNode.Left : currentNode.Right;
             }
 
-            return ReferenceEquals(currenNode.Key, key)
-                ? currenNode.Value
-                : GetConflictedValue(key, currenNode, defaultValue);
+            return ReferenceEquals(currentNode.Key, key)
+                ? currentNode.Value
+                : GetConflictedValue(key, currentNode, defaultValue);
         }
 
         /// <summary>
@@ -359,16 +359,16 @@ namespace Grace.Data.Immutable
                 return Value;
             }
 
-            var currenNode = this;
+            var currentNode = this;
 
-            while (currenNode.Hash != keyHash && currenNode.Height != 0)
+            while (currentNode.Hash != keyHash && currentNode.Height != 0)
             {
-                currenNode = keyHash < currenNode.Hash ? currenNode.Left : currenNode.Right;
+                currentNode = keyHash < currentNode.Hash ? currentNode.Left : currentNode.Right;
             }
 
-            return ReferenceEquals(currenNode.Key, key)
-                    ? currenNode.Value
-                    : GetConflictedValue(key, currenNode, defaultValue);
+            return ReferenceEquals(currentNode.Key, key)
+                    ? currentNode.Value
+                    : GetConflictedValue(key, currentNode, defaultValue);
         }
 
         public TValue GetConflictedValue(TKey key, ImmutableHashTree<TKey, TValue> currentNode, TValue defaultValue)
@@ -500,9 +500,9 @@ namespace Grace.Data.Immutable
 
         private ImmutableHashTree<TKey, TValue> EnsureBalanced()
         {
-            var heightDeleta = Left.Height - Right.Height;
+            var heightDelta = Left.Height - Right.Height;
 
-            if (heightDeleta > 2)
+            if (heightDelta > 2)
             {
                 var newLeft = Left;
 
@@ -514,7 +514,7 @@ namespace Grace.Data.Immutable
                 return New(newLeft, Right).RotateRight();
             }
 
-            if (heightDeleta < -2)
+            if (heightDelta < -2)
             {
                 var newRight = Right;
 

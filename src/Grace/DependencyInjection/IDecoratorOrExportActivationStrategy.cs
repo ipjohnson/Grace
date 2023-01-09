@@ -3,7 +3,7 @@
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// Represents a decortator or an export
+    /// Represents a decorator or an export
     /// </summary>
     public interface IDecoratorOrExportActivationStrategy : IActivationStrategy
     {

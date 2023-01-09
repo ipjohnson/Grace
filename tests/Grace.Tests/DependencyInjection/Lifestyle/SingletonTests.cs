@@ -7,14 +7,14 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
     public class SingletonTests
     {
         [Fact]
-        public void Singleton_Return_Same_Insance()
+        public void Singleton_Return_Same_Instance()
         {
             var container = new DependencyInjectionContainer();
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>().Lifestyle.Singleton());
 
-            var instance1 = container.Locate<IBasicService>();
-            var instance2 = container.Locate<IBasicService>();
+            _ = container.Locate<IBasicService>();
+            _ = container.Locate<IBasicService>();
 
             
         }

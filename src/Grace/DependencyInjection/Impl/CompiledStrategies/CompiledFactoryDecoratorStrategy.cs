@@ -6,7 +6,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
     public class CompiledFactoryDecoratorStrategy<T> : ConfigurableActivationStrategy, ICompiledDecoratorStrategy
     {
-        private Delegate _delegate;
+        private readonly Delegate _delegate;
 
         /// <summary>
         /// Default constructor

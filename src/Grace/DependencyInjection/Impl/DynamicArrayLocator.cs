@@ -6,7 +6,7 @@ using Grace.Data.Immutable;
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
-    /// Inteface for creating an array that is located dynamically
+    /// Interface for creating an array that is located dynamically
     /// </summary>
     public interface IDynamicArrayLocator
     {

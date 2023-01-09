@@ -341,11 +341,11 @@ namespace Grace.Tests.DependencyInjection.Registration
                         .LocateWithKey('A');
             });
 
-            var insance = container.Locate<DependentService<IBasicService>>();
+            var instance = container.Locate<DependentService<IBasicService>>();
 
-            Assert.NotNull(insance);
-            Assert.NotNull(insance.Value);
-            Assert.IsType<BasicService>(insance.Value);
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+            Assert.IsType<BasicService>(instance.Value);
         }
 
         #endregion

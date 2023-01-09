@@ -9,7 +9,7 @@ namespace Grace.Tests.Classes.Simple
             CurrentTime = currentTime;
         }
 
-        public DateTime CurrentTime { get; private set; }
+        public DateTime CurrentTime { get; }
     }
 
     public class NowDateTimeImport
@@ -19,6 +19,6 @@ namespace Grace.Tests.Classes.Simple
             CurrentTime = now;
         }
 
-        public DateTime CurrentTime { get; private set; }
+        public DateTime CurrentTime { get; }
     }
 }

@@ -14,7 +14,7 @@ namespace Grace.Tests.Classes.Simple
             SimpleObject = simpleObject;
         }
 
-        public ISimpleObject SimpleObject { get; private set; }
+        public ISimpleObject SimpleObject { get; }
     }
 
     [SimpleFilter]

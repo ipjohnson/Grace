@@ -5,10 +5,10 @@ using Xunit;
 namespace Grace.Tests.DependencyInjection.ExtraData
 {
     // ReSharper disable once InconsistentNaming
-    public class IExraDataContainerExtensionsTests
+    public class IExtraDataContainerExtensionsTests
     {
         [Fact]
-        public void IExraDataContainerExtensions_GetExtraDataOrDefaultValue_Found()
+        public void IExtraDataContainerExtensions_GetExtraDataOrDefaultValue_Found()
         {
             var container = new DependencyInjectionContainer();
 
@@ -20,7 +20,7 @@ namespace Grace.Tests.DependencyInjection.ExtraData
         }
 
         [Fact]
-        public void IExraDataContainerExtensions_GetExtraDataOrDefaultValue_Use_Default()
+        public void IExtraDataContainerExtensions_GetExtraDataOrDefaultValue_Use_Default()
         {
             var container = new DependencyInjectionContainer();
 
@@ -32,7 +32,7 @@ namespace Grace.Tests.DependencyInjection.ExtraData
         }
 
         [Fact]
-        public void IExraDataContainerExtensions_GetExtraDataOrDefaultValue_Convert()
+        public void IExtraDataContainerExtensions_GetExtraDataOrDefaultValue_Convert()
         {
             var container = new DependencyInjectionContainer();
 

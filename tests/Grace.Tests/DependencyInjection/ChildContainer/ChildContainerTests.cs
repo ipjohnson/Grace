@@ -19,9 +19,9 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
 
             var disposedCalled = false;
 
-            using (var childContianer = container.CreateChildScope())
+            using (var childContainer = container.CreateChildScope())
             {
-                var disposable = childContianer.Locate<IDisposableService>();
+                var disposable = childContainer.Locate<IDisposableService>();
 
                 Assert.NotNull(disposable);
 
@@ -43,9 +43,9 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
 
             var disposedCalled = false;
 
-            using (var childContianer = container.CreateChildScope())
+            using (var childContainer = container.CreateChildScope())
             {
-                var disposable = childContianer.Locate<IDisposableService>();
+                var disposable = childContainer.Locate<IDisposableService>();
 
                 Assert.NotNull(disposable);
 

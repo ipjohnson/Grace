@@ -82,9 +82,9 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 StringProp = stringValue;
             }
 
-            public int NumProp { get; private set; }
+            public int NumProp { get; }
 
-            public string StringProp { get; private set; }
+            public string StringProp { get; }
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             var myFunc = di.Locate<Func<string, int, IHaveMultipleConstructors>>();
 
-            var functioned = myFunc("funcString", 667);
+            _ = myFunc("funcString", 667);
         }
 
         public class MultipleConstructorWithFunc

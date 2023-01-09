@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>IL Generation library for Grace dependency injection container</Description>
     <Authors>Ian Johnson</Authors>
-    <TargetFrameworks>net462;net6.0</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0;net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Grace.Factory</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>

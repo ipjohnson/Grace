@@ -2,14 +2,14 @@
 
 namespace Grace.Tests.Classes.Simple
 {
-    public interface IImportEnumberableService
+    public interface IImportEnumerableService
     {
         IEnumerable<IMultipleService> Enumerable { get; }
     }
 
-    public class ImportEnumberableService : IImportEnumberableService
+    public class ImportEnumerableService : IImportEnumerableService
     {
-        public ImportEnumberableService(IEnumerable<IMultipleService> enumerable)
+        public ImportEnumerableService(IEnumerable<IMultipleService> enumerable)
         {
             Enumerable = enumerable;
         }

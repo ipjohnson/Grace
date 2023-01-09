@@ -18,8 +18,8 @@
             ConstructorImportService = constructorImportService;
         }
 
-        public IBasicService BasicService { get; private set; }
+        public IBasicService BasicService { get; }
 
-        public IConstructorImportService ConstructorImportService { get; private set; }
+        public IConstructorImportService ConstructorImportService { get; }
     }
 }

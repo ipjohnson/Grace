@@ -39,7 +39,7 @@ namespace Grace.Tests.DependencyInjection.Enrichment
         }
 
         [Fact]
-        public void Encrichment_Executes()
+        public void Enrichment_Executes()
         {
             var container = new DependencyInjectionContainer();
 

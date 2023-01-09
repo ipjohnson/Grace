@@ -1,4 +1,4 @@
-﻿namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.Tests.Classes.Simple
 {
 	public interface IPartialInterface<T, T2>
 	{

@@ -35,7 +35,7 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// Export all types from an assembly comtaining a specific type
+        /// Export all types from an assembly containing a specific type
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="registrationBlock"></param>
@@ -155,7 +155,7 @@ namespace Grace.DependencyInjection
         /// <param name="processAttributes">process import attribute</param>
         public static IExportRegistrationBlock ImportMembers(this IExportRegistrationBlock registrationBlock, Func<MemberInfo, bool> filter = null, bool injectMethods = false, bool processAttributes = true)
         {
-            registrationBlock.AddMemberInjectionSelector(new PublicMemeberInjectionSelector(filter, injectMethods, processAttributes));
+            registrationBlock.AddMemberInjectionSelector(new PublicMemberInjectionSelector(filter, injectMethods, processAttributes));
 
             return registrationBlock;
         }
@@ -249,7 +249,7 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// Excludes a type from being auto regsitered
+        /// Excludes a type from being auto registered
         /// </summary>
         /// <param name="block"></param>
         /// <param name="type"></param>

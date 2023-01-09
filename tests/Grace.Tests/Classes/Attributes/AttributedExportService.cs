@@ -10,12 +10,6 @@ namespace Grace.Tests.Classes.Attributes
     [Export(typeof(IAttributedExportService))]
     public class AttributedExportService : IAttributedExportService
     {
-        public IAttributeBasicService BasicService
-        {
-            get
-            {
-                return new AttributeBasicService(); 
-            }
-        }
+        public IAttributeBasicService BasicService => new AttributeBasicService();
     }
 }

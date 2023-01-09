@@ -22,11 +22,11 @@ namespace Grace.Tests.DependencyInjection.Intercept
 
         public class Interceptor : IInterceptor
         {
-            public object[] Arguements { get; set; }
+            public object[] Arguments { get; set; }
 
             public void Intercept(IInvocation invocation)
             {
-                Arguements = invocation.Arguments;
+                Arguments = invocation.Arguments;
 
                 invocation.Proceed();
             }
@@ -56,10 +56,10 @@ namespace Grace.Tests.DependencyInjection.Intercept
             var interceptor = container.Locate<Interceptor>();
 
             Assert.NotNull(interceptor);
-            Assert.NotNull(interceptor.Arguements);
-            Assert.Equal(2, interceptor.Arguements.Length);
-            Assert.Equal(2, interceptor.Arguements[0]);
-            Assert.Equal(3, interceptor.Arguements[1]);
+            Assert.NotNull(interceptor.Arguments);
+            Assert.Equal(2, interceptor.Arguments.Length);
+            Assert.Equal(2, interceptor.Arguments[0]);
+            Assert.Equal(3, interceptor.Arguments[1]);
         }
         
         [Fact]
@@ -86,10 +86,10 @@ namespace Grace.Tests.DependencyInjection.Intercept
             var interceptor = container.Locate<Interceptor>();
 
             Assert.NotNull(interceptor);
-            Assert.NotNull(interceptor.Arguements);
-            Assert.Equal(2, interceptor.Arguements.Length);
-            Assert.Equal(2, interceptor.Arguements[0]);
-            Assert.Equal(3, interceptor.Arguements[1]);
+            Assert.NotNull(interceptor.Arguments);
+            Assert.Equal(2, interceptor.Arguments.Length);
+            Assert.Equal(2, interceptor.Arguments[0]);
+            Assert.Equal(3, interceptor.Arguments[1]);
         }
 
 
@@ -117,10 +117,10 @@ namespace Grace.Tests.DependencyInjection.Intercept
             var interceptor = container.Locate<Interceptor>();
 
             Assert.NotNull(interceptor);
-            Assert.NotNull(interceptor.Arguements);
-            Assert.Equal(2, interceptor.Arguements.Length);
-            Assert.Equal(2, interceptor.Arguements[0]);
-            Assert.Equal(3, interceptor.Arguements[1]);
+            Assert.NotNull(interceptor.Arguments);
+            Assert.Equal(2, interceptor.Arguments.Length);
+            Assert.Equal(2, interceptor.Arguments[0]);
+            Assert.Equal(3, interceptor.Arguments[1]);
         }
 
         [Fact]

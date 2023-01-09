@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl
 
 
         /// <summary>
-        /// Matched is the Memember is a Method
+        /// Matched is the Member is a Method
         /// </summary>
         /// <param name="filter"></param>
         public MembersThatConfiguration AreMethod(Func<MethodInfo, bool> filter = null)
@@ -135,10 +135,8 @@ namespace Grace.DependencyInjection.Impl
                     x =>
                     {
                         var returnValue = false;
-                        var attribute =
-                            x as TAttribute;
 
-                        if (attribute != null)
+                        if (x is TAttribute attribute)
                         {
                             returnValue = attributeFilter(attribute);
                         }

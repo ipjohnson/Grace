@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// injected method parameter name
         /// </summary>
-        public string ParameterName { get; private set; }
+        public string ParameterName { get; }
 
         /// <summary>
         /// the locate key for injected method parameter

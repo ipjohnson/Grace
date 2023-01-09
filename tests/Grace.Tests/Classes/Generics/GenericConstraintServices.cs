@@ -2,7 +2,7 @@
 
 namespace Grace.Tests.Classes.Generics
 {
-    public interface IGenericConstraintService<T>
+    public interface IGenericConstraintService<out T>
     {
         T Value { get; }
     }

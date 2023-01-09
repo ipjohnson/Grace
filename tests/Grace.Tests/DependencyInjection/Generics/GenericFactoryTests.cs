@@ -8,7 +8,7 @@ namespace Grace.Tests.DependencyInjection.Generics
 {
     public class GenericFactoryTests
     {
-        public interface ITestGenericService<T>
+        public interface ITestGenericService<out T>
         {
             T Value { get; }
         }

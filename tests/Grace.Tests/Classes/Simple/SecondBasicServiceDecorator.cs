@@ -11,8 +11,8 @@
 
         public int Count
         {
-            get { return _service.Count; }
-            set { _service.Count = value; }
+            get => _service.Count;
+            set => _service.Count = value;
         }
         public int TestMethod()
         {

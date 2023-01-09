@@ -37,7 +37,7 @@ namespace Grace.DependencyInjection
         public static  IConstructorExpressionCreator LeastParameters { get; }
 
         /// <summary>
-        /// Dynamicly pick the cosntructor to use each request, not very fast but allows for support similar to NInject
+        /// Dynamically pick the constructor to use each request, not very fast but allows for support similar to NInject
         /// </summary>
         public static IConstructorExpressionCreator Dynamic { get; }
     }

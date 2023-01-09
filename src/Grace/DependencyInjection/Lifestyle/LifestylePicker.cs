@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Create one instance per request, usually a lock is not needed
         /// </summary>
-        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the request, set to true only if you believe there are multple threads accesing this export</param>
+        /// <param name="locking">by default no lock is used and it's assumed there is only one thread of execution in the request, set to true only if you believe there are multiple threads accessing this export</param>
         public T SingletonPerRequest(bool locking = false)
         {
             _addLifestyle(new SingletonPerRequestLifestyle());

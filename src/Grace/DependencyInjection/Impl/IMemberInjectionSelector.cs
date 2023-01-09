@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection.Impl
         public MemberInfo MemberInfo { get; set; }
 
         /// <summary>
-        /// Expression that can be used to satify import
+        /// Expression that can be used to satisfy import
         /// </summary>
         public Expression CreateExpression { get; set; }
 
