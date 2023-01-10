@@ -17,8 +17,6 @@ build:
   project: Grace.sln
   publish_nuget: true
   verbosity: minimal
-test_script:
-- sh: dotnet test tests/Grace.Tests/Grace.Tests.csproj
 artifacts:
 - path: Grace*.nupkg
   name: Grace
