@@ -24,7 +24,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         public ICompiledLifestyle Clone()
         {
             return new WeakSingletonLifestyle();
@@ -36,7 +35,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (_delegate == null)
@@ -63,7 +61,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="scope"></param>
-        /// <returns></returns>
         public T GetValue<T>(IInjectionScope scope)
         {
             var target = _weakReference.Target;

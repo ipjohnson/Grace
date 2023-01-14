@@ -34,7 +34,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// Get activation configuration for strategy
         /// </summary>
         /// <param name="activationType"></param>
-        /// <returns></returns>
         public override TypeActivationConfiguration GetActivationConfiguration(Type activationType)
         {
             var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
@@ -75,7 +74,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationType = request.ActivationType;

@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Impl
     public class FluentWithCtorConfiguration : ProxyFluentExportStrategyConfiguration,
         IFluentWithCtorConfiguration
     {
-        private ConstructorParameterInfo _constructorParameterInfo;
+        private readonly ConstructorParameterInfo _constructorParameterInfo;
 
         /// <summary>
         /// Default constructor
@@ -49,7 +49,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration DefaultValue(Func<object> defaultValueFunc)
         {
             _constructorParameterInfo.DefaultValue = defaultValueFunc;
@@ -61,7 +60,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value function
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, object> defaultValueFunc)
         {
             _constructorParameterInfo.DefaultValue = defaultValueFunc;
@@ -96,7 +94,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         public IFluentWithCtorConfiguration LocateWithKey(object locateKey)
         {
@@ -109,7 +107,6 @@ namespace Grace.DependencyInjection.Impl
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration Named(string name)
         {
             _constructorParameterInfo.ParameterName = name;
@@ -121,7 +118,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration Use(Type type)
         {
             _constructorParameterInfo.UseType = type;
@@ -154,7 +150,6 @@ namespace Grace.DependencyInjection.Impl
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> Named(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -168,7 +163,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> Use(Type type)
         {
             _constructorParameterInfo.UseType = type;
@@ -207,7 +201,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -221,7 +214,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -318,7 +310,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -332,7 +323,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -346,7 +336,6 @@ namespace Grace.DependencyInjection.Impl
         /// Mark the parameter as dynamic (will be located from child scopes)
         /// </summary>
         /// <param name="isDynamic"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> IsDynamic(bool isDynamic = true)
         {
             _constructorParameterInfo.IsDynamic = isDynamic;
@@ -382,7 +371,6 @@ namespace Grace.DependencyInjection.Impl
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> Named(string name)
         {
             _constructorParameterInfo.ParameterName = name;
@@ -394,7 +382,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use specific type to satisfy parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentWithCtorConfiguration<T, TParam> Use(Type type)
         {
             _constructorParameterInfo.UseType = type;

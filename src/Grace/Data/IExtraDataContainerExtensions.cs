@@ -6,7 +6,7 @@ namespace Grace.Data
     /// C# extension class for IExtraDataContainer
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public static class IExraDataContainerExtensions
+    public static class IExtraDataContainerExtensions
     {
         /// <summary>
         /// Get a value from extra data or return default. will convert 
@@ -15,8 +15,7 @@ namespace Grace.Data
         /// <param name="container"></param>
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public static T GetExtraDataOrDefaultValue<T>(this IExtraDataContainer container, object key, T defaultValue = default (T))
+        public static T GetExtraDataOrDefaultValue<T>(this IExtraDataContainer container, object key, T defaultValue = default(T))
         {
             var value = container.GetExtraData(key);
 
@@ -25,9 +24,9 @@ namespace Grace.Data
                 return defaultValue;
             }
 
-            if (value is T)
+            if (value is T tValue)
             {
-                return (T)value;
+                return tValue;
             }
 
             return (T)Convert.ChangeType(value, typeof(T));

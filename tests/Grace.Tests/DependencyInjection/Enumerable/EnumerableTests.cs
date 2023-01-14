@@ -50,10 +50,10 @@ namespace Grace.Tests.DependencyInjection.Enumerable
                 c.Export<MultipleService3>().As<IMultipleService>();
                 c.Export<MultipleService4>().As<IMultipleService>();
                 c.Export<MultipleService5>().As<IMultipleService>();
-                c.Export<ImportEnumberableService>().As<IImportEnumberableService>();
+                c.Export<ImportEnumerableService>().As<IImportEnumerableService>();
             });
 
-            var importService = container.Locate<IImportEnumberableService>();
+            var importService = container.Locate<IImportEnumerableService>();
 
             Assert.NotNull(importService);
             Assert.NotNull(importService.Enumerable);
@@ -119,10 +119,10 @@ namespace Grace.Tests.DependencyInjection.Enumerable
                 c.ExportFactory(() => new MultipleService3 { Count = 3 }).As<IMultipleService>();
                 c.ExportFactory(() => new MultipleService2 { Count = 2 }).As<IMultipleService>();
                 c.ExportFactory(() => new MultipleService1 { Count = 1 }).As<IMultipleService>();
-                c.Export<ImportEnumberableService>().As<IImportEnumberableService>().WithCtorCollectionParam<IEnumerable<IMultipleService>, IMultipleService>().SortByProperty(m => m.Count);
+                c.Export<ImportEnumerableService>().As<IImportEnumerableService>().WithCtorCollectionParam<IEnumerable<IMultipleService>, IMultipleService>().SortByProperty(m => m.Count);
             });
 
-            var importService = container.Locate<IImportEnumberableService>();
+            var importService = container.Locate<IImportEnumerableService>();
 
             Assert.NotNull(importService);
             Assert.NotNull(importService.Enumerable);

@@ -179,42 +179,6 @@ namespace Grace.DependencyInjection
         IFluentExportInstanceConfiguration<T> ExportInstance<T>(T instance);
 
         /// <summary>
-        /// Export a specific type using a function
-        /// </summary>
-        /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">function to create instance</param>
-        /// <returns></returns>
-        [Obsolete("Please use ExportFactor<T>")]
-        IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<T> instanceFunc);
-
-        /// <summary>
-        /// Export a specific type using an IExportLocatorScope
-        /// </summary>
-        /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">instance func</param>
-        /// <returns></returns>
-        [Obsolete("Please use ExportFactor<IExportLocatorScope, T>")]
-        IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, T> instanceFunc);
-
-        /// <summary>
-        /// Export a specific type using IExportLocatorScope and StaticInjectionContext
-        /// </summary>
-        /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">isntance func</param>
-        /// <returns></returns>
-        [Obsolete("Please use ExportFactor<IExportLocatorScope, StaticInjectionContext, T>")]
-        IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc);
-
-        /// <summary>
-        /// Export a specific type using IExportLocatorScope, StaticInjectionContext and IInjectionContext
-        /// </summary>
-        /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">isntance func</param>
-        /// <returns></returns>
-        [Obsolete("Please use ExportFactor<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T>")]
-        IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc);
-
-        /// <summary>
         /// Export a type to be used as a wrapper rather than export (types like Func(), Owned, Meta are wrapper types)
         /// </summary>
         /// <param name="type"></param>
@@ -236,6 +200,5 @@ namespace Grace.DependencyInjection
         /// <param name="exportFilter"></param>
         /// <returns></returns>
         bool ClearExports(Func<ICompiledExportStrategy, bool> exportFilter = null);
-        
     }
 }

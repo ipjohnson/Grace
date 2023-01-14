@@ -53,7 +53,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
             
             var keys = request.Keys.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("Hello", keys[0]);
         }
 
@@ -66,7 +66,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
 
             var values = request.Values.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal(5, values[0]);
         }
         
@@ -79,7 +79,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
 
             var values = request.KeyValuePairs.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal("Hello", values[0].Key);
             Assert.Equal(5, values[0].Value);
         }
@@ -93,7 +93,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
 
             var keys = data.Keys.ToArray();
 
-            Assert.Equal(1, keys.Length);
+            Assert.Single(keys);
             Assert.Equal("Hello", keys[0]);
         }
 
@@ -107,7 +107,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
 
             var values = data.Values.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal(5, values[0]);
         }
         
@@ -120,7 +120,7 @@ namespace Grace.Tests.DependencyInjection.DelegateRequest
 
             var values = data.KeyValuePairs.ToArray();
 
-            Assert.Equal(1, values.Length);
+            Assert.Single(values);
             Assert.Equal("Hello", values[0].Key);
             Assert.Equal(5, values[0].Value);
         }

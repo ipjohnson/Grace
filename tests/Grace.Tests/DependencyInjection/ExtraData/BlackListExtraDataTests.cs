@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.ExtraData

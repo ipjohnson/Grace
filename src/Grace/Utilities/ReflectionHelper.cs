@@ -10,8 +10,6 @@ namespace Grace.Utilities
     /// </summary>
     public static class ReflectionHelper
     {
-
-
         /// <summary>
         /// A helper to check to see if a generic parameter type meets the specified constraints
         /// </summary>
@@ -96,7 +94,6 @@ namespace Grace.Utilities
         /// </summary>
         /// <param name="exportedType"></param>
         /// <param name="requestedType"></param>
-        /// <returns></returns>
         public static Type CreateClosedExportTypeFromRequestingType(Type exportedType, Type requestedType)
         {
             if (requestedType.GetTypeInfo().IsInterface)
@@ -125,7 +122,6 @@ namespace Grace.Utilities
         /// Get the type for a specific MemberInfo
         /// </summary>
         /// <param name="memberInfo"></param>
-        /// <returns></returns>
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
             if (memberInfo is PropertyInfo propertyInfo)
@@ -139,13 +135,6 @@ namespace Grace.Utilities
             }
 
             throw new NotSupportedException($"Not supported for MemberInfo of type: {memberInfo.GetType().Name}");
-        }
-
-
-        [Obsolete("This method name has a typo and will be removed at some point. Please use GetMemberType")]
-        public static Type GetMemeberType(this MemberInfo memberInfo)
-        {
-            return GetMemberType(memberInfo);
         }
 
         private static Type CreateClosedExportTypeFromClassRequestingType(Type exportedType, Type requestedType)
@@ -169,9 +158,7 @@ namespace Grace.Utilities
 
                 if (parentType != null)
                 {
-                    Dictionary<Type, Type> parameterTypeToRealTypeMap;
-
-                    if (TypeMeetRequirements(exportedType, requestedType, parentType, out parameterTypeToRealTypeMap))
+                    if (TypeMeetRequirements(requestedType, parentType, out var parameterTypeToRealTypeMap))
                     {
                         returnType = CreateClosedTypeWithParameterMap(exportedType, parameterTypeToRealTypeMap);
                     }
@@ -192,9 +179,7 @@ namespace Grace.Utilities
 
             foreach (var @interface in interfaces)
             {
-                Dictionary<Type, Type> parameterTypeToRealTypeMap;
-
-                if (TypeMeetRequirements(exportedType, requestedType, @interface, out parameterTypeToRealTypeMap))
+                if (TypeMeetRequirements(requestedType, @interface, out var parameterTypeToRealTypeMap))
                 {
                     returnType = CreateClosedTypeWithParameterMap(exportedType, parameterTypeToRealTypeMap);
 
@@ -284,7 +269,7 @@ namespace Grace.Utilities
             return exportedType.MakeGenericType(closingTypes.ToArray());
         }
 
-        private static bool TypeMeetRequirements(Type exportedType, Type requestedType, Type @interface, out Dictionary<Type, Type> parameterTypeToRealTypeMap)
+        private static bool TypeMeetRequirements(Type requestedType, Type @interface, out Dictionary<Type, Type> parameterTypeToRealTypeMap)
         {
             var returValue = true;
             var interfaceTypes = @interface.GenericTypeArguments;
@@ -316,6 +301,5 @@ namespace Grace.Utilities
 
             return returValue;
         }
-
     }
 }

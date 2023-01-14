@@ -107,12 +107,9 @@ namespace Grace.DependencyInjection.Impl
         /// Get data from context, returns null if not found
         /// </summary>
         /// <param name="key">key</param>
-        /// <returns></returns>
         public object GetExtraData(object key)
         {
-            var stringKey = key as string;
-
-            if (stringKey != null)
+            if (key is string stringKey)
             {
                 return _extraDataProperties.GetValueOrDefault(stringKey) ??
                        _extraDataValues.GetValueOrDefault(key);
@@ -169,7 +166,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Clone the extra data provider
         /// </summary>
-        /// <returns></returns>
         public IInjectionContext Clone()
         {
             return new InjectionContext

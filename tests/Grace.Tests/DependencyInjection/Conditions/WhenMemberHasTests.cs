@@ -13,7 +13,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
         }
 
         [Fact]
-        public void WhenMemeberHas_Property_Attributed()
+        public void WhenMemberHas_Property_Attributed()
         {
             var container = new DependencyInjectionContainer();
 

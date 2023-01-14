@@ -20,7 +20,7 @@ namespace Grace.DependencyInjection.Impl
     }
 
     /// <summary>
-    /// attribute dicovery service
+    /// attribute discovery service
     /// </summary>
     public class AttributeDiscoveryService : IAttributeDiscoveryService
     {
@@ -48,19 +48,15 @@ namespace Grace.DependencyInjection.Impl
 
             Attribute[] attributes;
 
-            var type = value as Type;
-
-            if (type != null)
+            if (value is Type type)
             {
-                attributes = type.GetTypeInfo().GetCustomAttributes()?.ToArray();
+                attributes = type.GetTypeInfo().GetCustomAttributes().ToArray();
             }
             else
             {
-                var parameterInfo = value as ParameterInfo;
-
-                if (parameterInfo != null)
+                if (value is ParameterInfo parameterInfo)
                 {
-                    attributes = parameterInfo.GetCustomAttributes()?.ToArray();
+                    attributes = parameterInfo.GetCustomAttributes().ToArray();
                 }
                 else
                 {
@@ -68,7 +64,7 @@ namespace Grace.DependencyInjection.Impl
 
                     if (memberInfo != null)
                     {
-                        attributes = memberInfo.GetCustomAttributes<Attribute>()?.ToArray();
+                        attributes = memberInfo.GetCustomAttributes<Attribute>().ToArray();
 
                     }
                     else
@@ -76,10 +72,10 @@ namespace Grace.DependencyInjection.Impl
                         throw new NotSupportedException(
                             $"Getting attributes on type {value.GetType().Name} is not supported");
                     }
-               }
+                }
             }
 
-            if (attributes == null || attributes.Length == 0)
+            if (attributes.Length == 0)
             {
                 return ImmutableLinkedList<Attribute>.Empty;
             }

@@ -1,6 +1,4 @@
-﻿using Grace.Tests.Classes.Simple;
-
-namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.Tests.Classes.Simple
 {
 	public interface IOpenGenericPartiallyClosedInterface<T,T2,T3,T4>
 	{

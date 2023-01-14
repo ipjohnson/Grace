@@ -33,7 +33,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var result = request.Services.ExpressionBuilder.DecorateExportStrategy(scope, request, this);
@@ -92,7 +91,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope,
             IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
@@ -115,7 +113,6 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         protected abstract IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle);
 
     }

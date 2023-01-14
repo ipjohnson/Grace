@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET6_0_OR_GREATER
 using System.Threading.Tasks;
+#endif
 
 namespace Grace.Tests.Classes.Simple
 {
@@ -21,7 +23,7 @@ namespace Grace.Tests.Classes.Simple
         public event EventHandler<EventArgs> Disposing;
     }
 
-#if NET5_0
+#if NET6_0_OR_GREATER
     public class AsyncDisposableService : IDisposableService, IAsyncDisposable
     {
         public ValueTask DisposeAsync()

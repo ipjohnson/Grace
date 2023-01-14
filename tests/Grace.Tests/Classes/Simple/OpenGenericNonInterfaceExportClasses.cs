@@ -1,4 +1,4 @@
-﻿namespace Grace.UnitTests.Classes.Simple
+﻿namespace Grace.Tests.Classes.Simple
 {
 	public class BaseGenericClass<T, T2, T3, T4>
 	{

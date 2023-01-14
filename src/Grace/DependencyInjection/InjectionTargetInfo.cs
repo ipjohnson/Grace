@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection
         private readonly IAttributeDiscoveryService _attributeDiscoveryService;
 
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="attributeDiscoveryService"></param>
         /// <param name="injectionType"></param>
@@ -86,15 +86,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Attributes on the Constructor, Method, or Property being injected
         /// </summary>
-        public IEnumerable<Attribute> InjectionMemberAttributes
-        {
-            get
-            {
-                var parameterInfo = InjectionTarget as ParameterInfo;
-                
-                return _attributeDiscoveryService.GetAttributes(parameterInfo != null ? parameterInfo.Member : InjectionTarget);
-            }
-        }
+        public IEnumerable<Attribute> InjectionMemberAttributes => _attributeDiscoveryService.GetAttributes(InjectionTarget is ParameterInfo parameterInfo ? parameterInfo.Member : InjectionTarget);
 
         /// <summary>
         /// Locate type being used

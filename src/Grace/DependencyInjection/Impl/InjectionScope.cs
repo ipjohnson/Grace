@@ -110,7 +110,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="type">type to locate</param>
         /// <param name="consider"></param>
         /// <param name="key">key to use while locating</param>
-        /// <returns></returns>
         public override bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
         {
             return InternalFieldStorage.CanLocateTypeService.CanLocate(this, type, consider, key);
@@ -190,7 +189,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider">filter out exports you don't want</param>
         /// <param name="withKey">key to use while locating</param>
         /// <param name="isDynamic">skip cache and look at all exports</param>
-        /// <returns></returns>
         public override bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             var context = CreateInjectionContextFromExtraData(typeof(T), extraData);
@@ -237,7 +235,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return ((IInjectionScope)this).LocateByNameFromChildScope(this,
@@ -250,7 +247,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="name"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return ((IInjectionScope)this).InternalLocateAllByName(this,
@@ -267,7 +263,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="value"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public override bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
         {
             value = ((IInjectionScope)this).LocateByNameFromChildScope(this,
@@ -280,7 +275,6 @@ namespace Grace.DependencyInjection.Impl
         /// Being lifetime scope
         /// </summary>
         /// <param name="scopeName"></param>
-        /// <returns></returns>
         public override IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
             return new LifetimeScope(this, this, scopeName, DelegateCache);
@@ -290,7 +284,6 @@ namespace Grace.DependencyInjection.Impl
         /// Create injection context
         /// </summary>
         /// <param name="extraData">extra data</param>
-        /// <returns></returns>
         public override IInjectionContext CreateContext(object extraData = null)
         {
             return InternalFieldStorage.InjectionContextCreator.CreateContext(extraData);
@@ -434,7 +427,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="allowNull"></param>
-        /// <returns></returns>
         object IInjectionScope.LocateByNameFromChildScope(IExportLocatorScope childScope, IDisposalScope disposalScope,
             string name,
             object extraData, ActivationStrategyFilter consider, bool allowNull)
@@ -501,7 +493,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        /// <returns></returns>
         List<T> IInjectionScope.InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer)
         {
             var returnList = new List<T>();
@@ -527,9 +518,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var injectionParent = Parent as IInjectionScope;
-
-            if (injectionParent != null)
+            if (Parent is IInjectionScope injectionParent)
             {
                 returnList.AddRange(injectionParent.InternalLocateAll<T>(scope, disposalScope, type, context, consider, null));
             }
@@ -550,7 +539,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="exportName"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
-        /// <returns></returns>
         List<object> IInjectionScope.InternalLocateAllByName(IExportLocatorScope scope, IDisposalScope disposalScope, string exportName, object extraData, ActivationStrategyFilter consider)
         {
             var context = CreateContext(extraData);
@@ -570,9 +558,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var injectionScopeParent = Parent as IInjectionScope;
-
-            if (injectionScopeParent != null)
+            if (Parent is IInjectionScope injectionScopeParent)
             {
                 returnList.AddRange(injectionScopeParent.InternalLocateAllByName(scope, disposalScope, exportName, context, consider));
             }
@@ -586,7 +572,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="configure">configure scope</param>
         /// <param name="scopeName">scope name </param>
-        /// <returns></returns>
         public IInjectionScope CreateChildScope(Action<IExportRegistrationBlock> configure = null, string scopeName = "")
         {
             var newScope = new InjectionScope(ScopeConfiguration.Clone(), this, scopeName);
@@ -609,7 +594,6 @@ namespace Grace.DependencyInjection.Impl
         /// Creates a new configuration object
         /// </summary>
         /// <param name="configuration"></param>
-        /// <returns></returns>
         protected static IInjectionScopeConfiguration CreateConfiguration(Action<InjectionScopeConfiguration> configuration)
         {
             var configurationObject = new InjectionScopeConfiguration();
@@ -624,7 +608,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="type"></param>
         /// <param name="extraData"></param>
-        /// <returns></returns>
         protected virtual IInjectionContext CreateInjectionContextFromExtraData(Type type, object extraData)
         {
             return CreateContext(extraData);

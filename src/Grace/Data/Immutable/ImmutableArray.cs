@@ -15,7 +15,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
-        /// <returns></returns>
         public static ImmutableArray<T> Create<T>(params T[] array)
         {
             if (array == null || array.Length == 0)
@@ -47,7 +46,6 @@ namespace Grace.Data.Immutable
         /// <typeparam name="T"></typeparam>
         /// <param name="ts"></param>
         /// <param name="count"></param>
-        /// <returns></returns>
         public static ImmutableArray<T> From<T>(T[] ts, int count = -1)
         {
             if (ts == null) throw new ArgumentNullException(nameof(ts));
@@ -74,19 +72,14 @@ namespace Grace.Data.Immutable
     /// Immutable List that implements IReadOnlyList(T)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ImmutableArray<T> : IReadOnlyList<T>, IEqualityComparer<ImmutableArray<T>>, IStructuralComparable, IStructuralEquatable
+    public readonly struct ImmutableArray<T> : IReadOnlyList<T>, IEqualityComparer<ImmutableArray<T>>, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] _list;
 
         /// <summary>
         /// Empty list
         /// </summary>
-        public static readonly ImmutableArray<T> Empty;
-
-        static ImmutableArray()
-        {
-            Empty = new ImmutableArray<T>(new T[0]);
-        }
+        public static readonly ImmutableArray<T> Empty = new ImmutableArray<T>(Array.Empty<T>());
 
         internal ImmutableArray(T[] list)
         {
@@ -115,7 +108,6 @@ namespace Grace.Data.Immutable
         /// Contains specified value
         /// </summary>
         /// <param name="item"></param>
-        /// <returns></returns>
         public bool Contains(T item)
         {
             // ReSharper disable once ForCanBeConvertedToForeach
@@ -160,7 +152,6 @@ namespace Grace.Data.Immutable
         /// Index of item
         /// </summary>
         /// <param name="item"></param>
-        /// <returns></returns>
         public int IndexOf(T item)
         {
             for (var i = 0; i < _list.Length; i++)
@@ -202,7 +193,6 @@ namespace Grace.Data.Immutable
         /// Add and IEnumerable to this list
         /// </summary>
         /// <param name="enumerable"></param>
-        /// <returns></returns>
         public ImmutableArray<T> AddRange(IEnumerable<T> enumerable)
         {
             return AddRange(enumerable.ToArray());
@@ -212,7 +202,6 @@ namespace Grace.Data.Immutable
         /// Adds a range of T to immutable list creating a new one
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
         public ImmutableArray<T> AddRange(params T[] value)
         {
             var listLength = _list.Length;
@@ -230,7 +219,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
         public ImmutableArray<T> Insert(int index, T value)
         {
             var listLength = _list.Length;
@@ -258,7 +246,6 @@ namespace Grace.Data.Immutable
         /// Implicit conversion from List(T)
         /// </summary>
         /// <param name="list"></param>
-        /// <returns></returns>
         public static explicit operator ImmutableArray<T>(T[] list)
         {
             if (list == null || list.Length == 0)
@@ -273,7 +260,6 @@ namespace Grace.Data.Immutable
         /// Implicit conversion to List(T)
         /// </summary>
         /// <param name="list"></param>
-        /// <returns></returns>
         public static explicit operator T[] (ImmutableArray<T> list)
         {
             if (list._list != null)
@@ -288,7 +274,6 @@ namespace Grace.Data.Immutable
         /// Equals override
         /// </summary>
         /// <param name="obj"></param>
-        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj is ImmutableArray<T> immutableArray)
@@ -302,7 +287,6 @@ namespace Grace.Data.Immutable
         /// <summary>
         /// Get hashcode of array
         /// </summary>
-        /// <returns></returns>
         public override int GetHashCode()
         {
             if (_list != null)
@@ -318,7 +302,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="other"></param>
         /// <param name="comparer"></param>
-        /// <returns></returns>
         int IStructuralComparable.CompareTo(object other, IComparer comparer)
         {
             var compareArray = other as Array;
@@ -440,7 +423,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <returns></returns>
         public static bool operator !=(ImmutableArray<T> left, ImmutableArray<T> right)
         {
             return !left.Equals(right);
@@ -452,7 +434,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <returns></returns>
         public static bool operator ==(ImmutableArray<T>? left, ImmutableArray<T>? right)
         {
             return left.GetValueOrDefault().Equals(right.GetValueOrDefault());
@@ -463,7 +444,6 @@ namespace Grace.Data.Immutable
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <returns></returns>
         public static bool operator !=(ImmutableArray<T>? left, ImmutableArray<T>? right)
         {
             return !left.GetValueOrDefault().Equals(right.GetValueOrDefault());

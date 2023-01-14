@@ -11,7 +11,7 @@ namespace Grace.Tests.Diagnostics
         {
             var debugger = new ImmutableLinkedListDebugView<int>(ImmutableLinkedList<int>.Empty.Add(5));
 
-            Assert.Equal(1, debugger.Items.Length);
+            Assert.Single(debugger.Items);
             Assert.Equal(5, debugger.Items[0]);
         }
     }

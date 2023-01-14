@@ -90,9 +90,7 @@ namespace Grace.DependencyInjection.Conditions
             {
                 foreach (var attribute in targetInfo.InjectionTypeAttributes)
                 {
-                    var attrT = attribute as TAttribute;
-
-                    if (attrT != null && (_filter == null || _filter(attrT)))
+                    if (attribute is TAttribute attrT && (_filter == null || _filter(attrT)))
                     {
                         return true;
                     }

@@ -22,11 +22,11 @@ namespace Grace.Tests.Classes.Simple
 
     public class SimpleCompositePattern1 : ICompositePattern
     {
-        public int Count { get; } = 1;
+        public int Count => 1;
     }
 
     public class SimpleCompositePattern2 : ICompositePattern
     {
-        public int Count { get; } = 2;
+        public int Count => 2;
     }
 }

@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
+#if NET6_0_OR_GREATER
+using System.Threading.Tasks;
+#endif
 
 namespace Grace.Tests.DependencyInjection.DisposableTests
 {
+
     public class DisposalCleanupTests
     {
-#if NET5_0
+#if NET6_0_OR_GREATER
         [Fact]
         public async Task Export_AsyncDisposableCleanup_Called()
         {

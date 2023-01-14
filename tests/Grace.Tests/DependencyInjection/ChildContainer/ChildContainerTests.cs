@@ -19,9 +19,9 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
 
             var disposedCalled = false;
 
-            using (var childContianer = container.CreateChildScope())
+            using (var childContainer = container.CreateChildScope())
             {
-                var disposable = childContianer.Locate<IDisposableService>();
+                var disposable = childContainer.Locate<IDisposableService>();
 
                 Assert.NotNull(disposable);
 
@@ -43,9 +43,9 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
 
             var disposedCalled = false;
 
-            using (var childContianer = container.CreateChildScope())
+            using (var childContainer = container.CreateChildScope())
             {
-                var disposable = childContianer.Locate<IDisposableService>();
+                var disposable = childContainer.Locate<IDisposableService>();
 
                 Assert.NotNull(disposable);
 
@@ -87,11 +87,8 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
             {
                 child.Configure(c =>
                 {
-                    c.ExportInstance<IBasicService>(() => new BasicService {Count = 10});
-                    c.ExportInstance(scope =>
-                    {
-                        return new DependentService<IBasicService>(scope.Locate<IBasicService>());
-                    });
+                    c.ExportFactory<IBasicService>(() => new BasicService { Count = 10 });
+                    c.ExportFactory<IExportLocatorScope, DependentService<IBasicService>>(scope => new DependentService<IBasicService>(scope.Locate<IBasicService>()));
                 });
 
                 var instance = child.Locate<DependentService<IBasicService>>();

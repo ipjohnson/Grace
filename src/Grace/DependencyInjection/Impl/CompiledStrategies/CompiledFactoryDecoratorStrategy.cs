@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -8,7 +6,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
     public class CompiledFactoryDecoratorStrategy<T> : ConfigurableActivationStrategy, ICompiledDecoratorStrategy
     {
-        private Delegate _delegate;
+        private readonly Delegate _delegate;
 
         /// <summary>
         /// Default constructor
@@ -31,7 +29,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope,
             IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
@@ -60,7 +57,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult InternalGetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return ExpressionUtilities.CreateExpressionForDelegate(_delegate, false, InjectionScope, request, this);

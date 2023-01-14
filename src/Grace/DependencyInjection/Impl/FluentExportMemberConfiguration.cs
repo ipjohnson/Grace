@@ -25,7 +25,6 @@ namespace Grace.DependencyInjection.Impl
         /// Control what type the member is exported as
         /// </summary>
         /// <param name="exportType">export type</param>
-        /// <returns></returns>
         public IFluentExportMemberConfiguration<T> WithType(Type exportType)
         {
             _exportStrategy.AddExportAs(exportType);
@@ -37,7 +36,6 @@ namespace Grace.DependencyInjection.Impl
         /// Add a condition for property export
         /// </summary>
         /// <param name="condition">condition to add</param>
-        /// <returns></returns>
         public IFluentExportMemberConfiguration<T> WithCondition(ICompiledCondition condition)
         {
             _exportStrategy.AddCondition(condition);

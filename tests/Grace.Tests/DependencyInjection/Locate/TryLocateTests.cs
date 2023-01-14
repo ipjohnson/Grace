@@ -2,7 +2,7 @@
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
-namespace Grace.Tests.DependencyInjection.TryLocate
+namespace Grace.Tests.DependencyInjection.Locate
 {
     public class TryLocateTests
     {
@@ -13,9 +13,7 @@ namespace Grace.Tests.DependencyInjection.TryLocate
 
             container.Configure(c => c.Export<BasicService>().As<IBasicService>());
 
-            IBasicService service;
-
-            container.TryLocate(out service);
+            container.TryLocate(out IBasicService service);
 
             Assert.NotNull(service);
         }
@@ -25,9 +23,7 @@ namespace Grace.Tests.DependencyInjection.TryLocate
         {
             var container = new DependencyInjectionContainer();
 
-            IBasicService service;
-
-            container.TryLocate(out service);
+            container.TryLocate(out IBasicService service);
 
             Assert.Null(service);
         }

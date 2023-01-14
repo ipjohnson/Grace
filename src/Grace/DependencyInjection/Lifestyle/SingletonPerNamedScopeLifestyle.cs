@@ -43,7 +43,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         public ICompiledLifestyle Clone()
         {
             return new SingletonPerNamedScopeLifestyle(_scopeName);
@@ -55,7 +54,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         public IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             if (CompiledDelegate == null)
@@ -108,7 +106,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="context"></param>
         /// <param name="staticContext"></param>
         /// <param name="shareContext"></param>
-        /// <returns></returns>
         public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
             string uniqueId,
             string scopeName,

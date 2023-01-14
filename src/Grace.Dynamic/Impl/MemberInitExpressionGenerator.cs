@@ -5,30 +5,28 @@ using System.Reflection.Emit;
 namespace Grace.Dynamic.Impl
 {
     /// <summary>
-    /// Interface for generating IL for a MemeberInitExpression
+    /// Interface for generating IL for a MemberInitExpression
     /// </summary>
-    public interface IMemeberInitExpressionGenerator
+    public interface IMemberInitExpressionGenerator
     {
         /// <summary>
         /// Generate IL for member init expression
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, MemberInitExpression expression);
     }
 
     /// <summary>
     /// Class for generating IL for MemberInit expression
     /// </summary>
-    public class MemeberInitExpressionGenerator : IMemeberInitExpressionGenerator
+    public class MemberInitExpressionGenerator : IMemberInitExpressionGenerator
     {
         /// <summary>
         /// Generate IL for member init expression
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression</param>
-        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, MemberInitExpression expression)
         {
             if (!request.TryGenerateIL(request, expression.NewExpression))

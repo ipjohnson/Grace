@@ -12,7 +12,6 @@ namespace Grace.DependencyInjection
         /// Process attributes on type and configure strategy based on attributes
         /// </summary>
         /// <param name="strategy">strategy</param>
-        /// <returns></returns>
         public static IConfigurableActivationStrategy ProcessAttributeForStrategy(this IConfigurableActivationStrategy strategy)
         {
             strategy.InjectionScope.ScopeConfiguration.Implementation.Locate<IActivationStrategyAttributeProcessor>().ProcessAttributeForConfigurableActivationStrategy(strategy);

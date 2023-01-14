@@ -3,7 +3,7 @@
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
 {
     /// <summary>
-    /// Strategy that represents Func with no arguemnts
+    /// Strategy that represents Func with no arguments
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class FuncInstanceExportStrategy<T> : DelegateBaseExportStrategy<Func<T>>

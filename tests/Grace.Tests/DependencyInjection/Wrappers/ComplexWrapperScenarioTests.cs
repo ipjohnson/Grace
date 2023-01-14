@@ -88,7 +88,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             var instances = enumerableFunc.Value().ToArray();
 
             Assert.NotNull(instances);
-            Assert.Equal(1, instances.Length);
+            Assert.Single(instances);
             Assert.IsType<DisposableService>(instances[0].Value.Value);
             Assert.Equal('A', instances[0].Metadata["Key"]);
 

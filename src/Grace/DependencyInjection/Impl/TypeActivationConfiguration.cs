@@ -14,14 +14,14 @@ namespace Grace.DependencyInjection.Impl
     public class TypeActivationConfiguration
     {
         /// <summary>
-        /// list of cosntructor parameters
+        /// list of constructor parameters
         /// </summary>
         protected ImmutableLinkedList<ConstructorParameterInfo> ConstructorParametersList = ImmutableLinkedList<ConstructorParameterInfo>.Empty;
 
         /// <summary>
         /// list of enrichment delegates
         /// </summary>
-        protected ImmutableLinkedList<object> EncrichmentDelegateList = ImmutableLinkedList<object>.Empty;
+        protected ImmutableLinkedList<object> EnrichmentDelegateList = ImmutableLinkedList<object>.Empty;
 
         /// <summary>
         /// list of member injection selectors
@@ -102,7 +102,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// List of enrichment delegates
         /// </summary>
-        public IEnumerable<object> EnrichmentDelegates => EncrichmentDelegateList.Reverse();
+        public IEnumerable<object> EnrichmentDelegates => EnrichmentDelegateList.Reverse();
 
         /// <summary>
         /// Add enrichment delegate
@@ -110,7 +110,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="enrichmentDelegate"></param>
         public void EnrichmentDelegate(object enrichmentDelegate)
         {
-            EncrichmentDelegateList = EncrichmentDelegateList.Add(enrichmentDelegate);
+            EnrichmentDelegateList = EnrichmentDelegateList.Add(enrichmentDelegate);
         }
 
         /// <summary>
@@ -161,12 +161,11 @@ namespace Grace.DependencyInjection.Impl
         /// Clone configuration
         /// </summary>
         /// <param name="activationType"></param>
-        /// <returns></returns>
         public TypeActivationConfiguration CloneToType(Type activationType)
         {
             return new TypeActivationConfiguration(activationType, ActivationStrategy)
             {
-                EncrichmentDelegateList = EncrichmentDelegateList,
+                EnrichmentDelegateList = EnrichmentDelegateList,
                 MemberInjectorList = MemberInjectorList,
                 ConstructorParametersList = ConstructorParametersList,
                 ActivationMethod = ActivationMethod,

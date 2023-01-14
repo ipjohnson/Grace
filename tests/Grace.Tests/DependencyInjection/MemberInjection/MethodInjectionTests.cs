@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
@@ -124,11 +123,11 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
 
         private class MethodInjectionSpecifyParameterInfoSelector : IActivationStrategyInspector, IMemberInjectionSelector
         {
-            private bool vooDooIsRequired;
+            private readonly bool _vooDooIsRequired;
 
             public MethodInjectionSpecifyParameterInfoSelector(bool vooDooIsRequired = false)
             {
-                this.vooDooIsRequired = vooDooIsRequired;
+                this._vooDooIsRequired = vooDooIsRequired;
             }
 
             public IEnumerable<MethodInjectionInfo> GetMethods(
@@ -154,7 +153,7 @@ namespace Grace.Tests.DependencyInjection.MemberInjection
                 methods[1].MethodParameterInfo(new MethodParameterInfo("basicService")
                 {
                     LocateKey = "VooDoo",
-                    IsRequired = vooDooIsRequired,
+                    IsRequired = _vooDooIsRequired,
                 });
 
                 return methods;

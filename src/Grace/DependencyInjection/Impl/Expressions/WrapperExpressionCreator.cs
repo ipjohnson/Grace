@@ -15,7 +15,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for request</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>
@@ -25,7 +24,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="type"></param>
         /// <param name="request"></param>
         /// <param name="wrappedType"></param>
-        /// <returns></returns>
         ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType);
 
         /// <summary>
@@ -33,7 +31,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         bool SetupWrappersForRequest(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
@@ -47,7 +44,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for request</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (SetupWrappersForRequest(scope, request))
@@ -67,7 +63,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="type"></param>
         /// <param name="request"></param>
         /// <param name="wrappedType"></param>
-        /// <returns></returns>
         public ImmutableLinkedList<IActivationPathNode> GetWrappers(IInjectionScope scope, Type type, IActivationExpressionRequest request, out Type wrappedType)
         {
             var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(type);
@@ -131,12 +126,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public bool SetupWrappersForRequest(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            Type wrappedType;
-
-            var wrappers = GetWrappers(scope, request.ActivationType, request, out wrappedType);
+            var wrappers = GetWrappers(scope, request.ActivationType, request, out var wrappedType);
 
             if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
             {

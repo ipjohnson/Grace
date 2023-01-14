@@ -14,7 +14,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="expression">expression</param>
         /// <param name="constants">list of constants</param>
-        /// <returns></returns>
         bool GetConstantExpressions(Expression expression, List<object> constants);
     }
 
@@ -28,7 +27,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="expression">expression</param>
         /// <param name="constants">list of constants</param>
-        /// <returns></returns>
         public bool GetConstantExpressions(Expression expression, List<object> constants)
         {
             if (expression == null)
@@ -67,15 +65,12 @@ namespace Grace.Dynamic.Impl
 
         private bool ProcessDefaultExpressionType(Expression expression, List<object> constants)
         {
-            var unaryExpression = expression as UnaryExpression;
-            if (unaryExpression != null)
+            if (expression is UnaryExpression unaryExpression)
             {
                 return GetConstantExpressions(unaryExpression.Operand, constants);
             }
 
-            var binaryExpression = expression as BinaryExpression;
-
-            if (binaryExpression != null)
+            if (expression is BinaryExpression binaryExpression)
             {
                 return GetConstantExpressions(binaryExpression.Left, constants) &&
                        GetConstantExpressions(binaryExpression.Right, constants);

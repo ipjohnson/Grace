@@ -44,7 +44,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// Expression that represents the known value
         /// </summary>
         /// <param name="request">request for expression</param>
-        /// <returns></returns>
         public IActivationExpressionResult ValueExpression(IActivationExpressionRequest request)
         {
             return request.Services.Compiler.CreateNewResult(request, _expression);

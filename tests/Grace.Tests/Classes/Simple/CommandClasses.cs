@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Grace.Tests.Classes.Simple
+﻿namespace Grace.Tests.Classes.Simple
 {
-    public interface ICommand<T>
+    public interface ICommand<in T>
     {
         void DoSomething(T value);
     }
@@ -42,14 +38,14 @@ namespace Grace.Tests.Classes.Simple
     {
         public void DoSomething(int value)
         {
-
+            // No content
         }
     }
 
     public class LoggingComand<T> : ICommand<T>
     {
-        private ICommand<T> _command;
-        private IBasicService _basicService;
+        private readonly ICommand<T> _command;
+        private readonly IBasicService _basicService;
 
         public LoggingComand(IBasicService basicService, ICommand<T> command)
         {
@@ -66,8 +62,8 @@ namespace Grace.Tests.Classes.Simple
 
     public class ValidatingCommand<T> : ICommand<T>
     {
-        private ICommand<T> _command;
-        private IBasicService _basicService;
+        private readonly ICommand<T> _command;
+        private readonly IBasicService _basicService;
 
         public ValidatingCommand( IBasicService basicService, ICommand<T> command)
         {

@@ -39,9 +39,7 @@ namespace Grace.Tests.DependencyInjection.Named
 
             container.Configure(c => c.Export<BasicService>().AsName("BasicService"));
 
-            object instance;
-
-            var returnValue = container.TryLocateByName("BasicService", out instance);
+            var returnValue = container.TryLocateByName("BasicService", out var instance);
 
             Assert.True(returnValue);
             Assert.NotNull(instance);
@@ -52,10 +50,8 @@ namespace Grace.Tests.DependencyInjection.Named
         public void TryLocateByName_Cant_Find()
         {
             var container = new DependencyInjectionContainer();
-            
-            object instance;
 
-            var returnValue = container.TryLocateByName("BasicService", out instance);
+            var returnValue = container.TryLocateByName("BasicService", out var instance);
 
             Assert.False(returnValue);
             Assert.Null(instance);

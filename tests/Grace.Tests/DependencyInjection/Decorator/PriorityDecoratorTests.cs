@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -68,7 +65,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
         public class DecoratorOne : IBasicService
         {
-            private IBasicService _basicService;
+            private readonly IBasicService _basicService;
 
             public DecoratorOne(IBasicService basicService)
             {
@@ -90,7 +87,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
         public class DecoratorTwo : IBasicService
         {
-            private IBasicService _basicService;
+            private readonly IBasicService _basicService;
 
             public DecoratorTwo(IBasicService basicService)
             {

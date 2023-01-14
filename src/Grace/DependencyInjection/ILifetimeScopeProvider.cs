@@ -14,7 +14,6 @@ namespace Grace.DependencyInjection
         /// <param name="parentScope"></param>
         /// <param name="scopeName"></param>
         /// <param name="activationStrategyDelegates"></param>
-        /// <returns></returns>
         IExportLocatorScope CreateScope(IExportLocatorScope parentScope, string scopeName, ImmutableHashTree<Type, ActivationStrategyDelegate>[] activationStrategyDelegates);
     }
 }

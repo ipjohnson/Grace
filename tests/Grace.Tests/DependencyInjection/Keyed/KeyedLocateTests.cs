@@ -78,8 +78,8 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             container.Configure(c =>
             {
-                c.ExportInstance((scope, context) => "Hello");
-                c.ExportInstance((scope, context) => "HelloAgain").AsKeyed<string>("Key");
+                c.ExportFactory(() => "Hello");
+                c.ExportFactory(() => "HelloAgain").AsKeyed<string>("Key");
             });
 
             Assert.Equal("Hello", container.Locate<string>());
@@ -105,7 +105,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 var simpleObject = container.Locate<ISimpleObject>(withKey: locateChar);
 
                 Assert.NotNull(simpleObject);
-                Assert.True(simpleObject.GetType().FullName.EndsWith(locateChar.ToString()));
+                Assert.EndsWith(locateChar.ToString(), simpleObject.GetType().FullName);
             }
         }
 
@@ -170,13 +170,13 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotNull(instance);
             var array = instance.Services.ToArray();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
 
 
         [Fact]
-        public void Keyed_And_NonKeyed_With_Differnt_Lifestyle()
+        public void Keyed_And_NonKeyed_With_Different_Lifestyle()
         {
             var container = new DependencyInjectionContainer();
 
@@ -210,7 +210,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
         public class FactoryClass
         {
-            private KeyedLocateDelegate<string, DisposableService> _createDelegate;
+            private readonly KeyedLocateDelegate<string, DisposableService> _createDelegate;
 
             public FactoryClass(KeyedLocateDelegate<string, DisposableService> createDelegate)
             {
@@ -224,7 +224,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
-        public void Keyed_And_NonKeyed_Factory_With_Differnt_Lifestyle()
+        public void Keyed_And_NonKeyed_Factory_With_Different_Lifestyle()
         {
             var container = new DependencyInjectionContainer();
 

@@ -6,7 +6,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy for creating a Func with 5 arguements
+    /// Strategy for creating a Func with 5 arguments
     /// </summary>
     public class FuncFiveArgWrapperStrategy : BaseWrapperStrategy
     {
@@ -40,7 +40,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(FuncExpression<,,,,,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
@@ -60,7 +59,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
         /// <summary>
-        /// Helper class that creates func with 5 arguements
+        /// Helper class that creates func with 5 arguments
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>

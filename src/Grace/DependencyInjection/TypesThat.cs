@@ -45,7 +45,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="attributeType"></param>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration HaveAttribute(Type attributeType, Func<Attribute, bool> attributeFilter = null)
         {
             return new TypesThatConfiguration().HaveAttribute(attributeType, attributeFilter);
@@ -56,7 +55,6 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {
@@ -67,7 +65,6 @@ namespace Grace.DependencyInjection
         /// Provides a type filter for attributes, if true then the type will be used
         /// </summary>
         /// <param name="consider"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration HaveAttribute(Func<Type, bool> consider)
         {
             return new TypesThatConfiguration().HaveAttribute(consider);
@@ -77,7 +74,6 @@ namespace Grace.DependencyInjection
         /// Creates a new type filter method that returns true if the Name of the type starts with name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration StartWith(string name)
         {
             return new TypesThatConfiguration().StartWith(name);
@@ -87,7 +83,6 @@ namespace Grace.DependencyInjection
         /// Creates a new type filter that returns true if the Name ends with the provided string
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration EndWith(string name)
         {
             return new TypesThatConfiguration().EndWith(name);
@@ -97,7 +92,6 @@ namespace Grace.DependencyInjection
         /// Creates a new type filter that returns true if the Name contains the provided string
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration Contains(string name)
         {
             return new TypesThatConfiguration().Contains(name);
@@ -108,29 +102,26 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="namespace"></param>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration AreInTheSameNamespace(string @namespace, bool includeSubnamespaces = false)
         {
             return new TypesThatConfiguration().AreInTheSameNamespace(@namespace, includeSubnamespaces);
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <param name="type"></param>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration AreInTheSameNamespaceAs(Type type, bool includeSubnamespaces = false)
         {
             return new TypesThatConfiguration().AreInTheSameNamespaceAs(type, includeSubnamespaces);
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="includeSubnamespaces"></param>
-        /// <returns></returns>
         public static TypesThatConfiguration AreInTheSameNamespaceAs<T>(bool includeSubnamespaces = false)
         {
             return new TypesThatConfiguration().AreInTheSameNamespaceAs<T>(includeSubnamespaces);
@@ -215,7 +206,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Not value
         /// </summary>
-        /// <returns></returns>
         public static TypesThatConfiguration Not()
         {
             return new TypesThatConfiguration().Not;

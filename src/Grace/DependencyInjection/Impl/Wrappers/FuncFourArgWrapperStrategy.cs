@@ -40,7 +40,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var closedClass = typeof(FuncExpression<,,,,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
@@ -60,7 +59,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
         /// <summary>
-        /// Helper class that creates Func with 4 arguements
+        /// Helper class that creates Func with 4 arguments
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>

@@ -122,7 +122,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
         public IInjectionScopeConfiguration Clone()
         {
             return new InjectionScopeConfiguration
@@ -143,7 +142,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Default interface filter
         /// </summary>
-        /// <returns></returns>
         public static bool DefaultInterfaceFilter(Type interfaceType, Type implementingType)
         {
             return interfaceType == typeof(IDisposable) ||

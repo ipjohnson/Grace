@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -90,7 +88,7 @@ namespace Grace.Tests.DependencyInjection.Generics
                 var injectionType = context.TargetInfo.InjectionType;
 
                 var locateType = typeLookup.GetOrAdd(injectionType,
-                    type => implementationType.MakeGenericType(injectionType));
+                    _ => implementationType.MakeGenericType(injectionType));
 
                 return (TService)scope.Locate(locateType);
             });

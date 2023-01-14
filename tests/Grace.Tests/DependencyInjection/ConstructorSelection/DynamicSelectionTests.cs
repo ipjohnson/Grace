@@ -168,7 +168,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             var instance = container.Locate<DynamicMultipleIntParameters>(new { secondValue = 10, firstValue = 5 });
 
             Assert.NotNull(instance);
-            Assert.Equal(instance.FirstValue, 5);
+            Assert.Equal(5, instance.FirstValue);
             Assert.Equal(10, instance.SecondValue);
         }
 
@@ -291,9 +291,9 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 StringProp = stringValue;
             }
 
-            public int NumProp { get; private set; }
+            public int NumProp { get; }
 
-            public string StringProp { get; private set; }
+            public string StringProp { get; }
         }
 
         [Fact]
@@ -308,7 +308,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             var myFunc = di.Locate<Func<string, int, IHaveMultipleConstructors>>();
 
-            var functioned = myFunc("funcString", 667);
+            _ = myFunc("funcString", 667);
         }
 
         public class BasicDependency 
@@ -355,7 +355,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             container.Configure(c =>
                 c.Export<DependentService<IInjectionScope>>().As<IDependentService<IInjectionScope>>());
 
-            var instance = container.Locate<IDependentService<IInjectionScope>>();
+            _ = container.Locate<IDependentService<IInjectionScope>>();
         }
 
         [Fact]
@@ -367,7 +367,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
 
             using (var childContainer = container.CreateChildScope(c => c.Export<BasicService>().As<IBasicService>()))
             {
-                var instance = childContainer.Locate<IDependentService<IBasicService>>();
+                _ = childContainer.Locate<IDependentService<IBasicService>>();
             }
         }
 
@@ -378,7 +378,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
                 
             container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.Singleton());
 
-            var instance = container.Locate<IDisposableService>();
+            _ = container.Locate<IDisposableService>();
         }
     }
 }

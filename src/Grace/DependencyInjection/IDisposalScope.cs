@@ -6,13 +6,13 @@ namespace Grace.DependencyInjection
     /// Represents a scope that holds disposable object
     /// </summary>
     public interface IDisposalScope
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
         : IDisposable, IAsyncDisposable
 #else
         : IDisposable
 #endif
     {
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Add an object for disposal tracking
         /// </summary>

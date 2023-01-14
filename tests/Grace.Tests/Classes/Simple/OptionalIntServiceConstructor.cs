@@ -12,7 +12,7 @@
             SimpleObject = simpleObject;
         }
 
-        public ISimpleObject SimpleObject { get; private set; }
+        public ISimpleObject SimpleObject { get; }
     }
 
     public interface IOptionalIntServiceConstructor
@@ -32,9 +32,9 @@
             SimpleObject = simpleObject;
         }
 
-        public ISimpleObject SimpleObject { get; private set; }
+        public ISimpleObject SimpleObject { get; }
 
-        public int Value { get; private set; }
+        public int Value { get; }
     }
 
     public interface IOptionalStringConstructor
@@ -49,6 +49,6 @@
             Value = someString;
         }
 
-        public string Value { get; private set; }
+        public string Value { get; }
     }
 }

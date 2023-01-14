@@ -17,7 +17,6 @@ namespace Grace.DependencyInjection.Impl
         /// Are named a specific name
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public MembersThatConfiguration AreNamed(string name)
         {
             var notValue = GetNotAndingValue();
@@ -31,7 +30,6 @@ namespace Grace.DependencyInjection.Impl
         /// Member name starts with prefix
         /// </summary>
         /// <param name="prefix"></param>
-        /// <returns></returns>
         public MembersThatConfiguration StartsWith(string prefix)
         {
             var notValue = GetNotAndingValue();
@@ -45,7 +43,6 @@ namespace Grace.DependencyInjection.Impl
         /// Member name ends with
         /// </summary>
         /// <param name="postfix"></param>
-        /// <returns></returns>
         public MembersThatConfiguration EndsWith(string postfix)
         {
             var notValue = GetNotAndingValue();
@@ -59,7 +56,6 @@ namespace Grace.DependencyInjection.Impl
         /// Match a specific member
         /// </summary>
         /// <param name="matchMethod"></param>
-        /// <returns></returns>
         public MembersThatConfiguration Match(Func<MemberInfo, bool> matchMethod)
         {
             var notValue = GetNotAndingValue();
@@ -73,7 +69,6 @@ namespace Grace.DependencyInjection.Impl
         /// Is member a property that matches
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public MembersThatConfiguration AreProperty(Func<PropertyInfo, bool> filter = null)
         {
             var notValue = GetNotAndingValue();
@@ -97,10 +92,9 @@ namespace Grace.DependencyInjection.Impl
 
 
         /// <summary>
-        /// Matched is the Memember is a Method
+        /// Matched is the Member is a Method
         /// </summary>
         /// <param name="filter"></param>
-        /// <returns></returns>
         public MembersThatConfiguration AreMethod(Func<MethodInfo, bool> filter = null)
         {
             var notValue = GetNotAndingValue();
@@ -127,7 +121,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="attributeFilter"></param>
-        /// <returns></returns>
         public MembersThatConfiguration HaveAttribute<TAttribute>(Func<TAttribute, bool> attributeFilter = null)
             where TAttribute : Attribute
         {
@@ -142,10 +135,8 @@ namespace Grace.DependencyInjection.Impl
                     x =>
                     {
                         var returnValue = false;
-                        var attribute =
-                            x as TAttribute;
 
-                        if (attribute != null)
+                        if (x is TAttribute attribute)
                         {
                             returnValue = attributeFilter(attribute);
                         }

@@ -52,7 +52,6 @@ namespace Grace.DependencyInjection.Impl
         /// Get a lock object by a specific name
         /// </summary>
         /// <param name="lockName"></param>
-        /// <returns></returns>
         public object GetLockObject(string lockName)
         {
             return _locks.GetValueOrDefault(lockName) ??

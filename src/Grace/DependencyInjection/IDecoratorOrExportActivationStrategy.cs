@@ -3,7 +3,7 @@
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// Represents a decortator or an export
+    /// Represents a decorator or an export
     /// </summary>
     public interface IDecoratorOrExportActivationStrategy : IActivationStrategy
     {
@@ -13,7 +13,6 @@ namespace Grace.DependencyInjection
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle);
     }
 }

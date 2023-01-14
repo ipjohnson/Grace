@@ -37,7 +37,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <summary>
         /// Clone the lifestyle
         /// </summary>
-        /// <returns></returns>
         ICompiledLifestyle Clone();
 
         /// <summary>
@@ -46,7 +45,6 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope">scope for the strategy</param>
         /// <param name="request">activation request</param>
         /// <param name="activationExpression">expression to create strategy type</param>
-        /// <returns></returns>
         IActivationExpressionResult ProvideLifestyleExpression(IInjectionScope scope, IActivationExpressionRequest request, Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression);
     }
 }

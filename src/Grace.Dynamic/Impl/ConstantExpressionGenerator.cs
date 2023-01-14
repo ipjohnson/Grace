@@ -14,7 +14,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">dynamic request</param>
         /// <param name="expression">constant expression to convert</param>
-        /// <returns></returns>
         bool GenerateIL(DynamicMethodGenerationRequest request, ConstantExpression expression);
     }
 
@@ -28,7 +27,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">dynamic request</param>
         /// <param name="expression">constant expression to convert</param>
-        /// <returns></returns>
         public bool GenerateIL(DynamicMethodGenerationRequest request, ConstantExpression expression)
         {
             if (expression.Value == null)

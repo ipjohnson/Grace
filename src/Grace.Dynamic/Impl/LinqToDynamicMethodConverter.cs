@@ -21,7 +21,7 @@ namespace Grace.Dynamic.Impl
         /// <param name="parameters"></param>
         /// <param name="extraExpressions"></param>
         /// <param name="finalExpression">final expression to convert</param>
-        /// <param name="newDelegate">created delegate</param>
+        /// <param name="newDelegateType">created delegate</param>
         /// <returns>true if delegate was created</returns>
         Delegate TryCreateDelegate(IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions, Expression finalExpression, Type newDelegateType);
     }
@@ -135,7 +135,6 @@ namespace Grace.Dynamic.Impl
         /// </summary>
         /// <param name="request">request</param>
         /// <param name="expression">expression to convert</param>
-        /// <returns></returns>
         protected virtual bool TryGenerateIL(DynamicMethodGenerationRequest request, Expression expression)
         {
             if (expression == null)
@@ -163,7 +162,7 @@ namespace Grace.Dynamic.Impl
                     return false;
 
                 case ExpressionType.MemberInit:
-                    return ImplementationFactory.Locate<IMemeberInitExpressionGenerator>()
+                    return ImplementationFactory.Locate<IMemberInitExpressionGenerator>()
                         .GenerateIL(request, (MemberInitExpression)expression);
 
                 case ExpressionType.New:

@@ -283,7 +283,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             var instance = container.Locate<DependentService<IBasicService[]>>();
 
             Assert.NotNull(instance);
-            Assert.Equal(1, instance.Value.Length);
+            Assert.Single(instance.Value);
             Assert.IsType<BasicService>(instance.Value[0]);
         }
 
@@ -302,7 +302,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             var instance = container.Locate<DependentService<IBasicService[]>>();
 
             Assert.NotNull(instance);
-            Assert.Equal(1, instance.Value.Length);
+            Assert.Single(instance.Value);
             Assert.IsType<BasicService>(instance.Value[0]);
         }
 
@@ -321,7 +321,7 @@ namespace Grace.Tests.DependencyInjection.Registration
             var instance = container.Locate<DependentService<IBasicService[]>>();
 
             Assert.NotNull(instance);
-            Assert.Equal(1, instance.Value.Length);
+            Assert.Single(instance.Value);
             Assert.IsType<BasicService>(instance.Value[0]);
         }
 
@@ -341,11 +341,11 @@ namespace Grace.Tests.DependencyInjection.Registration
                         .LocateWithKey('A');
             });
 
-            var insance = container.Locate<DependentService<IBasicService>>();
+            var instance = container.Locate<DependentService<IBasicService>>();
 
-            Assert.NotNull(insance);
-            Assert.NotNull(insance.Value);
-            Assert.IsType<BasicService>(insance.Value);
+            Assert.NotNull(instance);
+            Assert.NotNull(instance.Value);
+            Assert.IsType<BasicService>(instance.Value);
         }
 
         #endregion

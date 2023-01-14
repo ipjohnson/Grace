@@ -8,7 +8,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy to create delegate that has one arguement
+    /// Strategy to create delegate that has one argument
     /// </summary>
     public class DelegateOneArgWrapperStrategy : BaseWrapperStrategy
     {
@@ -40,7 +40,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");

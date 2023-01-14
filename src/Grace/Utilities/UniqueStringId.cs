@@ -17,7 +17,6 @@ namespace Grace.Utilities
         /// <summary>
         /// Generate string that is unique to this process
         /// </summary>
-        /// <returns></returns>
         public static string Generate()
         {
             return Prefix + Interlocked.Increment(ref _counter);

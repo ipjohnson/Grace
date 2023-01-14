@@ -24,7 +24,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -49,7 +49,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -74,7 +74,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -85,7 +85,7 @@ namespace Grace.Tests.Diagnostics
 
 
         [Fact]
-        public void InjectionScopeDiagnostics_ActvationMethod_Check_For_Missing_Method_Dependency()
+        public void InjectionScopeDiagnostics_ActivationMethod_Check_For_Missing_Method_Dependency()
         {
             var container = new DependencyInjectionContainer();
 
@@ -100,7 +100,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 
@@ -122,7 +122,7 @@ namespace Grace.Tests.Diagnostics
 
             var missingDependencies = diagnostic.PossibleMissingDependencies.ToArray();
 
-            Assert.Equal(1, missingDependencies.Length);
+            Assert.Single(missingDependencies);
 
             var dependency = missingDependencies[0];
 

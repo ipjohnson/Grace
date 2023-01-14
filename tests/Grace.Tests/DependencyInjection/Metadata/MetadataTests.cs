@@ -20,8 +20,8 @@ namespace Grace.Tests.DependencyInjection.Metadata
 
             Assert.NotNull(meta);
             Assert.Equal(1, meta.Metadata.Count);
-            Assert.Equal(1, meta.Metadata.Count());
-            Assert.Equal(1, ((IEnumerable)meta.Metadata).OfType<KeyValuePair<object, object>>().Count());
+            Assert.Single(meta.Metadata);
+            Assert.Single(((IEnumerable)meta.Metadata).OfType<KeyValuePair<object, object>>());
 
             var data = meta.Metadata.First();
 
@@ -40,12 +40,12 @@ namespace Grace.Tests.DependencyInjection.Metadata
 
             Assert.NotNull(meta);
 
-            Assert.Equal(1, meta.Metadata.Keys.Count());
+            Assert.Single(meta.Metadata.Keys);
             Assert.True(meta.Metadata.ContainsKey("Hello"));
-            Assert.True(meta.Metadata.Keys.Contains("Hello"));
+            Assert.Contains("Hello", meta.Metadata.Keys);
 
-            Assert.Equal(1, meta.Metadata.Values.Count());
-            Assert.True(meta.Metadata.Values.Contains("World"));
+            Assert.Single(meta.Metadata.Values);
+            Assert.Contains("World", meta.Metadata.Values);
         }
 
         [Fact]
@@ -59,8 +59,7 @@ namespace Grace.Tests.DependencyInjection.Metadata
 
             Assert.NotNull(meta);
 
-            object value;
-            Assert.False(meta.Metadata.TryGetValue("GoodBye", out value));
+            Assert.False(meta.Metadata.TryGetValue("GoodBye", out var value));
             Assert.True(meta.Metadata.TryGetValue("Hello", out value));
             Assert.Equal("World", value);
         }

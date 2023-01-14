@@ -18,7 +18,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>
@@ -27,12 +26,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
         /// <param name="strategy">strategy being decorated</param>
-        /// <returns></returns>
         IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy);
     }
 
     /// <summary>
-    /// builder creates linq expression to satify request
+    /// builder creates linq expression to satisfy request
     /// </summary>
     public class ActivationExpressionBuilder : IActivationExpressionBuilder
     {
@@ -76,7 +74,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey);
@@ -185,7 +182,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="isRequired"></param>
         /// <param name="hasDefault"></param>
         /// <param name="defaultValue"></param>
-        /// <returns></returns>
         public static T GetDynamicValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, StaticInjectionContext staticInjectionContext,
             IInjectionContext context, object key, bool isRequired, bool hasDefault, object defaultValue)
         {
@@ -216,7 +212,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var valueMethod = _contextValueProvider.GetType().GetRuntimeMethod(nameof(GetValueFromInjectionContext), new[]
@@ -264,7 +259,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
         /// <param name="strategy">strategy being decorated</param>
-        /// <returns></returns>
         public IActivationExpressionResult DecorateExportStrategy(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledExportStrategy strategy)
         {
@@ -280,7 +274,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult GetValueFromInjectionValueProviders(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (!ReferenceEquals(scope.InjectionValueProviders, ImmutableLinkedList<IInjectionValueProvider>.Empty))
@@ -308,7 +301,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationType"></param>
         /// <param name="key"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
                                                                IActivationExpressionRequest request,
                                                                Type activationType,
@@ -501,7 +493,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationType"></param>
         /// <param name="decorator"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult ProcessPathNode(IInjectionScope scope, IActivationExpressionRequest request, Type activationType, IActivationPathNode decorator)
         {
             return decorator.GetActivationExpression(scope, request);
@@ -512,7 +503,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult GetActivationExpressionFromStrategies(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var expressionResult = GetExpressionFromStrategyCollection(scope, request);
@@ -530,7 +520,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult GetExpressionFromGenericStrategies(IInjectionScope scope, IActivationExpressionRequest request)
         {
             if (request.ActivationType.IsConstructedGenericType)
@@ -578,7 +567,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult GetExpressionFromStrategyCollection(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(request.ActivationType);
@@ -622,7 +610,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="collection"></param>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult SelectStrategyFromCollection(IActivationStrategyCollection<ICompiledExportStrategy> collection, IInjectionScope scope, IActivationExpressionRequest request)
         {
             var filter = request.Filter;
@@ -667,7 +654,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="strategy"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult ActivationExpressionForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
             return strategy.GetActivationExpression(scope, request);
@@ -679,7 +665,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="strategy"></param>
-        /// <returns></returns>
         protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy)
         {
             var decorators = FindDecoratorsForType(scope, request, request.ActivationType, strategy);
@@ -709,7 +694,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="type"></param>
         /// <param name="strategy"></param>
-        /// <returns></returns>
         protected virtual List<ICompiledDecoratorStrategy> FindDecoratorsForType(IInjectionScope scope, IActivationExpressionRequest request, Type type, ICompiledExportStrategy strategy)
         {
             List<ICompiledDecoratorStrategy> decorators = new List<ICompiledDecoratorStrategy>();
@@ -778,7 +762,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="strategy"></param>
         /// <param name="decorators"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateDecoratedActivationStrategy(IInjectionScope scope, IActivationExpressionRequest request, ICompiledExportStrategy strategy, List<ICompiledDecoratorStrategy> decorators)
         {
             decorators.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));

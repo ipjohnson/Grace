@@ -62,7 +62,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.WithCtorParam(func);
 
-            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => ReferenceEquals(info.ExportFunc, func)));
         }
         
         [Theory]
@@ -84,7 +84,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.WithCtorParam(func);
 
-            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => ReferenceEquals(info.ExportFunc, func)));
         }
 
         [Theory]
@@ -92,9 +92,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Two_Arg_Null(
             FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
         {
-            Func<MultipleService1, MultipleService2, IDependentService<IMultipleService>> func = null;
-
-            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(null as Func<MultipleService1, MultipleService2, IDependentService<IMultipleService>>));
         }
 
         [Theory]
@@ -106,7 +104,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.WithCtorParam(func);
 
-            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => ReferenceEquals(info.ExportFunc, func)));
         }
 
         [Theory]
@@ -114,9 +112,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Three_Arg_Null(
             FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
         {
-            Func<MultipleService1, MultipleService2,MultipleService3, IDependentService<IMultipleService>> func = null;
-
-            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(null as Func<MultipleService1, MultipleService2,MultipleService3, IDependentService<IMultipleService>>));
         }
 
 
@@ -129,7 +125,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.WithCtorParam(func);
 
-            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => ReferenceEquals(info.ExportFunc, func)));
         }
 
         [Theory]
@@ -137,9 +133,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Four_Arg_Null(
             FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
         {
-            Func<MultipleService1, MultipleService2, MultipleService3,MultipleService4, IDependentService<IMultipleService>> func = null;
-
-            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(null as Func<MultipleService1, MultipleService2, MultipleService3,MultipleService4, IDependentService<IMultipleService>>));
         }
 
         [Theory]
@@ -151,7 +145,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             configuration.WithCtorParam(func);
 
-            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => info.ExportFunc == func));
+            strategy.Received().ConstructorParameter(NSubstitute.Arg.Is<ConstructorParameterInfo>(info => ReferenceEquals(info.ExportFunc, func)));
         }
 
         [Theory]
@@ -159,9 +153,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         public void FluentExportStrategyConfigurationGeneric_WithCtorParam_Five_Arg_Null(
             FluentExportStrategyConfiguration<BasicService> configuration, ICompiledExportStrategy strategy)
         {
-            Func<MultipleService1, MultipleService2, MultipleService3, MultipleService4,MultipleService5, IDependentService<IMultipleService>> func = null;
-
-            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(func));
+            Assert.Throws<ArgumentNullException>(() => configuration.WithCtorParam(null as Func<MultipleService1, MultipleService2, MultipleService3, MultipleService4,MultipleService5, IDependentService<IMultipleService>>));
         }
 
         [Fact]
@@ -178,7 +170,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void FluentExportStrategyConfigurationGeneric_ByIntefaces()
+        public void FluentExportStrategyConfigurationGeneric_ByInterfaces()
         {
             var container = new DependencyInjectionContainer();
 

@@ -7,7 +7,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
     public class CustomConstructorSelectionTests
     {
         [Fact]
-        public void CustomConstructor_TimedInstantatiation()
+        public void CustomConstructor_TimedInstantiation()
         {
             var container = new DependencyInjectionContainer(
                 c => c.Behaviors.ConstructorSelection = new TimedConstructorSelectionMethod());

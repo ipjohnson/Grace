@@ -12,7 +12,6 @@ namespace Grace.Dynamic.Impl
         /// Create method target based on request
         /// </summary>
         /// <param name="request">dynamic method request</param>
-        /// <returns></returns>
         object CreateMethodTarget(DynamicMethodGenerationRequest request);
     }
 
@@ -25,7 +24,6 @@ namespace Grace.Dynamic.Impl
         /// Create method target based on request
         /// </summary>
         /// <param name="request">dynamic method request</param>
-        /// <returns></returns>
         public object CreateMethodTarget(DynamicMethodGenerationRequest request)
         {
             return request.Constants.Count == 0 ? null : CreateConstantTarget(request);
@@ -33,7 +31,7 @@ namespace Grace.Dynamic.Impl
 
         private object CreateConstantTarget(DynamicMethodGenerationRequest request)
         {
-            Type openType = null;
+            Type openType;
 
             switch (request.Constants.Count)
             {

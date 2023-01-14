@@ -36,7 +36,6 @@
         /// Provide value to be used for property
         /// </summary>
         /// <param name="value">value to use for property</param>
-        /// <returns></returns>
         IFluentImportPropertyConfiguration Value(object value);
 
 
@@ -82,7 +81,6 @@
         /// Provide value for property
         /// </summary>
         /// <param name="value">property value</param>
-        /// <returns></returns>
         IFluentImportPropertyConfiguration<T, TProp> Value(TProp value);
     }
 }

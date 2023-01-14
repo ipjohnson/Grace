@@ -16,7 +16,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         object GetMetadata(Type metadataType, IActivationStrategyMetadata metadata);
     }
 
@@ -30,7 +29,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         public virtual object GetMetadata(Type metadataType, IActivationStrategyMetadata metadata)
         {
             if (metadataType == typeof(IReadOnlyDictionary<object, object>) ||
@@ -58,7 +56,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="metadataType"></param>
         /// <param name="metadata"></param>
-        /// <returns></returns>
         protected object[] GetConstructorParameters(Type metadataType, IActivationStrategyMetadata metadata)
         {
             var constructors = metadataType.GetTypeInfo().DeclaredConstructors.ToArray();
@@ -69,7 +66,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (constructors[0].GetParameters().Length == 0)
                 {
-                    return new object[0];
+                    return Array.Empty<object>();
                 }
 
                 constructorInfo = constructors[0];
@@ -144,11 +141,9 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                object setValue = null;
-
-                setValue = metadata.ContainsKey(propertyInfo.Name) ?
-                            metadata[propertyInfo.Name] :
-                            propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
+                object setValue = metadata.ContainsKey(propertyInfo.Name) ?
+                    metadata[propertyInfo.Name] :
+                    propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
 
                 if (setValue != null)
                 {

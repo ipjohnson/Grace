@@ -8,7 +8,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy for creating a delegate with five arguements
+    /// Strategy for creating a delegate with five arguments
     /// </summary>
     public class DelegateFiveArgWrapperStrategy : BaseWrapperStrategy
     {
@@ -38,7 +38,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");

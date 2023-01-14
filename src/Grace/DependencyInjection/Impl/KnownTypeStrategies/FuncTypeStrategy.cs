@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
     public class FuncTypeStrategy : FactoryTwoArgStrategy<IExportLocatorScope,IInjectionContext,Func<Type,object>>
     {
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
         public FuncTypeStrategy(IInjectionScope injectionScope) : base(CreateFunc, injectionScope)

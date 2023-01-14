@@ -27,14 +27,12 @@ namespace Grace.DependencyInjection
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration DefaultValue(Func<object> defaultValueFunc);
 
         /// <summary>
         /// Default value function
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, object> defaultValueFunc);
 
         /// <summary>
@@ -54,7 +52,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration LocateWithKey(object locateKey);
 
@@ -62,14 +60,12 @@ namespace Grace.DependencyInjection
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration Named(string name);
 
         /// <summary>
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration Use(Type type);
     }
 
@@ -98,14 +94,12 @@ namespace Grace.DependencyInjection
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc);
 
         /// <summary>
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc);
 
         /// <summary>
@@ -125,7 +119,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<TParam> LocateWithKey(object locateKey);
 
@@ -133,14 +127,12 @@ namespace Grace.DependencyInjection
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> Named(string name);
         
         /// <summary>
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<TParam> Use(Type type);
     }
 
@@ -170,21 +162,18 @@ namespace Grace.DependencyInjection
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<TParam> defaultValueFunc);
 
         /// <summary>
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc);
 
         /// <summary>
         /// Mark the parameter as dynamic (will be located from child scopes)
         /// </summary>
         /// <param name="isDynamic"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> IsDynamic(bool isDynamic = true);
 
         /// <summary>
@@ -197,7 +186,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey);
         
@@ -205,14 +194,12 @@ namespace Grace.DependencyInjection
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> Named(string name);
 
         /// <summary>
         /// Use specific type to satisfy parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentWithCtorConfiguration<T, TParam> Use(Type type);
     }
 }

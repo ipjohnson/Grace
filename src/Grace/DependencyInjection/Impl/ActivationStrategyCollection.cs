@@ -73,7 +73,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Strategies that are non keyed
         /// </summary>
-        /// <returns></returns>
         public ImmutableArray<T> GetStrategies()
         {
             return _strategies;
@@ -82,7 +81,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get primary strategy
         /// </summary>
-        /// <returns></returns>
         public T GetPrimary()
         {
             return _primary;
@@ -91,7 +89,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// list of strategies and their keys
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<KeyValuePair<object, T>> GetKeyedStrategies()
         {
             return _keyedStrategies;
@@ -101,7 +98,6 @@ namespace Grace.DependencyInjection.Impl
         /// Get a keyed strategy
         /// </summary>
         /// <param name="key">key</param>
-        /// <returns></returns>
         public T GetKeyedStrategy(object key)
         {
             return _keyedStrategies.GetValueOrDefault(key);
@@ -110,7 +106,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Clone the collection
         /// </summary>
-        /// <returns></returns>
         public IActivationStrategyCollection<T> Clone()
         {
             return new ActivationStrategyCollection<T>(_exportType)

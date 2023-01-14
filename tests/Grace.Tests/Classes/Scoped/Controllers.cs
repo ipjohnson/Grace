@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Grace.Tests.Classes.Scoped
 {
     public class TestController1 : IDisposable
     {
-        private static int counter;
+        private static int _counter;
 
-        private static int disposeCount;
+        private static int _disposeCount;
 
         public TestController1(
             IRepositoryTransient1 transient1,
@@ -43,25 +41,25 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(repositoryTransient5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter;
+            set => _counter = value;
         }
 
         public static int DisposeCount
         {
-            get { return disposeCount; }
-            set { disposeCount = value; }
+            get => _disposeCount;
+            set => _disposeCount = value;
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            Interlocked.Increment(ref disposeCount);
+            Interlocked.Increment(ref _disposeCount);
         }
     }
 }

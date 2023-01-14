@@ -107,7 +107,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
     }
@@ -147,7 +147,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
 
@@ -195,7 +195,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
 
@@ -251,7 +251,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
 
@@ -315,7 +315,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
 
@@ -387,7 +387,7 @@
         public T2 TArg2;
 
         /// <summary>
-        /// constnat three
+        /// constant three
         /// </summary>
         public T3 TArg3;
 

@@ -51,7 +51,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -65,7 +64,6 @@ namespace Grace.DependencyInjection.Impl
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
         {
             if (defaultValueFunc == null) throw new ArgumentNullException(nameof(defaultValueFunc));
@@ -117,7 +115,6 @@ namespace Grace.DependencyInjection.Impl
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> Named(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -131,7 +128,6 @@ namespace Grace.DependencyInjection.Impl
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentDecoratorWithCtorConfiguration<TParam> Use(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));

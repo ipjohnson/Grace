@@ -41,7 +41,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         [SubFixtureInitialize]
         public void FuncThreeArg_GetWrappedType_NonGeneric(FuncThreeArgWrapperStrategy strategy)
         {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
+            Assert.Null(strategy.GetWrappedType(typeof(BasicService)));
         }
     }
 }

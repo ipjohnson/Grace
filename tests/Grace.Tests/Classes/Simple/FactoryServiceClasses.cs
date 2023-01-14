@@ -16,7 +16,7 @@
             SomeProperty = testString;
         }
 
-        public object SomeProperty { get; private set; }
+        public object SomeProperty { get; }
     }
 
     public class ReferenceArgSomePropertyService : ISomePropertyService
@@ -26,7 +26,7 @@
             SomeProperty = basicService;
         }
 
-        public object SomeProperty { get; private set; }
+        public object SomeProperty { get; }
     }
 
     #endregion
@@ -47,7 +47,7 @@
             Parameters = new object[] { stringArg };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     public class OneArgRefParameterService : IArrayOfObjectsPropertyService
@@ -61,7 +61,7 @@
             Parameters = new object[] { basicService };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     public class TwoArgParameterService : IArrayOfObjectsPropertyService
@@ -81,7 +81,7 @@
             Parameters = new object[] { stringArg, basicService };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     public class ThreeArgParameterService : IArrayOfObjectsPropertyService
@@ -104,7 +104,7 @@
             Parameters = new object[] { stringArg, intArg, basicService };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     public class FourArgParameterService : IArrayOfObjectsPropertyService
@@ -130,7 +130,7 @@
             Parameters = new object[] { stringArg, intArg, doubleArg, basicService };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     public class FiveArgParameterService : IArrayOfObjectsPropertyService
@@ -163,7 +163,7 @@
             Parameters = new object[] { stringArg, intArg, doubleArg, decimalArg, basicService };
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 
     #endregion

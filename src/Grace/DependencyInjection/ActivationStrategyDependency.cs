@@ -95,7 +95,7 @@ namespace Grace.DependencyInjection
         public bool HasFilter { get; }
 
         /// <summary>
-        /// Is the dependency satisified
+        /// Is the dependency satisfied
         /// </summary>
         public bool IsSatisfied { get; set; }
 

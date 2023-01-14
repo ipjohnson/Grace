@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Enumerable
 {
-    public class LinkedListEnumberableTests
+    public class LinkedListEnumerableTests
     {
         [Theory]
         [AutoData]

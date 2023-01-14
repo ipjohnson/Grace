@@ -172,7 +172,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// Get activation configuration for strategy
         /// </summary>
         /// <param name="activationType"></param>
-        /// <returns></returns>
         public virtual TypeActivationConfiguration GetActivationConfiguration(Type activationType)
         {
             return ActivationConfiguration;
@@ -181,7 +180,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <summary>
         /// Get the metadata for this activation strategy
         /// </summary>
-        /// <returns></returns>
         public IActivationStrategyMetadata Metadata
         {
             get

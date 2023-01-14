@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy class for creating delegate with no arguements
+    /// Strategy class for creating delegate with no arguments
     /// </summary>
     public class DelegateNoArgWrapperStrategy : BaseWrapperStrategy
     {
@@ -37,7 +37,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");

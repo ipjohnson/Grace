@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <summary>
     /// Select public members that can be injected
     /// </summary>
-    public class PublicMemeberInjectionSelector : IMemberInjectionSelector
+    public class PublicMemberInjectionSelector : IMemberInjectionSelector
     {
         private readonly Func<MemberInfo, bool> _picker;
         private readonly bool _injectMethods;
@@ -21,7 +21,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="picker"></param>
         /// <param name="injectMethods"></param>
         /// <param name="processAttributes"></param>
-        public PublicMemeberInjectionSelector(Func<MemberInfo, bool> picker, bool injectMethods, bool processAttributes)
+        public PublicMemberInjectionSelector(Func<MemberInfo, bool> picker, bool injectMethods, bool processAttributes)
         {
             _picker = picker;
             _injectMethods = injectMethods;

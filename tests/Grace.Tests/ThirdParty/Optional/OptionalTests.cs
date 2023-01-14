@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿using Optional;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
-using Optional;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Xunit;
 
-namespace Grace.Tests.ThridParty.Optional
+namespace Grace.Tests.ThirdParty.Optional
 {
     /// <summary>
-    /// OPtional strategy provider
+    /// Optional strategy provider
     /// </summary>
     public class OptionalStrategyProvider : IMissingExportStrategyProvider
     {
@@ -21,7 +20,6 @@ namespace Grace.Tests.ThridParty.Optional
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return request.ActivationType.IsConstructedGenericType &&
@@ -117,7 +115,7 @@ namespace Grace.Tests.ThridParty.Optional
                 c.AddMissingDependencyExpressionProvider(optionalStrategy);
             });
 
-            var instance = container.Locate<Optional<IBasicService>>(withKey: "basic");
+            var instance = container.Locate<IOptional<IBasicService>>(withKey: "basic");
 
             Assert.True(instance.IsSatisfied());
 
@@ -137,7 +135,7 @@ namespace Grace.Tests.ThridParty.Optional
                 c.AddMissingDependencyExpressionProvider(optionalStrategy);
             });
 
-            var instance = container.Locate<Optional<IBasicService>>(withKey:"basic");
+            var instance = container.Locate<IOptional<IBasicService>>(withKey:"basic");
 
             Assert.False(instance.IsSatisfied());
 
@@ -160,8 +158,8 @@ namespace Grace.Tests.ThridParty.Optional
 
             var scope = container.CreateChildScope();
 
-            var instance1 = scope.Locate<Optional<IBasicService>>(withKey: "basic");
-            var instance2 = scope.Locate<Optional<IBasicService>>(withKey: "basic");
+            var instance1 = scope.Locate<IOptional<IBasicService>>(withKey: "basic");
+            var instance2 = scope.Locate<IOptional<IBasicService>>(withKey: "basic");
 
             Assert.True(instance1.IsSatisfied());
             Assert.True(instance2.IsSatisfied());
@@ -178,7 +176,7 @@ namespace Grace.Tests.ThridParty.Optional
 
 
     /// <summary>
-    /// Wrapper Strategy for <see cref="Optional{T}"/>.
+    /// Wrapper Strategy for <see cref="IOptional{T}"/>.
     /// </summary>
     public class OptionalWrapperStrategy : BaseKeyWrapperStrategy,
         IMissingExportStrategyProvider, IMissingDependencyExpressionProvider
@@ -188,11 +186,11 @@ namespace Grace.Tests.ThridParty.Optional
         /// </summary>
         /// <param name="injectionScope">InjectionScope</param>
         public OptionalWrapperStrategy(IInjectionScope injectionScope)
-            : base(typeof(Optional<>), injectionScope)
+            : base(typeof(IOptional<>), injectionScope)
         {
         }
 
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+        public new ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope, 
             IActivationStrategyCompiler compiler, 
             Type activationType, 
@@ -274,7 +272,7 @@ namespace Grace.Tests.ThridParty.Optional
         public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
             return request.ActivationType.IsConstructedGenericType
-                && request.ActivationType.GetGenericTypeDefinition() == typeof(Optional<>);
+                && request.ActivationType.GetGenericTypeDefinition() == typeof(IOptional<>);
         }
 
         public IEnumerable<IActivationStrategy> ProvideExports(
@@ -296,12 +294,12 @@ namespace Grace.Tests.ThridParty.Optional
     }
 
     /// <summary>
-    /// Factory for <see cref="Optional{T}"/>.
+    /// Factory for <see cref="IOptional{T}"/>.
     /// </summary>
     public class GraceOptionalFactory<TResult>
     {
-        private ActivationStrategyDelegate _delegate;
-        private string qualifier;
+        private readonly ActivationStrategyDelegate _delegate;
+        private readonly string _qualifier;
 
         /// <summary>
         /// Constructor
@@ -311,7 +309,7 @@ namespace Grace.Tests.ThridParty.Optional
         public GraceOptionalFactory(ActivationStrategyDelegate activationDelegate, object locateKey)
         {
             _delegate = activationDelegate;
-            qualifier = locateKey as string;
+            _qualifier = locateKey as string;
         }
 
         /// <summary>
@@ -320,24 +318,20 @@ namespace Grace.Tests.ThridParty.Optional
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="injectionContext"></param>
-        /// <returns></returns>
         public GraceOptional<TResult> CreateOptional(
             IExportLocatorScope scope,
             IDisposalScope disposalScope,
             IInjectionContext injectionContext)
         {
-            return new GraceOptional<TResult>(scope, qualifier, () =>
-            {
-                return (TResult)_delegate(scope, disposalScope, injectionContext);
-            });
+            return new GraceOptional<TResult>(scope, _qualifier, () => (TResult)_delegate(scope, disposalScope, injectionContext));
         }
     }
 
     /// <summary>
-    /// Implemetation of Optional for Grace.
+    /// Implementation of Optional for Grace.
     /// </summary>
     /// <typeparam name="TService">Wrapped service type.</typeparam>
-    public class GraceOptional<TService> : Optional<TService>
+    public class GraceOptional<TService> : IOptional<TService>
     {
         private readonly IExportLocatorScope _locator;
         private readonly Func<TService> _delegate;
@@ -389,25 +383,25 @@ namespace Grace.Tests.ThridParty.Optional
     }
 
     /// <summary>
-    /// Componente para injeção de serviços opcionais.
+    /// Component for injection of optional services.
     /// </summary>
-    /// <typeparam name="T">Tipo de dado do serviço.</typeparam>
-    public interface Optional<out T>
+    /// <typeparam name="T">Service data type.</typeparam>
+    public interface IOptional<out T>
     {
         /// <summary>
-        /// Retorna o serviço ou nulo.
+        /// Returns service or null.
         /// </summary>
         T Value { get; }
 
         /// <summary>
-        /// Verifica se o serviço foi carregado.
+        /// Checks if the service has been loaded.
         /// </summary>
         bool IsValueCreated { get; }
 
         /// <summary>
-        /// Verifica se o serviço existe.
+        /// Checks if the service exists.
         /// </summary>
-        /// <returns>Verdadeiro se existe o registro do serviço, falso caso contrário.</returns>
+        /// <returns>True if the service record exists, false otherwise.</returns>
         bool IsSatisfied();
     }
 }

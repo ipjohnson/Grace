@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     public class ListEnumerableStrategy : BaseGenericEnumerableStrategy
     {
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
         public ListEnumerableStrategy( IInjectionScope injectionScope) : base(typeof(List<>), injectionScope)
@@ -26,7 +26,6 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];

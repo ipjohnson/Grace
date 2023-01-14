@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 using Grace.Tests.Classes.Simple;
 using Xunit;

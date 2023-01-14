@@ -3,10 +3,10 @@
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// cconfigure decorator parameter
+    /// Configure decorator parameter
     /// </summary>
     /// <typeparam name="TParam"></typeparam>
-    public interface IFluentDecoratorWithCtorConfiguration<TParam> : IFluentDecoratorStrategyConfiguration
+    public interface IFluentDecoratorWithCtorConfiguration<in TParam> : IFluentDecoratorStrategyConfiguration
     {
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor
@@ -27,14 +27,12 @@ namespace Grace.DependencyInjection
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc);
 
         /// <summary>
         /// Default value func
         /// </summary>
         /// <param name="defaultValueFunc"></param>
-        /// <returns></returns>
         IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc);
 
         /// <summary>
@@ -62,14 +60,12 @@ namespace Grace.DependencyInjection
         /// Name of the parameter being configured
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         IFluentDecoratorWithCtorConfiguration<TParam> Named(string name);
 
         /// <summary>
         /// Use a specific type for parameter
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         IFluentDecoratorWithCtorConfiguration<TParam> Use(Type type);
     }
 }

@@ -16,7 +16,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <param name="constructors"></param>
-        /// <returns></returns>
         protected override ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration,
             IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {

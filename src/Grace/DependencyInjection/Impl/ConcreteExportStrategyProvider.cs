@@ -49,7 +49,6 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public virtual bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var requestedType = request.ActivationType;
@@ -239,7 +238,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Should a type be exported
         /// </summary>
-        /// <returns></returns>
         public virtual bool ShouldCreateConcreteStrategy(IActivationExpressionRequest request)
         {
             var type = request.ActivationType;

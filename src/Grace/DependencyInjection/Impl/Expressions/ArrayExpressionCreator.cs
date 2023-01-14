@@ -18,7 +18,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
@@ -43,7 +42,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        /// <returns></returns>
         public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var arrayElementType = request.ActivationType.GetElementType();
@@ -73,7 +71,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="arrayInit"></param>
         /// <param name="arrayElementType"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual Expression CreateSortedArrayExpression(Expression arrayInit, Type arrayElementType, IActivationExpressionRequest request)
         {
             var compareInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
@@ -96,7 +93,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        /// <returns></returns>
         protected virtual List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
         {
             var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
@@ -129,7 +125,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        /// <returns></returns>
         protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
             Type arrayElementType)
         {
@@ -328,8 +323,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="expressions"></param>
         protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions)
         {
-            Type wrappedType;
-            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, request, out wrappedType);
+            var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, request, out var wrappedType);
 
             if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
             {
@@ -362,7 +356,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <typeparam name="T"></typeparam>
         /// <param name="arrayOfT"></param>
         /// <param name="comparer"></param>
-        /// <returns></returns>
         public static T[] SortArray<T>(T[] arrayOfT, IComparer<T> comparer)
         {
             Array.Sort(arrayOfT, comparer);

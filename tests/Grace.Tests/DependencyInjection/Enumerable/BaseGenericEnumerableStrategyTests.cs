@@ -38,7 +38,7 @@ namespace Grace.Tests.DependencyInjection.Enumerable
 
             var strategies = strategy.SecondaryStrategies().ToArray();
 
-            Assert.Equal(1, strategies.Length);
+            Assert.Single(strategies);
             Assert.Same(addStrategy, strategies[0]);
         }
     }

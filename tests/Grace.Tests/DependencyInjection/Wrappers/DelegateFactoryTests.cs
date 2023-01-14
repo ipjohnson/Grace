@@ -110,7 +110,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             var instance = factory("Blah");
 
             Assert.NotNull(instance);
-            Assert.Equal(1, instance.Parameters.Length);
+            Assert.Single(instance.Parameters);
             Assert.Equal("Blah", instance.Parameters[0]);
         }
 
@@ -131,7 +131,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             var instance = factory(basicService);
 
             Assert.NotNull(instance);
-            Assert.Equal(1, instance.Parameters.Length);
+            Assert.Single(instance.Parameters);
             Assert.Equal(basicService, instance.Parameters[0]);
         }
 
@@ -430,7 +430,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
         public class FuncFactoryClass
         {
-            private Func<DisposableService> _func;
+            private readonly Func<DisposableService> _func;
 
             public FuncFactoryClass(Func<DisposableService> func)
             {

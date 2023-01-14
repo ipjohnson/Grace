@@ -53,19 +53,18 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Add conditions for export
         /// </summary>
-        /// <param name="conditionFunc"></param>
-        /// <returns></returns>
-        public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
+        /// <param name="conditions"></param>
+        public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions)
         {
-            if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
+            if (conditions == null) throw new ArgumentNullException(nameof(conditions));
 
-            _conditions = _conditions.Add(conditionFunc);
+            _conditions = _conditions.Add(conditions);
 
             return this;
         }
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <param name="baseType">base type to export</param>
         /// <returns>configuration object</returns>
@@ -79,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration BasedOn<T>()
@@ -135,7 +134,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export by name
         /// </summary>
         /// <param name="nameFunc"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByName(Func<Type, IEnumerable<string>> nameFunc = null)
         {
             if (nameFunc == null)
@@ -161,7 +159,6 @@ namespace Grace.DependencyInjection.Impl
         /// Exports by a set of types
         /// </summary>
         /// <param name="typeDelegate"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate)
         {
             if (typeDelegate == null) throw new ArgumentNullException(nameof(typeDelegate));
@@ -175,7 +172,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export a type by a set of keyed types
         /// </summary>
         /// <param name="keyedDelegate">keyed types</param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate)
         {
             if (keyedDelegate == null) throw new ArgumentNullException(nameof(keyedDelegate));
@@ -202,7 +198,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export types using their attributes
         /// </summary>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ExportAttributedTypes()
         {
             _exportByAttributes = true;
@@ -214,7 +209,6 @@ namespace Grace.DependencyInjection.Impl
         /// Set constructor selection method for individual exports
         /// </summary>
         /// <param name="method"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method)
         {
             _constructorSelectionMethod = method ?? throw new ArgumentNullException(nameof(method));
@@ -233,11 +227,11 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Set a particular life style
         /// </summary>
-        /// <param name="lifestyle">lifestyle</param>
+        /// <param name="container">lifestyle</param>
         /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
+        public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle container)
         {
-            return UsingLifestyle(type => lifestyle?.Clone());
+            return UsingLifestyle(type => container?.Clone());
         }
 
         /// <summary>
@@ -256,7 +250,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export only types that match the filter provided
         /// </summary>
         /// <param name="typeFilter"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter)
         {
             if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
@@ -270,7 +263,6 @@ namespace Grace.DependencyInjection.Impl
         /// Add inspector for type set
         /// </summary>
         /// <param name="inspector"></param>
-        /// <returns></returns>
         public IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector)
         {
             if (inspector == null) throw new ArgumentNullException(nameof(inspector));
@@ -283,7 +275,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Mark all types as externally owned
         /// </summary>
-        /// <returns></returns>
         public IExportTypeSetConfiguration ExternallyOwned()
         {
             _externallyOwned = true;
@@ -350,9 +341,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     foreach (var attribute in type.GetTypeInfo().GetCustomAttributes())
                     {
-                        var exportAttribute = attribute as IExportAttribute;
-
-                        if (exportAttribute != null)
+                        if (attribute is IExportAttribute exportAttribute)
                         {
                             exportTypes = exportTypes.AddRange(exportAttribute.ProvideExportTypes(type));
                         }
@@ -450,9 +439,7 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
             {
-                var lifestyleAttribute = customAttribute as ILifestyleProviderAttribute;
-
-                if (lifestyleAttribute != null)
+                if (customAttribute is ILifestyleProviderAttribute lifestyleAttribute)
                 {
                     strategy.Lifestyle = lifestyleAttribute.ProvideLifestyle(type);
                 }
@@ -479,20 +466,18 @@ namespace Grace.DependencyInjection.Impl
             {
                 foreach (var attribute in property.GetCustomAttributes())
                 {
-                    var importAttribute = attribute as IImportAttribute;
-
-                    if (importAttribute != null)
+                    if (attribute is IImportAttribute importAttribute)
                     {
-                        var injecitonInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
+                        var injectionInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
 
-                        if (injecitonInfo != null)
+                        if (injectionInfo != null)
                         {
                             strategy.MemberInjectionSelector(new KnownMemberInjectionSelector(
                                     new MemberInjectionInfo
                                     {
                                         MemberInfo = property,
-                                        IsRequired = injecitonInfo.IsRequired,
-                                        LocateKey = injecitonInfo.ImportKey
+                                        IsRequired = injectionInfo.IsRequired,
+                                        LocateKey = injectionInfo.ImportKey
                                     }));
                         }
                     }

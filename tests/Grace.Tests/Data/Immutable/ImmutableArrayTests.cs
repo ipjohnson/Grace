@@ -186,7 +186,7 @@ namespace Grace.Tests.Data.Immutable
         }
 
         [Fact]
-        public void ImmutableArray_GetHashCode_StructuralyEqual()
+        public void ImmutableArray_GetHashCode_StructurallyEqual()
         {
             var array = ImmutableArray.Create(5, 10, 15);
 
@@ -201,9 +201,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(array);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -214,9 +214,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(array);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]

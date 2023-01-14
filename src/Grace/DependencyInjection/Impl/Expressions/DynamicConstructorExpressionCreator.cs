@@ -45,7 +45,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationConfiguration"></param>
         /// <param name="activationDelegate"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult CreateCallExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, ActivationStrategyDelegate activationDelegate)
         {
             return ExpressionUtilities.CreateExpressionForDelegate(activationDelegate, activationConfiguration.ExternallyOwned,
@@ -58,7 +57,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="activationConfiguration"></param>
-        /// <returns></returns>
         protected virtual ActivationStrategyDelegate CreateActivationDelegate(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var activationExpression = BuildActivationExpression(scope, request, activationConfiguration);
@@ -85,11 +83,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     var paramKey = parameter.Name + "|" + parameter.ParameterType.FullName;
 
-                    Tuple<ParameterExpression, string> parameterExpression;
-
-                    if (!foundValues.TryGetValue(paramKey, out parameterExpression))
+                    if (!foundValues.TryGetValue(paramKey, out var parameterExpression))
                     {
-                        var canLocateInfo = CreateCanLocateStatement(parameter, scope, request, activationConfiguration);
+                        var canLocateInfo = CreateCanLocateStatement(parameter, request, activationConfiguration);
 
                         // only test for required parameters with no default value
                         if (canLocateInfo != null)
@@ -275,7 +271,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 Expression.Default(parameter.ParameterType));
         }
 
-        private Tuple<ParameterExpression, Expression> CreateCanLocateStatement(ParameterInfo parameter, IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
+        private Tuple<ParameterExpression, Expression> CreateCanLocateStatement(ParameterInfo parameter, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration)
         {
             var parameterInfo = FindParameterInfoExpression(parameter, activationConfiguration);
 
@@ -305,7 +301,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <param name="constructors"></param>
-        /// <returns></returns>
         protected override ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration,
             IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {
@@ -319,7 +314,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="context"></param>
         /// <param name="parameterName"></param>
-        /// <returns></returns>
         public virtual bool DynamicCanLocate<T>(IExportLocatorScope scope, IInjectionContext context, string parameterName)
         {
             var value = context.GetExtraData(parameterName);
@@ -363,7 +357,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="isRequired"></param>
         /// <param name="useDefault"></param>
         /// <param name="defaultVlalue"></param>
-        /// <returns></returns>
         public virtual T DynamicLocate<T>(IExportLocatorScope scope,
                                           IDisposalScope disposalScope,
                                           IInjectionContext context,

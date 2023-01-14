@@ -20,12 +20,12 @@
         /// <summary>
         /// Resolved Value
         /// </summary>
-        public T Value { get; private set; }
+        public T Value { get; }
 
         /// <summary>
         /// Metadata for the resolved value
         /// </summary>
-        public IActivationStrategyMetadata Metadata { get; private set; }
+        public IActivationStrategyMetadata Metadata { get; }
     }
 
     /// <summary>

@@ -8,12 +8,12 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy for creating delegates with two arguements
+    /// Strategy for creating delegates with two arguments
     /// </summary>
     public class DelegateTwoArgWrapperStrategy : BaseWrapperStrategy
     {
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
@@ -38,7 +38,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");
@@ -155,7 +154,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 }
 
                 /// <summary>
-                /// MEthod that is converted into delegate
+                /// Method that is converted into delegate
                 /// </summary>
                 /// <param name="arg1"></param>
                 /// <param name="arg2"></param>

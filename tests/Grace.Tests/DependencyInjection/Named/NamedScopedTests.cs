@@ -67,11 +67,9 @@ namespace Grace.Tests.DependencyInjection.Named
 
             container.Configure(c => c.Export<BasicService>().AsName("BasicService"));
 
-            object instance;
-
             using (var scope = container.BeginLifetimeScope())
             {
-                var returnValue = scope.TryLocateByName("BasicService", out instance);
+                var returnValue = scope.TryLocateByName("BasicService", out var instance);
 
                 Assert.True(returnValue);
                 Assert.NotNull(instance);
@@ -84,11 +82,9 @@ namespace Grace.Tests.DependencyInjection.Named
         {
             var container = new DependencyInjectionContainer();
 
-            object instance;
-
             using (var scope = container.BeginLifetimeScope())
             {
-                var returnValue = scope.TryLocateByName("BasicService", out instance);
+                var returnValue = scope.TryLocateByName("BasicService", out var instance);
 
                 Assert.False(returnValue);
                 Assert.Null(instance);

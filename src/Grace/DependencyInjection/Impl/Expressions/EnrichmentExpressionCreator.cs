@@ -17,7 +17,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">expression result</param>
-        /// <returns></returns>
         IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result);
     }
 
@@ -33,7 +32,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">expression result</param>
-        /// <returns></returns>
         public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {

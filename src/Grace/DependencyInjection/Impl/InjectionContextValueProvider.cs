@@ -19,7 +19,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="context"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         object GetValueFromInjectionContext(IExportLocatorScope scope,Type type, object key, IInjectionContext context,
             bool isRequired);
 
@@ -27,16 +26,15 @@ namespace Grace.DependencyInjection.Impl
         /// Get data from injection context
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="locator"></param>
+        /// <param name="scope"></param>
         /// <param name="staticContext"></param>
         /// <param name="key"></param>
         /// <param name="dataProvider"></param>
         /// <param name="defaultValue"></param>
         /// <param name="useDefault"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
         T GetValueFromInjectionContext<T>(
-            IExportLocatorScope locator,
+            IExportLocatorScope scope,
             StaticInjectionContext staticContext,
             object key,
             IInjectionContext dataProvider,
@@ -53,13 +51,12 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Get data from injection context
         /// </summary>
-        /// <param name="locator"></param>
+        /// <param name="scope"></param>
         /// <param name="type"></param>
         /// <param name="key"></param>
         /// <param name="context"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
-        public virtual object GetValueFromInjectionContext(IExportLocatorScope locator, Type type, object key, IInjectionContext context, bool isRequired)
+        public virtual object GetValueFromInjectionContext(IExportLocatorScope scope, Type type, object key, IInjectionContext context, bool isRequired)
         {
             object value = null;
 
@@ -75,9 +72,7 @@ namespace Grace.DependencyInjection.Impl
                     }
                     else
                     {
-                        var delegateInstance = context.ExtraData as Delegate;
-
-                        if (delegateInstance != null && delegateInstance.GetMethodInfo().ReturnType == type)
+                        if (context.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == type)
                         {
                             value = delegateInstance;
                         }
@@ -87,7 +82,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (value == null)
             {
-                var currentLocator = locator;
+                var currentLocator = scope;
 
                 while (currentLocator != null)
                 {
@@ -105,7 +100,7 @@ namespace Grace.DependencyInjection.Impl
                 if (value is Delegate)
                 {
                     value =
-                        ReflectionService.InjectAndExecuteDelegate(locator, new StaticInjectionContext(type), context, value as Delegate);
+                        ReflectionService.InjectAndExecuteDelegate(scope, new StaticInjectionContext(type), context, value as Delegate);
                 }
 
                 if (!(type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())))
@@ -133,15 +128,14 @@ namespace Grace.DependencyInjection.Impl
         /// Get data from injection context
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="locator"></param>
+        /// <param name="scope"></param>
         /// <param name="staticContext"></param>
         /// <param name="key"></param>
         /// <param name="dataProvider"></param>
         /// <param name="defaultValue"></param>
         /// <param name="useDefault"></param>
         /// <param name="isRequired"></param>
-        /// <returns></returns>
-        public virtual T GetValueFromInjectionContext<T>(IExportLocatorScope locator,
+        public virtual T GetValueFromInjectionContext<T>(IExportLocatorScope scope,
                                                  StaticInjectionContext staticContext, 
                                                  object key,
                                                  IInjectionContext dataProvider, 
@@ -163,9 +157,7 @@ namespace Grace.DependencyInjection.Impl
                     }
                     else
                     {
-                        var delegateInstance = dataProvider.ExtraData as Delegate;
-
-                        if (delegateInstance != null && delegateInstance.GetMethodInfo().ReturnType == typeof(T))
+                        if (dataProvider.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == typeof(T))
                         {
                             value = delegateInstance;
                         }
@@ -175,7 +167,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (value == null)
             {
-                var currentLocator = locator;
+                var currentLocator = scope;
 
                 while (currentLocator != null)
                 {
@@ -198,7 +190,7 @@ namespace Grace.DependencyInjection.Impl
                 if (value is Delegate)
                 {
                     value =
-                        ReflectionService.InjectAndExecuteDelegate(locator, staticContext, dataProvider, value as Delegate);
+                        ReflectionService.InjectAndExecuteDelegate(scope, staticContext, dataProvider, value as Delegate);
                 }
 
                 if(!(value is T))
@@ -246,7 +238,6 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key"></param>
         /// <param name="dataProvider"></param>
         /// <param name="tValue"></param>
-        /// <returns></returns>
         protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
         {
             object value = null;
@@ -315,9 +306,7 @@ namespace Grace.DependencyInjection.Impl
                     return true;
                 }
 
-                var delegateInstance = o as Delegate;
-
-                if (delegateInstance != null &&
+                if (o is Delegate delegateInstance &&
                     delegateInstance.GetMethodInfo().ReturnType == type)
                 {
                     tValue = o;

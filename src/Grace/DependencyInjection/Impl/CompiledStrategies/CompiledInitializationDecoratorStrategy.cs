@@ -34,7 +34,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="lifestyle"></param>
-        /// <returns></returns>
         public IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request,
             ICompiledLifestyle lifestyle)
         {
@@ -58,7 +57,6 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         protected virtual IActivationExpressionResult InternalGetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var newRequest = request.NewRequest(typeof(T), this, ActivationType, RequestType.Other, null, true, true);

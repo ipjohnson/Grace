@@ -153,18 +153,14 @@ namespace Grace.Tests.DependencyInjection.LifetimeScope
 
             using (var scope = container.BeginLifetimeScope())
             {
-                IBasicService basicService;
+                Assert.True(scope.TryLocate(out IBasicService basicService));
 
-                Assert.True(scope.TryLocate(out basicService));
-
-                IMultipleService multipleService;
-
-                Assert.False(scope.TryLocate(out multipleService));
+                Assert.False(scope.TryLocate(out IMultipleService multipleService));
             }
         }
 
         [Fact]
-        public void Lifetimescope_CanLocate()
+        public void LifetimeScope_CanLocate()
         {
             var container = new DependencyInjectionContainer();
 

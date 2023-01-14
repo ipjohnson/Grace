@@ -90,7 +90,7 @@ namespace Grace.Tests.DependencyInjection.Wrappers
         [SubFixtureInitialize]
         public void FuncOneArg_GetWrappedType_NonGeneric(FuncOneArgWrapperStrategy strategy)
         {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
+            Assert.Null(strategy.GetWrappedType(typeof(BasicService)));
         }
 
         public class SomeClass
@@ -119,6 +119,5 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
             func(new BasicService());
         }
-
     }
 }

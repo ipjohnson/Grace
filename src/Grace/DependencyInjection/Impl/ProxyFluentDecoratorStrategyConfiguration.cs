@@ -21,7 +21,6 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Apply decorator after lifestyle, by default it's before
         /// </summary>
-        /// <returns></returns>
         public IFluentDecoratorStrategyConfiguration ApplyAfterLifestyle()
         {
             return _configuration.ApplyAfterLifestyle();
@@ -31,7 +30,6 @@ namespace Grace.DependencyInjection.Impl
         /// Export as particular types
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         public IFluentDecoratorStrategyConfiguration As(Type type)
         {
             return _configuration.As(type);
@@ -50,7 +48,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <param name="paramValue">Func(T) value for the parameter</param>
@@ -61,7 +59,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -73,7 +71,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -86,7 +84,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -100,7 +98,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -115,7 +113,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>

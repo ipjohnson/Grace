@@ -8,7 +8,7 @@ using Grace.DependencyInjection.Impl;
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// Dependancy injection container, this is the main class to instantiate 
+    /// Dependency injection container, this is the main class to instantiate 
     /// </summary>
     public class DependencyInjectionContainer : InjectionScope, IEnumerable<object>
     {
@@ -53,7 +53,6 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// This is here to allow adding configuration modules through object initialization. Always returns empty
         /// </summary>
-        /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IEnumerator<object> GetEnumerator()
         {

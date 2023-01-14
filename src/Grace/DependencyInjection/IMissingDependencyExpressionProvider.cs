@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Grace.DependencyInjection
+﻿namespace Grace.DependencyInjection
 {
     /// <summary>
     /// Interface for providing linq expressions for missing dependencies

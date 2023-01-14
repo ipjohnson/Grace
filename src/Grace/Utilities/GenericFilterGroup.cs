@@ -39,10 +39,9 @@ namespace Grace.Utilities
         }
 
         /// <summary>
-        /// Automatically convert from TypefilterGroup to Func(Type,bool)
+        /// Automatically convert from TypeFilterGroup to Func(Type,bool)
         /// </summary>
         /// <param name="group"></param>
-        /// <returns></returns>
         public static implicit operator Func<T, bool>(GenericFilterGroup<T> group)
         {
             return group.InternalFilter;
@@ -52,7 +51,6 @@ namespace Grace.Utilities
         /// Internal method that does the filtering 
         /// </summary>
         /// <param name="type"></param>
-        /// <returns></returns>
         protected virtual bool InternalFilter(T type)
         {
             if (UseOr)

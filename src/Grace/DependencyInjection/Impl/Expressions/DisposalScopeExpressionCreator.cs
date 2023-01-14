@@ -17,9 +17,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">result for instantiation</param>
-        /// <returns></returns>
-        IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
-            TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result);
+        IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result);
     }
 
     /// <summary>
@@ -27,7 +25,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// </summary>
     public class DisposalScopeExpressionCreator : IDisposalScopeExpressionCreator
     {
-#if NETSTANDARD2_1
+#if NET6_0_OR_GREATER
         private MethodInfo _addAsyncMethod;
         private MethodInfo _addAsyncMethodWithCleanup;
 #endif
@@ -41,15 +39,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">result for instantiation</param>
-        /// <returns></returns>
         public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request,
             TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
         {
             var addMethod = AddMethod;
             var addMethodWithCleanup = AddMethodWithCleanup;
-#if NETSTANDARD2_1
-            if (activationConfiguration.ActivationType.GetTypeInfo()
-                .ImplementedInterfaces.Contains(typeof(IAsyncDisposable)))
+#if NET6_0_OR_GREATER
+            if (activationConfiguration.ActivationType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IAsyncDisposable)))
             {
                 addMethod = AddAsyncMethod;
                 addMethodWithCleanup = AddAsyncMethodWithCleanup;
@@ -100,41 +96,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Method info for add method on IDisposalScope
         /// </summary>
-        protected MethodInfo AddMethod => _addMethod ??
-                                          (_addMethod = typeof(IDisposalScope).GetTypeInfo()
-                                              .DeclaredMethods.First(m =>
-                                                  m.Name == nameof(IDisposalScope.AddDisposable) &&
-                                                  m.GetParameters().Length == 1));
+        protected MethodInfo AddMethod => _addMethod = _addMethod ?? typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddDisposable) && m.GetParameters().Length == 1);
 
         /// <summary>
         /// Method info for add method on IDisposalScope with cleanup delegate
         /// </summary>
-        protected MethodInfo AddMethodWithCleanup => _addMethodWithCleanup ??
-                                                     (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo()
-                                                         .DeclaredMethods.First(m =>
-                                                             m.Name == nameof(IDisposalScope.AddDisposable) &&
-                                                             m.GetParameters().Length == 2));
-#if NETSTANDARD2_1
+        protected MethodInfo AddMethodWithCleanup => _addMethodWithCleanup = _addMethodWithCleanup ?? typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddDisposable) && m.GetParameters().Length == 2);
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Method info for add async method on IDisposalScope
         /// </summary>
-        protected MethodInfo AddAsyncMethod => _addAsyncMethod ??
-                                               (_addAsyncMethod =
-                                                   typeof(IDisposalScope).GetTypeInfo()
-                                                       .DeclaredMethods.First(m =>
-                                                           m.Name == nameof(IDisposalScope.AddAsyncDisposable) &&
-                                                           m.GetParameters().Length == 1));
+        protected MethodInfo AddAsyncMethod => _addAsyncMethod ??= typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddAsyncDisposable) && m.GetParameters().Length == 1);
 
         /// <summary>
         /// Method info for add method on IDisposalScope with cleanup delegate
         /// </summary>
-        protected MethodInfo AddAsyncMethodWithCleanup => _addAsyncMethodWithCleanup ??
-                                                          (_addAsyncMethodWithCleanup =
-                                                              typeof(IDisposalScope).GetTypeInfo()
-                                                                  .DeclaredMethods.First(m =>
-                                                                      m.Name ==
-                                                                      nameof(IDisposalScope.AddAsyncDisposable) &&
-                                                                      m.GetParameters().Length == 2));
+        protected MethodInfo AddAsyncMethodWithCleanup => _addAsyncMethodWithCleanup ??= typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => m.Name == nameof(IDisposalScope.AddAsyncDisposable) && m.GetParameters().Length == 2);
 #endif
     }
 }

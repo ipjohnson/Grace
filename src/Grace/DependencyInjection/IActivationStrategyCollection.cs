@@ -20,32 +20,27 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Get primary strategy
         /// </summary>
-        /// <returns></returns>
         T GetPrimary();
 
         /// <summary>
         /// Strategies that are non keyed
         /// </summary>
-        /// <returns></returns>
         ImmutableArray<T> GetStrategies();
 
         /// <summary>
         /// list of strategies and their keys
         /// </summary>
-        /// <returns></returns>
         IEnumerable<KeyValuePair<object, T>> GetKeyedStrategies();
 
         /// <summary>
         /// Get a keyed strategy
         /// </summary>
         /// <param name="key">key</param>
-        /// <returns></returns>
         T GetKeyedStrategy(object key);
 
         /// <summary>
         /// Clone the collection
         /// </summary>
-        /// <returns></returns>
         IActivationStrategyCollection<T> Clone();
     }
 }

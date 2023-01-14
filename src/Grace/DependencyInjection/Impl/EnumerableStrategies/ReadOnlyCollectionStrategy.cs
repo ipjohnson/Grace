@@ -27,7 +27,6 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <returns></returns>
         public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var elementType = request.ActivationType.GenericTypeArguments[0];

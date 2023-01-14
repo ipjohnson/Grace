@@ -27,7 +27,7 @@ namespace Grace.Tests.Dynamic
             var array = instance.Value.ToArray();
 
             Assert.NotNull(array);
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<BasicService>(array[0]);
         }
 
@@ -49,7 +49,7 @@ namespace Grace.Tests.Dynamic
             var array = instance.Value;
 
             Assert.NotNull(array);
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<BasicService>(array[0]);
         }
         
