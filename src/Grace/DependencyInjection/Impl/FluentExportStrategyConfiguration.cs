@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection.Impl
     public interface IActivationStrategyProvider
     {
         /// <summary>
-        /// Get stragey from configuration
+        /// Get strategy from configuration
         /// </summary>
         IActivationStrategy GetStrategy();
     }
@@ -156,10 +156,10 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
         /// <param name="injectMethods"></param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector, injectMethods, false));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemberInjectionSelector(selector, injectMethods, false));
 
             return this;
         }
@@ -186,9 +186,9 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Apply a lifestlye to export strategy
+        /// Apply a lifestyle to export strategy
         /// </summary>
-        public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => new LifestylePicker<IFluentExportStrategyConfiguration>(this, lifestlye => UsingLifestyle(lifestlye));
+        public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => new LifestylePicker<IFluentExportStrategyConfiguration>(this, lifestyle => UsingLifestyle(lifestyle));
 
         /// <summary>
         /// Export only if function returns true
@@ -216,7 +216,7 @@ namespace Grace.DependencyInjection.Impl
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
         {
             _exportConfiguration.Lifestyle = lifestyle;
@@ -263,7 +263,7 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <param name="key">metadata key</param>
         /// <param name="value">metadata value</param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration WithMetadata(object key, object value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -287,10 +287,10 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Defines a custom scope when creating instance
         /// </summary>
-        /// <param name="customscope"></param>
-        public IFluentExportStrategyConfiguration DefinesNamedScope(string customscope)
+        /// <param name="customScope"></param>
+        public IFluentExportStrategyConfiguration DefinesNamedScope(string customScope)
         {
-            _exportConfiguration.CustomScopeName = customscope;
+            _exportConfiguration.CustomScopeName = customScope;
 
             return this;
         }
@@ -298,7 +298,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
-        /// <returns>configuraiton object</returns>
+        /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration ExternallyOwned()
         {
             _exportConfiguration.ExternallyOwned = true;
@@ -307,7 +307,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Get stragey from configuration
+        /// Get strategy from configuration
         /// </summary>
         public IActivationStrategy GetStrategy()
         {
@@ -317,7 +317,7 @@ namespace Grace.DependencyInjection.Impl
     }
 
     /// <summary>
-    /// Configuration object for export stategy
+    /// Configuration object for export strategy
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class FluentExportStrategyConfiguration<T> : IFluentExportStrategyConfiguration<T>, IActivationStrategyProvider
@@ -509,9 +509,7 @@ namespace Grace.DependencyInjection.Impl
         {
             ICompiledExportStrategy strategy = null;
 
-            var member = memberExpression.Body as MemberExpression;
-
-            if (member != null)
+            if (memberExpression.Body is MemberExpression member)
             {
                 if (member.Member is PropertyInfo)
                 {
@@ -530,9 +528,7 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                var methodCall = memberExpression.Body as MethodCallExpression;
-
-                if (methodCall != null)
+                if (memberExpression.Body is MethodCallExpression methodCall)
                 {
                     var methodInfo = methodCall.Method;
 
@@ -568,9 +564,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="constructorExpression">constructor expression ( () => new MyTypeName("Specific", "Constructor") )</param>
         public IFluentExportStrategyConfiguration<T> ImportConstructor(Expression<Func<T>> constructorExpression)
         {
-            var newExpression = constructorExpression.Body as NewExpression;
-
-            if (newExpression != null)
+            if (constructorExpression.Body is NewExpression newExpression)
             {
                 _exportConfiguration.SelectedConstructor = newExpression.Constructor;
             }
@@ -610,7 +604,7 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethod = false)
         {
-            _exportConfiguration.MemberInjectionSelector(new PublicMemeberInjectionSelector(selector ?? (m => true), injectMethod, false));
+            _exportConfiguration.MemberInjectionSelector(new PublicMemberInjectionSelector(selector ?? (m => true), injectMethod, false));
 
             return this;
         }
@@ -699,7 +693,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
-        /// <param name="lifestyle">lifestlye to use</param>
+        /// <param name="lifestyle">lifestyle to use</param>
         /// <returns>configuration object</returns>
         public IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle)
         {
@@ -715,7 +709,7 @@ namespace Grace.DependencyInjection.Impl
             new WhenConditionConfiguration<IFluentExportStrategyConfiguration<T>>(condition => _exportConfiguration.AddCondition(condition), this);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <param name="paramValue">Func(T) value for the parameter</param>
@@ -730,21 +724,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Import a collection allowing you to specify a filter and a sort order
-        /// </summary>
-        /// <typeparam name="TParam"></typeparam>
-        /// <typeparam name="TItem"></typeparam>
-        public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
-        {
-            var parameterInfo = new ConstructorParameterInfo(null) { ParameterType = typeof(IEnumerable<TItem>) };
-
-            _exportConfiguration.ConstructorParameter(parameterInfo);
-
-            return new FluentWithCtorCollectionConfiguration<T, TItem>(this, parameterInfo);
-        }
-
-        /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -762,7 +742,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -781,7 +761,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -801,7 +781,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -822,7 +802,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -841,6 +821,20 @@ namespace Grace.DependencyInjection.Impl
             _exportConfiguration.ConstructorParameter(parameterInfo);
 
             return new FluentWithCtorConfiguration<T, TParam>(this, parameterInfo);
+        }
+
+        /// <summary>
+        /// Import a collection allowing you to specify a filter and a sort order
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <typeparam name="TItem"></typeparam>
+        public IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>() where TParam : IEnumerable<TItem>
+        {
+            var parameterInfo = new ConstructorParameterInfo(null) { ParameterType = typeof(IEnumerable<TItem>) };
+
+            _exportConfiguration.ConstructorParameter(parameterInfo);
+
+            return new FluentWithCtorCollectionConfiguration<T, TItem>(this, parameterInfo);
         }
 
         /// <summary>
@@ -868,7 +862,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Get stragey from configuration
+        /// Get strategy from configuration
         /// </summary>
         public IActivationStrategy GetStrategy()
         {

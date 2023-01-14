@@ -59,7 +59,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         }
 
         /// <summary>
-        /// Helper class that creates Func with 4 arguements
+        /// Helper class that creates Func with 4 arguments
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>

@@ -127,7 +127,7 @@ namespace Grace.DependencyInjection.Impl
         }
         
         /// <summary>
-        /// Add IMemberInjectionSelctor that selects 
+        /// Add IMemberInjectionSelector that selects 
         /// </summary>
         /// <param name="selector"></param>
         public void AddMemberInjectionSelector(IMemberInjectionSelector selector)
@@ -247,7 +247,7 @@ namespace Grace.DependencyInjection.Impl
         /// Export a specific type using IExportLocatorScope and StaticInjectionContext
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">isntance func</param>
+        /// <param name="instanceFunc">instance func</param>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(Func<IExportLocatorScope, StaticInjectionContext, T> instanceFunc)
         {
             if (instanceFunc == null) throw new ArgumentNullException(nameof(instanceFunc));
@@ -263,7 +263,7 @@ namespace Grace.DependencyInjection.Impl
         /// Export a specific type using IExportLocatorScope, StaticInjectionContext and IInjectionContext
         /// </summary>
         /// <typeparam name="T">type to export</typeparam>
-        /// <param name="instanceFunc">isntance func</param>
+        /// <param name="instanceFunc">instance func</param>
         public IFluentExportInstanceConfiguration<T> ExportInstance<T>(
             Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, T> instanceFunc)
         {
@@ -431,10 +431,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (key != null)
             {
-                if (_exportStrategyProviders.Any(s => s.ExportAsKeyed.Any(kvp =>
-                {
-                    return type == kvp.Key && key.Equals(kvp.Value) && !ReferenceEquals(excludeStrategy, s);
-                })))
+                if (_exportStrategyProviders.Any(s => s.ExportAsKeyed.Any(kvp => type == kvp.Key && key.Equals(kvp.Value) && !ReferenceEquals(excludeStrategy, s))))
                 {
                     return true;
                 }

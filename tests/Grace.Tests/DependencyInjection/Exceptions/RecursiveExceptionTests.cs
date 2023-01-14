@@ -8,7 +8,7 @@ namespace Grace.Tests.DependencyInjection.Exceptions
     {
         public class RecursiveClass1
         {
-            private RecursiveClass2 _class2;
+            private readonly RecursiveClass2 _class2;
 
             public RecursiveClass1(RecursiveClass2 class2)
             {
@@ -18,7 +18,7 @@ namespace Grace.Tests.DependencyInjection.Exceptions
 
         public class RecursiveClass2
         {
-            private RecursiveClass1 _class1;
+            private readonly RecursiveClass1 _class1;
 
             public RecursiveClass2(RecursiveClass1 class1)
             {

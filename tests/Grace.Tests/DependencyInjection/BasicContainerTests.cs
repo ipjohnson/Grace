@@ -122,7 +122,7 @@ namespace Grace.Tests.DependencyInjection
         }
 
         [Fact]
-        public void DepencencyInjectionContainer_ExportAsBase_Interface()
+        public void DependencyInjectionContainer_ExportAsBase_Interface()
         {
             var container = new DependencyInjectionContainer(c => c.ExportAsBase = true);
 
@@ -139,7 +139,7 @@ namespace Grace.Tests.DependencyInjection
 
 
         [Fact]
-        public void DepencencyInjectionContainer_ExportAsBase_Concrete()
+        public void DependencyInjectionContainer_ExportAsBase_Concrete()
         {
             var container = new DependencyInjectionContainer(c => c.ExportAsBase = true);
 

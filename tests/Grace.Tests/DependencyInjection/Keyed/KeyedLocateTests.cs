@@ -176,7 +176,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
 
         [Fact]
-        public void Keyed_And_NonKeyed_With_Differnt_Lifestyle()
+        public void Keyed_And_NonKeyed_With_Different_Lifestyle()
         {
             var container = new DependencyInjectionContainer();
 
@@ -224,7 +224,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
-        public void Keyed_And_NonKeyed_Factory_With_Differnt_Lifestyle()
+        public void Keyed_And_NonKeyed_Factory_With_Different_Lifestyle()
         {
             var container = new DependencyInjectionContainer();
 

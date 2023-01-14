@@ -53,18 +53,18 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Add conditions for export
         /// </summary>
-        /// <param name="conditionFunc"></param>
-        public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
+        /// <param name="conditions"></param>
+        public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions)
         {
-            if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
+            if (conditions == null) throw new ArgumentNullException(nameof(conditions));
 
-            _conditions = _conditions.Add(conditionFunc);
+            _conditions = _conditions.Add(conditions);
 
             return this;
         }
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <param name="baseType">base type to export</param>
         /// <returns>configuration object</returns>
@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <returns>configuration object</returns>
         public IExportTypeSetConfiguration BasedOn<T>()
@@ -227,11 +227,11 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Set a particular life style
         /// </summary>
-        /// <param name="lifestyle">lifestyle</param>
+        /// <param name="container">lifestyle</param>
         /// <returns>configuration object</returns>
-        public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle lifestyle)
+        public IExportTypeSetConfiguration UsingLifestyle(ICompiledLifestyle container)
         {
-            return UsingLifestyle(type => lifestyle?.Clone());
+            return UsingLifestyle(type => container?.Clone());
         }
 
         /// <summary>
@@ -341,9 +341,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     foreach (var attribute in type.GetTypeInfo().GetCustomAttributes())
                     {
-                        var exportAttribute = attribute as IExportAttribute;
-
-                        if (exportAttribute != null)
+                        if (attribute is IExportAttribute exportAttribute)
                         {
                             exportTypes = exportTypes.AddRange(exportAttribute.ProvideExportTypes(type));
                         }
@@ -441,9 +439,7 @@ namespace Grace.DependencyInjection.Impl
         {
             foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
             {
-                var lifestyleAttribute = customAttribute as ILifestyleProviderAttribute;
-
-                if (lifestyleAttribute != null)
+                if (customAttribute is ILifestyleProviderAttribute lifestyleAttribute)
                 {
                     strategy.Lifestyle = lifestyleAttribute.ProvideLifestyle(type);
                 }
@@ -470,20 +466,18 @@ namespace Grace.DependencyInjection.Impl
             {
                 foreach (var attribute in property.GetCustomAttributes())
                 {
-                    var importAttribute = attribute as IImportAttribute;
-
-                    if (importAttribute != null)
+                    if (attribute is IImportAttribute importAttribute)
                     {
-                        var injecitonInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
+                        var injectionInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
 
-                        if (injecitonInfo != null)
+                        if (injectionInfo != null)
                         {
                             strategy.MemberInjectionSelector(new KnownMemberInjectionSelector(
                                     new MemberInjectionInfo
                                     {
                                         MemberInfo = property,
-                                        IsRequired = injecitonInfo.IsRequired,
-                                        LocateKey = injecitonInfo.ImportKey
+                                        IsRequired = injectionInfo.IsRequired,
+                                        LocateKey = injectionInfo.ImportKey
                                     }));
                         }
                     }

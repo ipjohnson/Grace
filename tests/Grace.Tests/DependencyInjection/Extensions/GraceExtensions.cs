@@ -128,7 +128,7 @@ namespace Grace.Tests.DependencyInjection.Extensions
             }
 
 #if NET6_0_OR_GREATER
-            /// <summary>Asynchonously performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+            /// <summary>Asynchronously performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
             public ValueTask DisposeAsync()
             {
                 return _injectionScope.DisposeAsync();

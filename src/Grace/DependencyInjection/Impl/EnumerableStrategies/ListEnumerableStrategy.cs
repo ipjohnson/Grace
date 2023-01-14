@@ -11,7 +11,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     public class ListEnumerableStrategy : BaseGenericEnumerableStrategy
     {
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="injectionScope"></param>
         public ListEnumerableStrategy( IInjectionScope injectionScope) : base(typeof(List<>), injectionScope)

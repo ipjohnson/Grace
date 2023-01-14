@@ -7,7 +7,7 @@ using Grace.Dynamic.Impl;
 namespace Grace.Dynamic
 {
     /// <summary>
-    /// Configuration class for using IL generation in liue of Linq Expressions
+    /// Configuration class for using IL generation in line of Linq Expressions
     /// </summary>
     public class GraceDynamicMethod : InjectionScopeConfiguration
     {
@@ -49,7 +49,7 @@ namespace Grace.Dynamic
             DynamicImplementation.ExportSingleton<INewExpressionGenerator>(f => new NewExpressionGenerator());
             DynamicImplementation.ExportSingleton<IConstantExpressionCollector>(f => new ConstantExpressionCollector());
             DynamicImplementation.ExportSingleton<IConstantExpressionGenerator>(f => new ConstantExpressionGenerator());
-            DynamicImplementation.ExportSingleton<IMemeberInitExpressionGenerator>(f => new MemeberInitExpressionGenerator());
+            DynamicImplementation.ExportSingleton<IMemberInitExpressionGenerator>(f => new MemberInitExpressionGenerator());
             DynamicImplementation.ExportSingleton<IArrayInitExpressionGenerator>(f => new ArrayInitExpressionGenerator());
             DynamicImplementation.ExportSingleton<IParameterExpressionGenerator>(f => new ParameterExpressionGenerator());
             DynamicImplementation.ExportSingleton<ICallExpressionGenerator>(f => new CallExpressionGenerator());

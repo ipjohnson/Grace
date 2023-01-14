@@ -168,9 +168,9 @@ namespace Grace.DependencyInjection.Impl
                         returnList[strategy.ExportOrder] = strategy;
                     }
 
-                    foreach (var valuePair in export.GetKeyedStrategies())
+                    foreach (var valuePair in export.GetKeyedStrategies().Select(vp => vp.Value))
                     {
-                        returnList[valuePair.Value.ExportOrder] = valuePair.Value;
+                        returnList[valuePair.ExportOrder] = valuePair;
                     }
                 });
             }

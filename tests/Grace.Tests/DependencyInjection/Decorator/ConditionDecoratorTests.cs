@@ -35,7 +35,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
         }
 
         [Fact]
-        public void DecoratorCondition_Decoratoring()
+        public void DecoratorCondition_Decorating()
         {
             var container = new DependencyInjectionContainer();
 
@@ -60,7 +60,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
     public class WhenDecoratingCondition : ICompiledCondition
     {
-        private Type _decoratedType;
+        private readonly Type _decoratedType;
 
         public WhenDecoratingCondition(Type decoratedType)
         {

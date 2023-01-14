@@ -14,8 +14,8 @@ namespace Grace.Tests.Classes.Simple
 
         public int Count
         {
-            get { return Instance.Count; }
-            set { Instance.Count = value; }
+            get => Instance.Count;
+            set => Instance.Count = value;
         }
 
         public int TestMethod()

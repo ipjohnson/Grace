@@ -84,7 +84,7 @@ namespace Grace.Tests.Dynamic
                 c.Export<ScopedService5>().As<IScopedService5>().Lifestyle.SingletonPerScope();
             });
 
-            var controller = container.Locate<TestController1>();
+            _ = container.Locate<TestController1>();
 
         }
 

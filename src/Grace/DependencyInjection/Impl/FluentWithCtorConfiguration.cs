@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection.Impl
     public class FluentWithCtorConfiguration : ProxyFluentExportStrategyConfiguration,
         IFluentWithCtorConfiguration
     {
-        private ConstructorParameterInfo _constructorParameterInfo;
+        private readonly ConstructorParameterInfo _constructorParameterInfo;
 
         /// <summary>
         /// Default constructor
@@ -94,7 +94,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Locate with a particular key
         /// </summary>
-        /// <param name="locateKey">ocate key</param>
+        /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         public IFluentWithCtorConfiguration LocateWithKey(object locateKey)
         {

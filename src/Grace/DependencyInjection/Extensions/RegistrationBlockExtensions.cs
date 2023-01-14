@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Extensions
     public static class RegistrationBlockExtensions
     {
         /// <summary>
-        /// Directly export a function with no decoratory, no testing for null, no lifestyle. 
+        /// Directly export a function with no decorators, no testing for null, no lifestyle. 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="block"></param>

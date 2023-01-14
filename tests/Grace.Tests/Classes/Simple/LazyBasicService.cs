@@ -13,8 +13,8 @@ namespace Grace.Tests.Classes.Simple
 
         public int Count
         {
-            get { return _lazyBasic.Value.Count; }
-            set { _lazyBasic.Value.Count = value; }
+            get => _lazyBasic.Value.Count;
+            set => _lazyBasic.Value.Count = value;
         }
 
         public int TestMethod()

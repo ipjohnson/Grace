@@ -9,7 +9,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
     {
         // re-enable this test when injection context is implemented
         [Fact]
-        public void MostParametrs_Uses_Correct_Constructor()
+        public void MostParameters_Uses_Correct_Constructor()
         {
             var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.MostParameters);
 

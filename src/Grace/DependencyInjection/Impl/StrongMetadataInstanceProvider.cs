@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (constructors[0].GetParameters().Length == 0)
                 {
-                    return new object[0];
+                    return Array.Empty<object>();
                 }
 
                 constructorInfo = constructors[0];
@@ -141,11 +141,9 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                object setValue = null;
-
-                setValue = metadata.ContainsKey(propertyInfo.Name) ?
-                            metadata[propertyInfo.Name] :
-                            propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
+                object setValue = metadata.ContainsKey(propertyInfo.Name) ?
+                    metadata[propertyInfo.Name] :
+                    propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
 
                 if (setValue != null)
                 {

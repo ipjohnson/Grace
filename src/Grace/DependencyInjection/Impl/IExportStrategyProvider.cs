@@ -3,7 +3,7 @@
 namespace Grace.DependencyInjection.Impl
 {
     /// <summary>
-    /// Represents a class that provides export stragies
+    /// Represents a class that provides export strategies
     /// </summary>
     public interface IExportStrategyProvider
     {

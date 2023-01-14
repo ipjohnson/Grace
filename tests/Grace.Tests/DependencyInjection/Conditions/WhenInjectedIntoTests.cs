@@ -92,7 +92,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
 
         public class SimpleObjectDecorator : IAttributedSimpleObject
         {
-            private IAttributedSimpleObject _decorated;
+            private readonly IAttributedSimpleObject _decorated;
 
             public SimpleObjectDecorator(IAttributedSimpleObject decorated)
             {
@@ -132,7 +132,7 @@ namespace Grace.Tests.DependencyInjection.Conditions
 
         public class BasicDecorator : IBasicService
         {
-            private IBasicService _basicService;
+            private readonly IBasicService _basicService;
 
             public BasicDecorator(IBasicService basicService)
             {

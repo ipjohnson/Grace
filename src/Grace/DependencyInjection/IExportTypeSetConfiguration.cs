@@ -18,14 +18,14 @@ namespace Grace.DependencyInjection
         IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditions);
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <param name="baseType">base type to export</param>
         /// <returns>configuration object</returns>
         IExportTypeSetConfiguration BasedOn(Type baseType);
 
         /// <summary>
-        /// Export all types based on speficied type by Type
+        /// Export all types based on specified type by Type
         /// </summary>
         /// <returns>configuration object</returns>
         IExportTypeSetConfiguration BasedOn<T>();

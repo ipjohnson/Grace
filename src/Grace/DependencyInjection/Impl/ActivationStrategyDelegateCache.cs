@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Impl
     /// </summary>
     public class ActivationStrategyDelegateCache
     {
-        private ImmutableHashTree<Type, ActivationStrategyDelegate>[] _activationDelegates;
+        private readonly ImmutableHashTree<Type, ActivationStrategyDelegate>[] _activationDelegates;
         private const int _activationDelegatesLengthMinusOne = 63;
 
         /// <summary>

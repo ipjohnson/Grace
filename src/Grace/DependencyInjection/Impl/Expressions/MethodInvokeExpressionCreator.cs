@@ -162,8 +162,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
 
                 var parameterInfo = methodInjectionInfo.ParameterInfos()
-                    .Where(p => p.ParameterName == parameter.Name)
-                    .FirstOrDefault();
+                    .FirstOrDefault(p => p.ParameterName == parameter.Name);
 
                 if (parameterInfo != null)
                 {

@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy class for creating delegate with no arguements
+    /// Strategy class for creating delegate with no arguments
     /// </summary>
     public class DelegateNoArgWrapperStrategy : BaseWrapperStrategy
     {

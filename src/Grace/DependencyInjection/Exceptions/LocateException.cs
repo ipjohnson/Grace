@@ -77,9 +77,7 @@ namespace Grace.DependencyInjection.Exceptions
         {
             builder.AppendFormat("{0} Importing {1} ", stepIndex, info.LocateType);
 
-            var parameter = info.InjectionTarget as ParameterInfo;
-
-            if (parameter != null)
+            if (info.InjectionTarget is ParameterInfo parameter)
             {
                 var method = parameter.Member as MethodInfo;
 

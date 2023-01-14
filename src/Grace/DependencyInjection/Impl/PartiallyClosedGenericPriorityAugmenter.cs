@@ -14,10 +14,8 @@ namespace Grace.DependencyInjection.Impl
 	    /// <param name="strategy"></param>
 	    public void Inspect<T>(T strategy) where T : class, IActivationStrategy
 	    {
-	        var configurableStrategy = strategy as IConfigurableActivationStrategy;
-
-	        if (configurableStrategy != null &&
-	            configurableStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+            if (strategy is IConfigurableActivationStrategy configurableStrategy &&
+                configurableStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
 	        {
                 var maxClosed = 0;
                 var openGenericParams = configurableStrategy.ActivationType.GetTypeInfo().GenericTypeParameters.Length;

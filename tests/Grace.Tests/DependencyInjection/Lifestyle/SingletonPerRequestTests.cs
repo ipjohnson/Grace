@@ -47,16 +47,16 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             public string Name => "Alpha";
         }
 
-        public class BethaNameService : INameService
+        public class BetaNameService : INameService
         {
-            public string Name => "Betha";
+            public string Name => "Beta";
         }
 
         public class MultiNameService
         {
             public INameService Alpha { get; set; }
 
-            public INameService Betha { get; set; }
+            public INameService Beta { get; set; }
 
             public INameService Gamma { get; set; }
         }
@@ -70,11 +70,11 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             container.Configure(c =>
             {
                 c.Export<AlphaNameService>().AsKeyed<INameService>("Alpha").Lifestyle.SingletonPerRequest();
-                c.Export<BethaNameService>().AsKeyed<INameService>("Betha");
+                c.Export<BetaNameService>().AsKeyed<INameService>("Beta");
 
                 c.Export<MultiNameService>()
                     .ImportProperty(s => s.Alpha).LocateWithKey("Alpha").IsRequired(false)
-                    .ImportProperty(s => s.Betha).LocateWithKey("Betha").IsRequired(false)
+                    .ImportProperty(s => s.Beta).LocateWithKey("Beta").IsRequired(false)
                     .ImportProperty(s => s.Gamma).LocateWithKey("Gamma").IsRequired(false);
             });
 
@@ -85,8 +85,8 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
             Assert.NotNull(multiNameService.Alpha);
             Assert.Equal("Alpha", multiNameService.Alpha.Name);
 
-            Assert.NotNull(multiNameService.Betha);
-            Assert.Equal("Betha", multiNameService.Betha.Name);
+            Assert.NotNull(multiNameService.Beta);
+            Assert.Equal("Beta", multiNameService.Beta.Name);
 
             Assert.Null(multiNameService.Gamma);
         }

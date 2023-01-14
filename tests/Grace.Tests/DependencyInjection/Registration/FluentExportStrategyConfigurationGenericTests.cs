@@ -170,7 +170,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void FluentExportStrategyConfigurationGeneric_ByIntefaces()
+        public void FluentExportStrategyConfigurationGeneric_ByInterfaces()
         {
             var container = new DependencyInjectionContainer();
 

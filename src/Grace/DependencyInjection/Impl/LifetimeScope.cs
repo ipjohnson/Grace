@@ -156,8 +156,6 @@ namespace Grace.DependencyInjection.Impl
         {
             if (!isDynamic && withKey == null && consider == null)
             {
-                var hashCode = type.GetHashCode();
-
                 value = DelegateCache.ExecuteActivationStrategyDelegateWithContext(type, this, true, extraData == null ? null : CreateContext(extraData));
 
                 return value != null;
@@ -218,9 +216,9 @@ namespace Grace.DependencyInjection.Impl
             return _injectionScope.LocateFromChildScope(this, this, type, extraData, consider, key, allowNull, isDynamic);
         }
 
-        object IServiceProvider.GetService(Type type)
+        object IServiceProvider.GetService(Type serviceType)
         {
-            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
+            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(serviceType, this);
         }
     }
 }

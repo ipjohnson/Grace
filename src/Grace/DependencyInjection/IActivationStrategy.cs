@@ -59,7 +59,7 @@ namespace Grace.DependencyInjection
         ActivationStrategyType StrategyType { get; }
 
         /// <summary>
-        /// Lifestyle for this activation stratgey
+        /// Lifestyle for this activation strategy
         /// </summary>
         ICompiledLifestyle Lifestyle { get; }
 

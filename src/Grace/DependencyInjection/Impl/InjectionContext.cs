@@ -109,9 +109,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="key">key</param>
         public object GetExtraData(object key)
         {
-            var stringKey = key as string;
-
-            if (stringKey != null)
+            if (key is string stringKey)
             {
                 return _extraDataProperties.GetValueOrDefault(stringKey) ??
                        _extraDataValues.GetValueOrDefault(key);

@@ -39,7 +39,7 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
         [Export(typeof(ITest))]
         public class Test : ITest
         {
-            public int P { get; set; } = 0;
+            public int P { get; set; }
             private Exported _exported;
 
             [Import]
@@ -54,7 +54,7 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
                 }
             }
 
-            public int I { get; set; } = 0;
+            public int I { get; set; }
 
             [Import]
             public void InjectMethod(Exported exported)
@@ -62,7 +62,7 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
                 I++;
             }
 
-            public int C { get; set; } = 0;
+            public int C { get; set; }
             public Test()
             {
                 C++;

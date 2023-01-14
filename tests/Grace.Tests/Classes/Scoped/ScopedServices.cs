@@ -9,21 +9,22 @@ namespace Grace.Tests.Classes.Scoped
 
     public class ScopedService1 : IScopedService1
     {
-        private static int counter;
+        private static int _counter;
 
         public ScopedService1()
         {
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
@@ -34,21 +35,22 @@ namespace Grace.Tests.Classes.Scoped
 
     public class ScopedService2 : IScopedService2
     {
-        private static int counter;
+        private static int _counter;
 
         public ScopedService2()
         {
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
@@ -59,21 +61,22 @@ namespace Grace.Tests.Classes.Scoped
 
     public class ScopedService3 : IScopedService3
     {
-        private static int counter;
+        private static int _counter;
 
         public ScopedService3()
         {
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
@@ -84,21 +87,22 @@ namespace Grace.Tests.Classes.Scoped
 
     public class ScopedService4 : IScopedService4
     {
-        private static int counter;
+        private static int _counter;
 
         public ScopedService4()
         {
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter;
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
@@ -109,21 +113,22 @@ namespace Grace.Tests.Classes.Scoped
 
     public class ScopedService5 : IScopedService5
     {
-        private static int counter;
+        private static int _counter;
 
         public ScopedService5()
         {
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter;
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 }

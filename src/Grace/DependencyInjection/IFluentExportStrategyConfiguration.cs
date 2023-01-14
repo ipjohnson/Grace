@@ -16,7 +16,7 @@ namespace Grace.DependencyInjection
         /// Export as a specific type
         /// </summary>
         /// <param name="type">type to export as</param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>Configuration object</returns>
         IFluentExportStrategyConfiguration As(Type type);
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Mark the export as externally owned so the container does not track for disposal
         /// </summary>
-        /// <returns>configuraiton object</returns>
+        /// <returns>Configuration object</returns>
         IFluentExportStrategyConfiguration ExternallyOwned();
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="selector">selector method, can be null</param>
         /// <param name="includeMethods">import all public methods that have parameters, false by default</param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>Configuration object</returns>
         IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool includeMethods = false);
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Grace.DependencyInjection
         IFluentImportPropertyConfiguration ImportProperty(string propertyName);
 
         /// <summary>
-        /// Apply a lifestlye to export strategy
+        /// Apply a lifestyle to export strategy
         /// </summary>
         ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle { get; }
 
@@ -91,7 +91,7 @@ namespace Grace.DependencyInjection
         /// Assign a custom lifestyle to an export
         /// </summary>
         /// <param name="lifestyle"></param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>Configuration object</returns>
         IFluentExportStrategyConfiguration UsingLifestyle(ICompiledLifestyle lifestyle);
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="key">metadata key</param>
         /// <param name="value">metadata value</param>
-        /// <returns>configuraiton object</returns>
+        /// <returns>Configuration object</returns>
         IFluentExportStrategyConfiguration WithMetadata(object key, object value);
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Defines a custom scope when creating instance
         /// </summary>
-        /// <param name="customscope"></param>
-        IFluentExportStrategyConfiguration DefinesNamedScope(string customscope);
+        /// <param name="customScope"></param>
+        IFluentExportStrategyConfiguration DefinesNamedScope(string customScope);
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Export using a specific lifestyle
         /// </summary>
-        /// <param name="lifestyle">lifestlye to use</param>
+        /// <param name="lifestyle">lifestyle to use</param>
         /// <returns>configuration object</returns>
         IFluentExportStrategyConfiguration<T> UsingLifestyle(ICompiledLifestyle lifestyle);
 
@@ -295,7 +295,7 @@ namespace Grace.DependencyInjection
         IWhenConditionConfiguration<IFluentExportStrategyConfiguration<T>> When { get; }
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <param name="paramValue">Func(T) value for the parameter</param>
@@ -303,15 +303,7 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null);
 
         /// <summary>
-        /// Import a collection allowing you to specify a filter and a sort order
-        /// </summary>
-        /// <typeparam name="TParam"></typeparam>
-        /// <typeparam name="TItem"></typeparam>
-        IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
-            where TParam : IEnumerable<TItem>;
-
-        /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -320,7 +312,7 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue);
         
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -330,7 +322,7 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -341,7 +333,7 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -353,7 +345,7 @@ namespace Grace.DependencyInjection
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue);
 
         /// <summary>
-        /// Add a specific value for a particuar parameter in the constructor
+        /// Add a specific value for a particular parameter in the constructor
         /// </summary>
         /// <typeparam name="TParam">type of parameter</typeparam>
         /// <typeparam name="TArg1"></typeparam>
@@ -364,6 +356,14 @@ namespace Grace.DependencyInjection
         /// <param name="paramValue">Func(IInjectionScope, IInjectionContext, T) value for the parameter</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TArg5, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TParam> paramValue);
+
+        /// <summary>
+        /// Import a collection allowing you to specify a filter and a sort order
+        /// </summary>
+        /// <typeparam name="TParam"></typeparam>
+        /// <typeparam name="TItem"></typeparam>
+        IFluentWithCtorCollectionConfiguration<T, TItem> WithCtorCollectionParam<TParam, TItem>()
+            where TParam : IEnumerable<TItem>;
 
         /// <summary>
         /// Adds metadata to an export

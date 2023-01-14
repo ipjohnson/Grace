@@ -261,7 +261,7 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent1
         {
-            private IBasicService _basicService1;
+            private readonly IBasicService _basicService1;
 
             public Dependent1(IBasicService basicService1)
             {
@@ -271,8 +271,8 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent2
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
 
             public Dependent2(IBasicService basicService1, IBasicService basicService2)
             {
@@ -283,9 +283,9 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent3
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
 
             public Dependent3(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3)
             {
@@ -298,10 +298,10 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent4
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
 
             public Dependent4(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4)
             {
@@ -314,11 +314,11 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent5
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
-            private IBasicService _basicService5;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
+            private readonly IBasicService _basicService5;
 
             public Dependent5(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5)
             {
@@ -332,12 +332,12 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent6
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
-            private IBasicService _basicService5;
-            private IBasicService _basicService6;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
+            private readonly IBasicService _basicService5;
+            private readonly IBasicService _basicService6;
 
             public Dependent6(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6)
             {
@@ -352,13 +352,13 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent7
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
-            private IBasicService _basicService5;
-            private IBasicService _basicService6;
-            private IBasicService _basicService7;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
+            private readonly IBasicService _basicService5;
+            private readonly IBasicService _basicService6;
+            private readonly IBasicService _basicService7;
 
             public Dependent7(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7)
             {
@@ -374,14 +374,14 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent8
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
-            private IBasicService _basicService5;
-            private IBasicService _basicService6;
-            private IBasicService _basicService7;
-            private IBasicService _basicService8;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
+            private readonly IBasicService _basicService5;
+            private readonly IBasicService _basicService6;
+            private readonly IBasicService _basicService7;
+            private readonly IBasicService _basicService8;
 
             public Dependent8(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7, IBasicService basicService8)
             {
@@ -398,15 +398,15 @@ namespace Grace.Tests.Dynamic
 
         public class Dependent9
         {
-            private IBasicService _basicService1;
-            private IBasicService _basicService2;
-            private IBasicService _basicService3;
-            private IBasicService _basicService4;
-            private IBasicService _basicService5;
-            private IBasicService _basicService6;
-            private IBasicService _basicService7;
-            private IBasicService _basicService8;
-            private IBasicService _basicService9;
+            private readonly IBasicService _basicService1;
+            private readonly IBasicService _basicService2;
+            private readonly IBasicService _basicService3;
+            private readonly IBasicService _basicService4;
+            private readonly IBasicService _basicService5;
+            private readonly IBasicService _basicService6;
+            private readonly IBasicService _basicService7;
+            private readonly IBasicService _basicService8;
+            private readonly IBasicService _basicService9;
 
             public Dependent9(IBasicService basicService1, IBasicService basicService2, IBasicService basicService3, IBasicService basicService4, IBasicService basicService5, IBasicService basicService6, IBasicService basicService7, IBasicService basicService8, IBasicService basicService9)
             {

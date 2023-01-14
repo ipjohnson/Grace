@@ -108,7 +108,7 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <param name="type"></param>
         /// <param name="includeSubnamespaces"></param>
@@ -118,7 +118,7 @@ namespace Grace.DependencyInjection
         }
 
         /// <summary>
-        /// Creates a new type filter that fiters based on if it's in the same namespace as another class
+        /// Creates a new type filter that filters based on if it's in the same namespace as another class
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="includeSubnamespaces"></param>

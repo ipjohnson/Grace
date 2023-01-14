@@ -3,10 +3,10 @@
 namespace Grace.DependencyInjection
 {
     /// <summary>
-    /// cconfigure decorator parameter
+    /// Configure decorator parameter
     /// </summary>
     /// <typeparam name="TParam"></typeparam>
-    public interface IFluentDecoratorWithCtorConfiguration<TParam> : IFluentDecoratorStrategyConfiguration
+    public interface IFluentDecoratorWithCtorConfiguration<in TParam> : IFluentDecoratorStrategyConfiguration
     {
         /// <summary>
         /// Applies a filter to be used when resolving a parameter constructor

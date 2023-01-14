@@ -184,20 +184,20 @@ namespace Grace.Data
         /// <summary>
         /// Get dictionary of property values from an object
         /// </summary>
-        /// <param name="annonymousObject">object to get properties from</param>
+        /// <param name="anonymousObject">object to get properties from</param>
         /// <param name="values">collection to add to</param>
         /// <param name="casing">lowercase property names</param>
-        public static ImmutableHashTree<string, object> GetPropertiesFromObject(object annonymousObject,
+        public static ImmutableHashTree<string, object> GetPropertiesFromObject(object anonymousObject,
             ImmutableHashTree<string, object> values = null, PropertyCasing casing = PropertyCasing.Default)
         {
             values = values ?? ImmutableHashTree<string, object>.Empty;
 
-            if (annonymousObject == null)
+            if (anonymousObject == null)
             {
                 return values;
             }
 
-            if (annonymousObject is Array array)
+            if (anonymousObject is Array array)
             {
                 var i = 0;
 
@@ -210,13 +210,13 @@ namespace Grace.Data
                 return values;
             }
 
-            if (annonymousObject is IDictionary<string, object> dictionary)
+            if (anonymousObject is IDictionary<string, object> dictionary)
             {
                 return dictionary.Aggregate(values,
                     (v, kvp) => v.Add(kvp.Key, kvp.Value));
             }
 
-            var objectType = annonymousObject.GetType();
+            var objectType = anonymousObject.GetType();
 
             PropertyDictionaryDelegate propertyDelegate = null;
 
@@ -235,7 +235,7 @@ namespace Grace.Data
 
             if (propertyDelegate != null)
             {
-                return propertyDelegate(annonymousObject, values);
+                return propertyDelegate(anonymousObject, values);
             }
 
             propertyDelegate = CreateDelegateForType(objectType, casing);
@@ -253,7 +253,7 @@ namespace Grace.Data
                     break;
             }
 
-            return propertyDelegate(annonymousObject, values);
+            return propertyDelegate(anonymousObject, values);
         }
 
         private static PropertyDictionaryDelegate CreateDelegateForType(Type objectType, PropertyCasing casing)
@@ -357,17 +357,17 @@ namespace Grace.Data
 
             var expressions = new List<Expression>();
 
-            foreach (var parameter in method.GetParameters())
+            foreach (var parameterType in method.GetParameters().Select(p => p.ParameterType))
             {
-                if (parameter.ParameterType == typeof(IExportLocatorScope))
+                if (parameterType == typeof(IExportLocatorScope))
                 {
                     expressions.Add(scopeParameter);
                 }
-                else if (parameter.ParameterType == typeof(StaticInjectionContext))
+                else if (parameterType == typeof(StaticInjectionContext))
                 {
                     expressions.Add(staticParameter);
                 }
-                else if (parameter.ParameterType == typeof(IInjectionContext))
+                else if (parameterType == typeof(IInjectionContext))
                 {
                     expressions.Add(injectionParameter);
                 }
@@ -376,7 +376,7 @@ namespace Grace.Data
                     var locateParameter =
                         Expression.Call(scopeParameter,
                             _locateMethod,
-                            Expression.Constant(parameter.ParameterType),
+                            Expression.Constant(parameterType),
                             injectionParameter,
                             Expression.Constant(null, typeof(ActivationStrategyFilter)),
                             Expression.Constant(null, typeof(object)),

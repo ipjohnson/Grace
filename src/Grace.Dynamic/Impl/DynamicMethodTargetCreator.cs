@@ -31,7 +31,7 @@ namespace Grace.Dynamic.Impl
 
         private object CreateConstantTarget(DynamicMethodGenerationRequest request)
         {
-            Type openType = null;
+            Type openType;
 
             switch (request.Constants.Count)
             {

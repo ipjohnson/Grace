@@ -9,7 +9,7 @@ namespace Grace.DependencyInjection.Attributes.Interfaces
 	public interface IExportConditionAttribute
 	{
 		/// <summary>
-		/// Provide an export condition for an attirbuted type
+		/// Provide an export condition for an attributed type
 		/// </summary>
 		/// <param name="attributedType"></param>
 		/// <returns></returns>

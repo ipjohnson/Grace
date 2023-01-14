@@ -6,7 +6,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy for creating Func with one arguement
+    /// Strategy for creating Func with one argument
     /// </summary>
     public class FuncOneArgWrapperStrategy : BaseWrapperStrategy
     {

@@ -6,7 +6,7 @@
     public interface IPerRequestLifestyleProvider
     {
         /// <summary>
-        /// Provide contianer
+        /// Provide container
         /// </summary>
         ICompiledLifestyle ProvideLifestyle();
     }

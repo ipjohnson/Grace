@@ -52,7 +52,7 @@ namespace Grace.Dynamic.Impl
             return base.CompileExpressionResultToDelegate(expressionContext, parameters, extraExpressions, finalExpression);
         }
 
-        protected override T CompileExpressionResultToOpitimzed<T>(IActivationExpressionResult expressionContext, ParameterExpression[] parameters,
+        protected override T CompileExpressionResultToOptimized<T>(IActivationExpressionResult expressionContext, ParameterExpression[] parameters,
             Expression[] extraExpressions, Expression finalExpression)
         {
             T delegateValue = 
@@ -65,7 +65,7 @@ namespace Grace.Dynamic.Impl
 
             expressionContext.Request.RequestingScope.ScopeConfiguration.Trace?.Invoke($"Could not generate delegate for {expressionContext.Request.ActivationType.FullName} using DynamicMethod falling back to linq expressions");
 
-            return base.CompileExpressionResultToOpitimzed<T>(expressionContext, parameters, extraExpressions, finalExpression);
+            return base.CompileExpressionResultToOptimized<T>(expressionContext, parameters, extraExpressions, finalExpression);
         }
     }
 }

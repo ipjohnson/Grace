@@ -1,6 +1,6 @@
 ﻿namespace Grace.Tests.Classes.Simple
 {
-    public interface IDependentService<T>
+    public interface IDependentService<out T>
     {
         T Value { get; }
     }

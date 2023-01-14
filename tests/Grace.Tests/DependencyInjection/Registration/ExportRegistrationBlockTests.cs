@@ -28,7 +28,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
         [Theory]
         [AutoData]
-        public void ExportRegistrationBlock_Export_Enuemrable_Null(ExportRegistrationBlock block)
+        public void ExportRegistrationBlock_Export_Enumerable_Null(ExportRegistrationBlock block)
         {
             Assert.Throws<ArgumentNullException>(() => block.Export((IEnumerable<Type>)null));
         }
@@ -161,7 +161,7 @@ namespace Grace.Tests.DependencyInjection.Registration
         }
 
         [Fact]
-        public void ExportRegistrionBlock_ExportAsKeyed()
+        public void ExportRegistrationBlock_ExportAsKeyed()
         {
             var container = new DependencyInjectionContainer();
 

@@ -30,9 +30,9 @@ namespace Grace.Tests.Classes.Scoped
 
     public class RepositoryTransient1 : IRepositoryTransient1
     {
-        private static int counter;
+        private static int _counter;
 
-        public RepositoryTransient1( IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
+        public RepositoryTransient1(IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
             if (scopedService1 == null)
             {
@@ -59,23 +59,24 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(scopedService5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter;
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
     public class RepositoryTransient2 : IRepositoryTransient2
     {
-        private static int counter;
+        private static int _counter;
 
         public RepositoryTransient2( IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
@@ -105,23 +106,24 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(scopedService5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
     public class RepositoryTransient3 : IRepositoryTransient3
     {
-        private static int counter;
+        private static int _counter;
 
         public RepositoryTransient3( IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
@@ -150,23 +152,24 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(scopedService5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
     public class RepositoryTransient4 : IRepositoryTransient4
     {
-        private static int counter;
+        private static int _counter;
 
         public RepositoryTransient4( IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
@@ -196,23 +199,24 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(scopedService5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 
     public class RepositoryTransient5 : IRepositoryTransient5
     {
-        private static int counter;
+        private static int _counter;
 
         public RepositoryTransient5( IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
@@ -241,17 +245,18 @@ namespace Grace.Tests.Classes.Scoped
                 throw new ArgumentNullException(nameof(scopedService5));
             }
 
-            Interlocked.Increment(ref counter);
+            Interlocked.Increment(ref _counter);
         }
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => _counter; 
+            set => _counter = value;
         }
 
         public void DoSomething()
         {
+            // No content
         }
     }
 }

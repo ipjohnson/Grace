@@ -123,7 +123,7 @@ namespace Grace.Tests.DependencyInjection.Decorator
                 }
             };
 
-            var stringValue = container.Locate<string>();
+            _ = container.Locate<string>();
         }
     }
 }

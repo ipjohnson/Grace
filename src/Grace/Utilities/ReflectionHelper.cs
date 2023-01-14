@@ -158,7 +158,7 @@ namespace Grace.Utilities
 
                 if (parentType != null)
                 {
-                    if (TypeMeetRequirements(exportedType, requestedType, parentType, out var parameterTypeToRealTypeMap))
+                    if (TypeMeetRequirements(requestedType, parentType, out var parameterTypeToRealTypeMap))
                     {
                         returnType = CreateClosedTypeWithParameterMap(exportedType, parameterTypeToRealTypeMap);
                     }
@@ -179,7 +179,7 @@ namespace Grace.Utilities
 
             foreach (var @interface in interfaces)
             {
-                if (TypeMeetRequirements(exportedType, requestedType, @interface, out var parameterTypeToRealTypeMap))
+                if (TypeMeetRequirements(requestedType, @interface, out var parameterTypeToRealTypeMap))
                 {
                     returnType = CreateClosedTypeWithParameterMap(exportedType, parameterTypeToRealTypeMap);
 
@@ -269,7 +269,7 @@ namespace Grace.Utilities
             return exportedType.MakeGenericType(closingTypes.ToArray());
         }
 
-        private static bool TypeMeetRequirements(Type exportedType, Type requestedType, Type @interface, out Dictionary<Type, Type> parameterTypeToRealTypeMap)
+        private static bool TypeMeetRequirements(Type requestedType, Type @interface, out Dictionary<Type, Type> parameterTypeToRealTypeMap)
         {
             var returValue = true;
             var interfaceTypes = @interface.GenericTypeArguments;

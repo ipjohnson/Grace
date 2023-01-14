@@ -47,15 +47,15 @@ namespace Grace.Tests.DependencyInjection.AddOns
                 c.Export<MultipleService1>().As<IMultipleService>();
             });
 
-            var valueProvderInstance = container.Locate<IDependentService<IBasicService>>();
+            var valueProviderInstance = container.Locate<IDependentService<IBasicService>>();
 
-            Assert.NotNull(valueProvderInstance);
-            Assert.NotNull(valueProvderInstance.Value);
-            Assert.Equal(15, valueProvderInstance.Value.Count);
+            Assert.NotNull(valueProviderInstance);
+            Assert.NotNull(valueProviderInstance.Value);
+            Assert.Equal(15, valueProviderInstance.Value.Count);
 
             var nonValueProviderInstance = container.Locate<IDependentService<IMultipleService>>();
 
-            Assert.NotNull(valueProvderInstance);
+            Assert.NotNull(valueProviderInstance);
             Assert.NotNull(nonValueProviderInstance.Value);
         }
     }

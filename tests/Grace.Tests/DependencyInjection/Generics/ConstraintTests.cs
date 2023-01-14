@@ -4,7 +4,6 @@ using System.Reflection;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Generics;
 using Grace.Tests.Classes.Simple;
-using Grace.UnitTests.Classes.Simple;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Generics

@@ -186,7 +186,7 @@ namespace Grace.Tests.Data.Immutable
         }
 
         [Fact]
-        public void ImmutableArray_GetHashCode_StructuralyEqual()
+        public void ImmutableArray_GetHashCode_StructurallyEqual()
         {
             var array = ImmutableArray.Create(5, 10, 15);
 

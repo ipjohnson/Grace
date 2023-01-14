@@ -17,12 +17,12 @@ namespace Grace.Tests.DependencyInjection.Intercept
 
             if (tService.GetTypeInfo().IsInterface)
             {
-                decoratorType = ProxyBuilder.CreateInterfaceProxyTypeWithTargetInterface(tService, new Type[0],
+                decoratorType = ProxyBuilder.CreateInterfaceProxyTypeWithTargetInterface(tService, Type.EmptyTypes,
                     ProxyGenerationOptions.Default);
             }
             else if (tService.GetTypeInfo().IsClass)
             {
-                decoratorType = ProxyBuilder.CreateClassProxyTypeWithTarget(tService, new Type[0],
+                decoratorType = ProxyBuilder.CreateClassProxyTypeWithTarget(tService, Type.EmptyTypes,
                     ProxyGenerationOptions.Default);
             }
             else
@@ -48,12 +48,12 @@ namespace Grace.Tests.DependencyInjection.Intercept
 
                         if (tService.GetTypeInfo().IsInterface)
                         {
-                            decoratorType = ProxyBuilder.CreateInterfaceProxyTypeWithTargetInterface(tService, new Type[0],
+                            decoratorType = ProxyBuilder.CreateInterfaceProxyTypeWithTargetInterface(tService, Type.EmptyTypes,
                                 ProxyGenerationOptions.Default);
                         }
                         else if (tService.GetTypeInfo().IsClass)
                         {
-                            decoratorType = ProxyBuilder.CreateClassProxyTypeWithTarget(tService, new Type[0],
+                            decoratorType = ProxyBuilder.CreateClassProxyTypeWithTarget(tService, Type.EmptyTypes,
                                 ProxyGenerationOptions.Default);
                         }
                         else
@@ -62,10 +62,7 @@ namespace Grace.Tests.DependencyInjection.Intercept
                         }
 
                         c.ExportDecorator(decoratorType).As(tService).WithCtorParam<TInterceptor, IInterceptor[]>(i => new IInterceptor[] { i })
-                           .When.MeetsCondition((s, context) =>
-                            {
-                                return s.ActivationType.GetTypeInfo().GetCustomAttribute<TAttribute>() != null;
-                            });
+                           .When.MeetsCondition((s, _) => s.ActivationType.GetTypeInfo().GetCustomAttribute<TAttribute>() != null);
                     }
                 }
             });

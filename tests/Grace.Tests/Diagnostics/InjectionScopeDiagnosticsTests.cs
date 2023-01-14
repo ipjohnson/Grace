@@ -85,7 +85,7 @@ namespace Grace.Tests.Diagnostics
 
 
         [Fact]
-        public void InjectionScopeDiagnostics_ActvationMethod_Check_For_Missing_Method_Dependency()
+        public void InjectionScopeDiagnostics_ActivationMethod_Check_For_Missing_Method_Dependency()
         {
             var container = new DependencyInjectionContainer();
 

@@ -2,7 +2,7 @@
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
-namespace Grace.Tests.DependencyInjection.TryLocate
+namespace Grace.Tests.DependencyInjection.Locate
 {
     public class TryLocateTests
     {

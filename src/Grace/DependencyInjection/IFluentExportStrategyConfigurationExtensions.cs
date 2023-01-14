@@ -8,7 +8,7 @@ namespace Grace.DependencyInjection
     /// Extension methods for export strategy
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public static class IFluentExportStrategyConfigurationExtentions
+    public static class IFluentExportStrategyConfigurationExtensions
     {
         /// <summary>
         /// auto wire properties

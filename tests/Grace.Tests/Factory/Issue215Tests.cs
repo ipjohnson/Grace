@@ -16,7 +16,7 @@ namespace Grace.Tests.Factory
 
             var proxyType = new DefaultProxyBuilder().CreateClassProxyType(
                 typeof(ExampleClass),
-                new Type[0],
+                Type.EmptyTypes,
                 ProxyGenerationOptions.Default);
 
             container.Configure(c =>
@@ -25,7 +25,7 @@ namespace Grace.Tests.Factory
                 c.ExportDecorator(proxyType)
                     .As(typeof(ExampleClass))
                     .WithCtorParam<IExportLocatorScope, IInterceptor[]>(
-                        scope => new IInterceptor[0]);
+                        scope => Array.Empty<IInterceptor>());
             });
 
             var factory = container.Locate<IExampleClassFactory>();

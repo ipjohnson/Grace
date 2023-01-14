@@ -4,7 +4,7 @@ namespace Grace.DependencyInjection.Impl
 {
 
     /// <summary>
-    /// Information about a constructor arguement
+    /// Information about a constructor argument
     /// </summary>
     public class ConstructorParameterInfo
     {
@@ -23,12 +23,12 @@ namespace Grace.DependencyInjection.Impl
         public object ExportFunc { get; set; }
 
         /// <summary>
-        /// Name of the arguement 
+        /// Name of the argument 
         /// </summary>
         public string ParameterName { get; set; }
 
         /// <summary>
-        /// Type of the arguement 
+        /// Type of the argument 
         /// </summary>
         public Type ParameterType { get; set; }
         

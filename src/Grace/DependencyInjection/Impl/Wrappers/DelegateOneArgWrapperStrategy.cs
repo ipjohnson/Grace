@@ -8,7 +8,7 @@ using Grace.Utilities;
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
     /// <summary>
-    /// Strategy to create delegate that has one arguement
+    /// Strategy to create delegate that has one argument
     /// </summary>
     public class DelegateOneArgWrapperStrategy : BaseWrapperStrategy
     {
