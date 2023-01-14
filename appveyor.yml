@@ -17,6 +17,9 @@ build:
   project: Grace.sln
   publish_nuget: true
   verbosity: minimal
+test:
+  assemblies:
+    - '**\*.tests.dll'
 artifacts:
 - path: Grace*.nupkg
   name: Grace
