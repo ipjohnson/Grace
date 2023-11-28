@@ -15,7 +15,9 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
             var assembly = Assembly.GetAssembly(typeof(ImportKeyedMultiple));
 
             container.Configure(c => c
-                .ExportAssembly(assembly).ExportAttributedTypes().Where(TypesThat.AreInTheSameNamespaceAs(typeof(ImportKeyedMultiple)))
+                .ExportAssembly(assembly)
+                .ExportAttributedTypes()
+                .Where(TypesThat.AreInTheSameNamespaceAs(typeof(ImportKeyedMultiple)))
             );
 
             var instance = container.Locate<ImportKeyedMultiple>();
@@ -23,6 +25,8 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
             Assert.NotNull(instance);
             Assert.Equal("A", instance.ServiceA.SomeMethod());
             Assert.Equal("B", instance.ServiceB.SomeMethod());
+            Assert.Equal("A", instance.AdaptedServiceA.SomeMethod());
+            Assert.Equal("B", instance.AdaptedServiceB.SomeMethod());
         }
     }
 }

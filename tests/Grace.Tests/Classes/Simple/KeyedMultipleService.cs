@@ -1,4 +1,5 @@
 ﻿using Grace.DependencyInjection.Attributes;
+using Grace.Tests.Classes.Attributes;
 
 namespace Grace.Tests.Classes.Simple
 {
@@ -34,5 +35,10 @@ namespace Grace.Tests.Classes.Simple
 
         [Import(Key = "B")]
         public IKeyedMultipleService ServiceB { get; set; }
+        [AdaptedImport(Key = "A")]
+        public IKeyedMultipleService AdaptedServiceA { get; set; }
+
+        [AdaptedImport(Key = "B")]
+        public IKeyedMultipleService AdaptedServiceB { get; set; }
     }
 }

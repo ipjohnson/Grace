@@ -19,6 +19,7 @@ namespace Grace.Tests.DependencyInjection.Inject
             container.Inject(instance);
 
             Assert.NotNull(instance.BasicService);
+            Assert.NotNull(instance.AdaptedBasicService);
         }
 
         [Fact]
@@ -35,6 +36,7 @@ namespace Grace.Tests.DependencyInjection.Inject
                 scope.Inject(instance);
 
                 Assert.NotNull(instance.BasicService);
+                Assert.NotNull(instance.AdaptedBasicService);
             }
         }
 

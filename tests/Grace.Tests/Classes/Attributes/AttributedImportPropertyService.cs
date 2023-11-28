@@ -5,6 +5,7 @@ namespace Grace.Tests.Classes.Attributes
 	public interface IAttributedImportPropertyService
 	{
 		IAttributeBasicService BasicService { get; }
+		IAttributeBasicService AdaptedBasicService { get; }
 	}
 
 	[Export(typeof(IAttributedImportPropertyService))]
@@ -12,5 +13,8 @@ namespace Grace.Tests.Classes.Attributes
 	{
 		[Import]
 		public IAttributeBasicService BasicService { get; set; }
+
+		[AdaptedImport]
+		public IAttributeBasicService AdaptedBasicService { get; set; }
 	}
 }

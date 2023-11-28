@@ -109,25 +109,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private ConstructorParameterInfo ProcessImportAttributes(ParameterInfo parameter)
         {
-            var importAttribute = (IImportAttribute)parameter.GetCustomAttributes()?.FirstOrDefault(a => a is IImportAttribute);
-
-            if (importAttribute != null)
+            var info = ImportAttributeInfo.For(parameter, parameter.ParameterType, parameter.Name);
+            if (info != null)
             {
-                var info = importAttribute.ProvideImportInfo(parameter.ParameterType, parameter.Name);
-
-                if (info != null)
+                return new ConstructorParameterInfo(null)
                 {
-                    return new ConstructorParameterInfo(null)
-                    {
-                        LocateWithKey = info.ImportKey,
-                        DefaultValue = info.DefaultValue,
-                        EnumerableComparer = info.Comparer,
-                        ExportStrategyFilter = info.ExportStrategyFilter,
-                        IsRequired = info.IsRequired
-                    };
-                }
+                    LocateWithKey = info.ImportKey,
+                    DefaultValue = info.DefaultValue,
+                    EnumerableComparer = info.Comparer,
+                    ExportStrategyFilter = info.ExportStrategyFilter,
+                    IsRequired = info.IsRequired
+                };
             }
-
+            
             return null;
         }
 
