@@ -27,6 +27,8 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
             Assert.Equal("B", instance.ServiceB.SomeMethod());
             Assert.Equal("A", instance.AdaptedServiceA.SomeMethod());
             Assert.Equal("B", instance.AdaptedServiceB.SomeMethod());
+            Assert.Equal("A", instance.ServiceA.LocatedKey);
+            Assert.Equal("B", instance.ServiceB.LocatedKey);
         }
     }
 }

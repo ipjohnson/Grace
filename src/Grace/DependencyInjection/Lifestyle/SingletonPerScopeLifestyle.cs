@@ -85,13 +85,13 @@ namespace Grace.DependencyInjection.Lifestyle
                 Delegate localDelegate;
 
                 if (ThreadSafe || newRequest.ExportScopeRequired() || newRequest.DisposalScopeRequired() ||
-                    newRequest.InjectionContextRequired())
+                    newRequest.InjectionContextRequired() || newRequest.KeyRequired())
                 {
                     localDelegate = request.Services.Compiler.CompileDelegate(scope, newResult);
                 }
                 else
                 {
-                    var openMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(CompileFuncDelage));
+                    var openMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(CompileFuncDelegate));
 
                     var closed = openMethod.MakeGenericMethod(newResult.Expression.Type);
 
@@ -105,13 +105,15 @@ namespace Grace.DependencyInjection.Lifestyle
 
             if (ThreadSafe)
             {
-                var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle).GetRuntimeMethod(nameof(GetValueFromScopeThreadSafe), new[]
+                var getValueFromScopeMethod = typeof(SingletonPerScopeLifestyle)
+                    .GetRuntimeMethod(nameof(GetValueFromScopeThreadSafe), new[]
                     {
                         typeof(IExportLocatorScope),
                         typeof(ActivationStrategyDelegate),
                         typeof(string),
                         typeof(bool),
-                        typeof(IInjectionContext)
+                        typeof(IInjectionContext),
+                        typeof(object),
                     });
 
                 var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
@@ -121,7 +123,8 @@ namespace Grace.DependencyInjection.Lifestyle
                     Expression.Constant(CompiledDelegate),
                     Expression.Constant(UniqueId),
                     Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
-                    request.InjectionContextParameter);
+                    request.InjectionContextParameter,
+                    request.Constants.KeyParameter);
             }
             else
             {
@@ -129,8 +132,10 @@ namespace Grace.DependencyInjection.Lifestyle
 
                 if (invokeMethodFastLane)
                 {
-                    var getOrCreateMethod = typeof(IExportLocatorScope).GetTypeInfo()
-                        .GetDeclaredMethods(nameof(IExportLocatorScope.GetOrCreateScopedService)).First(m => m.GetParameters().Length == 2);
+                    var getOrCreateMethod = typeof(IExportLocatorScope)
+                        .GetTypeInfo()
+                        .GetDeclaredMethods(nameof(IExportLocatorScope.GetOrCreateScopedService))
+                        .First(m => m.GetParameters().Length == 2);
 
                     var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
 
@@ -139,14 +144,19 @@ namespace Grace.DependencyInjection.Lifestyle
                 }
                 else
                 {
-                    var getOrCreateMethod = typeof(IExportLocatorScope).GetRuntimeMethod(nameof(IExportLocatorScope.GetOrCreateScopedService),
-                        new[] {typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext)});
+                    var getOrCreateMethod = typeof(IExportLocatorScope)
+                        .GetRuntimeMethod(nameof(IExportLocatorScope.GetOrCreateScopedService),
+                        new[] { typeof(int), typeof(ActivationStrategyDelegate), typeof(IInjectionContext), typeof(object) });
 
                     var closedMethod = getOrCreateMethod.MakeGenericMethod(request.ActivationType);
 
-                    createExpression = Expression.Call(request.ScopeParameter, closedMethod,
-                        Expression.Constant(UniqueIntIdValue), Expression.Constant(CompiledDelegate),
-                        request.InjectionContextParameter);
+                    createExpression = Expression.Call(
+                        request.ScopeParameter, 
+                        closedMethod,
+                        Expression.Constant(UniqueIntIdValue), 
+                        Expression.Constant(CompiledDelegate),
+                        request.InjectionContextParameter,
+                        request.Constants.KeyParameter);
                 }
             }
 
@@ -173,7 +183,14 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="uniqueId"></param>
         /// <param name="shareContext"></param>
         /// <param name="context"></param>
-        public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate, string uniqueId, bool shareContext, IInjectionContext context)
+        /// <param name="key"></param>
+        public static T GetValueFromScopeThreadSafe<T>(
+            IExportLocatorScope scope, 
+            ActivationStrategyDelegate creationDelegate, 
+            string uniqueId, 
+            bool shareContext, 
+            IInjectionContext context,
+            object key)
         {
             var value = scope.GetExtraData(uniqueId);
 
@@ -188,7 +205,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                 if (value == null)
                 {
-                    value = creationDelegate(scope, scope, shareContext ? context : null);
+                    value = creationDelegate(scope, scope, shareContext ? context : null, key);
 
                     scope.SetExtraData(uniqueId, value);
                 }
@@ -197,7 +214,7 @@ namespace Grace.DependencyInjection.Lifestyle
             return (T)value;
         }
 
-        private static Delegate CompileFuncDelage<T>(IActivationExpressionRequest request, IInjectionScope scope,
+        private static Delegate CompileFuncDelegate<T>(IActivationExpressionRequest request, IInjectionScope scope,
             IActivationExpressionResult result)
         {
             return request.Services.Compiler.CompileOptimizedDelegate<Func<T>>(scope, result);

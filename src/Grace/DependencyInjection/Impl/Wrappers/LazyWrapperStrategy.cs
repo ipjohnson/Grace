@@ -45,16 +45,22 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedClass = typeof(LazyExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
-            var closedMethod = closedClass.GetRuntimeMethod(nameof(LazyExpression<object>.CreateLazy), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(
+                nameof(LazyExpression<object>.CreateLazy),
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, this);
 
             request.RequireExportScope();
             request.RequireDisposalScope();
 
-            var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
-                    request.DisposalScopeExpression, request.InjectionContextParameter);
+            var callExpression = Expression.Call(
+                Expression.Constant(instance), 
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.Constants.KeyParameter);
 
             request.RequireInjectionContext();
 
@@ -92,9 +98,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="scope"></param>
             /// <param name="disposalScope"></param>
             /// <param name="injectionContext"></param>
+            /// <param name="key"></param>
             /// <returns></returns>
-            public Lazy<TResult> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
-                IInjectionContext injectionContext)
+            public Lazy<TResult> CreateLazy(
+                IExportLocatorScope scope, 
+                IDisposalScope disposalScope,
+                IInjectionContext injectionContext,
+                object key)
             {
                 return new Lazy<TResult>(() =>
                 {
@@ -103,7 +113,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                         _delegate = CompileDelegate();
                     }
 
-                    return (TResult) _delegate(scope, disposalScope, injectionContext);
+                    return (TResult) _delegate(scope, disposalScope, injectionContext, key);
                 });
             }
 

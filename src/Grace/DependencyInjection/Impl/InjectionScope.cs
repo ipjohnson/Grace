@@ -466,7 +466,7 @@ namespace Grace.DependencyInjection.Impl
                 var strategyDelegate =
                     strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
 
-                return strategyDelegate(childScope, disposalScope, CreateContext(extraData));
+                return strategyDelegate(childScope, disposalScope, CreateContext(extraData), null);
             }
 
             if (Parent != null)
@@ -554,7 +554,7 @@ namespace Grace.DependencyInjection.Impl
                     var activation = strategy.GetActivationStrategyDelegate(this,
                         InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
 
-                    returnList.Add(activation(scope, disposalScope, context.Clone()));
+                    returnList.Add(activation(scope, disposalScope, context.Clone(), null));
                 }
             }
 
@@ -642,7 +642,7 @@ namespace Grace.DependencyInjection.Impl
                     compiledDelegate = AddObjectFactory(type, compiledDelegate);
                 }
 
-                return compiledDelegate(scope, disposalScope ?? scope, injectionContext);
+                return compiledDelegate(scope, disposalScope ?? scope, injectionContext, key);
             }
 
             if (Parent != null)
@@ -770,7 +770,7 @@ namespace Grace.DependencyInjection.Impl
             if (activationDelegate != null)
             {
                 returnList.Add(
-                    (TValue)activationDelegate(scope, disposalScope, context?.Clone()));
+                    (TValue)activationDelegate(scope, disposalScope, context?.Clone(), null));
             }
         }
 

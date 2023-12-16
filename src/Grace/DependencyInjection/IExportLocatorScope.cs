@@ -50,7 +50,8 @@ namespace Grace.DependencyInjection
         /// <param name="id"></param>
         /// <param name="createDelegate"></param>
         /// <param name="context"></param>
-        T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context);
+        /// <param name="key"></param>
+        T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context, object key = null);
 
         /// <summary>
         /// Get or create new scoped service using func

@@ -21,14 +21,20 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="resultType"></param>
         /// <param name="types"></param>
+        /// <param name="isActivationStrategyDelegate"></param>
         public static IActivationExpressionResult[] CreateExpressionsForTypes(IActivationStrategy strategy, IInjectionScope scope,
-            IActivationExpressionRequest request, Type resultType, params Type[] types)
+            IActivationExpressionRequest request, Type resultType, Type[] types, bool isActivationStrategyDelegate)
         {
             var resultArray = new IActivationExpressionResult[types.Length];
 
             for (var i = 0; i < types.Length; i++)
             {
                 var arg1Request = request.NewRequest(types[i], strategy, resultType, RequestType.Other, null, true, true);
+
+                if (isActivationStrategyDelegate && i == 3)
+                {
+                    arg1Request.SetLocateKey(ImportKey.Key);
+                }
 
                 resultArray[i] = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
             }
@@ -53,6 +59,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             IActivationExpressionRequest request, IActivationStrategy requestingStrategy)
         {
             var methodInfo = delegateInstance.GetMethodInfo();
+            var parameters = methodInfo.GetParameters();
 
             Expression expression = null;
             IActivationExpressionResult[] resultsExpressions;
@@ -60,10 +67,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             // Handle closure based delegates differently
             if (delegateInstance.Target != null && delegateInstance.Target.GetType().FullName == _closureName)
             {
-                resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
-                    methodInfo.GetParameters().
-                        Where(p => !(p.Position == 0 && p.ParameterType.FullName == "System.Runtime.CompilerServices.Closure")).
-                        Select(p => p.ParameterType).ToArray());
+                resultsExpressions = CreateExpressionsForTypes(
+                    requestingStrategy, 
+                    scope, 
+                    request, 
+                    methodInfo.ReturnType,
+                    parameters
+                        .Where(p => p.Position != 0 || p.ParameterType.FullName != "System.Runtime.CompilerServices.Closure")
+                        .Select(p => p.ParameterType).ToArray(),
+                    IsActivationStrategyDelegate(parameters, true));
                 
                 expression = Expression.Invoke(Expression.Constant(delegateInstance),
                     resultsExpressions.Select(e => e.Expression));
@@ -71,8 +83,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
             else
             {
-                resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
-                    methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
+                resultsExpressions = CreateExpressionsForTypes(
+                    requestingStrategy, 
+                    scope, 
+                    request, 
+                    methodInfo.ReturnType,
+                    parameters.Select(p => p.ParameterType).ToArray(),
+                    IsActivationStrategyDelegate(parameters, false));
 
                 expression = methodInfo.IsStatic
                     ? Expression.Call(methodInfo, resultsExpressions.Select(e => e.Expression))
@@ -92,6 +109,27 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
 
             return result;
+
+            
+            // This is somewhat hacky.
+            // Sometimes, e.g. when called by DynamicConstructorExpressionCreator, delegateInstance is ActivateStrategyDelegate.
+            // The problem in that case is that the 4th parameter, "object key", is not satisfiable without passing a LocateKey.
+            bool IsActivationStrategyDelegate(ParameterInfo[] ps, bool maybeClosure)
+            {                
+                if (ps.Length < 4)
+                {
+                    return false;
+                }
+
+                int i = maybeClosure && ps[0].ParameterType.FullName == "System.Runtime.CompilerServices.Closure" ? 1 : 0;
+
+                // Note that there's no name information available on the 4th parameter for additional verification :(
+                return ps.Length == i + 4
+                    && ps[i + 0].ParameterType == typeof(IExportLocatorScope)
+                    && ps[i + 1].ParameterType == typeof(IDisposalScope)
+                    && ps[i + 2].ParameterType == typeof(IInjectionContext)
+                    && ps[i + 3].ParameterType == typeof(object);
+            }
         }
         #endregion
 

@@ -76,21 +76,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey);
-
-            if (activationExpressionResult != null)
-            {
-                return activationExpressionResult;
-            }
-
-            activationExpressionResult = GetValueFromInjectionValueProviders(scope, request);
-
-            if (activationExpressionResult != null)
-            {
-                return activationExpressionResult;
-            }
-
-            activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+            var activationExpressionResult =
+                GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey)
+                ?? GetValueFromInjectionValueProviders(scope, request)
+                ?? GetActivationExpressionFromStrategies(scope, request);
 
             if (activationExpressionResult != null)
             {
@@ -119,34 +108,24 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                 {
-                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+                    activationExpressionResult =
+                        GetActivationExpressionFromStrategies(scope, request)
+                        ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (activationExpressionResult != null)
                     {
                         return activationExpressionResult;
-                    }
-
-                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-                    if (wrapperResult != null)
-                    {
-                        return wrapperResult;
                     }
 
                     request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
 
-                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+                    activationExpressionResult =
+                        GetActivationExpressionFromStrategies(scope, request)
+                        ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (activationExpressionResult != null)
                     {
                         return activationExpressionResult;
-                    }
-
-                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-                    if (wrapperResult != null)
-                    {
-                        return wrapperResult;
                     }
                 }
             }
@@ -229,9 +208,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var key = request.LocateKey;
 
-            if (key is string)
+            if (key is string stringKey)
             {
-                key = ((string)key).ToLowerInvariant();
+                key = stringKey.ToLowerInvariant();
             }
 
             request.RequireExportScope();
@@ -294,6 +273,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
         }
 
+        private static T ConvertKey<T>(object key)
+        {
+            return key != null && typeof(T).IsAssignableFrom(key.GetType()) ? (T)key : default;
+        }
+
         /// <summary>
         /// Get expression result from request
         /// </summary>
@@ -301,14 +285,44 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationType"></param>
         /// <param name="key"></param>
-        protected virtual IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
-                                                               IActivationExpressionRequest request,
-                                                               Type activationType,
-                                                               object key)
+        protected virtual IActivationExpressionResult GetValueFromRequest(
+            IInjectionScope scope,
+            IActivationExpressionRequest request,
+            Type activationType,
+            object key)
         {
-            var knownValues =
-                request.KnownValueExpressions.Where(
-                    v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo())).ToArray();
+            // Must be checked first, otherwise a compatible type might be found in KnownValues!
+            if (ReferenceEquals(key, ImportKey.Key))
+            {
+                var parent = request.Parent;
+
+                if (parent == null)
+                {
+                    return request.Services.Compiler.CreateNewResult(request, Expression.Constant(null, activationType));
+                }
+                // At root level, the key is dynamically injected through the key parameter.
+                // At lower levels, the key is statically defined during request compilation.
+                Expression keyExpression = parent.RequestType == RequestType.Root
+                    ? parent.Constants.KeyParameter
+                    : Expression.Constant(parent.LocateKey, typeof(object));
+
+                if (keyExpression == parent.Constants.KeyParameter)
+                {
+                    request.RequireKey();
+                }
+                
+                var convertMethod = typeof(ActivationExpressionBuilder)
+                    .GetMethod(nameof(ConvertKey), BindingFlags.Static | BindingFlags.NonPublic);
+                var closedConvertMethod = convertMethod.MakeGenericMethod(activationType);
+                var convertedKeyExpression = Expression.Call(null, closedConvertMethod, keyExpression);
+
+                return request.Services.Compiler.CreateNewResult(request, convertedKeyExpression);
+            }
+
+            var knownValues = request
+                .KnownValueExpressions
+                .Where(v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo()))
+                .ToArray();
 
             if (knownValues.Length > 0)
             {
@@ -319,18 +333,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (key != null)
                 {
-                    IKnownValueExpression knownValue;
-
-                    if (key is string keyString)
-                    {
-                        knownValue =
-                            knownValues.FirstOrDefault(v =>
-                                string.Compare(keyString, v.Key as string, StringComparison.CurrentCultureIgnoreCase) == 0);
-                    }
-                    else
-                    {
-                        knownValue = knownValues.FirstOrDefault(v => v.Key == key);
-                    }
+                    var knownValue = key is string keyString 
+                        ? knownValues.FirstOrDefault(v => keyString.Equals(v.Key as string, StringComparison.CurrentCultureIgnoreCase))
+                        : knownValues.FirstOrDefault(v => key == v.Key);
 
                     if (knownValue != null)
                     {
@@ -350,15 +355,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (request.Info is ParameterInfo parameterInfo)
                 {
-                    var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name));
-
-                    if (knownValue != null)
-                    {
-                        return knownValue.ValueExpression(request);
-                    }
-
-                    knownValue = knownValues.FirstOrDefault(v =>
-                        Equals(v.Position.GetValueOrDefault(-1), parameterInfo.Position));
+                    var knownValue = 
+                        knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name))
+                        ?? knownValues.FirstOrDefault(v => Equals(v.Position ?? -1, parameterInfo.Position));
 
                     if (knownValue != null)
                     {

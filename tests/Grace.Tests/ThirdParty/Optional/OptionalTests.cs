@@ -299,7 +299,7 @@ namespace Grace.Tests.ThirdParty.Optional
     public class GraceOptionalFactory<TResult>
     {
         private readonly ActivationStrategyDelegate _delegate;
-        private readonly string _qualifier;
+        private readonly object _locateKey;
 
         /// <summary>
         /// Constructor
@@ -309,7 +309,7 @@ namespace Grace.Tests.ThirdParty.Optional
         public GraceOptionalFactory(ActivationStrategyDelegate activationDelegate, object locateKey)
         {
             _delegate = activationDelegate;
-            _qualifier = locateKey as string;
+            _locateKey = locateKey;
         }
 
         /// <summary>
@@ -323,7 +323,10 @@ namespace Grace.Tests.ThirdParty.Optional
             IDisposalScope disposalScope,
             IInjectionContext injectionContext)
         {
-            return new GraceOptional<TResult>(scope, _qualifier, () => (TResult)_delegate(scope, disposalScope, injectionContext));
+            return new GraceOptional<TResult>(
+                scope, 
+                _locateKey as string, 
+                () => (TResult)_delegate(scope, disposalScope, injectionContext, _locateKey));
         }
     }
 

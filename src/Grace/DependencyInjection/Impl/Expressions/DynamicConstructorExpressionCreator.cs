@@ -356,14 +356,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="parameterName"></param>
         /// <param name="isRequired"></param>
         /// <param name="useDefault"></param>
-        /// <param name="defaultVlalue"></param>
+        /// <param name="defaultValue"></param>
         public virtual T DynamicLocate<T>(IExportLocatorScope scope,
                                           IDisposalScope disposalScope,
                                           IInjectionContext context,
                                           string parameterName,
                                           bool isRequired,
                                           bool useDefault,
-                                          T defaultVlalue)
+                                          T defaultValue)
         {
             var value = context.GetExtraData(parameterName);
 
@@ -417,7 +417,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 throw new Exception("Could not locate type");
             }
 
-            return defaultVlalue;
+            return defaultValue;
         }
 
         /// <summary>

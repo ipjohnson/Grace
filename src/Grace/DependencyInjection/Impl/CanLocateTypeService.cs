@@ -36,6 +36,11 @@ namespace Grace.DependencyInjection.Impl
         {
             if (key != null)
             {
+                if (ReferenceEquals(key, ImportKey.Key))
+                {
+                    return true;
+                }
+
                 var collection = injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type);
 
                 if (collection?.GetKeyedStrategy(key) != null)

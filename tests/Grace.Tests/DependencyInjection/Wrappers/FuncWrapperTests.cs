@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -62,5 +63,17 @@ namespace Grace.Tests.DependencyInjection.Wrappers
             Assert.Null(instance.GetWrappedType(typeof(int)));
         }
 
+        [Fact]
+        public void FuncWrapper_Does_Not_Support_Keyed()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => c.Export<BasicService>().AsKeyed<IBasicService>("Keyed"));
+
+            var ex = Assert.Throws<LocateException>(
+                () => container.Locate<Func<IBasicService>>(withKey: "Keyed")
+            );
+            Assert.Contains("Could not locate Type", ex.Message);
+        }    
     }
 }

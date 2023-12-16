@@ -87,7 +87,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <returns></returns>
             public TypedActivationStrategyDelegate<TResult> CreateFunc()
             {
-                return (scope, disposalScope, context) => (TResult)_action(scope, disposalScope, context);
+                return (scope, disposalScope, context, key) => (TResult)_action(scope, disposalScope, context, key);
             }
         }
     }

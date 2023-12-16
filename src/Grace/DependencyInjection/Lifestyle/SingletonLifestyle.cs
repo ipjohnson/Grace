@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 if (_singleton == null)
                 {
-                    _singleton = _activationDelegate(scope, scope, null);
+                    _singleton = _activationDelegate(scope, scope, null, request.LocateKey);
                 }
             }
 

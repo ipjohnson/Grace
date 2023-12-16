@@ -44,8 +44,13 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
             var closedType = typeof(Scoped<>).MakeGenericType(type);
 
-            var newExpression = Expression.New(closedType.GetTypeInfo().DeclaredConstructors.Single(),
-                request.ScopeParameter, request.InjectionContextParameter, Expression.Constant(compiled), scopeNameExpression.Expression);
+            var newExpression = Expression.New(
+                closedType.GetTypeInfo().DeclaredConstructors.Single(),
+                request.ScopeParameter, 
+                request.InjectionContextParameter, 
+                request.Constants.KeyParameter,
+                Expression.Constant(compiled), 
+                scopeNameExpression.Expression);
 
             return request.Services.Compiler.CreateNewResult(request, newExpression);
         }

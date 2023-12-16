@@ -66,8 +66,9 @@ namespace Grace.DependencyInjection.Lifestyle
                 Interlocked.CompareExchange(ref CompiledDelegate, localDelegate, null);
             }
 
-            var getValueFromScopeMethod =
-                typeof(SingletonPerNamedScopeLifestyle).GetRuntimeMethod(nameof(GetValueFromScope),
+            var getValueFromScopeMethod = typeof(SingletonPerNamedScopeLifestyle)
+                .GetRuntimeMethod(
+                    nameof(GetValueFromScope),
                     new[]
                     {
                         typeof(IExportLocatorScope),
@@ -76,19 +77,22 @@ namespace Grace.DependencyInjection.Lifestyle
                         typeof(string),
                         typeof(bool),
                         typeof(IInjectionContext),
-                        typeof(StaticInjectionContext)
+                        typeof(StaticInjectionContext),
+                        typeof(object),
                     });
 
             var closedMethod = getValueFromScopeMethod.MakeGenericMethod(request.ActivationType);
 
-            var expression = Expression.Call(closedMethod,
-                                             request.ScopeParameter,
-                                             Expression.Constant(CompiledDelegate),
-                                             Expression.Constant(UniqueId),
-                                             Expression.Constant(_scopeName),
-                                             Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
-                                             request.InjectionContextParameter,
-                                             Expression.Constant(request.GetStaticInjectionContext()));
+            var expression = Expression.Call(
+                closedMethod,
+                request.ScopeParameter,
+                Expression.Constant(CompiledDelegate),
+                Expression.Constant(UniqueId),
+                Expression.Constant(_scopeName),
+                Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
+                request.InjectionContextParameter,
+                Expression.Constant(request.GetStaticInjectionContext()),
+                request.Constants.KeyParameter);
 
             request.RequireExportScope();
 
@@ -106,12 +110,15 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="context"></param>
         /// <param name="staticContext"></param>
         /// <param name="shareContext"></param>
-        public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
+        public static T GetValueFromScope<T>(
+            IExportLocatorScope scope, 
+            ActivationStrategyDelegate creationDelegate,
             string uniqueId,
             string scopeName,
             bool shareContext,
             IInjectionContext context,
-            StaticInjectionContext staticContext)
+            StaticInjectionContext staticContext,
+            object key)
         {
             while (scope != null)
             {
@@ -141,7 +148,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                 if (value == null)
                 {
-                    value = creationDelegate(scope, scope, shareContext ? context : null);
+                    value = creationDelegate(scope, scope, shareContext ? context : null, key);
 
                     scope.SetExtraData(uniqueId, value);
                 }

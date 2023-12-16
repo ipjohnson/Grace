@@ -136,8 +136,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.LocateKey != null)
             {
-                if (request.LocateKey is IEnumerable enumerableKey &&
-                    !(request.LocateKey is string))
+                if (request.LocateKey is IEnumerable enumerableKey and not string)
                 {
                     keys = new List<object>();
 

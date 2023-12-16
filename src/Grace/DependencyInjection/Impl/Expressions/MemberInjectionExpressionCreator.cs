@@ -49,25 +49,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
             foreach (var kvp in GetMemberInjectionInfoForConfiguration(request.RequestingScope, request, configuration))
             {
                 var memberType = kvp.Key.GetMemberType();
-                object key = null;
-
-                if (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType))
-                {
-                    key = kvp.Key.Name;
-                }
+                
+                var key = kvp.Value.LocateKey ?? 
+                    (request.RequestingScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(memberType) ? kvp.Key.Name : null);
 
                 var found = memberType.IsGenericParameter ||
-                            request.RequestingScope.CanLocate(memberType, key: key);
+                    request.RequestingScope.CanLocate(memberType, key: key);
 
-                returnValue =
-                    returnValue.Add(new ActivationStrategyDependency(kvp.Key is PropertyInfo ? DependencyType.Property : DependencyType.Field,
-                                                                     configuration.ActivationStrategy,
-                                                                     kvp.Key,
-                                                                     kvp.Key.GetMemberType(),
-                                                                     kvp.Key.Name,
-                                                                     false,
-                                                                     false,
-                                                                     found));
+                returnValue = returnValue.Add(new ActivationStrategyDependency(
+                    kvp.Key is PropertyInfo ? DependencyType.Property : DependencyType.Field,
+                    configuration.ActivationStrategy,
+                    kvp.Key,
+                    kvp.Key.GetMemberType(),
+                    kvp.Key.Name,
+                    false,
+                    false,
+                    found)
+                );
             }
 
             return returnValue;
@@ -86,7 +84,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (expression != null)
             {
-                return CreateNewMemeberInitExpression(scope, request, activationConfiguration, result, expression);
+                return CreateNewMemberInitExpression(scope, request, activationConfiguration, result, expression);
             }
 
             return CreateMemberInjectExpressions(scope, request, activationConfiguration, result);
@@ -219,7 +217,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="activationConfiguration">activation configuration</param>
         /// <param name="result">result from instantation</param>
         /// <param name="newExpression">instantiation expression</param>
-        protected virtual IActivationExpressionResult CreateNewMemeberInitExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result, NewExpression newExpression)
+        protected virtual IActivationExpressionResult CreateNewMemberInitExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result, NewExpression newExpression)
         {
             var bindings = new List<MemberBinding>();
 

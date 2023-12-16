@@ -5,6 +5,7 @@ namespace Grace.Tests.Classes.Simple
 {
     public interface IKeyedMultipleService
     {
+        string LocatedKey { get; }
         string SomeMethod();
     }
 
@@ -12,6 +13,9 @@ namespace Grace.Tests.Classes.Simple
     [ExportKeyedType(typeof(IKeyedMultipleService), "A")]
     public class KeyedMultipleServiceA : IKeyedMultipleService
     {
+        [ImportKey]
+        public string LocatedKey { get; set; }
+
         public string SomeMethod()
         {
             return "A";
@@ -21,6 +25,9 @@ namespace Grace.Tests.Classes.Simple
     [ExportKeyedType(typeof(IKeyedMultipleService), "B")]
     public class KeyedMultipleServiceB : IKeyedMultipleService
     {
+        [ImportKey]
+        public string LocatedKey { get; set; }
+
         public string SomeMethod()
         {
             return "B";

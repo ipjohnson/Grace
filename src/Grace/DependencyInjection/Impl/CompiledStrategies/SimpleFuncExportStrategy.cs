@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public SimpleFuncExportStrategy(Func<IExportLocatorScope, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
         {
             _func = func;
-            _delegate = (scope, disposalScope, context) => func(injectionScope);
+            _delegate = (scope, disposalScope, context, key) => func(injectionScope);
         }
 
         /// <summary>

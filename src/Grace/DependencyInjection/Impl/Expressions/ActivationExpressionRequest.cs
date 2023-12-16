@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -205,6 +205,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private bool _injectionContextRequired;
         private bool _exportScopeRequired;
         private bool _disposalScopeRequired;
+        private bool _keyRequired;
         private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
@@ -689,6 +690,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public bool DisposalScopeRequired()
         {
             return _disposalScopeRequired;
+        }
+
+        /// <summary>
+        /// Require imported key
+        /// </summary>
+        public void RequireKey()
+        {
+            if (!_keyRequired)
+            {
+                _keyRequired = true;
+                Parent?.RequireKey();
+            }
+        }
+
+        /// <summary>
+        /// Imported key is required
+        /// </summary>
+        public bool KeyRequired()
+        {
+            return _keyRequired;
         }
 
         /// <summary>

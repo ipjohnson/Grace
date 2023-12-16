@@ -45,21 +45,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 var methodName = node.Method.Name;
 
-                if (methodName == nameof(Arg.Any) ||
-                    methodName == nameof(Arg.Locate))
+                if (methodName == nameof(Arg.Any) || 
+                    methodName == nameof(Arg.Locate) ||
+                    methodName == nameof(Arg.ImportKey))
                 {
                     var newRequest = _request.NewRequest(node.Method.GetGenericArguments().First(), _activationStrategy,
                         _activationStrategy.ActivationType, RequestType.Other, null, true, true);
 
-                    var arguement = node.Arguments.FirstOrDefault();
+                    var argument = node.Arguments.FirstOrDefault();
 
-                    if (arguement != null)
+                    if (argument != null)
                     {
                         var replaceNode = (MethodCallExpression)base.VisitMethodCall(node);
 
-                        arguement = replaceNode.Arguments.First();
+                        argument = replaceNode.Arguments.First();
 
-                        if (arguement is NewExpression newExpression)
+                        if (argument is NewExpression newExpression)
                         {
                             var parameters = newExpression.Constructor.GetParameters();
 
@@ -74,6 +75,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                                 newRequest.AddKnownValueExpression(knownValue);
                             }
                         }
+                    }
+                    else if (methodName == nameof(Arg.ImportKey))
+                    {                        
+                        newRequest.SetLocateKey(ImportKey.Key);
                     }
 
                     var activationExpression =
@@ -95,7 +100,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     return _request.InjectionContextParameter;
                 }
-
             }
 
             return base.VisitMethodCall(node);

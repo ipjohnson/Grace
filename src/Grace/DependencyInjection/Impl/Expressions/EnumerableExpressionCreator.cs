@@ -85,6 +85,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             newRequest.SetFilter(request.Filter);
             newRequest.SetEnumerableComparer(request.EnumerableComparer);
+            newRequest.SetLocateKey(request.LocateKey);
 
             var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 

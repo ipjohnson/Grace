@@ -56,9 +56,13 @@ namespace Grace.DependencyInjection.Lifestyle
 
             var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(SingletonActivation));
 
-            Expression lifestyleExpression = Expression.Call(Expression.Constant(this), singletonMethod,
-                request.Constants.ScopeParameter, request.Constants.RootDisposalScope,
-                request.Constants.InjectionContextParameter);
+            Expression lifestyleExpression = Expression.Call(
+                Expression.Constant(this), 
+                singletonMethod,
+                request.Constants.ScopeParameter, 
+                request.Constants.RootDisposalScope,
+                request.Constants.InjectionContextParameter,
+                request.Constants.KeyParameter);
 
             if (lifestyleExpression.Type != request.ActivationType)
             {
@@ -73,8 +77,11 @@ namespace Grace.DependencyInjection.Lifestyle
             return request.Services.Compiler.CreateNewResult(request, lifestyleExpression);
         }
 
-        private object SingletonActivation(IExportLocatorScope scope, IDisposalScope disposalScope,
-            IInjectionContext context)
+        private object SingletonActivation(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope,
+            IInjectionContext context,
+            object key)
         {
             if (_singleton != null)
             {
@@ -85,7 +92,7 @@ namespace Grace.DependencyInjection.Lifestyle
             {
                 if (_singleton == null)
                 {
-                    _singleton = _activationDelegate(scope, disposalScope, context);
+                    _singleton = _activationDelegate(scope, disposalScope, context, key);
                 }
             }
 

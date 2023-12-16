@@ -155,15 +155,18 @@ namespace Grace.DependencyInjection
         /// Injection context parameter
         /// </summary>
         ParameterExpression InjectionContextParameter { get; }
+
+        /// <summary>
+        /// Locate Key parameter
+        /// </summary>
+        ParameterExpression KeyParameter { get; }
     }
 
     /// <summary>
     /// Data that is per delegate, used for lifestyles
     /// </summary>
     public interface IDataPerDelegate : IExtraDataContainer
-    {
-        
-    }
+    { }
 
     /// <summary>
     /// Request context to create expression
@@ -382,6 +385,16 @@ namespace Grace.DependencyInjection
         /// Disposal scope required
         /// </summary>
         bool DisposalScopeRequired();
+
+        /// <summary>
+        /// Require imported key
+        /// </summary>
+        void RequireKey();
+
+        /// <summary>
+        /// Imported key required
+        /// </summary>
+        bool KeyRequired();
 
         /// <summary>
         /// Create new request from this request

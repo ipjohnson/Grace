@@ -52,5 +52,12 @@
             return null;
         }
         
+        /// <summary>
+        /// Get the currently injected key
+        /// </summary>
+        public static T ImportKey<T>()
+        {
+            return default;
+        }
     }
 }

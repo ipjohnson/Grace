@@ -147,21 +147,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var parameterInfo = parameter.ParameterType.GetTypeInfo();
 
-            var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
-                p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
-                     (p.ParameterType == null ||
-                      p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo) ||
-                      parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo())));
+            return 
+                configuration.ConstructorParameters.FirstOrDefault(p => 
+                    string.Equals(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) 
+                    && (p.ParameterType == null || AreCompatible(p.ParameterType.GetTypeInfo(), parameterInfo)))
+                ?? 
+                configuration.ConstructorParameters.FirstOrDefault(p => 
+                    string.IsNullOrEmpty(p.ParameterName) 
+                    && p.ParameterType != null 
+                    && AreCompatible(p.ParameterType.GetTypeInfo(), parameterInfo));
 
-            if (matchedConstructor != null)
-            {
-                return matchedConstructor;
-            }
-
-            return configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
-                                                                        p.ParameterType != null &&
-                                                                        (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) ||
-                                                                        p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo)));
+            bool AreCompatible(Type a, Type b) => a.IsAssignableFrom(b) || b.IsAssignableFrom(a);
         }
 
         /// <summary>
