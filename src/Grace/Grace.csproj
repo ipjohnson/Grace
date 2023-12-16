@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Grace is a feature-rich dependency injection container designed with ease of use and performance in mind.</Description>
-    <Authors>Ian Johnson</Authors>
-    <TargetFrameworks>net462;net6.0;net7.0</TargetFrameworks>
+    <Description>Grace is a feature-rich dependency injection container designed with ease of use and performance in mind.</Description>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Grace</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>
@@ -20,7 +18,6 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
