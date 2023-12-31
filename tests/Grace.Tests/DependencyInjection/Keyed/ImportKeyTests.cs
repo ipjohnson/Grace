@@ -157,21 +157,23 @@ namespace Grace.Tests.DependencyInjection.Keyed
             container.Configure(c =>
             {
                 c.Export<ImportKeyServiceWrapper>()
+                    .AsKeyed<ImportKeyServiceWrapper>("Parent")                    
                     .ImportConstructor(() => new ImportKeyServiceWrapper(null))
                     .WithCtorParam<ImportKeyService>()
-                    .LocateWithKey("Child");
+                    .LocateWithKey("Child")
+                    .Lifestyle.Singleton();
 
                 c.Export<ImportKeyService>()
                     .AsKeyed<ImportKeyService>("Child")
                     .ImportProperty(x => x.ObjectKey)
                     .LocateWithImportKey()
-                    .Lifestyle
-                    .Singleton();
+                    .Lifestyle.Singleton();
             });
 
-            var instance = container.Locate<ImportKeyServiceWrapper>();
+            var instance = container.Locate<ImportKeyServiceWrapper>(withKey: "Parent");
 
             Assert.NotNull(instance);
+            Assert.Equal("Parent", instance.ObjectKey);
             Assert.NotNull(instance.Service);
             Assert.Equal("Child", instance.Service.ObjectKey);
         }
