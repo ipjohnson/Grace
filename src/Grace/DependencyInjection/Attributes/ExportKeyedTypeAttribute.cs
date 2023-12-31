@@ -24,7 +24,7 @@ namespace Grace.DependencyInjection.Attributes
         }
 
         /// <summary>
-        /// provide type and key for export
+        /// Provide type and key for export
         /// </summary>
         /// <param name="attributedType"></param>
         public Tuple<Type, object> ProvideKey(Type attributedType)

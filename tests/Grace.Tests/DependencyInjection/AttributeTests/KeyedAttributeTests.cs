@@ -30,5 +30,27 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
             Assert.Equal("A", instance.ServiceA.LocatedKey);
             Assert.Equal("B", instance.ServiceB.LocatedKey);
         }
+
+        [Fact]
+        public void AnyKeyAttributeTest()
+        {
+            var container = new DependencyInjectionContainer();
+
+            var assembly = Assembly.GetAssembly(typeof(IAnyKeyService));
+
+            container.Configure(c => c
+                .ExportAssembly(assembly)
+                .ExportAttributedTypes()
+                .Where(TypesThat.AreInTheSameNamespaceAs(typeof(IAnyKeyService)))
+            );
+
+            var a = container.Locate<IAnyKeyService>(withKey: "A"); // ExportKeyedType("A")
+            var b = container.Locate<IAnyKeyService>(withKey: "B"); // ExportAnyKeyedType
+
+            Assert.NotNull(a);
+            Assert.IsType<AnyKeyServiceA>(a);
+            Assert.NotNull(b);
+            Assert.IsType<AnyKeyServiceB>(b);
+        }
     }
 }

@@ -633,33 +633,29 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            var compiledDelegate = InternalFieldStorage.ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, InternalFieldStorage.MissingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
-
-            if (compiledDelegate != null)
+            if (((IInjectionScope)this)
+                .InternalTryLocateActivationDelegate(scope, disposalScope, type, consider, key, key, injectionContext, out var value))
             {
-                if (key == null && consider == null)
-                {
-                    compiledDelegate = AddObjectFactory(type, compiledDelegate);
-                }
-
-                return compiledDelegate(scope, disposalScope ?? scope, injectionContext, key);
+                return value;
             }
 
-            if (Parent != null)
+            // Try ImportKey.Any for failed keyed locates.
+            if (key != null && ((IInjectionScope)this)
+                .InternalTryLocateActivationDelegate(scope, disposalScope, type, consider, ImportKey.Any, key, injectionContext, out value))
             {
-                var injectionScopeParent = (IInjectionScope)Parent;
-
-                return injectionScopeParent.LocateFromChildScope(scope, disposalScope, type, injectionContext, consider, key, allowNull, isDynamic);
+                return value;
             }
+
+            var rootConfig = GetRootScopeConfiguration();
 
             if (type == typeof(IInjectionScope) &&
-                ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+                rootConfig.Behaviors.AllowInjectionScopeLocation)
             {
                 return scope;
             }
 
-            var value = ScopeConfiguration.Implementation.Locate<IInjectionContextValueProvider>()
-                .GetValueFromInjectionContext(scope, type, null, injectionContext, !allowNull);
+            value = rootConfig.Implementation.Locate<IInjectionContextValueProvider>()
+                .GetValueFromInjectionContext(scope, type, null, injectionContext, isRequired: !allowNull);
 
             if (value != null)
             {
@@ -672,6 +668,51 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return null;
+        }
+
+        private IInjectionScopeConfiguration GetRootScopeConfiguration()
+        {
+            IExportLocatorScope scope = this;
+
+            while (scope.Parent != null)
+            { 
+                scope = scope.Parent;
+            }
+
+            return ((InjectionScope)scope).ScopeConfiguration;
+        }
+
+        bool IInjectionScope.InternalTryLocateActivationDelegate(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            ActivationStrategyFilter consider, 
+            object key,
+            object realKey, // May differ when key is ImportKey.Any
+            IInjectionContext injectionContext,
+            out object value)
+        {
+            var compiledDelegate = InternalFieldStorage.ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, InternalFieldStorage.MissingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
+
+            if (compiledDelegate != null)
+            {
+                if (key == null && consider == null)
+                {
+                    compiledDelegate = AddObjectFactory(type, compiledDelegate);
+                }
+
+                value = compiledDelegate(scope, disposalScope ?? scope, injectionContext, realKey);
+                return true;
+            }
+
+            if (Parent != null)
+            {
+                return ((IInjectionScope)Parent)
+                    .InternalTryLocateActivationDelegate(scope, disposalScope, type, consider, key, realKey, injectionContext, out value);
+            }
+
+            value = null;
+            return false;
         }
 
         private object DynamicIEnumerable(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)

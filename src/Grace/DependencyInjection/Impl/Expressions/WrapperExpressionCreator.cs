@@ -160,10 +160,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     {
                         if (request.LocateKey != null)
                         {
-                            var strategy = collection.GetKeyedStrategy(request.LocateKey);
+                            var strategy = collection.GetKeyedStrategy(request.LocateKey)
+                                ?? collection.GetKeyedStrategy(ImportKey.Any);
 
                             if (strategy != null)
                             {
+                                // TODO: the request key has been lost in the wrapper?
                                 wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
                                     .Add(new WrapperActivationPathNode(strategy, wrappedType, null))
                                     .AddRange(wrappers.Reverse());

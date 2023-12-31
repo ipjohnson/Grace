@@ -136,19 +136,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (request.LocateKey != null)
             {
-                if (request.LocateKey is IEnumerable enumerableKey and not string)
-                {
-                    keys = new List<object>();
-
-                    foreach (var value in enumerableKey)
-                    {
-                        keys.Add(value);
-                    }
-                }
-                else
-                {
-                    keys = new List<object> { request.LocateKey };
-                }
+                keys = (request.LocateKey is IEnumerable enumerableKey and not string)
+                    ? [.. enumerableKey]
+                    : [request.LocateKey];
             }
 
             IEnumerable<ICompiledExportStrategy> exportList = ImmutableArray<ICompiledExportStrategy>.Empty;
@@ -161,7 +151,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     for (var i = 0; i < keys.Count;)
                     {
-                        var strategy = collection.GetKeyedStrategy(keys[i]);
+                        var strategy = collection.GetKeyedStrategy(keys[i])
+                            ?? collection.GetKeyedStrategy(ImportKey.Any);                        
 
                         if (strategy != null)
                         {
@@ -184,7 +175,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     {
                         for (var i = 0; i < keys.Count;)
                         {
-                            var strategy = strategies.GetKeyedStrategy(keys[i]);
+                            var strategy = strategies.GetKeyedStrategy(keys[i])
+                                ?? strategies.GetKeyedStrategy(ImportKey.Any);
 
                             if (strategy != null)
                             {
@@ -280,6 +272,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
                     request.RequestingStrategy?.ActivationType, request.RequestType,
                     request.Info, true, true);
+                // TODO: we lost the key here, ImportKey.Key shenanigans would fail
 
                 var expression = strategy.GetActivationExpression(scope, newRequest);
 
