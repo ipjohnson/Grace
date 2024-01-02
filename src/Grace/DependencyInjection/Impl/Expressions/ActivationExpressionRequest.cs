@@ -713,6 +713,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
+        /// Get expression representing imported key
+        /// </summary>
+        public Expression GetKeyExpression()
+        {
+            // At root level, the key is dynamically injected through the key parameter.
+            // At lower levels, the key is statically defined during request compilation.
+            if (RequestType != RequestType.Root)
+            {
+                return Expression.Constant(LocateKey, typeof(object));                
+            }
+            
+            RequireKey();
+            return Constants.KeyParameter;
+        }
+
+        /// <summary>
         /// Keys for data
         /// </summary>
         public IEnumerable<object> Keys => _extraData.Keys;

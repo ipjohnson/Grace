@@ -124,7 +124,7 @@ namespace Grace.DependencyInjection.Lifestyle
                     Expression.Constant(UniqueId),
                     Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
                     request.InjectionContextParameter,
-                    request.Constants.KeyParameter);
+                    request.GetKeyExpression());
             }
             else
             {
@@ -156,7 +156,7 @@ namespace Grace.DependencyInjection.Lifestyle
                         Expression.Constant(UniqueIntIdValue), 
                         Expression.Constant(CompiledDelegate),
                         request.InjectionContextParameter,
-                        request.Constants.KeyParameter);
+                        request.GetKeyExpression());
                 }
             }
 

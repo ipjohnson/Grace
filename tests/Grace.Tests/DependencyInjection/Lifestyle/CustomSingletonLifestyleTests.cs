@@ -51,7 +51,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
                     request.Constants.ScopeParameter, 
                     request.Constants.RootDisposalScope,
                     request.Constants.InjectionContextParameter,
-                    request.Constants.KeyParameter);
+                    request.GetKeyExpression());
 
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }

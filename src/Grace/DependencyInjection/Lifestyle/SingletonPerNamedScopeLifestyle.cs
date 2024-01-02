@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
                 request.InjectionContextParameter,
                 Expression.Constant(request.GetStaticInjectionContext()),
-                request.Constants.KeyParameter);
+                request.GetKeyExpression());
 
             request.RequireExportScope();
 
@@ -107,9 +107,10 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="creationDelegate"></param>
         /// <param name="uniqueId"></param>
         /// <param name="scopeName"></param>
+        /// <param name="shareContext"></param>
         /// <param name="context"></param>
         /// <param name="staticContext"></param>
-        /// <param name="shareContext"></param>
+        /// <param name="key"></param>
         public static T GetValueFromScope<T>(
             IExportLocatorScope scope, 
             ActivationStrategyDelegate creationDelegate,

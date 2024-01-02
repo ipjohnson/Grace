@@ -397,6 +397,11 @@ namespace Grace.DependencyInjection
         bool KeyRequired();
 
         /// <summary>
+        /// Get an expression representing the imported key
+        /// </summary>
+        Expression GetKeyExpression();
+
+        /// <summary>
         /// Create new request from this request
         /// </summary>
         /// <param name="activationType">request type</param>

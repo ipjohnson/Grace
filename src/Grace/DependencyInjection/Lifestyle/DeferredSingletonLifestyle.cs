@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 request.Constants.ScopeParameter, 
                 request.Constants.RootDisposalScope,
                 request.Constants.InjectionContextParameter,
-                request.Constants.KeyParameter);
+                request.GetKeyExpression());
 
             if (lifestyleExpression.Type != request.ActivationType)
             {

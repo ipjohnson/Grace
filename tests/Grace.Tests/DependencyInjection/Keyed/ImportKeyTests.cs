@@ -161,6 +161,8 @@ namespace Grace.Tests.DependencyInjection.Keyed
                     .ImportConstructor(() => new ImportKeyServiceWrapper(null))
                     .WithCtorParam<ImportKeyService>()
                     .LocateWithKey("Child")
+                    .ImportProperty(x => x.ObjectKey)
+                    .LocateWithImportKey()
                     .Lifestyle.Singleton();
 
                 c.Export<ImportKeyService>()
@@ -168,6 +170,70 @@ namespace Grace.Tests.DependencyInjection.Keyed
                     .ImportProperty(x => x.ObjectKey)
                     .LocateWithImportKey()
                     .Lifestyle.Singleton();
+            });
+
+            var instance = container.Locate<ImportKeyServiceWrapper>(withKey: "Parent");
+
+            Assert.NotNull(instance);
+            Assert.Equal("Parent", instance.ObjectKey);
+            Assert.NotNull(instance.Service);
+            Assert.Equal("Child", instance.Service.ObjectKey);
+        }
+
+        [Fact]
+        public void Nested_SingletonPerNamedScope_Imported_Key()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<ImportKeyServiceWrapper>()
+                    .AsKeyed<ImportKeyServiceWrapper>("Parent")
+                    .ImportConstructor(() => new ImportKeyServiceWrapper(null))
+                    .WithCtorParam<ImportKeyService>()
+                    .LocateWithKey("Child")
+                    .ImportProperty(x => x.ObjectKey)
+                    .LocateWithImportKey()
+                    .Lifestyle.SingletonPerNamedScope("ScopeName");
+
+                c.Export<ImportKeyService>()
+                    .AsKeyed<ImportKeyService>("Child")
+                    .ImportProperty(x => x.ObjectKey)
+                    .LocateWithImportKey()
+                    .Lifestyle.SingletonPerNamedScope("ScopeName");
+            });
+
+            var instance = container
+                .CreateChildScope(scopeName: "ScopeName")
+                .Locate<ImportKeyServiceWrapper>(withKey: "Parent");
+
+            Assert.NotNull(instance);
+            Assert.Equal("Parent", instance.ObjectKey);
+            Assert.NotNull(instance.Service);
+            Assert.Equal("Child", instance.Service.ObjectKey);
+        }
+
+        [Fact]
+        public void Nested_SingletonPerScope_Imported_Key()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<ImportKeyServiceWrapper>()
+                    .AsKeyed<ImportKeyServiceWrapper>("Parent")
+                    .ImportConstructor(() => new ImportKeyServiceWrapper(null))
+                    .WithCtorParam<ImportKeyService>()
+                    .LocateWithKey("Child")
+                    .ImportProperty(x => x.ObjectKey)
+                    .LocateWithImportKey()
+                    .Lifestyle.SingletonPerScope();
+
+                c.Export<ImportKeyService>()
+                    .AsKeyed<ImportKeyService>("Child")
+                    .ImportProperty(x => x.ObjectKey)
+                    .LocateWithImportKey()
+                    .Lifestyle.SingletonPerScope();
             });
 
             var instance = container.Locate<ImportKeyServiceWrapper>(withKey: "Parent");

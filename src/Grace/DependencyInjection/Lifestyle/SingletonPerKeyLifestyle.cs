@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Lifestyle
                     newRequest.ScopeParameter, 
                     Expression.Constant(scope), 
                     request.InjectionContextParameter,
-                    request.Constants.KeyParameter,
+                    request.GetKeyExpression(),
                     Expression.Constant(_activationDelegate)
                 ), 
                 request.ActivationType);

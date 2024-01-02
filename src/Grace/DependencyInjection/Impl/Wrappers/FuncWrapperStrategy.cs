@@ -56,7 +56,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 request.ScopeParameter,
                 request.DisposalScopeExpression, 
                 request.InjectionContextParameter,
-                request.Constants.KeyParameter);
+                request.GetKeyExpression());
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }

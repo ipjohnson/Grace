@@ -300,16 +300,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     return request.Services.Compiler.CreateNewResult(request, Expression.Constant(null, activationType));
                 }
-                // At root level, the key is dynamically injected through the key parameter.
-                // At lower levels, the key is statically defined during request compilation.
-                Expression keyExpression = parent.RequestType == RequestType.Root
-                    ? parent.Constants.KeyParameter
-                    : Expression.Constant(parent.LocateKey, typeof(object));
 
-                if (keyExpression == parent.Constants.KeyParameter)
-                {
-                    request.RequireKey();
-                }
+                Expression keyExpression = parent.GetKeyExpression();
                 
                 var convertMethod = typeof(ActivationExpressionBuilder)
                     .GetMethod(nameof(ConvertKey), BindingFlags.Static | BindingFlags.NonPublic);

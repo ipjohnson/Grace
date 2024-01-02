@@ -48,7 +48,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
                 closedType.GetTypeInfo().DeclaredConstructors.Single(),
                 request.ScopeParameter, 
                 request.InjectionContextParameter, 
-                request.Constants.KeyParameter,
+                request.GetKeyExpression(),
                 Expression.Constant(compiled), 
                 scopeNameExpression.Expression);
 

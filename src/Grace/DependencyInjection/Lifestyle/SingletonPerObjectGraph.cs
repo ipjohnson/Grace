@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 request.ScopeParameter,
                 request.DisposalScopeExpression, 
                 request.InjectionContextParameter,
-                request.Constants.KeyParameter,
+                request.GetKeyExpression(),
                 Expression.Constant(newDelegate), 
                 Expression.Constant(_uniqueId));
 
