@@ -70,15 +70,18 @@ namespace Grace.DependencyInjection.Lifestyle
             };
             
             return request.Services.Compiler.CreateNewResult(
-                request, 
-                Expression.Call(
-                    Expression.Constant(this),
-                    typeof(AnyKeyLifestyle).GetMethod(nameof(GetInstance), BindingFlags.Instance | BindingFlags.NonPublic),
-                    request.Constants.ScopeParameter,
-                    request.DisposalScopeExpression,
-                    request.Constants.InjectionContextParameter,
-                    request.GetKeyExpression(),
-                    Expression.Constant(delegateFactory)));
+                request,
+                Expression.Convert(
+                    Expression.Call(
+                        Expression.Constant(this),
+                        typeof(AnyKeyLifestyle).GetMethod(nameof(GetInstance), BindingFlags.Instance | BindingFlags.NonPublic),
+                        request.Constants.ScopeParameter,
+                        request.DisposalScopeExpression,
+                        request.Constants.InjectionContextParameter,
+                        request.GetKeyExpression(),
+                        Expression.Constant(delegateFactory)),
+                    request.ActivationType)
+                );
         }
 
         private KeyedCache GetLifestyleForKey(object key)
