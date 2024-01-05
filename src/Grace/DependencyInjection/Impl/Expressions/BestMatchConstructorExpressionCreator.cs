@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Grace.DependencyInjection.Attributes.Interfaces;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -16,30 +17,25 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="configuration"></param>
         /// <param name="request"></param>
         /// <param name="constructors"></param>
-        protected override ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration,
-            IActivationExpressionRequest request, ConstructorInfo[] constructors)
+        protected override ConstructorInfo PickConstructor(
+            IInjectionScope injectionScope, 
+            TypeActivationConfiguration configuration,
+            IActivationExpressionRequest request, 
+            ConstructorInfo[] constructors)
         {
-            ConstructorInfo returnConstructor = null;
             var matchInfos = new List<MatchInfo>();
 
-            foreach (var constructor in constructors)
+            foreach (var constructor in constructors.OrderByDescending(c => c.GetParameters().Length))
             {
                 var matchInfo = new MatchInfo { ConstructorInfo = constructor };
 
                 foreach (var parameter in constructor.GetParameters())
                 {
-                    object key = null;
-
-                    if (injectionScope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
-                    {
-                        key = parameter.Name;
-                    }
-
                     if (parameter.IsOptional ||
                         parameter.ParameterType.IsGenericParameter ||
                         CanGetValueFromInfo(configuration, parameter) ||
                         CanGetValueFromKnownValues(request, parameter) ||
-                        injectionScope.CanLocate(parameter.ParameterType, null, key))
+                        injectionScope.CanLocate(parameter.ParameterType, null, GetKey(injectionScope, parameter)))
                     {
                         matchInfo.Matched++;
                     }
@@ -51,23 +47,39 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (matchInfo.Missing == 0)
                 {
-                    returnConstructor = constructor;
-                    break;
+                    return constructor;
                 }
 
                 matchInfos.Add(matchInfo);
             }
 
-            if (returnConstructor == null)
+            #if NET6_0_OR_GREATER
+
+            return matchInfos.MaxBy(x => x.Matched - x.Missing).ConstructorInfo;
+            
+            #else
+            
+            var comparer = Comparer<int>.Default;
+            matchInfos.Sort((x, y) => comparer.Compare(x.Matched - x.Missing, y.Matched - y.Missing));
+            return matchInfos.Last().ConstructorInfo;
+            
+            #endif
+        }
+
+        private object GetKey(IInjectionScope scope, ParameterInfo parameter)
+        {
+            var importInfo = ImportAttributeInfo.For(parameter, parameter.ParameterType, parameter.Name);
+            if (importInfo != null)
             {
-                var comparer = Comparer<int>.Default;
-
-                matchInfos.Sort((x, y) => comparer.Compare(x.Matched - x.Missing, y.Matched - y.Missing));
-
-                returnConstructor = matchInfos.Last().ConstructorInfo;
+                return importInfo.ImportKey;
             }
-
-            return returnConstructor;
+            
+            if (scope.ScopeConfiguration.Behaviors.KeyedTypeSelector(parameter.ParameterType))
+            {
+                return parameter.Name;
+            }
+                
+            return null;
         }
 
         private bool CanGetValueFromKnownValues(IActivationExpressionRequest request, ParameterInfo parameter)

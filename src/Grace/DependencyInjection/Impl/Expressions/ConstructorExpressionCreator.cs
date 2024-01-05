@@ -298,19 +298,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return configuration.SelectedConstructor;
             }
 
-            var constructors = configuration.ActivationType.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic && !c.IsStatic).OrderByDescending(c => c.GetParameters().Length).ToArray();
-
-            if (constructors.Length == 0)
+            var constructors = configuration
+                .ActivationType.GetTypeInfo()
+                .DeclaredConstructors
+                .Where(c => c.IsPublic && !c.IsStatic)
+                .ToArray();
+            
+            return constructors switch
             {
-                throw new Exception("Could not find public constructor on type " + configuration.ActivationType.FullName);
-            }
-
-            if (constructors.Length == 1)
-            {
-                return constructors[0];
-            }
-
-            return PickConstructor(requestingScope, configuration, request, constructors);
+                [] => throw new Exception("Could not find public constructor on type " + configuration.ActivationType.FullName),
+                [var ctor] => ctor,
+                _ => PickConstructor(requestingScope, configuration, request, constructors),
+            };
         }
 
         /// <summary>
