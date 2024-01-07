@@ -347,6 +347,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 currentScope = currentScope.Parent;
             }
 
+            // TODO: Dynamic locate should support keyed dependencies
             return scope.GetInjectionScope().CanLocate(typeof(T));
         }
 
@@ -383,6 +384,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return (T)value;
             }
 
+            // TODO: Dynamic locate should support keyed dependencies
             value = scope.GetInjectionScope()
                 .LocateFromChildScope(scope, disposalScope, typeof(T), context, null, null, true, false);
 
