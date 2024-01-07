@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Attributes;
 using Grace.Tests.Classes.Generics;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -70,6 +73,54 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<SimpleObjectB>(instanceB);
         }
 
+        [Fact]
+        public void ExportFactory_Import_Keyed()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.ExportFactory(([Import(Key = "A")] ISimpleObject simpleObject) 
+                    => new ImportSingleSimpleObject(simpleObject));
+            });
+
+            var instance = container.Locate<ImportSingleSimpleObject>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<SimpleObjectA>(instance.SimpleObject);
+        }
+
+        [Fact]
+        public void ExportFactory_AsKeyed_Any()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.ExportFactory(([ImportKey] string key) => $"Key is {key}")
+                    .AsKeyed<string>(ImportKey.Any);
+            });
+
+            var instance = container.Locate<string>(withKey: "A");
+
+            Assert.Equal("Key is A", instance);
+        }        
+
+        [Fact(Skip = "Locating keyed wrappers is not supported yet")]
+        public void Func_Keyed_Result()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+            });
+
+            var func = container.Locate<Func<ISimpleObject>>(withKey: "A");
+
+            Assert.IsType<SimpleObjectA>(func());         
+        }
 
         [Fact]
         public void AsKeyedStringTest()
@@ -276,57 +327,46 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<BasicService>(service.Value);
         }
 
+        public class FuncFactoryClass(Func<DisposableService> func)
+        {
+           public DisposableService CreateService() => func();
+        }
 
-        //public class FuncFactoryClass
-        //{
-        //    private Func<DisposableService> _func;
+        [Fact]
+        public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
+        {
+           var container = new DependencyInjectionContainer();
 
-        //    public FuncFactoryClass(Func<DisposableService> func)
-        //    {
-        //        _func = func;
-        //    }
+           container.Configure(c =>
+           {
+               c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+               c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+               c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
+           });
 
-        //    public DisposableService CreateService()
-        //    {
-        //        return _func();
-        //    }
-        //}
+           bool disposedService = false;
+           bool disposedTransient = false;
 
-        //[Fact]
-        //public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
-        //{
-        //    var container = new DependencyInjectionContainer();
+           using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+           {
+               var service = scope.Locate<DisposableService>();
 
-        //    container.Configure(c =>
-        //    {
-        //        c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
-        //        c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
-        //        c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
-        //    });
+               Assert.Same(service, scope.Locate<DisposableService>());
 
-        //    bool disposedService = false;
-        //    bool disposedTransient = false;
+               service.Disposing += (sender, args) => disposedService = true;
 
-        //    using (var scope = container.BeginLifetimeScope("CustomScopeName"))
-        //    {
-        //        var service = scope.Locate<DisposableService>();
+               var factory = scope.Locate<FuncFactoryClass>();
 
-        //        Assert.Same(service, scope.Locate<DisposableService>());
+               var transientService = factory.CreateService();
 
-        //        service.Disposing += (sender, args) => disposedService = true;
+               Assert.NotSame(service, transientService);
 
-        //        var factory = scope.Locate<FuncFactoryClass>();
+               transientService.Disposing += (sender, args) => disposedTransient = true;
+           }
 
-        //        var transientService = factory.CreateService();
-
-        //        Assert.NotSame(service, transientService);
-
-        //        transientService.Disposing += (sender, args) => disposedTransient = true;
-        //    }
-
-        //    Assert.True(disposedService);
-        //    Assert.False(disposedTransient);
-        //}
+           Assert.True(disposedService);
+           Assert.False(disposedTransient);
+        }
 
 
         [Fact]

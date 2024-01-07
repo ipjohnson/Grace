@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
+using Grace.DependencyInjection.Attributes.Interfaces;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -12,34 +15,44 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// </summary>
     public static class ExpressionUtilities
     {
-        #region CreateExpressionsForTypes
+        #region CreateExpressionsForParameters
         /// <summary>
-        /// Create an array of expressions based off an array of types
+        /// Create an array of expressions based off an array of parameters
         /// </summary>
         /// <param name="strategy"></param>
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="resultType"></param>
-        /// <param name="types"></param>
+        /// <param name="parameters"></param>
         /// <param name="isActivationStrategyDelegate"></param>
-        public static IActivationExpressionResult[] CreateExpressionsForTypes(IActivationStrategy strategy, IInjectionScope scope,
-            IActivationExpressionRequest request, Type resultType, Type[] types, bool isActivationStrategyDelegate)
+        public static IActivationExpressionResult[] CreateExpressionsForParameters(
+            IActivationStrategy strategy, 
+            IInjectionScope scope,
+            IActivationExpressionRequest request, 
+            Type resultType, 
+            IEnumerable<ParameterInfo> parameters, 
+            bool isActivationStrategyDelegate)
         {
-            var resultArray = new IActivationExpressionResult[types.Length];
-
-            for (var i = 0; i < types.Length; i++)
-            {
-                var arg1Request = request.NewRequest(types[i], strategy, resultType, RequestType.Other, null, true, true);
-
-                if (isActivationStrategyDelegate && i == 3)
+            return parameters
+                .Select((p, i) => 
                 {
-                    arg1Request.SetLocateKey(ImportKey.Key);
-                }
+                    var argRequest = request.NewRequest(p.ParameterType, strategy, resultType, RequestType.Other, null, true, true);
+                    
+                    if (isActivationStrategyDelegate)
+                    {
+                        if (i == 3)
+                        {
+                            argRequest.SetLocateKey(ImportKey.Key);
+                        }
+                    }
+                    else if (ImportAttributeInfo.For(p, p.ParameterType, p.Name) is { ImportKey: { } key})
+                    {
+                        argRequest.SetLocateKey(key);
+                    }
 
-                resultArray[i] = request.Services.ExpressionBuilder.GetActivationExpression(scope, arg1Request);
-            }
-
-            return resultArray;
+                    return argRequest.Services.ExpressionBuilder.GetActivationExpression(scope, argRequest);
+                })
+                .ToArray();
         }
         #endregion
 
@@ -67,14 +80,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
             // Handle closure based delegates differently
             if (delegateInstance.Target != null && delegateInstance.Target.GetType().FullName == _closureName)
             {
-                resultsExpressions = CreateExpressionsForTypes(
+                resultsExpressions = CreateExpressionsForParameters(
                     requestingStrategy, 
                     scope, 
                     request, 
                     methodInfo.ReturnType,
-                    parameters
-                        .Where(p => p.Position != 0 || p.ParameterType.FullName != "System.Runtime.CompilerServices.Closure")
-                        .Select(p => p.ParameterType).ToArray(),
+                    parameters.Where(p => p.Position != 0 || p.ParameterType.FullName != "System.Runtime.CompilerServices.Closure"),
                     IsActivationStrategyDelegate(parameters, true));
                 
                 expression = Expression.Invoke(Expression.Constant(delegateInstance),
@@ -83,12 +94,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
             else
             {
-                resultsExpressions = CreateExpressionsForTypes(
+                resultsExpressions = CreateExpressionsForParameters(
                     requestingStrategy, 
                     scope, 
                     request, 
                     methodInfo.ReturnType,
-                    parameters.Select(p => p.ParameterType).ToArray(),
+                    parameters,
                     IsActivationStrategyDelegate(parameters, false));
 
                 expression = methodInfo.IsStatic
