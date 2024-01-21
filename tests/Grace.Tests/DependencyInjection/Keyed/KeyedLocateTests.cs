@@ -31,6 +31,29 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
+        public void Export_With_Key_LocateAll_From_Scope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>(ImportKey.Any);
+                c.Export<SimpleObjectC>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectD>().As<ISimpleObject>();
+            });
+            
+            var instances = container.LocateAll<ISimpleObject>(withKey: "A");
+
+            Assert.Equal(3, instances.Count);
+            // Without comparer, LocateAll default order is:
+            // non-any keys first, then in reverse export order (latest registration comes first)
+            Assert.IsType<SimpleObjectC>(instances[0]);
+            Assert.IsType<SimpleObjectA>(instances[1]);
+            Assert.IsType<SimpleObjectB>(instances[2]);
+        }
+
+        [Fact]
         public void Export_With_Key_Import_With_Key()
         {
             var container = new DependencyInjectionContainer();
@@ -51,6 +74,32 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             Assert.IsType<SimpleObjectA>(instanceA.SimpleObject);
             Assert.IsType<SimpleObjectB>(instanceB.SimpleObject);
+        }
+
+        [Fact]
+        public void Export_With_Import_Keyed_IEnumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>(ImportKey.Any);
+                c.Export<SimpleObjectC>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectD>().AsKeyed<ISimpleObject>("D");
+                c.Export<ImportMultipleSimpleObjects>().WithCtorParam<ISimpleObject[]>().LocateWithKey("A");
+            });
+
+            var instance = container.Locate<ImportMultipleSimpleObjects>();
+            Assert.NotNull(instance);
+
+            var simples = instance.SimpleObjects;
+            Assert.NotNull(simples);
+            // Without comparer, default order of nested IEnumerable or Array is:
+            // by priority (higher first), then export order.
+            Assert.IsType<SimpleObjectA>(simples[0]);
+            Assert.IsType<SimpleObjectB>(simples[1]);
+            Assert.IsType<SimpleObjectC>(simples[2]);
         }
 
         [Fact]

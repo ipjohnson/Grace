@@ -29,12 +29,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
         /// <param name="arrayExpressionCreator">array expression creator</param>
-        public IActivationExpressionResult GetEnumerableExpression(IInjectionScope scope, IActivationExpressionRequest request,
+        public IActivationExpressionResult GetEnumerableExpression(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request,
             IArrayExpressionCreator arrayExpressionCreator)
         {
-            var enumerableCreator = scope.ScopeConfiguration.Behaviors.CustomEnumerableCreator;
-
-            return enumerableCreator != null
+            return scope.ScopeConfiguration.Behaviors.CustomEnumerableCreator is {} enumerableCreator
                 ? CreateEnumerableExpressionUsingCustomCreator(scope, request, arrayExpressionCreator, enumerableCreator)
                 : CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator);
         }
@@ -45,8 +45,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayExpressionCreator"></param>
-        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(IInjectionScope scope,
-            IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator)
+        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(
+            IInjectionScope scope,
+            IActivationExpressionRequest request, 
+            IArrayExpressionCreator arrayExpressionCreator)
         {
             var enumerableType = request.ActivationType.GenericTypeArguments[0];
 
@@ -71,23 +73,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">expression request</param>
         /// <param name="arrayExpressionCreator">array creator</param>
         /// <param name="enumerableCreator">custom enumerable creator</param>
-        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(IInjectionScope scope,
-            IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator,
+        protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(
+            IInjectionScope scope,
+            IActivationExpressionRequest request, 
+            IArrayExpressionCreator arrayExpressionCreator,
             IEnumerableCreator enumerableCreator)
         {
+            var arrayExpression = CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator);
+
             var enumerableType = request.ActivationType.GenericTypeArguments[0];
-
-            var arrayType = enumerableType.MakeArrayType();
-
-            var newRequest =
-                request.NewRequest(arrayType, request.RequestingStrategy,
-                    request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true, true);
-
-            newRequest.SetFilter(request.Filter);
-            newRequest.SetEnumerableComparer(request.EnumerableComparer);
-            newRequest.SetLocateKey(request.LocateKey);
-
-            var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
 
             request.RequireExportScope();
 
@@ -105,12 +99,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         #region CreateEnumerableMethod
+
         private MethodInfo _createEnumerableMethod;
 
         /// <summary>
         /// Create enumerable method
         /// </summary>
-        protected MethodInfo CreateEnumerableMethod => _createEnumerableMethod = _createEnumerableMethod ?? typeof(IEnumerableCreator).GetRuntimeMethods().First();
+        protected MethodInfo CreateEnumerableMethod => _createEnumerableMethod ??= typeof(IEnumerableCreator).GetRuntimeMethods().First();
 
         #endregion
     }

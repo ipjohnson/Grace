@@ -160,9 +160,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     {
                         if (request.LocateKey != null)
                         {
-                            var strategy = collection.GetKeyedStrategy(request.LocateKey)
-                                ?? collection.GetKeyedStrategy(ImportKey.Any);
-
+                            var strategy = collection.GetKeyedStrategy(request.LocateKey);
                             if (strategy != null)
                             {
                                 // TODO: the request key has been lost in the wrapper?

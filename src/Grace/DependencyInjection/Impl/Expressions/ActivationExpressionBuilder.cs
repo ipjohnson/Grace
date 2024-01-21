@@ -523,9 +523,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     if (request.LocateKey != null)
                     {
-                        var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey)
-                            ?? collection.GetKeyedStrategy(ImportKey.Any);
-
+                        var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
                         if (keyedStrategy != null)
                         {
                             return ActivationExpressionForStrategy(scope, request, keyedStrategy);
@@ -567,9 +565,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 if (request.LocateKey != null)
                 {
-                    var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey)
-                        ?? collection.GetKeyedStrategy(ImportKey.Any);
-
+                    var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
                     if (keyedStrategy != null)
                     {
                         return ActivationExpressionForStrategy(scope, request, keyedStrategy);

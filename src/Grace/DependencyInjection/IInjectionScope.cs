@@ -119,7 +119,15 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        List<T> InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer);
+        /// <param name="withKey"></param>
+        List<T> InternalLocateAll<T>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            object withKey, 
+            object extraData, 
+            ActivationStrategyFilter consider, 
+            IComparer<T> comparer);
 
         /// <summary>
         /// 

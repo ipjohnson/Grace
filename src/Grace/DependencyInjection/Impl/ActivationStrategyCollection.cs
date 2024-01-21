@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -15,7 +16,8 @@ namespace Grace.DependencyInjection.Impl
         private bool _hasPriorities;
         private bool _hasConditions;
         private ImmutableArray<T> _strategies = ImmutableArray<T>.Empty;
-        private ImmutableHashTree<object, T> _keyedStrategies = ImmutableHashTree<object, T>.Empty;
+        private ImmutableHashTree<object, ImmutableArray<T>> _keyedStrategies 
+            = ImmutableHashTree<object, ImmutableArray<T>>.Empty;
 
         /// <summary>
         /// Default constructor
@@ -66,7 +68,10 @@ namespace Grace.DependencyInjection.Impl
             }
             else
             {
-                _keyedStrategies = _keyedStrategies.Add(key, strategy, (o, n) => n);
+                _keyedStrategies = _keyedStrategies.Add(
+                    key, 
+                    ImmutableArray.Create(strategy),
+                    (o, n) => n.AddRange(o));
             }
         }
 
@@ -87,20 +92,41 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
-        /// list of strategies and their keys
+        /// List of all keyed strategies, with their key
         /// </summary>
         public IEnumerable<KeyValuePair<object, T>> GetKeyedStrategies()
         {
-            return _keyedStrategies;
+            return _keyedStrategies.SelectMany(x => x.Value.Select(y => new KeyValuePair<object, T>(x.Key, y)));
         }
 
         /// <summary>
-        /// Get a keyed strategy
+        /// Get all strategies for a given key (incl. ImportKey.Any)
+        /// </summary>
+        /// <param name="key">key</param>
+        public IEnumerable<T> GetKeyedStrategies(object key)
+        {
+            var keyMatched = _keyedStrategies.TryGetValue(key, out var keys);
+            var anyMatched = _keyedStrategies.TryGetValue(ImportKey.Any, out var anyKeys);
+
+            return (keyMatched, anyMatched) switch
+            {
+                (true, true) => keys.Concat(anyKeys),
+                (true, _) => keys,
+                (_, true) => anyKeys,
+                _ => [],
+            };
+        }
+
+        /// <summary>
+        /// Get main keyed strategy for a given key (fallbacks to ImportKey.Any)
         /// </summary>
         /// <param name="key">key</param>
         public T GetKeyedStrategy(object key)
         {
-            return _keyedStrategies.GetValueOrDefault(key);
+            return _keyedStrategies.TryGetValue(key, out var keys) 
+                || _keyedStrategies.TryGetValue(ImportKey.Any, out keys)
+                ? keys[0]
+                : null;
         }
 
         /// <summary>
@@ -128,16 +154,16 @@ namespace Grace.DependencyInjection.Impl
 
             _primary = null;
             _strategies = ImmutableArray<T>.Empty;
-            _keyedStrategies = ImmutableHashTree<object, T>.Empty;
+            _keyedStrategies = ImmutableHashTree<object, ImmutableArray<T>>.Empty;
 
             foreach (var strategy in strategies)
             {
                 strategy.Dispose();
             }
 
-            foreach (var keyedStrategy in keyedStrategies)
+            foreach (var keyedStrategy in keyedStrategies.SelectMany(x => x.Value))
             {
-                keyedStrategy.Value.Dispose();
+                keyedStrategy.Dispose();
             }
         }
     }
