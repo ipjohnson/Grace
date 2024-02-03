@@ -1,83 +1,100 @@
 ﻿using Optional;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Impl.CompiledStrategies;
-using Grace.DependencyInjection.Lifestyle;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using Grace.DependencyInjection.Impl.Wrappers;
 using System.Linq.Expressions;
-using System.Reflection;
+using System.Linq;
 
 namespace Grace.Tests.ThirdParty.Optional
 {
-    public class OptionalStrategy : SimpleGenericStrategy
+    /// <summary>
+    /// Optional strategy provider
+    /// </summary>
+    public class OptionalStrategyProvider : IMissingExportStrategyProvider
     {
-        private readonly MethodInfo _optionNone;
-        private readonly MethodInfo _optionSome;
-
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="injectionScope"></param>
-        public OptionalStrategy(IInjectionScope injectionScope) : base(typeof(Option<>), injectionScope)
-        {
-            _optionNone = typeof(Option).GetTypeInfo().DeclaredMethods.First(m => m.Name == "None" && m.GetParameters().Length == 0);
-            _optionSome = typeof(Option).GetTypeInfo().DeclaredMethods.First(m => m.Name == "Some" && m.GetGenericArguments().Length == 1);
-        }
-
-        /// <summary>
-        /// Type of activation strategy
-        /// </summary>
-        public override ActivationStrategyType StrategyType => ActivationStrategyType.ExportStrategy;
-
-        /// <summary>
-        /// Get an activation expression for this strategy
+        /// Can a given request be located using this provider
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="request"></param>
-        /// <param name="lifestyle"></param>
-        public override IActivationExpressionResult GetDecoratorActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
+        public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            // not sure why you would want to decorate the Option<> it self as you can decorate the T
-            throw new NotSupportedException();
+            return request.ActivationType.IsConstructedGenericType &&
+                   request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>);
         }
 
         /// <summary>
-        /// Get an activation expression for this strategy
+        /// Provide exports for a missing type
         /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="request"></param>
-        public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <param name="scope">scope to provide value</param>
+        /// <param name="request">request</param>
+        /// <returns>set of activation strategies</returns>
+        public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var optionalType = request.ActivationType.GenericTypeArguments[0];
-
-            var newRequest = request.NewRequest(optionalType, this, request.ActivationType, RequestType.Other, null, true, true);
-
-            newRequest.SetLocateKey(request.LocateKey);
-            newRequest.SetFilter(request.Filter);
-            newRequest.SetEnumerableComparer(request.EnumerableComparer);
-
-            var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
-
-            Expression expression;
-
-            if (result.UsingFallbackExpression)
+            if (request.ActivationType.IsConstructedGenericType &&
+                request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>))
             {
-                var closedMethod = _optionNone.MakeGenericMethod(optionalType);
+                yield return new OptionalWrapperStrategy(scope);
+            }
+        }
+    }
 
-                expression = Expression.Call(closedMethod);
+    public class OptionalWrapperStrategy(IInjectionScope scope) 
+        : BaseWrapperStrategy(typeof(Option<>), scope)
+    {
+        /// <summary>
+        /// Get type that wrapper wraps
+        /// </summary>
+        /// <param name="type">wrapper type</param>
+        /// <returns>type that has been wrapped</returns>
+        public override Type GetWrappedType(Type type)
+        {
+            return type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Option<>) 
+                ? type.GenericTypeArguments[0]
+                : null;
+        }
+
+        /// <summary>
+        /// Get an activation expression for this strategy
+        /// </summary>
+        /// <param name="scope">IInjectionScope</param>
+        /// <param name="request">IActivationExpressionRequest</param>
+        /// <returns>IActivationExpressionResult</returns>
+        public override IActivationExpressionResult GetActivationExpression(
+            IInjectionScope scope,
+            IActivationExpressionRequest request)
+        {
+            var wrappedType = GetWrappedType(request.ActivationType);                    
+
+            var newRequest = request.NewRequest(wrappedType, this, request.ActivationType, RequestType.Other, null, true, true);
+            newRequest.SetIsRequired(false);
+
+            var wrappedResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
+
+            Expression optionExpression;
+
+            if (wrappedResult.UsingFallbackExpression)
+            {
+                var method = typeof(Option)
+                    .GetMethods()
+                    .First(m => m.Name == "None" && m.GetGenericArguments().Length == 1)
+                    .MakeGenericMethod(wrappedType);
+                optionExpression = Expression.Call(method);
             }
             else
             {
-                var closedMethod = _optionSome.MakeGenericMethod(optionalType);
-
-                expression = Expression.Call(closedMethod, result.Expression);
+                var method = typeof(Option)
+                    .GetMethods()
+                    .First(m => m.Name == "Some" && m.GetGenericArguments().Length == 1)
+                    .MakeGenericMethod(wrappedType);
+                optionExpression = Expression.Call(method, wrappedResult.Expression);
             }
 
-            var expressionResult = request.Services.Compiler.CreateNewResult(request, expression);
+            var result = request.Services.Compiler.CreateNewResult(request, optionExpression);
+            result.AddExpressionResult(wrappedResult);
 
-            expressionResult.AddExpressionResult(result);
-
-            return expressionResult;
+            return result;
         }
     }
 }

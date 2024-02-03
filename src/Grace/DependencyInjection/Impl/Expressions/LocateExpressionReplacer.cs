@@ -50,7 +50,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     methodName == nameof(Arg.ImportKey))
                 {
                     var newRequest = _request.NewRequest(node.Method.GetGenericArguments().First(), _activationStrategy,
-                        _activationStrategy.ActivationType, RequestType.Other, null, true, true);
+                        _activationStrategy.ActivationType, RequestType.MethodParameter, null, true, true);
 
                     var argument = node.Arguments.FirstOrDefault();
 

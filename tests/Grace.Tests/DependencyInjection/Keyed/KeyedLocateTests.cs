@@ -156,7 +156,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Equal("Key is A", instance);
         }        
 
-        [Fact(Skip = "Locating keyed wrappers is not supported yet")]
+        [Fact]
         public void Func_Keyed_Result()
         {
             var container = new DependencyInjectionContainer();
@@ -274,6 +274,23 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
 
+        [Fact]
+        public void Keyed_Wrapped_Generic_Value()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAs<BasicService, IBasicService>();
+                c.Export(typeof(DependentService<>)).AsKeyed(typeof(IDependentService<>), 'A');
+            });
+
+            var owned = container.Locate<Owned<IDependentService<IBasicService>>>(withKey: 'A');
+
+            Assert.NotNull(owned);            
+            Assert.IsType<DependentService<IBasicService>>(owned.Value);
+            Assert.NotNull(owned.Value.Value);
+        }
 
         [Fact]
         public void Keyed_And_NonKeyed_With_Different_Lifestyle()

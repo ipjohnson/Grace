@@ -293,9 +293,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             // Must be checked first, otherwise a compatible type might be found in KnownValues!
             if (ReferenceEquals(key, ImportKey.Key))
-            {
-                var parent = request.Parent;
-
+            {                
+                // `Other` requests are variations of their parent request: wrappers, collection strategies, etc.
+                // We need to climb up to the original request: a `Root`, or a child `ConstructorParameter`, `MethodParameter` or `Property`.                
+                var original = request; 
+                while (original.RequestType == RequestType.Other)
+                {
+                    original = original.Parent;
+                }
+                
+                var parent = original.Parent;
                 if (parent == null)
                 {
                     return request.Services.Compiler.CreateNewResult(request, Expression.Constant(null, activationType));

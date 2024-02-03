@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return parameters
                 .Select((p, i) => 
                 {
-                    var argRequest = request.NewRequest(p.ParameterType, strategy, resultType, RequestType.Other, null, true, true);
+                    var argRequest = request.NewRequest(p.ParameterType, strategy, resultType, RequestType.MethodParameter, null, true, true);
                     
                     if (isActivationStrategyDelegate)
                     {

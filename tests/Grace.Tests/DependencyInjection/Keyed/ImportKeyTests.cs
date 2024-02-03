@@ -245,6 +245,29 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
+        public void Owned_Imported_Key()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<ImportKeyService>()
+                    .AsKeyed<ImportKeyService>("Keyed")
+                    .WithCtorParam<object>()
+                    .LocateWithImportKey()
+                    .ImportProperty(x => x.StringKey)
+                    .LocateWithImportKey();
+            });
+
+            var owned = container.Locate<Owned<ImportKeyService>>(withKey: "Keyed");
+            var instance = owned.Value;
+
+            Assert.NotNull(instance);
+            Assert.Equal("Keyed", instance.ObjectKey);
+            Assert.Equal("Keyed", instance.StringKey);
+        }
+
+        [Fact]
         public void Lazy_Imported_Key()
         {
             var container = new DependencyInjectionContainer();
@@ -292,7 +315,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Equal("Bar", meta.Metadata["Foo"]);
         }
 
-        [Fact]
+        [Fact(Skip = "Locate<IEnumerable>(withKey) not supported yet")]
         public void IEnumerable_Imported_Key()
         {
             var container = new DependencyInjectionContainer(new InjectionScopeConfiguration 

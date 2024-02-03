@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                     // For root requests the key is unknown during compilation. 
                     // If the compiled code requires the key then we need to defer the creation of the singleton.
-                    if (_deferred || (request.RequestType == RequestType.Root && newRequest.KeyRequired()))
+                    if (_deferred || (newRequest.KeyRequired() && request.HasDynamicKey()))
                     {
                         var singletonMethod = typeof(SingletonLifestyle)
                             .GetMethod(

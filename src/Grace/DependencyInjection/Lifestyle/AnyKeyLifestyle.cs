@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection.Lifestyle
             Func<IActivationExpressionRequest, IActivationExpressionResult> activationExpression)
         {
             // If this isn't a root activation the key is well-known and we can compile statically
-            if (request.RequestType != RequestType.Root)
+            if (!request.HasDynamicKey())
             {
                 return GetLifestyleForKey(request.LocateKey)
                     .Lifestyle

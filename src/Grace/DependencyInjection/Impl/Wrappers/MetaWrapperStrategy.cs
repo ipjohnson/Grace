@@ -73,17 +73,16 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <summary>
         /// Compiles delegate
         /// </summary>
-        /// <param name="scope"></param>
         /// <param name="compiler"></param>
-        /// <param name="activationType"></param>
-        protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        /// <param name="request"></param>
+        protected override ActivationStrategyDelegate CompileDelegate(
+            IActivationStrategyCompiler compiler,
+            IActivationExpressionRequest request)
         {
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
 
-            var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, request);
+            var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(request.RequestingScope, request);
 
-            return compiler.CompileDelegate(scope, expressionResult);
+            return compiler.CompileDelegate(request.RequestingScope, expressionResult);
         }
     }
 }

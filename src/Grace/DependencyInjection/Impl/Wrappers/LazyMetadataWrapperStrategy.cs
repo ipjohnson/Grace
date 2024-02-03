@@ -48,29 +48,24 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <summary>
         /// Compile a delegate
         /// </summary>
-        /// <param name="scope">scope</param>
         /// <param name="compiler">compiler</param>
-        /// <param name="activationType">activation type</param>
-        protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        /// <param name="request">activation request</param>
+        protected override ActivationStrategyDelegate CompileDelegate(
+            IActivationStrategyCompiler compiler,
+            IActivationExpressionRequest request)
         {
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            var scope = request.RequestingScope;
 
             if (!_wrapperExpressionCreator.SetupWrappersForRequest(scope, request))
             {
-                throw new LocateException(request.GetStaticInjectionContext(),"Could not calculate wrapper");
+                throw new LocateException(request.GetStaticInjectionContext(), "Could not calculate wrapper");
             }
 
             var expressionResult = GetActivationExpression(scope, request);
 
-            ActivationStrategyDelegate returnValue = null;
-
-            if (expressionResult != null)
-            {
-                returnValue = compiler.CompileDelegate(scope, expressionResult);
-            }
-
-            return returnValue;
+            return expressionResult != null
+                ? compiler.CompileDelegate(scope, expressionResult)
+                : null;
         }
 
         /// <summary>

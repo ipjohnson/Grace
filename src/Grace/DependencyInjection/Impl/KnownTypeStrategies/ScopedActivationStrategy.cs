@@ -15,10 +15,26 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.WrapperStrategy;
 
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
             Type activationType)
         {
             var expression = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 0, scope));
+
+            return compiler.CompileDelegate(scope, expression);
+        }
+
+        public ActivationStrategyDelegate GetKeyedActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType, 
+            object key)
+        {
+            var request = compiler.CreateNewRequest(activationType, 0, scope);
+            request.SetLocateKey(key);
+
+            var expression = GetActivationExpression(scope, request);
 
             return compiler.CompileDelegate(scope, expression);
         }
@@ -57,22 +73,15 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
         public Type GetWrappedType(Type type)
         {
-            if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Scoped<>))
-            {
-                return type.GenericTypeArguments[0];
-            }
-
-            return null;
+            return type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Scoped<>)
+                ? type.GenericTypeArguments[0]
+                : null;
         }
 
         public void SetWrappedType(Type type)
-        {
-
-        }
+        { }
 
         public void SetWrappedGenericArgPosition(int argPosition)
-        {
-
-        }
+        { }
     }
 }

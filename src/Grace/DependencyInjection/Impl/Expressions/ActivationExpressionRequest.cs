@@ -515,6 +515,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 KnownValueExpressions = KnownValueExpressions
             };
 
+            if (requestType == RequestType.Other)
+            {
+                // `Other` is for requests that re-formulate the initial request and should preserve LocateKey by default:
+                // wrappers, collections strategies, func/delegates/factories, etc.
+                // This isn't true for other request types:
+                // - `Root` is for the initial request and never has a LocateKey, as the key is an ActivationStrategyDelegate parameter;
+                // - `ConstructorParameter`, `MethodParameter` and `Member` are for unrelated nested requests that should have their own LocateKey.
+                returnValue.LocateKey = LocateKey;
+            }
+
             if (Filter != null && RequestingStrategy != null &&
                 RequestingStrategy.StrategyType == ActivationStrategyType.WrapperStrategy)
             {
@@ -713,19 +723,41 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
 
         /// <summary>
+        /// Indicates whether the key for this request is determined during activation 
+        /// (passed as a parameter to activation delegate), or is static (in LocateKey).
+        /// </summary>
+        public bool HasDynamicKey()
+        {
+            // The logic is a bit tricky, depending on the request type.
+            // - `Root` requests:
+            //   The key is passed as a parameter to the activation delegate (LocateKey is always null).
+            // - `ConstructorParameter`, `MethodParameter` and `Member` requests:
+            //   These are children of a parent activation, the key is statically defined in LocateKey.
+            // - `Other` requests:
+            //   This is a modified version of the parent request like wrappers, collections strategies, factories/delegates, etc.
+            //   If LocateKey is null, we need to look at the request parent to see if its a `Root` request or not.
+            return RequestType switch
+            {
+                RequestType.Root => true,
+                RequestType.Other => Parent.HasDynamicKey(),
+                _ => false
+            };
+        }
+
+        /// <summary>
         /// Get expression representing imported key
         /// </summary>
         public Expression GetKeyExpression()
         {
-            // At root level, the key is dynamically injected through the key parameter.
-            // At lower levels, the key is statically defined during request compilation.
-            if (RequestType != RequestType.Root)
+            if (HasDynamicKey())
             {
-                return Expression.Constant(LocateKey, typeof(object));                
+                RequireKey();
+                return Constants.KeyParameter;                
             }
-            
-            RequireKey();
-            return Constants.KeyParameter;
+            else
+            {
+                return Expression.Constant(LocateKey, typeof(object));
+            }
         }
 
         /// <summary>

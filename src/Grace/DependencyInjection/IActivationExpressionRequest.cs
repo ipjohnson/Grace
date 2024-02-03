@@ -397,6 +397,12 @@ namespace Grace.DependencyInjection
         bool KeyRequired();
 
         /// <summary>
+        /// Indicates whether the key for this request is determined during activation 
+        /// (passed as a parameter to activation delegate), or is static (in LocateKey).
+        /// </summary>
+        bool HasDynamicKey();
+
+        /// <summary>
         /// Get an expression representing the imported key
         /// </summary>
         Expression GetKeyExpression();
