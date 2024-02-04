@@ -124,7 +124,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotSame(instance1, instance4);
         }
 
-        [Fact(Skip = "Locating keyed IEnumerable is not supported yet")]
+        [Fact]
         public void Locate_All()
         {
             var container = new DependencyInjectionContainer();
@@ -135,9 +135,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 c.Export<MultipleService2>().AsKeyed<IMultipleService>(ImportKey.Any);
             });
 
-            // withKey does not exist yet on LocateAll
-            // var all = container.LocateAll<ICountValueMultipleService>(withKey: "SpecificKey");
-            IEnumerable<IMultipleService> all = null;
+            var all = container.LocateAll<IMultipleService>(withKey: "SpecificKey");
             Assert.Equal(2, all.Count());
             Assert.Contains(all, x => x.GetType() == typeof(MultipleService1));
             Assert.Contains(all, x => x.GetType() == typeof(MultipleService2));
