@@ -45,12 +45,13 @@ namespace Grace.Tests.DependencyInjection.Keyed
             
             var instances = container.LocateAll<ISimpleObject>(withKey: "A");
 
-            Assert.Equal(3, instances.Count);
             // Without comparer, LocateAll default order is:
-            // non-any keys first, then in reverse export order (latest registration comes first)
-            Assert.IsType<SimpleObjectC>(instances[0]);
-            Assert.IsType<SimpleObjectA>(instances[1]);
-            Assert.IsType<SimpleObjectB>(instances[2]);
+            // non-any keys first, then in export order
+            Assert.Collection(
+                instances,
+                i => Assert.IsType<SimpleObjectA>(i),
+                i => Assert.IsType<SimpleObjectC>(i),
+                i => Assert.IsType<SimpleObjectB>(i));
         }
 
         [Fact]

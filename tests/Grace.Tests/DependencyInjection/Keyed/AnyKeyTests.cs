@@ -123,22 +123,5 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Same(instance1, instance3);
             Assert.NotSame(instance1, instance4);
         }
-
-        [Fact]
-        public void Locate_All()
-        {
-            var container = new DependencyInjectionContainer();
-
-            container.Configure(c =>
-            {
-                c.Export<MultipleService1>().AsKeyed<IMultipleService>("SpecificKey");
-                c.Export<MultipleService2>().AsKeyed<IMultipleService>(ImportKey.Any);
-            });
-
-            var all = container.LocateAll<IMultipleService>(withKey: "SpecificKey");
-            Assert.Equal(2, all.Count());
-            Assert.Contains(all, x => x.GetType() == typeof(MultipleService1));
-            Assert.Contains(all, x => x.GetType() == typeof(MultipleService2));
-        }
     }
 }

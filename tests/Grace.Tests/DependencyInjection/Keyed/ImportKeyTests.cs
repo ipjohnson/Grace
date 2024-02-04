@@ -243,31 +243,5 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotNull(instance.Service);
             Assert.Equal("Child", instance.Service.ObjectKey);
         }
-
-        [Fact(Skip = "Locate<IEnumerable>(withKey) not supported yet")]
-        public void IEnumerable_Imported_Key()
-        {
-            var container = new DependencyInjectionContainer(new InjectionScopeConfiguration 
-            { 
-                AutoRegisterUnknown = false,
-            });
-
-            container.Configure(c =>
-            {
-                c.Export<ImportKeyService>()
-                    .AsKeyed<ImportKeyService>("Keyed")
-                    .WithCtorParam<object>()
-                    .LocateWithImportKey()
-                    .ImportProperty(x => x.StringKey)
-                    .LocateWithImportKey();
-            });
-
-            var list = container.Locate<IEnumerable<ImportKeyService>>(withKey: "Keyed");
-
-            Assert.NotNull(list);
-            var instance = Assert.Single(list);
-            Assert.Equal("Keyed", instance.ObjectKey);
-            Assert.Equal("Keyed", instance.StringKey);
-        }
     }
 }

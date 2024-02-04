@@ -104,7 +104,7 @@ namespace Grace.DependencyInjection.Impl
         {
             var activationDelegate = 
                 LocateStrategyFromCollectionContainers(scope, locateType, consider, key, forMissingType)
-                ?? LocateEnumerableStrategy(scope, locateType);
+                ?? LocateEnumerableStrategy(scope, locateType, key);
 
             if (activationDelegate != null)
             {
@@ -483,14 +483,13 @@ namespace Grace.DependencyInjection.Impl
         }
 
 
-        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType)
+        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, object key)
         {
             if (locateType.IsArray ||
                 (locateType.IsConstructedGenericType &&
                  locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                var result = _builder.GetActivationExpression(scope, CreateNewRequest(locateType, 1, scope));
-
+                var result = _builder.GetEnumerableActivationExpression(scope, CreateNewRequest(locateType, 1, scope), key);
                 return CompileDelegate(scope, result);
             }
 

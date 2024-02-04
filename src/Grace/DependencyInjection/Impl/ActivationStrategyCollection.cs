@@ -71,7 +71,7 @@ namespace Grace.DependencyInjection.Impl
                 _keyedStrategies = _keyedStrategies.Add(
                     key, 
                     ImmutableArray.Create(strategy),
-                    (o, n) => n.AddRange(o));
+                    (o, n) => o.AddRange(n));
             }
         }
 
@@ -125,7 +125,7 @@ namespace Grace.DependencyInjection.Impl
         {
             return _keyedStrategies.TryGetValue(key, out var keys) 
                 || _keyedStrategies.TryGetValue(ImportKey.Any, out keys)
-                ? keys[0]
+                ? keys[^1]
                 : null;
         }
 

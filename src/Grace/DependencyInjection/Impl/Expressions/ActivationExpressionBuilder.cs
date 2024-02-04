@@ -21,6 +21,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>
+        /// Get a linq expression to satisfy requests for T[] or IEnumerable&lt;T&gt;
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="key">key of keyed Root requests (request.LocateKey is null for those)</param>
+        IActivationExpressionResult GetEnumerableActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, object key = null);
+
+        /// <summary>
         /// Decorate an export strategy with decorators
         /// </summary>
         /// <param name="scope">scope</param>
@@ -79,29 +87,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var activationExpressionResult =
                 GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey)
                 ?? GetValueFromInjectionValueProviders(scope, request)
-                ?? GetActivationExpressionFromStrategies(scope, request);
+                ?? GetActivationExpressionFromStrategies(scope, request)
+                ?? GetEnumerableActivationExpression(scope, request)
+                ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
             if (activationExpressionResult != null)
             {
                 return activationExpressionResult;
-            }
-
-            if (request.ActivationType.IsArray)
-            {
-                return ArrayExpressionCreator.GetArrayExpression(scope, request);
-            }
-
-            if (request.ActivationType.IsConstructedGenericType &&
-                request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            {
-                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator);
-            }
-
-            var wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-            if (wrapperResult != null)
-            {
-                return wrapperResult;
             }
 
             if (scope.MissingExportStrategyProviders.Any())
@@ -148,6 +140,30 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return GetValueFromInjectionContext(scope, request);
         }
 
+        /// <summary>
+        /// Get a linq expression to satisfy requests for T[] or IEnumerable&lt;T&gt;
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        /// <param name="rootKey">key of keyed Root requests (request.LocateKey is null for those)</param>
+        public IActivationExpressionResult GetEnumerableActivationExpression(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request, 
+            object rootKey = null)
+        {
+            if (request.ActivationType.IsArray)
+            {
+                return ArrayExpressionCreator.GetArrayExpression(scope, request, rootKey);
+            }
+
+            if (request.ActivationType.IsConstructedGenericType &&
+                request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator, rootKey);
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Get a value dynamically

@@ -13,16 +13,6 @@ namespace Grace.Tests.DependencyInjection.Keyed
             public string Foo { get; set; }
         }
 
-        class ServiceWithKeyWrapper<T>
-        {
-            public ServiceWithKeyWrapper([Import(Key = "Keyed")] T value)
-            {
-                Value = value;
-            }
-
-            public T Value { get; }
-        }
-
         private DependencyInjectionContainer container = new();
 
         public WrappedImportKeyTests()

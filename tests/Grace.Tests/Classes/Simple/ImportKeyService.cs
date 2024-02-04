@@ -1,3 +1,5 @@
+using Grace.DependencyInjection.Attributes;
+
 namespace Grace.Tests.Classes.Simple
 {
     public class ImportKeyService
@@ -8,6 +10,12 @@ namespace Grace.Tests.Classes.Simple
         public ImportKeyService(object key)
         { 
             ObjectKey = key;
+        }
+
+        public ImportKeyService(object key, int extraParameter)
+        {
+            ObjectKey = key;
+            IntKey = extraParameter;
         }
 
         public void ImportMethod(object key)
@@ -30,5 +38,15 @@ namespace Grace.Tests.Classes.Simple
         public ImportKeyService Service { get; }
 
         public object ObjectKey { get; set; }
+    }
+
+    class ServiceWithKeyWrapper<T>
+    {
+        public ServiceWithKeyWrapper([Import(Key = "Keyed")] T value)
+        {
+            Value = value;
+        }
+
+        public T Value { get; }
     }
 }

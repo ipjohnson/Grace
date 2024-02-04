@@ -15,7 +15,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
         /// <param name="arrayExpressionCreator">array expression creator</param>
-        IActivationExpressionResult GetEnumerableExpression(IInjectionScope scope, IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator);
+        /// <param name="rootKey">key for Root request</param>
+        IActivationExpressionResult GetEnumerableExpression(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request, 
+            IArrayExpressionCreator arrayExpressionCreator,
+            object rootKey);
     }
 
     /// <summary>
@@ -29,14 +34,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
         /// <param name="arrayExpressionCreator">array expression creator</param>
+        /// <param name="rootKey">key for Root request</param>
         public IActivationExpressionResult GetEnumerableExpression(
             IInjectionScope scope, 
             IActivationExpressionRequest request,
-            IArrayExpressionCreator arrayExpressionCreator)
+            IArrayExpressionCreator arrayExpressionCreator,
+            object rootKey)
         {
             return scope.ScopeConfiguration.Behaviors.CustomEnumerableCreator is {} enumerableCreator
-                ? CreateEnumerableExpressionUsingCustomCreator(scope, request, arrayExpressionCreator, enumerableCreator)
-                : CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator);
+                ? CreateEnumerableExpressionUsingCustomCreator(scope, request, arrayExpressionCreator, enumerableCreator, rootKey)
+                : CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator, rootKey);
         }
 
         /// <summary>
@@ -45,10 +52,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayExpressionCreator"></param>
+        /// <param name="rootKey"></param>
         protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(
             IInjectionScope scope,
             IActivationExpressionRequest request, 
-            IArrayExpressionCreator arrayExpressionCreator)
+            IArrayExpressionCreator arrayExpressionCreator,
+            object rootKey)
         {
             var enumerableType = request.ActivationType.GenericTypeArguments[0];
 
@@ -61,9 +70,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             newRequest.SetEnumerableComparer(request.EnumerableComparer);
             newRequest.SetLocateKey(request.LocateKey);
 
-            var arrayExpression = arrayExpressionCreator.GetArrayExpression(scope, newRequest);
-
-            return arrayExpression;
+            return arrayExpressionCreator.GetArrayExpression(scope, newRequest, rootKey);
         }
 
         /// <summary>
@@ -73,13 +80,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">expression request</param>
         /// <param name="arrayExpressionCreator">array creator</param>
         /// <param name="enumerableCreator">custom enumerable creator</param>
+        /// <param name="rootKey">key for Root requests</param>
         protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(
             IInjectionScope scope,
             IActivationExpressionRequest request, 
             IArrayExpressionCreator arrayExpressionCreator,
-            IEnumerableCreator enumerableCreator)
+            IEnumerableCreator enumerableCreator,
+            object rootKey)
         {
-            var arrayExpression = CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator);
+            var arrayExpression = CreateEnumerableExpressionUsingArrayExpression(scope, request, arrayExpressionCreator, rootKey);
 
             var enumerableType = request.ActivationType.GenericTypeArguments[0];
 

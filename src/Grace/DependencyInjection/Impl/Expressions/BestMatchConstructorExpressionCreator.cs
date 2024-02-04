@@ -33,9 +33,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 {
                     if (parameter.IsOptional ||
                         parameter.ParameterType.IsGenericParameter ||
-                        CanGetValueFromInfo(configuration, parameter) ||
+                        CanGetValueFromInfo(configuration, parameter, out var configKey) ||
                         CanGetValueFromKnownValues(request, parameter) ||
-                        injectionScope.CanLocate(parameter.ParameterType, null, GetKey(injectionScope, parameter)))
+                        injectionScope.CanLocate(parameter.ParameterType, null, configKey ?? GetKey(injectionScope, parameter)))
                     {
                         matchInfo.Matched++;
                     }

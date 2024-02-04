@@ -17,7 +17,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request);
+        /// <param name="rootKey">key for keyed Root requests</param>
+        IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request, object rootKey);
     }
 
     /// <summary>
@@ -41,11 +42,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request)
+        /// <param name="rootKey">key for keyed Root requests</param>
+        public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request, object rootKey)
         {
             var arrayElementType = request.ActivationType.GetElementType();
 
-            var arrayExpressionList = GetArrayExpressionList(scope, request, arrayElementType);
+            var arrayExpressionList = GetArrayExpressionList(scope, request, arrayElementType, rootKey);
 
             Expression arrayInit = Expression.NewArrayInit(arrayElementType, arrayExpressionList.Select(e => e.Expression));
 
@@ -92,9 +94,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        protected virtual List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
+        /// <param name="rootKey"></param>
+        protected virtual List<IActivationExpressionResult> GetArrayExpressionList(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request, 
+            Type arrayElementType,
+            object rootKey)
         {
-            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
+            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
 
             if (expressions.Count != 0)
             {
@@ -103,7 +110,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
 
                 if (expressions.Count != 0)
                 {
@@ -112,7 +119,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
 
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
             }
 
             return expressions;
@@ -124,14 +131,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
+        /// <param name="rootKey">key for keyed Root requests</param>
         protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(
             IInjectionScope scope,
             IActivationExpressionRequest request,
-            Type arrayElementType)
+            Type arrayElementType,
+            object rootKey = null)
         {
             // An old odditiy of Grace: 
             // if key is enumerable then it's handled as a collection of keys to be resolved.
-            // This isn't implemented everywhere, e.g. LocateAll doesn't have this behavior.
+            // This isn't implemented everywhere, e.g. LocateAll and Locate<IEnumerable> don't have this behavior.
             if (request.LocateKey is IEnumerable enumerableKey and not string)
             {
                 return enumerableKey
@@ -156,8 +165,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
             
             List<ICompiledExportStrategy> exportList = new();
 
+            var key = request.LocateKey ?? rootKey;
+
             Action<IActivationStrategyCollection<ICompiledExportStrategy>> collect = 
-                request.LocateKey is {} key
+                key != null
                     ? collection => 
                         {
                             if (collection == null) return;                            

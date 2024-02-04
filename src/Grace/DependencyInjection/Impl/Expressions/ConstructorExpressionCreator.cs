@@ -373,10 +373,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     key = parameter.Name;
                 }
 
-                var dependencySatisified = parameter.IsOptional ||
-                                           parameter.ParameterType.IsGenericParameter ||
-                                           CanGetValueFromInfo(configuration, parameter) ||
-                                           injectionScope.CanLocate(parameter.ParameterType, null, key);
+                var dependencySatisified = parameter.IsOptional 
+                    || parameter.ParameterType.IsGenericParameter 
+                    || CanGetValueFromInfo(configuration, parameter, out var configKey) 
+                    || injectionScope.CanLocate(parameter.ParameterType, null, configKey ?? key);
 
                 var dependency = new ActivationStrategyDependency(DependencyType.ConstructorParameter,
                     configuration.ActivationStrategy,
@@ -418,12 +418,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="parameter"></param>
-        protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
+        /// <param name="configuredKey"></param>
+        protected virtual bool CanGetValueFromInfo(
+            TypeActivationConfiguration configuration, 
+            ParameterInfo parameter, 
+            out object configuredKey)
         {
             var matchedParameter = FindParameterInfoExpression(parameter, configuration);
+            configuredKey = matchedParameter?.LocateWithKey;
 
             if (matchedParameter == null)
-            {
+            {                
                 return false;
             }
 
