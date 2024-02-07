@@ -57,6 +57,16 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
+        public void CanLocateMissing()
+        {
+            var canLocate = container.CanLocate(typeof(IEnumerable<SimpleObjectA>), key: "missing");
+            Assert.True(canLocate);
+
+            var list = container.Locate<SimpleObjectA[]>(withKey: "missing");
+            Assert.Empty(list);
+        }
+
+        [Fact]
         public void LocateAll()
         {
             var all = container.LocateAll<ImportKeyService>(withKey: "Keyed");
