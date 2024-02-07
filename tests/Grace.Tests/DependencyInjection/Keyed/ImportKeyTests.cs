@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -71,7 +70,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             instance = container.Locate<ImportKeyService>(withKey: "CtorObject");
             Assert.Equal("CtorObject", instance.ObjectKey);
 
-            // See comment above above Fluent API not supporting keyed imports on Method parameters
+            // See comment above regarding Fluent API not supporting keyed imports on Method parameters
             // instance = container.Locate<ImportKeyService>(withKey: "Method");
             // Assert.Equal("Method", instance.ObjectKey);
 
@@ -85,9 +84,11 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Equal(42, instance.IntKey);
             Assert.Equal(42, instance.ObjectKey); // Boxing to ref type
 
-            instance = container.Locate<ImportKeyService>(withKey: guidKey);
-            Assert.Null(instance.StringKey); // Incompatible types injects null (target is ref type)
-            Assert.Equal(0, instance.IntKey); // Incompatible types injects default (target is value type)
+            // This behavior, including the choice of InvalidOperationException specifically,
+            // is meant to match the specifications of MS DI interfaces.
+            // Changing this will break Grace.DependencyInjection.Extensions.
+            Assert.ThrowsAny<InvalidOperationException>(() => 
+                container.Locate<ImportKeyService>(withKey: guidKey));
 
             instance = container.Locate<ImportKeyService>();
             Assert.Null(instance.ObjectKey); // Non-keyed import injects null (target is ref type)
@@ -135,6 +136,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 c.Export<ImportKeyService>()
                     .AsKeyed<ImportKeyService>("Keyed")
                     .WithCtorParam<object>()
+                    .Named("key")
                     .LocateWithImportKey()
                     .ImportProperty(x => x.StringKey)
                     .LocateWithImportKey()

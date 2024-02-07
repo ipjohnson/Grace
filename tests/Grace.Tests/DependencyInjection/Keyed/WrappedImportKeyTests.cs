@@ -1,6 +1,5 @@
 using System;
 using Grace.DependencyInjection;
-using Grace.DependencyInjection.Attributes;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
@@ -22,6 +21,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 c.Export<ImportKeyService>()
                     .AsKeyed<ImportKeyService>("Keyed")
                     .WithCtorParam<object>()
+                    .Named("key")
                     .LocateWithImportKey()
                     .ImportProperty(x => x.StringKey)
                     .LocateWithImportKey()
