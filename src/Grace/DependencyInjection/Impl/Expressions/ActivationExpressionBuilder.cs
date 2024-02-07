@@ -291,7 +291,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private static T ConvertKey<T>(object key)
         {
-            return key != null && typeof(T).IsAssignableFrom(key.GetType()) ? (T)key : default;
+            return key == null
+                ? default
+                : typeof(T).IsAssignableFrom(key.GetType()) 
+                    ? (T)key 
+                    : throw new InvalidOperationException($"Key '{key}' of type {key.GetType().FullName} cannot be converted to {typeof(T).FullName}");
         }
 
         /// <summary>
@@ -327,9 +331,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 Expression keyExpression = parent.GetKeyExpression();
                 
                 var convertMethod = typeof(ActivationExpressionBuilder)
-                    .GetMethod(nameof(ConvertKey), BindingFlags.Static | BindingFlags.NonPublic);
-                var closedConvertMethod = convertMethod.MakeGenericMethod(activationType);
-                var convertedKeyExpression = Expression.Call(null, closedConvertMethod, keyExpression);
+                    .GetMethod(nameof(ConvertKey), BindingFlags.Static | BindingFlags.NonPublic)
+                    .MakeGenericMethod(activationType);
+
+                var convertedKeyExpression = Expression.Call(null, convertMethod, keyExpression);
 
                 return request.Services.Compiler.CreateNewResult(request, convertedKeyExpression);
             }
