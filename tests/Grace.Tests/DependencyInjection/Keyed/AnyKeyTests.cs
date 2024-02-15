@@ -1,8 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Attributes;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Tests.Classes.Simple;
+using NSubstitute;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Keyed
@@ -122,6 +123,35 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotSame(instance1, instance2);
             Assert.Same(instance1, instance3);
             Assert.NotSame(instance1, instance4);
+        }
+
+        [Fact]
+        public void KeyDependent_IDisposable_Scope_Is_Root()
+        {
+            // Test case for #316
+
+            var service = Substitute.For<IDisposable>();
+
+            var container = new DependencyInjectionContainer();            
+
+            container.Configure(c => 
+            {
+                c.ExportFactory(([ImportKey] string key) => service)
+                    .AsKeyed<IDisposable>("keyed")
+                    .Lifestyle.Singleton();
+            });
+
+            using (var scope = container.CreateChildScope())
+            {
+                var located = scope.Locate<IDisposable>(withKey: "keyed");
+                Assert.Equal(service, located);
+            }
+            
+            service.DidNotReceive().Dispose();
+
+            container.Dispose();
+
+            service.Received(1).Dispose();
         }
     }
 }

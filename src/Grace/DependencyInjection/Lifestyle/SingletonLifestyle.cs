@@ -87,11 +87,13 @@ namespace Grace.DependencyInjection.Lifestyle
                             )
                             .MakeGenericMethod(request.ActivationType);
 
+                        var rootScope = Expression.Constant(scope);
+
                         ConstantExpression = Expression.Call(
                             Expression.Constant(this), 
                             singletonMethod,
-                            request.Constants.ScopeParameter, 
-                            request.Constants.RootDisposalScope,
+                            rootScope, 
+                            rootScope,
                             request.Constants.InjectionContextParameter,
                             request.GetKeyExpression());
                     }
