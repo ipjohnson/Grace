@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Lifestyle
                         ConstantExpression = Expression.Call(
                             Expression.Constant(this), 
                             singletonMethod,
-                            rootScope, 
+                            RootedRequest ? rootScope : request.Constants.ScopeParameter, 
                             rootScope,
                             request.Constants.InjectionContextParameter,
                             request.GetKeyExpression());
