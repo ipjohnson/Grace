@@ -37,22 +37,13 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
         public ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope, 
             IActivationStrategyCompiler compiler,
-            Type activationType)
-        {
-            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
-
-            return compiler.CompileDelegate(scope, request);
-        }
-
-        public ActivationStrategyDelegate GetKeyedActivationStrategyDelegate(
-            IInjectionScope scope, 
-            IActivationStrategyCompiler compiler, 
-            Type activationType, 
-            object key)
+            Type activationType,
+            object key = null)
         {
             var request = compiler.CreateNewRequest(activationType, 1, scope);
             request.SetLocateKey(key);

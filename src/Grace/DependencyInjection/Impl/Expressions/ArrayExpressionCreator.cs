@@ -17,8 +17,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        /// <param name="rootKey">key for keyed Root requests</param>
-        IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request, object rootKey);
+        IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request);
     }
 
     /// <summary>
@@ -42,12 +41,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope for strategy</param>
         /// <param name="request">request</param>
-        /// <param name="rootKey">key for keyed Root requests</param>
-        public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request, object rootKey)
+        public IActivationExpressionResult GetArrayExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
             var arrayElementType = request.ActivationType.GetElementType();
 
-            var arrayExpressionList = GetArrayExpressionList(scope, request, arrayElementType, rootKey);
+            var arrayExpressionList = GetArrayExpressionList(scope, request, arrayElementType);
 
             Expression arrayInit = Expression.NewArrayInit(arrayElementType, arrayExpressionList.Select(e => e.Expression));
 
@@ -94,14 +92,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        /// <param name="rootKey"></param>
         protected virtual List<IActivationExpressionResult> GetArrayExpressionList(
             IInjectionScope scope, 
             IActivationExpressionRequest request, 
-            Type arrayElementType,
-            object rootKey)
+            Type arrayElementType)
         {
-            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
+            var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
 
             if (expressions.Count != 0)
             {
@@ -110,7 +106,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
             {
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
 
                 if (expressions.Count != 0)
                 {
@@ -119,7 +115,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
 
-                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType, rootKey);
+                expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
             }
 
             return expressions;
@@ -131,12 +127,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        /// <param name="rootKey">key for keyed Root requests</param>
         protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(
             IInjectionScope scope,
             IActivationExpressionRequest request,
-            Type arrayElementType,
-            object rootKey = null)
+            Type arrayElementType)
         {
             // An old odditiy of Grace: 
             // if key is enumerable then it's handled as a collection of keys to be resolved.
@@ -163,15 +157,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             // Step 1: collect matching strategies
             
-            List<ICompiledExportStrategy> exportList = new();
+            var exportList = new List<ICompiledExportStrategy>();
 
-            var key = request.LocateKey ?? rootKey;
+            var key = request.LocateKey;
 
             Action<IActivationStrategyCollection<ICompiledExportStrategy>> collect = 
                 key != null
-                    ? collection => 
+                    ? collection =>
                         {
-                            if (collection == null) return;                            
+                            if (collection == null) return;
                             exportList.AddRange(collection.GetKeyedStrategies(key));
                         }
                     : collection => 
@@ -210,7 +204,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
 
                 // filter strategies
-                if (request.Filter != null && !request.Filter(strategy))
+                if (request.Filter?.Invoke(strategy) == false)
                 {
                     continue;
                 }

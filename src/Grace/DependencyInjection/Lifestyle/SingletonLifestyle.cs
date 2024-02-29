@@ -70,7 +70,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 {
                     // Create new request as we shouldn't carry over anything from the previous request
                     var newRequest = RootedRequest
-                        ? request.NewRootedRequest(request.ActivationType, scope, true)
+                        ? request.NewRootedRequest(scope, true)
                         : request;
                     
                     var expression = activationExpression(newRequest);

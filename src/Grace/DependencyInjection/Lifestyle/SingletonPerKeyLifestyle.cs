@@ -42,7 +42,7 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             // Create new request as we shouldn't carry over anything from the previous request
-            var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            var newRequest = request.NewRootedRequest(scope, true);
 
             _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 

@@ -18,17 +18,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         public ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope, 
             IActivationStrategyCompiler compiler,
-            Type activationType)
-        {
-            var expression = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 0, scope));
-
-            return compiler.CompileDelegate(scope, expression);
-        }
-
-        public ActivationStrategyDelegate GetKeyedActivationStrategyDelegate(
-            IInjectionScope scope, 
-            IActivationStrategyCompiler compiler,
-            Type activationType, 
+            Type activationType,
             object key)
         {
             var request = compiler.CreateNewRequest(activationType, 0, scope);
@@ -50,7 +40,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
             var scopeNameRequest =
                 request.NewRequest(typeof(string), this, ActivationType, RequestType.Other, null, true, true);
-
+            scopeNameRequest.SetLocateKey(null);
             scopeNameRequest.SetIsRequired(false);
 
             var scopeNameExpression =

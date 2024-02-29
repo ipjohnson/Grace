@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Lifestyle
             if (CompiledDelegate == null)
             {
                 // new request as we don't want to carry any info over from parent request
-                var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+                var newRequest = request.NewRootedRequest(scope, true);
 
                 var newResult = activationExpression(newRequest);
 

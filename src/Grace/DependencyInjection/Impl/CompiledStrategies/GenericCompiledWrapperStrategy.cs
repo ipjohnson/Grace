@@ -50,45 +50,17 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
         public ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope, 
             IActivationStrategyCompiler compiler,
-            Type activationType)
+            Type activationType,
+            object key = null)
         {
-            var objectDelegate = _delegates.GetValueOrDefault(activationType);
-
-            if (objectDelegate != null)
-            {
-                return objectDelegate;
-            }
-
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
-
-            var expression = GetActivationExpression(scope, request);
-
-            objectDelegate = compiler.CompileDelegate(scope, expression);
-
-            ImmutableHashTree.ThreadSafeAdd(ref _delegates, activationType, objectDelegate);
-
-            return objectDelegate;
-        }
-
-        /// <summary>
-        /// Get a keyed activation strategy for this delegate
-        /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="compiler"></param>
-        /// <param name="activationType"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public ActivationStrategyDelegate GetKeyedActivationStrategyDelegate(
-            IInjectionScope scope, 
-            IActivationStrategyCompiler compiler,
-            Type activationType, 
-            object key)
-        {
-            var objectDelegate = _keyedDelegates.GetValueOrDefault((activationType, key));
+            var objectDelegate = key == null
+                ? _delegates.GetValueOrDefault(activationType)
+                : _keyedDelegates.GetValueOrDefault((activationType, key));
 
             if (objectDelegate != null)
             {
@@ -102,7 +74,14 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
             objectDelegate = compiler.CompileDelegate(scope, expression);
 
-            ImmutableHashTree.ThreadSafeAdd(ref _keyedDelegates, (activationType, key), objectDelegate);
+            if (key == null)
+            {
+                ImmutableHashTree.ThreadSafeAdd(ref _delegates, activationType, objectDelegate);
+            }
+            else
+            {
+                ImmutableHashTree.ThreadSafeAdd(ref _keyedDelegates, (activationType, key), objectDelegate);
+            }
 
             return objectDelegate;
         }

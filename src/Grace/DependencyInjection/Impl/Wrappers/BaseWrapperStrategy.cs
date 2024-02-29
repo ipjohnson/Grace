@@ -59,45 +59,17 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
-        /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope,
-                                                                        IActivationStrategyCompiler compiler,
-                                                                        Type activationType)
-        {
-            var returnValue = ActivationDelegates.GetValueOrDefault(activationType);
-
-            if (returnValue != null)
-            {
-                return returnValue;
-            }
-            
-            returnValue = CompileDelegate(
-                compiler, 
-                compiler.CreateNewRequest(activationType, 1, scope));
-
-            if (returnValue != null)
-            {
-                returnValue = ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates, activationType, returnValue);
-            }
-
-            return returnValue;
-        }
-
-        /// <summary>
-        /// Get an activation strategy for this delegate
-        /// </summary>
-        /// <param name="scope">injection scope</param>
-        /// <param name="compiler"></param>
-        /// <param name="activationType">activation type</param>
         /// <param name="key">activation key</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetKeyedActivationStrategyDelegate(
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
             IInjectionScope scope,
             IActivationStrategyCompiler compiler,
             Type activationType,
-            object key)
+            object key = null)
         {
-            var returnValue = KeyedActivationDelegates.GetValueOrDefault((activationType, key));
+            var returnValue = key == null
+                ? ActivationDelegates.GetValueOrDefault(activationType)
+                : KeyedActivationDelegates.GetValueOrDefault((activationType, key));
 
             if (returnValue != null)
             {
@@ -109,12 +81,20 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             returnValue = CompileDelegate(compiler, request);
 
-            if (returnValue != null)
+            if (returnValue == null)
             {
-                returnValue = ImmutableHashTree.ThreadSafeAdd(ref KeyedActivationDelegates, (activationType, key), returnValue);
+                return null;
             }
 
-            return returnValue;
+            
+            if (key == null)
+            {
+                return ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates, activationType, returnValue);
+            }
+            else
+            {
+                return ImmutableHashTree.ThreadSafeAdd(ref KeyedActivationDelegates, (activationType, key), returnValue);
+            }
         }
 
         /// <summary>

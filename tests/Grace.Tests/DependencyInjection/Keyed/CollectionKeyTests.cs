@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -9,10 +7,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
 {
     public class CollectionsKeyTests
     {
-        private DependencyInjectionContainer container = new(new InjectionScopeConfiguration 
-        { 
-            AutoRegisterUnknown = false,
-        });
+        private DependencyInjectionContainer container = new();
 
         public CollectionsKeyTests()
         {
@@ -93,7 +88,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Collection(parent.Value, AssertInstance1, AssertInstance2);
         }
 
-        [Fact(Skip = "Alternate collections strategies are not supported yet")]
+        [Fact]
         public void List()
         {
             var list = container.Locate<List<ImportKeyService>>(withKey: "Keyed");

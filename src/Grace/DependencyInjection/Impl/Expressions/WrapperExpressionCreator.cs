@@ -149,6 +149,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             var newRequest = request.NewRequest(wrappedType, request.RequestingStrategy,
                                 request.InjectedType, request.RequestType, request.Info, false, true);
+                            newRequest.SetLocateKey(request.LocateKey);
 
                             request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
                         }

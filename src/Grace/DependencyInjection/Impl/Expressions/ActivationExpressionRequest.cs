@@ -494,6 +494,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="maintainPaths">maintain wrapper and decorator path</param>
         /// <param name="carryData"></param>
         /// <returns>new request</returns>
+        /// <remarks>LocateKey is copied to new requests of type Other by default</remarks>
         public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false, bool carryData = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
@@ -520,7 +521,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 // `Other` is for requests that re-formulate the initial request and should preserve LocateKey by default:
                 // wrappers, collections strategies, func/delegates/factories, etc.
                 // This isn't true for other request types:
-                // - `Root` is for the initial request and never has a LocateKey, as the key is an ActivationStrategyDelegate parameter;
+                // - `Root` is for the initial request and should not be created here;
                 // - `ConstructorParameter`, `MethodParameter` and `Member` are for unrelated nested requests that should have their own LocateKey.
                 returnValue.LocateKey = LocateKey;
             }
@@ -543,24 +544,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Creates new rooted request (for lifestyles)
         /// </summary>
-        /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        public IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope,
-            bool maintainPaths = false)
+        /// <remarks>Activation type and located key are copied over by default</remarks>
+        public IActivationExpressionRequest NewRootedRequest(IInjectionScope requestingScope, bool maintainPaths = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
             {
                 throw new RecursiveLocateException(GetStaticInjectionContext());
             }
 
-            var returnValue = new ActivationExpressionRequest(activationType,
-                                                   RequestType.Root,
-                                                   Services,
-                                                   Constants,
-                                                   ObjectGraphDepth + 1,
-                                                   requestingScope,
-                                                   new PerDelegateData());
+            var returnValue = new ActivationExpressionRequest(ActivationType,
+                RequestType.Root,
+                Services,
+                Constants,
+                ObjectGraphDepth + 1,
+                requestingScope,
+                new PerDelegateData())
+            {
+                LocateKey = LocateKey,
+            };
 
             if (maintainPaths)
             {

@@ -830,22 +830,24 @@ namespace Grace.DependencyInjection.Impl
         {
             if (strategy.HasConditions)
             {
+                var staticContext = new StaticInjectionContext(type);
+                
                 foreach (var condition in strategy.Conditions)
                 {
-                    if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
+                    if (!condition.MeetsCondition(strategy, staticContext))
                     {
                         return;
                     }
                 }
             }
 
-            if (filter != null && !filter(strategy))
+            if (filter?.Invoke(strategy) == false)
             {
                 return;
             }
 
             var activationDelegate =
-                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
+                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type, key);
 
             if (activationDelegate != null)
             {

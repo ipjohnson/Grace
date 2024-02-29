@@ -25,8 +25,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
-        /// <param name="key">key of keyed Root requests (request.LocateKey is null for those)</param>
-        IActivationExpressionResult GetEnumerableActivationExpression(IInjectionScope scope, IActivationExpressionRequest request, object key = null);
+        IActivationExpressionResult GetEnumerableActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>
         /// Decorate an export strategy with decorators
@@ -145,24 +144,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="scope">scope</param>
         /// <param name="request">request</param>
-        /// <param name="rootKey">key of keyed Root requests (request.LocateKey is null for those)</param>
         public IActivationExpressionResult GetEnumerableActivationExpression(
             IInjectionScope scope, 
-            IActivationExpressionRequest request, 
-            object rootKey = null)
+            IActivationExpressionRequest request)
         {
-            if (request.ActivationType.IsArray)
-            {
-                return ArrayExpressionCreator.GetArrayExpression(scope, request, rootKey);
-            }
+            var activationType = request.ActivationType;
 
-            if (request.ActivationType.IsConstructedGenericType &&
-                request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            return activationType switch 
             {
-                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator, rootKey);
-            }
+                { IsArray: true } => ArrayExpressionCreator.GetArrayExpression(scope, request),
 
-            return null;
+                { IsConstructedGenericType: true } 
+                    when activationType.GetGenericTypeDefinition() == typeof(IEnumerable<>) 
+                    => EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator),
+
+                _ => null,
+            };
         }
 
         /// <summary>

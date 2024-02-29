@@ -51,12 +51,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var newRequest = request.NewRequest(requestType, this, request.ActivationType, RequestType.Other, null, true, true);
 
-            var strategy = request.GetWrappedExportStrategy();
-
-            if (strategy == null)
-            {
-                throw new Exception("Could not find export stragegy to get metadata from");
-            }
+            var strategy = request.GetWrappedExportStrategy()
+                ?? throw new Exception("Could not find export stragegy to get metadata from");
 
             var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 

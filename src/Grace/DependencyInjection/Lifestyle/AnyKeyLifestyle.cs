@@ -58,14 +58,15 @@ namespace Grace.DependencyInjection.Lifestyle
                     .ProvideLifestyleExpression(scope, request, activationExpression);
             }
 
-            // For root, we compile an activation that will dynamically dispatch to the correct keyed lifestyle.
-            
-            // Create new request as we shouldn't carry over anything from the previous request            
-            var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            // For root, we compile an activation that will dynamically dispatch to the correct keyed lifestyle.                        
 
-            Func<ICompiledLifestyle, ActivationStrategyDelegate> delegateFactory = lifstyle =>
-            {                
-                var result = lifstyle.ProvideLifestyleExpression(scope, newRequest, activationExpression);
+            Func<ICompiledLifestyle, object, ActivationStrategyDelegate> delegateFactory = (lifestyle, key) =>
+            {
+                // Create new request as we shouldn't carry over anything from the previous request            
+                var newRequest = request.NewRootedRequest(scope, true);
+                newRequest.SetLocateKey(key);
+
+                var result = lifestyle.ProvideLifestyleExpression(scope, newRequest, activationExpression);
                 return request.Services.Compiler.CompileDelegate(scope, result);
             };
             
@@ -112,13 +113,13 @@ namespace Grace.DependencyInjection.Lifestyle
             IDisposalScope disposalScope,
             IInjectionContext context,
             object locateKey,
-            Func<ICompiledLifestyle, ActivationStrategyDelegate> delegateFactory)
+            Func<ICompiledLifestyle, object, ActivationStrategyDelegate> delegateFactory)
         {
             var cached = GetLifestyleForKey(locateKey);
 
             if (cached.ActivationDelegate == null)
             {
-                Interlocked.CompareExchange(ref cached.ActivationDelegate, delegateFactory(cached.Lifestyle), null);
+                Interlocked.CompareExchange(ref cached.ActivationDelegate, delegateFactory(cached.Lifestyle, locateKey), null);
             }
 
             return cached.ActivationDelegate(scope, disposalScope, context, locateKey);

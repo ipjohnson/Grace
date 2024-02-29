@@ -423,10 +423,10 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Creates new rooted request (for lifestyles)
         /// </summary>
-        /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope, bool maintainPaths = false);
+        /// <remarks>Activation type and located key are copied over by default</remarks>
+        IActivationExpressionRequest NewRootedRequest(IInjectionScope requestingScope, bool maintainPaths = false);
 
         /// <summary>
         /// Scope the request originated in

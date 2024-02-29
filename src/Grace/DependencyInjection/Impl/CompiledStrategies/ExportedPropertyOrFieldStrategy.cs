@@ -56,19 +56,25 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope,
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope,
             IActivationStrategyCompiler compiler,
-            Type activationType)
+            Type activationType,
+            object key = null)
         {
             if (_delegate != null)
             {
                 return _delegate;
             }
 
-            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            request.SetLocateKey(key);
+            
+            var expression = GetActivationExpression(scope, request);
 
-            var compiledDelegate = compiler.CompileDelegate(scope, request);
+            var compiledDelegate = compiler.CompileDelegate(scope, expression);
 
             Interlocked.CompareExchange(ref _delegate, compiledDelegate, null);
 
@@ -112,6 +118,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         {
             var newRequest = request.NewRequest(_dependentStrategy.ActivationType, this, request.InjectedType,
                 request.RequestType, request.Info, true, true);
+            newRequest.SetLocateKey(request.LocateKey);
 
             var instanceResult = _dependentStrategy.GetActivationExpression(scope, newRequest);
 

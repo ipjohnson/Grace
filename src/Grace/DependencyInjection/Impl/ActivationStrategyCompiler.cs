@@ -400,7 +400,7 @@ namespace Grace.DependencyInjection.Impl
                 if (collection == null) return null;
                 
                 var primary = consider == null 
-                    ? collection.GetPrimary()?.GetKeyedActivationStrategyDelegate(scope, this, locateType, key)
+                    ? collection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType, key)
                     : null;
 
                 return primary ?? GetStrategyFromCollection(collection, scope, consider, locateType, key);
@@ -414,7 +414,7 @@ namespace Grace.DependencyInjection.Impl
 
                 return container.GetActivationStrategyCollection(type)
                     ?.GetKeyedStrategy(key)
-                    ?.GetActivationStrategyDelegate(scope, this, locateType);
+                    ?.GetActivationStrategyDelegate(scope, this, locateType, key);
             }
         }
 
@@ -467,9 +467,7 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                var strategyDelegate = key == null
-                    ? strategy.GetActivationStrategyDelegate(scope, this, locateType)
-                    : ((ICompiledWrapperStrategy)strategy).GetKeyedActivationStrategyDelegate(scope, this, locateType, key);
+                var strategyDelegate = strategy.GetActivationStrategyDelegate(scope, this, locateType, key);
 
                 if (strategyDelegate != null)
                 {
@@ -482,19 +480,21 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
-
         private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, object key)
         {
             if (locateType.IsArray ||
                 (locateType.IsConstructedGenericType &&
                  locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                var result = _builder.GetEnumerableActivationExpression(scope, CreateNewRequest(locateType, 1, scope), key);
+                var request = CreateNewRequest(locateType, 1, scope);
+                request.SetLocateKey(key);
+
+                var result = _builder.GetEnumerableActivationExpression(scope, request);
+
                 return CompileDelegate(scope, result);
             }
 
             return null;
         }
-
     }
 }
