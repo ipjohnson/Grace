@@ -78,6 +78,12 @@
         IFluentImportPropertyConfiguration<T, TProp> LocateWithKey(object locateKey);
 
         /// <summary>
+        /// Injects the currently imported key
+        /// </summary>        
+        /// <returns>configuration object</returns>
+        IFluentImportPropertyConfiguration<T, TProp> LocateWithImportKey();
+
+        /// <summary>
         /// Provide value for property
         /// </summary>
         /// <param name="value">property value</param>

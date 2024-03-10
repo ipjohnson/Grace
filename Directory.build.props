@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Ian Johnson</Authors>
+    <TargetFrameworks>net462;net6.0;net7.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+</Project>

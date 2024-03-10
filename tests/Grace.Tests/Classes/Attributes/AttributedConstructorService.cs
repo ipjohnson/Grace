@@ -22,4 +22,23 @@ namespace Grace.Tests.Classes.Attributes
         public IMultipleService MultipleService { get; }
 
     }
+
+    public class AdaptedAttributedConstructorService
+    {
+        [AdaptedImport]
+        public AdaptedAttributedConstructorService(IBasicService basicService)
+        {
+            BasicService = basicService;
+        }
+
+        public AdaptedAttributedConstructorService(IBasicService basicService, IMultipleService multipleService)
+        {
+            BasicService = basicService;
+            MultipleService = multipleService;
+        }
+
+        public IBasicService BasicService { get; }
+
+        public IMultipleService MultipleService { get; }
+    }
 }

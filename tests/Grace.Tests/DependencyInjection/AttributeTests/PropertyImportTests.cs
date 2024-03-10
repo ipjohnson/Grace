@@ -19,6 +19,7 @@ namespace Grace.Tests.DependencyInjection.AttributeTests
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.BasicService);
+            Assert.NotNull(instance.AdaptedBasicService);
         }
     }
 }

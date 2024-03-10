@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -205,6 +205,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         private bool _injectionContextRequired;
         private bool _exportScopeRequired;
         private bool _disposalScopeRequired;
+        private bool _keyRequired;
         private ImmutableLinkedList<IActivationPathNode> _wrapperNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableLinkedList<IActivationPathNode> _decoratorNodes = ImmutableLinkedList<IActivationPathNode>.Empty;
         private ImmutableHashTree<object, object> _extraData = ImmutableHashTree<object, object>.Empty;
@@ -493,6 +494,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="maintainPaths">maintain wrapper and decorator path</param>
         /// <param name="carryData"></param>
         /// <returns>new request</returns>
+        /// <remarks>LocateKey is copied to new requests of type Other by default</remarks>
         public IActivationExpressionRequest NewRequest(Type activationType, IActivationStrategy requestingStrategy, Type injectedType, RequestType requestType, object info, bool maintainPaths = false, bool carryData = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
@@ -514,6 +516,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 KnownValueExpressions = KnownValueExpressions
             };
 
+            if (requestType == RequestType.Other)
+            {
+                // `Other` is for requests that re-formulate the initial request and should preserve LocateKey by default:
+                // wrappers, collections strategies, func/delegates/factories, etc.
+                // This isn't true for other request types:
+                // - `Root` is for the initial request and should not be created here;
+                // - `ConstructorParameter`, `MethodParameter` and `Member` are for unrelated nested requests that should have their own LocateKey.
+                returnValue.LocateKey = LocateKey;
+            }
+
             if (Filter != null && RequestingStrategy != null &&
                 RequestingStrategy.StrategyType == ActivationStrategyType.WrapperStrategy)
             {
@@ -532,24 +544,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>
         /// Creates new rooted request (for lifestyles)
         /// </summary>
-        /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        public IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope,
-            bool maintainPaths = false)
+        /// <remarks>Activation type and located key are copied over by default</remarks>
+        public IActivationExpressionRequest NewRootedRequest(IInjectionScope requestingScope, bool maintainPaths = false)
         {
             if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
             {
                 throw new RecursiveLocateException(GetStaticInjectionContext());
             }
 
-            var returnValue = new ActivationExpressionRequest(activationType,
-                                                   RequestType.Root,
-                                                   Services,
-                                                   Constants,
-                                                   ObjectGraphDepth + 1,
-                                                   requestingScope,
-                                                   new PerDelegateData());
+            var returnValue = new ActivationExpressionRequest(ActivationType,
+                RequestType.Root,
+                Services,
+                Constants,
+                ObjectGraphDepth + 1,
+                requestingScope,
+                new PerDelegateData())
+            {
+                LocateKey = LocateKey,
+            };
 
             if (maintainPaths)
             {
@@ -689,6 +703,64 @@ namespace Grace.DependencyInjection.Impl.Expressions
         public bool DisposalScopeRequired()
         {
             return _disposalScopeRequired;
+        }
+
+        /// <summary>
+        /// Require imported key
+        /// </summary>
+        public void RequireKey()
+        {
+            if (!_keyRequired)
+            {
+                _keyRequired = true;
+                Parent?.RequireKey();
+            }
+        }
+
+        /// <summary>
+        /// Imported key is required
+        /// </summary>
+        public bool KeyRequired()
+        {
+            return _keyRequired;
+        }
+
+        /// <summary>
+        /// Indicates whether the key for this request is determined during activation 
+        /// (passed as a parameter to activation delegate), or is static (in LocateKey).
+        /// </summary>
+        public bool HasDynamicKey()
+        {
+            // The logic is a bit tricky, depending on the request type.
+            // - `Root` requests:
+            //   The key is passed as a parameter to the activation delegate (LocateKey is always null).
+            // - `ConstructorParameter`, `MethodParameter` and `Member` requests:
+            //   These are children of a parent activation, the key is statically defined in LocateKey.
+            // - `Other` requests:
+            //   This is a modified version of the parent request like wrappers, collections strategies, factories/delegates, etc.
+            //   If LocateKey is null, we need to look at the request parent to see if its a `Root` request or not.
+            return RequestType switch
+            {
+                RequestType.Root => true,
+                RequestType.Other => Parent.HasDynamicKey(),
+                _ => false
+            };
+        }
+
+        /// <summary>
+        /// Get expression representing imported key
+        /// </summary>
+        public Expression GetKeyExpression()
+        {
+            if (HasDynamicKey())
+            {
+                RequireKey();
+                return Constants.KeyParameter;                
+            }
+            else
+            {
+                return Expression.Constant(LocateKey, typeof(object));
+            }
         }
 
         /// <summary>

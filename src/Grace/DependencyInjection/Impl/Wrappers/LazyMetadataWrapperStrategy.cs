@@ -48,29 +48,24 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <summary>
         /// Compile a delegate
         /// </summary>
-        /// <param name="scope">scope</param>
         /// <param name="compiler">compiler</param>
-        /// <param name="activationType">activation type</param>
-        protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        /// <param name="request">activation request</param>
+        protected override ActivationStrategyDelegate CompileDelegate(
+            IActivationStrategyCompiler compiler,
+            IActivationExpressionRequest request)
         {
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            var scope = request.RequestingScope;
 
             if (!_wrapperExpressionCreator.SetupWrappersForRequest(scope, request))
             {
-                throw new LocateException(request.GetStaticInjectionContext(),"Could not calculate wrapper");
+                throw new LocateException(request.GetStaticInjectionContext(), "Could not calculate wrapper");
             }
 
             var expressionResult = GetActivationExpression(scope, request);
 
-            ActivationStrategyDelegate returnValue = null;
-
-            if (expressionResult != null)
-            {
-                returnValue = compiler.CompileDelegate(scope, expressionResult);
-            }
-
-            return returnValue;
+            return expressionResult != null
+                ? compiler.CompileDelegate(scope, expressionResult)
+                : null;
         }
 
         /// <summary>
@@ -82,7 +77,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
-            var closedMethod = closedClass.GetRuntimeMethod(nameof(LazyExpression<object,object>.CreateLazy), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(
+                nameof(LazyExpression<object,object>.CreateLazy), 
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
 
             var wrappedStrategy = request.GetWrappedStrategy();
 
@@ -99,9 +96,12 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             request.RequireExportScope();
             request.RequireDisposalScope();
 
-            var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
-                    request.DisposalScopeExpression, request.InjectionContextParameter);
+            var callExpression = Expression.Call(Expression.Constant(instance), 
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.GetKeyExpression());
 
             request.RequireInjectionContext();
 
@@ -143,9 +143,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="scope"></param>
             /// <param name="disposalScope"></param>
             /// <param name="injectionContext"></param>
+            /// <param name="key"></param>
             /// <returns></returns>
-            public Lazy<TResult, TMetadata> CreateLazy(IExportLocatorScope scope, IDisposalScope disposalScope,
-                IInjectionContext injectionContext)
+            public Lazy<TResult, TMetadata> CreateLazy(
+                IExportLocatorScope scope, 
+                IDisposalScope disposalScope,
+                IInjectionContext injectionContext, 
+                object key)
             {
                 return new Lazy<TResult, TMetadata>(() =>
                 {
@@ -154,7 +158,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                         _delegate = CompileDelegate();
                     }
 
-                    return (TResult)_delegate(scope, disposalScope, injectionContext);
+                    return (TResult)_delegate(scope, disposalScope, injectionContext, key);
                 }, _metadata);
             }
 

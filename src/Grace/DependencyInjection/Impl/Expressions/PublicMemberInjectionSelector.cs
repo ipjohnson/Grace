@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Grace.DependencyInjection.Attributes.Interfaces;
 
@@ -73,11 +72,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                     if (importType != null && (_picker == null || _picker(declaredMember)))
                     {
-                        var importAttribute = _processAttributes ? 
-                                declaredMember.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() : 
-                                null;
-
-                        var importInfo = importAttribute?.ProvideImportInfo(importType, declaredMember.Name);
+                        var importInfo = _processAttributes 
+                            ? ImportAttributeInfo.For(declaredMember, importType, declaredMember.Name)
+                            : null;
 
                         object key = importInfo?.ImportKey;
 

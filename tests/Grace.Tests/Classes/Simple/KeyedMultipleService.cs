@@ -1,9 +1,11 @@
 ﻿using Grace.DependencyInjection.Attributes;
+using Grace.Tests.Classes.Attributes;
 
 namespace Grace.Tests.Classes.Simple
 {
     public interface IKeyedMultipleService
     {
+        string LocatedKey { get; }
         string SomeMethod();
     }
 
@@ -11,6 +13,9 @@ namespace Grace.Tests.Classes.Simple
     [ExportKeyedType(typeof(IKeyedMultipleService), "A")]
     public class KeyedMultipleServiceA : IKeyedMultipleService
     {
+        [ImportKey]
+        public string LocatedKey { get; set; }
+
         public string SomeMethod()
         {
             return "A";
@@ -20,6 +25,9 @@ namespace Grace.Tests.Classes.Simple
     [ExportKeyedType(typeof(IKeyedMultipleService), "B")]
     public class KeyedMultipleServiceB : IKeyedMultipleService
     {
+        [ImportKey]
+        public string LocatedKey { get; set; }
+
         public string SomeMethod()
         {
             return "B";
@@ -34,5 +42,10 @@ namespace Grace.Tests.Classes.Simple
 
         [Import(Key = "B")]
         public IKeyedMultipleService ServiceB { get; set; }
+        [AdaptedImport(Key = "A")]
+        public IKeyedMultipleService AdaptedServiceA { get; set; }
+
+        [AdaptedImport(Key = "B")]
+        public IKeyedMultipleService AdaptedServiceB { get; set; }
     }
 }

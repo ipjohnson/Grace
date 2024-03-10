@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Attributes;
 using Grace.Tests.Classes.Generics;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -28,6 +31,30 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
+        public void Export_With_Key_LocateAll_From_Scope()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>(ImportKey.Any);
+                c.Export<SimpleObjectC>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectD>().As<ISimpleObject>();
+            });
+            
+            var instances = container.LocateAll<ISimpleObject>(withKey: "A");
+
+            // Without comparer, LocateAll default order is:
+            // non-any keys first, then in export order
+            Assert.Collection(
+                instances,
+                i => Assert.IsType<SimpleObjectA>(i),
+                i => Assert.IsType<SimpleObjectC>(i),
+                i => Assert.IsType<SimpleObjectB>(i));
+        }
+
+        [Fact]
         public void Export_With_Key_Import_With_Key()
         {
             var container = new DependencyInjectionContainer();
@@ -51,6 +78,32 @@ namespace Grace.Tests.DependencyInjection.Keyed
         }
 
         [Fact]
+        public void Export_With_Import_Keyed_IEnumerable()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectB>().AsKeyed<ISimpleObject>(ImportKey.Any);
+                c.Export<SimpleObjectC>().AsKeyed<ISimpleObject>("A");
+                c.Export<SimpleObjectD>().AsKeyed<ISimpleObject>("D");
+                c.Export<ImportMultipleSimpleObjects>().WithCtorParam<ISimpleObject[]>().LocateWithKey("A");
+            });
+
+            var instance = container.Locate<ImportMultipleSimpleObjects>();
+            Assert.NotNull(instance);
+
+            var simples = instance.SimpleObjects;
+            Assert.NotNull(simples);
+            // Without comparer, default order of nested IEnumerable or Array is:
+            // by priority (higher first), then export order.
+            Assert.IsType<SimpleObjectA>(simples[0]);
+            Assert.IsType<SimpleObjectB>(simples[1]);
+            Assert.IsType<SimpleObjectC>(simples[2]);
+        }
+
+        [Fact]
         public void KeyedLocateDelegate_Create()
         {
             var container = new DependencyInjectionContainer();
@@ -70,6 +123,54 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<SimpleObjectB>(instanceB);
         }
 
+        [Fact]
+        public void ExportFactory_Import_Keyed()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+                c.ExportFactory(([Import(Key = "A")] ISimpleObject simpleObject) 
+                    => new ImportSingleSimpleObject(simpleObject));
+            });
+
+            var instance = container.Locate<ImportSingleSimpleObject>();
+
+            Assert.NotNull(instance);
+            Assert.IsType<SimpleObjectA>(instance.SimpleObject);
+        }
+
+        [Fact]
+        public void ExportFactory_AsKeyed_Any()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.ExportFactory(([ImportKey] string key) => $"Key is {key}")
+                    .AsKeyed<string>(ImportKey.Any);
+            });
+
+            var instance = container.Locate<string>(withKey: "A");
+
+            Assert.Equal("Key is A", instance);
+        }        
+
+        [Fact]
+        public void Func_Keyed_Result()
+        {
+            var container = new DependencyInjectionContainer();
+            
+            container.Configure(c =>
+            {
+                c.Export<SimpleObjectA>().AsKeyed<ISimpleObject>("A");
+            });
+
+            var func = container.Locate<Func<ISimpleObject>>(withKey: "A");
+
+            Assert.IsType<SimpleObjectA>(func());         
+        }
 
         [Fact]
         public void AsKeyedStringTest()
@@ -174,6 +275,23 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
 
+        [Fact]
+        public void Keyed_Wrapped_Generic_Value()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAs<BasicService, IBasicService>();
+                c.Export(typeof(DependentService<>)).AsKeyed(typeof(IDependentService<>), 'A');
+            });
+
+            var owned = container.Locate<Owned<IDependentService<IBasicService>>>(withKey: 'A');
+
+            Assert.NotNull(owned);            
+            Assert.IsType<DependentService<IBasicService>>(owned.Value);
+            Assert.NotNull(owned.Value.Value);
+        }
 
         [Fact]
         public void Keyed_And_NonKeyed_With_Different_Lifestyle()
@@ -276,57 +394,46 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.IsType<BasicService>(service.Value);
         }
 
+        public class FuncFactoryClass(Func<DisposableService> func)
+        {
+           public DisposableService CreateService() => func();
+        }
 
-        //public class FuncFactoryClass
-        //{
-        //    private Func<DisposableService> _func;
+        [Fact]
+        public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
+        {
+           var container = new DependencyInjectionContainer();
 
-        //    public FuncFactoryClass(Func<DisposableService> func)
-        //    {
-        //        _func = func;
-        //    }
+           container.Configure(c =>
+           {
+               c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
+               c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
+               c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
+           });
 
-        //    public DisposableService CreateService()
-        //    {
-        //        return _func();
-        //    }
-        //}
+           bool disposedService = false;
+           bool disposedTransient = false;
 
-        //[Fact]
-        //public void Keyed_Factory_And_NonKeyed_With_Different_Lifestyle()
-        //{
-        //    var container = new DependencyInjectionContainer();
+           using (var scope = container.BeginLifetimeScope("CustomScopeName"))
+           {
+               var service = scope.Locate<DisposableService>();
 
-        //    container.Configure(c =>
-        //    {
-        //        c.Export<DisposableService>().Lifestyle.SingletonPerNamedScope("CustomScopeName");
-        //        c.Export<DisposableService>().AsKeyed<DisposableService>("TransientKey").ExternallyOwned();
-        //        c.Export<FuncFactoryClass>().WithCtorParam<Func<DisposableService>>().LocateWithKey("TransientKey");
-        //    });
+               Assert.Same(service, scope.Locate<DisposableService>());
 
-        //    bool disposedService = false;
-        //    bool disposedTransient = false;
+               service.Disposing += (sender, args) => disposedService = true;
 
-        //    using (var scope = container.BeginLifetimeScope("CustomScopeName"))
-        //    {
-        //        var service = scope.Locate<DisposableService>();
+               var factory = scope.Locate<FuncFactoryClass>();
 
-        //        Assert.Same(service, scope.Locate<DisposableService>());
+               var transientService = factory.CreateService();
 
-        //        service.Disposing += (sender, args) => disposedService = true;
+               Assert.NotSame(service, transientService);
 
-        //        var factory = scope.Locate<FuncFactoryClass>();
+               transientService.Disposing += (sender, args) => disposedTransient = true;
+           }
 
-        //        var transientService = factory.CreateService();
-
-        //        Assert.NotSame(service, transientService);
-
-        //        transientService.Disposing += (sender, args) => disposedTransient = true;
-        //    }
-
-        //    Assert.True(disposedService);
-        //    Assert.False(disposedTransient);
-        //}
+           Assert.True(disposedService);
+           Assert.False(disposedTransient);
+        }
 
 
         [Fact]

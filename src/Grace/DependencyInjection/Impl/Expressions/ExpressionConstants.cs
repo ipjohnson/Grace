@@ -19,6 +19,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
             InjectionContextParameter = Expression.Parameter(typeof(IInjectionContext), "injectionContext");
 
             RootDisposalScope = Expression.Parameter(typeof(IDisposalScope), "disposalScope");
+
+            KeyParameter = Expression.Parameter(typeof(object), "key");
         }
 
         /// <summary>
@@ -35,5 +37,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// IInjectionContext parameter
         /// </summary>
         public ParameterExpression InjectionContextParameter { get; }
+
+        /// <summary>
+        /// Locate key parameter
+        /// </summary>
+        public ParameterExpression KeyParameter { get; }
     }
 }

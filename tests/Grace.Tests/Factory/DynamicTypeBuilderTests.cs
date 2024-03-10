@@ -27,9 +27,9 @@ namespace Grace.Tests.Factory
 
             var newBasicService = new BasicService();
 
-            var func = new ActivationStrategyDelegate((s, d, c) => newBasicService);
+            var func = new ActivationStrategyDelegate((s, d, c, k) => newBasicService);
 
-            var instance = (IBasicServiceProvider)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
+            var instance = (IBasicServiceProvider)Activator.CreateInstance(proxyType, scope, disposalScope, context, null, func);
 
             var basicService = instance.CreateBasicService();
 
@@ -52,14 +52,14 @@ namespace Grace.Tests.Factory
             int value = 10;
             DependentService<int> service = null;
 
-            var func = new ActivationStrategyDelegate((s, d, c) =>
+            var func = new ActivationStrategyDelegate((s, d, c, k) =>
             {
                 Assert.Contains(c.Keys, key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
                                               Equals(c.GetExtraData(key), value));
                 return service = new DependentService<int>(value);
             });
 
-            var instance = (IComplexProvider<int>)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
+            var instance = (IComplexProvider<int>)Activator.CreateInstance(proxyType, scope, disposalScope, context, null, func);
 
             var instanceService = instance.CreateValue(value);
 
@@ -76,14 +76,14 @@ namespace Grace.Tests.Factory
             string value = "hello world";
             DependentService<string> service = null;
 
-            var func = new ActivationStrategyDelegate((s, d, c) =>
+            var func = new ActivationStrategyDelegate((s, d, c, k) =>
             {
                 Assert.Contains(c.Keys, key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
                                               Equals(c.GetExtraData(key), value));
                 return service = new DependentService<string>(value);
             });
 
-            var instance = (IComplexProvider<string>)Activator.CreateInstance(proxyType, scope, disposalScope, context, func);
+            var instance = (IComplexProvider<string>)Activator.CreateInstance(proxyType, scope, disposalScope, context, null, func);
 
             var instanceService = instance.CreateValue(value);
 

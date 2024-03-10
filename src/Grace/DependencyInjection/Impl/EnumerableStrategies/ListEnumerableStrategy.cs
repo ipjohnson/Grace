@@ -16,9 +16,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// <param name="injectionScope"></param>
         public ListEnumerableStrategy( IInjectionScope injectionScope) : base(typeof(List<>), injectionScope)
         {
-            AddExportAs(typeof(List<>));
+            // List<> exported by BaseGenericEnumerableStrategy
             AddExportAs(typeof(IList<>));
+            AddExportAsKeyed(typeof(IList<>), ImportKey.Any);
             AddExportAs(typeof(ICollection<>));
+            AddExportAsKeyed(typeof(ICollection<>), ImportKey.Any);
         }
         
         /// <summary>

@@ -39,10 +39,10 @@ namespace Grace.DependencyInjection.Attributes
 		public ImportAttributeInfo ProvideImportInfo(Type attributedType, string attributedName)
 		{
 			return new ImportAttributeInfo
-			       {
-				       ImportKey = Key,
-				       IsRequired = Required
-			       };
+			{
+				ImportKey = Key,
+				IsRequired = Required
+			};
 		}
 	}
 }

@@ -34,80 +34,68 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="includeProviders"></param>
         public bool CanLocate(IInjectionScope injectionScope, Type type, ActivationStrategyFilter filter, object key = null, bool includeProviders = true)
         {
+            var openGenericType = type.IsConstructedGenericType ? type.GetGenericTypeDefinition() : null;
+
+            var collection = injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type);
+            collection ??= openGenericType != null 
+                ? injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(openGenericType) 
+                : null;
+
             if (key != null)
             {
-                var collection = injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type);
-
+                if (ReferenceEquals(key, ImportKey.Key))
+                {
+                    return true;
+                }
+                
                 if (collection?.GetKeyedStrategy(key) != null)
                 {
                     return true;
-                }
-
-                return injectionScope.Parent?.CanLocate(type, filter, key) ?? false;
+                }                
             }
-
-            if (injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(type) != null)
-            {
-                return true;
-            }
-
-            if (injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(type) != null)
-            {
-                return true;
-            }
-
-            if (type.IsArray)
-            {
-                return true;
-            }
-
-            if (type.IsConstructedGenericType)
-            {
-                var generic = type.GetGenericTypeDefinition();
-
-                if (injectionScope.StrategyCollectionContainer.GetActivationStrategyCollection(generic) != null)
+            else
+            {                
+                if (collection?.GetPrimary() != null)
                 {
                     return true;
-                }
+                }                
+            }
 
-                var collection = injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(generic);
+            var wrapperCollection = injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(type);
+            wrapperCollection ??= openGenericType != null
+                ? injectionScope.WrapperCollectionContainer.GetActivationStrategyCollection(openGenericType)
+                : null;
 
-                if (collection != null)
+            if (wrapperCollection != null)
+            {
+                foreach (var strategy in wrapperCollection.GetStrategies())
                 {
-                    foreach (var strategy in collection.GetStrategies())
-                    {
-                        var wrappedType = strategy.GetWrappedType(type);
+                    var wrappedType = strategy.GetWrappedType(type);
 
-                        if (CanLocate(injectionScope, wrappedType, filter))
-                        {
-                            return true;
-                        }
+                    if (CanLocate(injectionScope, wrappedType, filter, key))
+                    {
+                        return true;
                     }
                 }
-
-                if (generic == typeof(IEnumerable<>))
-                {
-                    return true;
-                }
             }
-            
+
+            if (type.IsArray || openGenericType == typeof(IEnumerable<>))
+            {
+                return true;
+            }
+
             if (type == typeof(ILocatorService) ||
                 type == typeof(IExportLocatorScope) ||
                 type == typeof(IInjectionContext) ||
                 type == typeof(IDisposalScope) ||
                 type == typeof(StaticInjectionContext) ||
-                (type == typeof(IDisposable) && injectionScope.ScopeConfiguration.InjectIDisposable))
+                (type == typeof(IDisposable) && injectionScope.ScopeConfiguration.InjectIDisposable) ||
+                (type == typeof(IInjectionScope) && injectionScope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation))
             {
                 return true;
             }
 
-            if (type == typeof(IInjectionScope) &&
-                injectionScope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
-            {
-                return true;
-            }
-
-            if (includeProviders)
+            if (includeProviders && key == null)
             {
                 var request = injectionScope.StrategyCompiler.CreateNewRequest(type, 0, injectionScope);
 
@@ -128,7 +116,7 @@ namespace Grace.DependencyInjection.Impl
                 }
             }
 
-            return injectionScope.Parent?.CanLocate(type, filter) ?? false;
+            return injectionScope.Parent?.CanLocate(type, filter, key) ?? false;
         }
     }
 }

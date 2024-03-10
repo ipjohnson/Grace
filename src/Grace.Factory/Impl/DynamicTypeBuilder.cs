@@ -17,11 +17,15 @@ namespace Grace.Factory.Impl
         private static readonly object BuilderLock = new object();
         private static ModuleBuilder _moduleBuilder;
         private static int _proxyCount = 0;
-        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod(nameof(IInjectionContext.Clone),Type.EmptyTypes);
-        private static MethodInfo DelegateInvoke = typeof(ActivationStrategyDelegate).GetRuntimeMethod(nameof(ActivationStrategyDelegate.Invoke),
-            new[] {typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext)});
-        private static MethodInfo SetExtraDataMethod =
-            typeof(IExtraDataContainer).GetRuntimeMethod(nameof(IExtraDataContainer.SetExtraData), new[] { typeof(object), typeof(object), typeof(bool) });
+        private static MethodInfo CloneMethod = typeof(IInjectionContext).GetRuntimeMethod(nameof(IInjectionContext.Clone), Type.EmptyTypes);
+        private static MethodInfo DelegateInvoke = typeof(ActivationStrategyDelegate)
+            .GetRuntimeMethod(
+                nameof(ActivationStrategyDelegate.Invoke),
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
+        private static MethodInfo SetExtraDataMethod = typeof(IExtraDataContainer)
+            .GetRuntimeMethod(
+                nameof(IExtraDataContainer.SetExtraData), 
+                new[] { typeof(object), typeof(object), typeof(bool) });
 
         /// <summary>
         /// Default constructor
@@ -29,7 +33,6 @@ namespace Grace.Factory.Impl
         public DynamicTypeBuilder()
         {
             SetupAssembly();
-
         }
         
         public class DelegateInfo
@@ -86,26 +89,41 @@ namespace Grace.Factory.Impl
                 var contextField = proxyBuilder.DefineField("_context", typeof(IInjectionContext),
                     FieldAttributes.Private);
 
+                var keyField = proxyBuilder.DefineField("_key", typeof(object),
+                    FieldAttributes.Private);
+
                 int methodCount = 1;
 
                 methods = new List<DelegateInfo>();
 
                 foreach (var method in interfaceType.GetRuntimeMethods())
                 {
-                    methods.Add(CreateMethod(method, proxyBuilder, methodCount, scopeField, disposalScopeField, contextField));
+                    methods.Add(CreateMethod(method, proxyBuilder, methodCount, scopeField, disposalScopeField, contextField, keyField));
 
                     methodCount++;
                 }
 
-                CreateConstructor(proxyBuilder, methods, scopeField, disposalScopeField, contextField);
+                CreateConstructor(proxyBuilder, methods, scopeField, disposalScopeField, contextField, keyField);
 
                 return proxyBuilder.CreateTypeInfo().AsType();
             }
         }
 
-        private void CreateConstructor(TypeBuilder proxyBuilder, List<DelegateInfo> methods, FieldBuilder scopeField, FieldBuilder disposalScopeField, FieldBuilder contextField)
+        private void CreateConstructor(
+            TypeBuilder proxyBuilder, 
+            List<DelegateInfo> methods,
+            FieldBuilder scopeField, 
+            FieldBuilder disposalScopeField, 
+            FieldBuilder contextField, 
+            FieldBuilder keyField)
         {
-            var constructorParameterTypes = new List<Type> { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) };
+            var constructorParameterTypes = new List<Type> 
+            { 
+                typeof(IExportLocatorScope), 
+                typeof(IDisposalScope), 
+                typeof(IInjectionContext),
+                typeof(object),
+            };
 
             foreach (var _ in methods)
             {
@@ -115,9 +133,9 @@ namespace Grace.Factory.Impl
             var proxyConstructor = proxyBuilder.DefineConstructor(MethodAttributes.Public,
                 CallingConventions.Standard, constructorParameterTypes.ToArray());
 
-            for (int i = 0; i < constructorParameterTypes.Count; i++)
+            for (int i = 1; i <= constructorParameterTypes.Count; i++)
             {
-                proxyConstructor.DefineParameter(i + 1, ParameterAttributes.None, "arg" + (i + 1));
+                proxyConstructor.DefineParameter(i, ParameterAttributes.None, "arg" + i);
             }
 
             var proxyConstructorILGenerator = proxyConstructor.GetILGenerator();
@@ -134,20 +152,29 @@ namespace Grace.Factory.Impl
             proxyConstructorILGenerator.Emit(OpCodes.Ldarg_3);
             proxyConstructorILGenerator.Emit(OpCodes.Stfld, contextField);
 
-            int argIndex = 4;
+            proxyConstructorILGenerator.Emit(OpCodes.Ldarg_0);
+            proxyConstructorILGenerator.Emit(OpCodes.Ldarg_S, (byte)4);
+            proxyConstructorILGenerator.Emit(OpCodes.Stfld, keyField);
+
+            byte argIndex = 5;
             foreach (var method in methods)
             {
                 proxyConstructorILGenerator.Emit(OpCodes.Ldarg_0);
-                proxyConstructorILGenerator.Emit(OpCodes.Ldarg_S, (byte)argIndex);
+                proxyConstructorILGenerator.Emit(OpCodes.Ldarg_S, argIndex++);
                 proxyConstructorILGenerator.Emit(OpCodes.Stfld, method.Activation);
-
-                argIndex++;
             }
 
             proxyConstructorILGenerator.Emit(OpCodes.Ret);
         }
 
-        private DelegateInfo CreateMethod(MethodInfo method, TypeBuilder proxyBuilder, int methodCount, FieldBuilder scopeField, FieldBuilder disposalScopeField, FieldBuilder contextField)
+        private DelegateInfo CreateMethod(
+            MethodInfo method, 
+            TypeBuilder proxyBuilder, 
+            int methodCount, 
+            FieldBuilder scopeField, 
+            FieldBuilder disposalScopeField, 
+            FieldBuilder contextField,
+            FieldBuilder keyField)
         {
             var parameters = method.GetParameters();
 
@@ -209,12 +236,20 @@ namespace Grace.Factory.Impl
                 ilGenerator.Emit(OpCodes.Pop);
             }
 
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldfld, keyField);
+
             ilGenerator.Emit(OpCodes.Callvirt, DelegateInvoke);
 
-            if (method.ReturnType != null || method.ReturnType != typeof(void))
+            if (method.ReturnType != null && method.ReturnType != typeof(void))
             {
-                ilGenerator.Emit(method.ReturnType.GetTypeInfo().IsValueType ?
-                    OpCodes.Unbox_Any : OpCodes.Castclass, method.ReturnType);
+                ilGenerator.Emit(
+                    method.ReturnType.GetTypeInfo().IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass,
+                    method.ReturnType);
+            }
+            else
+            {
+                ilGenerator.Emit(OpCodes.Pop);
             }
 
             ilGenerator.Emit(OpCodes.Ret);

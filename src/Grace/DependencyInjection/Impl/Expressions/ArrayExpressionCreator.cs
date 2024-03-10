@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -73,18 +72,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         protected virtual Expression CreateSortedArrayExpression(Expression arrayInit, Type arrayElementType, IActivationExpressionRequest request)
         {
-            var compareInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
+            var comparerInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
 
-            if (request.EnumerableComparer.GetType().GetTypeInfo().IsAssignableFrom(compareInterface.GetTypeInfo()))
+            if (!comparerInterface.IsAssignableFrom(request.EnumerableComparer.GetType()))
             {
                 return arrayInit;
             }
 
-            var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods().First(m => m.Name == nameof(SortArray));
+            var sortMethod = typeof(ArrayExpressionCreator)
+                .GetMethod(nameof(SortArray))
+                .MakeGenericMethod(arrayElementType);
 
-            var closedMethod = openMethod.MakeGenericMethod(arrayElementType);
-
-            return Expression.Call(closedMethod, arrayInit, Expression.Constant(request.EnumerableComparer));
+            return Expression.Call(sortMethod, arrayInit, Expression.Constant(request.EnumerableComparer));
         }
 
         /// <summary>
@@ -93,7 +92,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        protected virtual List<IActivationExpressionResult> GetArrayExpressionList(IInjectionScope scope, IActivationExpressionRequest request, Type arrayElementType)
+        protected virtual List<IActivationExpressionResult> GetArrayExpressionList(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request, 
+            Type arrayElementType)
         {
             var expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
 
@@ -125,144 +127,73 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="scope"></param>
         /// <param name="request"></param>
         /// <param name="arrayElementType"></param>
-        protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(IInjectionScope scope, IActivationExpressionRequest request,
+        protected virtual List<IActivationExpressionResult> GetActivationExpressionResultsFromStrategies(
+            IInjectionScope scope,
+            IActivationExpressionRequest request,
             Type arrayElementType)
         {
+            // An old odditiy of Grace: 
+            // if key is enumerable then it's handled as a collection of keys to be resolved.
+            // This isn't implemented everywhere, e.g. LocateAll and Locate<IEnumerable> don't have this behavior.
+            if (request.LocateKey is IEnumerable enumerableKey and not string)
+            {
+                return enumerableKey
+                    .Cast<object>()
+                    .SelectMany(key =>
+                    {
+                        var newRequest = request.NewRequest(
+                            arrayElementType, 
+                            request.RequestingStrategy,
+                            request.RequestingStrategy?.ActivationType, 
+                            request.RequestType,
+                            request.Info, 
+                            true, 
+                            true);
+                        newRequest.SetLocateKey(key);
+                        return GetActivationExpressionResultsFromStrategies(scope, newRequest, arrayElementType);
+                    })
+                    .ToList();
+            }
+
+            // Step 1: collect matching strategies
+            
+            var exportList = new List<ICompiledExportStrategy>();
+
+            var key = request.LocateKey;
+
+            Action<IActivationStrategyCollection<ICompiledExportStrategy>> collect = 
+                key != null
+                    ? collection =>
+                        {
+                            if (collection == null) return;
+                            exportList.AddRange(collection.GetKeyedStrategies(key));
+                        }
+                    : collection => 
+                        {
+                            if (collection == null) return;
+                            exportList.AddRange(collection.GetStrategies());
+                            if (scope.ScopeConfiguration.ReturnKeyedInEnumerable)
+                            {
+                                exportList.AddRange(collection.GetKeyedStrategies().Select(kvp => kvp.Value));
+                            }
+                        };
+
+            collect(scope.StrategyCollectionContainer.GetActivationStrategyCollection(arrayElementType));            
+
+            if (arrayElementType.IsConstructedGenericType)
+            {
+                var genericType = arrayElementType.GetGenericTypeDefinition();
+                collect(scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType));
+            }
+
+            exportList.Sort((x, y) => x.Priority != y.Priority 
+                ? y.Priority.CompareTo(x.Priority)  // higher priorities first
+                : x.ExportOrder.CompareTo(y.ExportOrder));
+
+            // Step 2: create expressions from collected strategies
+
             var parentStrategy = GetRequestingStrategy(request);
-
-            List<object> keys = null;
-            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(arrayElementType);
             var expressions = new List<IActivationExpressionResult>();
-
-            if (request.LocateKey != null)
-            {
-                if (request.LocateKey is IEnumerable enumerableKey &&
-                    !(request.LocateKey is string))
-                {
-                    keys = new List<object>();
-
-                    foreach (var value in enumerableKey)
-                    {
-                        keys.Add(value);
-                    }
-                }
-                else
-                {
-                    keys = new List<object> { request.LocateKey };
-                }
-            }
-
-            IEnumerable<ICompiledExportStrategy> exportList = ImmutableArray<ICompiledExportStrategy>.Empty;
-
-            if (keys != null)
-            {
-                var collectionList = new List<ICompiledExportStrategy>();
-
-                if (collection != null)
-                {
-                    for (var i = 0; i < keys.Count;)
-                    {
-                        var strategy = collection.GetKeyedStrategy(keys[i]);
-
-                        if (strategy != null)
-                        {
-                            collectionList.Add(strategy);
-                            keys.RemoveAt(i);
-                        }
-                        else
-                        {
-                            i++;
-                        }
-                    }
-                }
-
-                if (arrayElementType.IsConstructedGenericType)
-                {
-                    var genericType = arrayElementType.GetGenericTypeDefinition();
-                    var strategies = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
-
-                    if (strategies != null)
-                    {
-                        for (var i = 0; i < keys.Count;)
-                        {
-                            var strategy = strategies.GetKeyedStrategy(keys[i]);
-
-                            if (strategy != null)
-                            {
-                                collectionList.Add(strategy);
-                                keys.RemoveAt(i);
-                            }
-                            else
-                            {
-                                i++;
-                            }
-                        }
-                    }
-
-                    if (collectionList.Any(e => e.Priority != 0))
-                    {
-                        collectionList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
-                    }
-                    else
-                    {
-                        collectionList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
-                    }
-                }
-
-                exportList = collectionList;
-            }
-            else
-            {
-                List<ICompiledExportStrategy> completeList = null;
-
-                if (collection != null)
-                {
-                    exportList = collection.GetStrategies();
-
-                    if (scope.ScopeConfiguration.ReturnKeyedInEnumerable)
-                    {
-                        completeList = new List<ICompiledExportStrategy>(exportList);
-
-                        completeList.AddRange(collection.GetKeyedStrategies().Select(kvp => kvp.Value));
-                    }
-                }
-
-                if (arrayElementType.IsConstructedGenericType)
-                {
-                    var genericType = arrayElementType.GetGenericTypeDefinition();
-
-                    var strategies = scope.StrategyCollectionContainer.GetActivationStrategyCollection(genericType);
-
-                    if (strategies != null)
-                    {
-                        if (completeList == null)
-                        {
-                            completeList = new List<ICompiledExportStrategy>(exportList);
-                        }
-
-                        completeList.AddRange(strategies.GetStrategies());
-
-                        if (scope.ScopeConfiguration.ReturnKeyedInEnumerable)
-                        {
-                            completeList.AddRange(strategies.GetKeyedStrategies().Select(kvp => kvp.Value));
-                        }
-                    }
-                }
-
-                if (completeList != null)
-                {
-                    if (completeList.Any(e => e.Priority != 0))
-                    {
-                        completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.Priority, y.Priority));
-                    }
-                    else
-                    {
-                        completeList.Sort((x, y) => Comparer<int>.Default.Compare(x.ExportOrder, y.ExportOrder));
-                    }
-
-                    exportList = completeList;
-                }
-            }
 
             foreach (var strategy in exportList)
             {
@@ -273,17 +204,22 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 }
 
                 // filter strategies
-                if (request.Filter != null && !request.Filter(strategy))
+                if (request.Filter?.Invoke(strategy) == false)
                 {
                     continue;
                 }
 
-                var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
-                    request.RequestingStrategy?.ActivationType, request.RequestType,
-                    request.Info, true, true);
+                var newRequest = request.NewRequest(
+                    arrayElementType, 
+                    request.RequestingStrategy,
+                    request.RequestingStrategy?.ActivationType, 
+                    request.RequestType,
+                    request.Info, 
+                    true, 
+                    true);
+                newRequest.SetLocateKey(request.LocateKey);
 
                 var expression = strategy.GetActivationExpression(scope, newRequest);
-
                 if (expression != null)
                 {
                     expressions.Add(expression);
@@ -300,18 +236,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private IActivationStrategy GetRequestingStrategy(IActivationExpressionRequest request)
         {
-            if (request == null)
+            return request switch
             {
-                return null;
-            }
-
-            if (request.RequestingStrategy != null &&
-                request.RequestingStrategy.StrategyType == ActivationStrategyType.ExportStrategy)
-            {
-                return request.RequestingStrategy;
-            }
-
-            return GetRequestingStrategy(request.Parent);
+                null => null,
+                { RequestingStrategy: { StrategyType: ActivationStrategyType.ExportStrategy } strategy } => strategy,
+                _ => GetRequestingStrategy(request.Parent),
+            };
         }
 
         /// <summary>

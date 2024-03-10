@@ -43,20 +43,10 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (constructorInfo.IsPublic)
                 {
-                    foreach (var customAttribute in constructorInfo.GetCustomAttributes())
+                    var type = strategy.ActivationType;
+                    if (ImportAttributeInfo.For(constructorInfo, type, type.Name) != null)
                     {
-                        if (customAttribute is IImportAttribute importAttribute)
-                        {
-                            var importInfo = importAttribute.ProvideImportInfo(strategy.ActivationType,
-                                strategy.ActivationType.Name);
-
-                            if (importInfo != null)
-                            {
-                                strategy.SelectedConstructor = constructorInfo;
-
-                                break;
-                            }
-                        }
+                        strategy.SelectedConstructor = constructorInfo;
                     }
                 }
             }
@@ -71,40 +61,23 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                foreach (var attribute in methodInfo.GetCustomAttributes())
+                if (ImportAttributeInfo.For(methodInfo, null, methodInfo.Name) != null)
                 {
-                    var importAttribute = attribute as IImportAttribute;
+                    var methodInjection = new MethodInjectionInfo { Method = methodInfo };
+                    strategy.MethodInjectionInfo(methodInjection);
 
-                    var importInfo = importAttribute?.ProvideImportInfo(strategy.ActivationType, methodInfo.Name);
-
-                    if (importInfo != null)
+                    foreach (var parameterInfo in methodInfo.GetParameters())
                     {
-                        var methodInjection = new MethodInjectionInfo { Method = methodInfo };
-
-                        foreach (var parameterInfo in methodInfo.GetParameters())
+                        var importInfo = ImportAttributeInfo.For(parameterInfo, strategy.ActivationType, parameterInfo.Name);
+                        if (importInfo != null)
                         {
-                            foreach (var customAttribute in parameterInfo.GetCustomAttributes())
-                            {
-                                if (customAttribute is IImportAttribute)
+                            methodInjection.MethodParameterInfo(
+                                new MethodParameterInfo(parameterInfo.Name)
                                 {
-                                    var parameterImportInfo =
-                                        ((IImportAttribute)customAttribute).ProvideImportInfo(strategy.ActivationType,
-                                            parameterInfo.Name);
-
-                                    if (parameterImportInfo  != null)
-                                    {
-                                        methodInjection.MethodParameterInfo(
-                                            new MethodParameterInfo(parameterInfo.Name)
-                                            {
-                                                IsRequired = parameterImportInfo.IsRequired,
-                                                LocateKey = parameterImportInfo.ImportKey?.ToString()
-                                            });
-                                    }
-                                }
-                            }   
+                                    IsRequired = importInfo.IsRequired,
+                                    LocateKey = importInfo.ImportKey,
+                                });
                         }
-
-                        strategy.MethodInjectionInfo(methodInjection);
                     }
                 }
             }
@@ -121,18 +94,19 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                foreach (var attribute in propertyInfo.GetCustomAttributes())
+                var importInfo = ImportAttributeInfo.For(propertyInfo, strategy.ActivationType, propertyInfo.Name);
+                if (importInfo != null)
                 {
-                    var importAttr = attribute as IImportAttribute;
+                    var name = propertyInfo.Name;
 
-                    var importInfo = importAttr?.ProvideImportInfo(strategy.ActivationType, propertyInfo.Name);
-
-                    if (importInfo != null)
-                    {
-                        var name = propertyInfo.Name;
-
-                        strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(propertyInfo.PropertyType, m => m.Name == name, false) { IsRequired = importInfo.IsRequired, LocateKey = importInfo.ImportKey });
-                    }
+                    strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(
+                        propertyInfo.PropertyType, 
+                        m => m.Name == name, 
+                        false)
+                    { 
+                        IsRequired = importInfo.IsRequired, 
+                        LocateKey = importInfo.ImportKey
+                    });
                 }
             }
         }
@@ -146,18 +120,19 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                foreach (var attribute in fieldInfo.GetCustomAttributes())
+                var importInfo = ImportAttributeInfo.For(fieldInfo, strategy.ActivationType, fieldInfo.Name);
+                if (importInfo != null)
                 {
-                    var importAttr = attribute as IImportAttribute;
+                    var name = fieldInfo.Name;
 
-                    var importInfo = importAttr?.ProvideImportInfo(strategy.ActivationType, fieldInfo.Name);
-
-                    if (importInfo != null)
-                    {
-                        var name = fieldInfo.Name;
-
-                        strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(fieldInfo.FieldType, info => info.Name == name, false) { IsRequired = importInfo.IsRequired, LocateKey = importInfo.ImportKey });
-                    }
+                    strategy.MemberInjectionSelector(new PropertyFieldInjectionSelector(
+                        fieldInfo.FieldType, 
+                        info => info.Name == name, 
+                        false) 
+                    { 
+                        IsRequired = importInfo.IsRequired, 
+                        LocateKey = importInfo.ImportKey,
+                    });
                 }
             }
         }

@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         public SimpleFuncExportStrategy(Func<IExportLocatorScope, T> func, IInjectionScope injectionScope) : base(typeof(T), injectionScope)
         {
             _func = func;
-            _delegate = (scope, disposalScope, context) => func(injectionScope);
+            _delegate = (scope, disposalScope, context, key) => func(injectionScope);
         }
 
         /// <summary>
@@ -49,9 +49,13 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key = null)
         {
             return _delegate;
         }

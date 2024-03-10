@@ -114,7 +114,8 @@ namespace Grace.Tests.DependencyInjection.Registration
         [AutoData]
         public void ExportRegistrationBlock_ExportWrapper(ExportRegistrationBlock block)
         {
-            Assert.Throws<ArgumentNullException>(() => block.ExportWrapper(null));
+            Assert.Throws<ArgumentNullException>(() => block.ExportWrapper((Type)null));
+            Assert.Throws<ArgumentNullException>(() => block.ExportWrapper((ICompiledWrapperStrategy)null));
         }
 
         [Theory]

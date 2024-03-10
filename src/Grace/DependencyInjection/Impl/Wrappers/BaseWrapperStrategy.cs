@@ -14,10 +14,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// </summary>
     public abstract class BaseWrapperStrategy : ConfigurableActivationStrategy, ICompiledWrapperStrategy
     {
-        /// <summary>
-        /// Activation delegates
-        /// </summary>
-        protected ImmutableHashTree<Type, ActivationStrategyDelegate> ActivationDelegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+        private ImmutableHashTree<Type, ActivationStrategyDelegate> ActivationDelegates 
+            = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+
+        private ImmutableHashTree<(Type, object), ActivationStrategyDelegate> KeyedActivationDelegates 
+            = ImmutableHashTree<(Type, object), ActivationStrategyDelegate>.Empty;
 
         /// <summary>
         /// Default constructor
@@ -25,9 +26,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="activationType">type being activated</param>
         /// <param name="injectionScope">scope for strategy</param>
         protected BaseWrapperStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
-        {
-
-        }
+        { }
 
         /// <summary>
         /// Get activation configuration for strategy
@@ -37,12 +36,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedType = ReflectionHelper.CreateClosedExportTypeFromRequestingType(ActivationType, activationType);
 
-            if (closedType != null)
-            {
-                return ActivationConfiguration.CloneToType(closedType);
-            }
-
-            return base.GetActivationConfiguration(activationType);
+            return closedType != null
+                ? ActivationConfiguration.CloneToType(closedType)
+                : base.GetActivationConfiguration(activationType);
         }
 
         /// <summary>
@@ -63,26 +59,42 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">activation key</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope,
-                                                                        IActivationStrategyCompiler compiler,
-                                                                        Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope,
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key = null)
         {
-            var returnValue = ActivationDelegates.GetValueOrDefault(activationType);
+            var returnValue = key == null
+                ? ActivationDelegates.GetValueOrDefault(activationType)
+                : KeyedActivationDelegates.GetValueOrDefault((activationType, key));
 
             if (returnValue != null)
             {
                 return returnValue;
             }
+            
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            request.SetLocateKey(key);
 
-            returnValue = CompileDelegate(scope, compiler, activationType);
+            returnValue = CompileDelegate(compiler, request);
 
-            if (returnValue != null)
+            if (returnValue == null)
             {
-                returnValue = ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates, activationType, returnValue);
+                return null;
             }
 
-            return returnValue;
+            
+            if (key == null)
+            {
+                return ImmutableHashTree.ThreadSafeAdd(ref ActivationDelegates, activationType, returnValue);
+            }
+            else
+            {
+                return ImmutableHashTree.ThreadSafeAdd(ref KeyedActivationDelegates, (activationType, key), returnValue);
+            }
         }
 
         /// <summary>
@@ -95,35 +107,38 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <summary>
         /// Compile a delegate
         /// </summary>
-        /// <param name="scope">scope</param>
         /// <param name="compiler">compiler</param>
-        /// <param name="activationType">activation type</param>
-        protected virtual ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        /// <param name="request">activation request</param>
+        protected virtual ActivationStrategyDelegate CompileDelegate(
+            IActivationStrategyCompiler compiler,
+            IActivationExpressionRequest request)
         {
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
-
-            var expressionResult = GetActivationExpression(scope, request);
-
-            ActivationStrategyDelegate returnValue = null;
-
-            if (expressionResult != null)
-            {
-                returnValue = compiler.CompileDelegate(scope, expressionResult);
-            }
-
-            return returnValue;
+            return GetActivationExpression(request.RequestingScope, request) is {} expression
+                ? compiler.CompileDelegate(request.RequestingScope, expression)
+                : null;
         }
 
-
-        public static IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string hintName = null, int? position = null)
+        public static IKnownValueExpression CreateKnownValueExpression(
+            IActivationExpressionRequest request, 
+            Type argType, 
+            string valueId, 
+            string hintName = null, 
+            int? position = null)
         {
-            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(nameof(IExtraDataContainer.GetExtraData), new[] { typeof(object) });
+            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(
+                nameof(IExtraDataContainer.GetExtraData), 
+                [typeof(object)]);
 
-            var callExpression = Expression.Call(request.InjectionContextParameter, getMethod,
+            var callExpression = Expression.Call(
+                request.InjectionContextParameter, 
+                getMethod,
                 Expression.Constant(valueId));
 
-            return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), hintName, position);
+            return new SimpleKnownValueExpression(
+                argType, 
+                Expression.Convert(callExpression, argType), 
+                hintName, 
+                position);
         }
     }
 }

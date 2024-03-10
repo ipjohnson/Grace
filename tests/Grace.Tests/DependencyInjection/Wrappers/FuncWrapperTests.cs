@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -61,6 +62,5 @@ namespace Grace.Tests.DependencyInjection.Wrappers
 
             Assert.Null(instance.GetWrappedType(typeof(int)));
         }
-
     }
 }

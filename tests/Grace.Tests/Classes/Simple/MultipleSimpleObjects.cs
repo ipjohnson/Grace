@@ -17,6 +17,16 @@ namespace Grace.Tests.Classes.Simple
         public ISimpleObject SimpleObject { get; }
     }
 
+    public class ImportMultipleSimpleObjects
+    {
+        public ImportMultipleSimpleObjects(ISimpleObject[] simpleObjects)
+        {
+            SimpleObjects = simpleObjects;
+        }
+
+        public ISimpleObject[] SimpleObjects { get; }
+    }
+
     [SimpleFilter]
     public interface ISimpleObject
     {

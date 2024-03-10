@@ -10,6 +10,7 @@ namespace Grace.DependencyInjection
     {
         private readonly IExportLocatorScope _scope;
         private readonly IInjectionContext _context;
+        private readonly object _key;
         private readonly ActivationStrategyDelegate _activationDelegate;
         private readonly string _scopeName;
         private IExportLocatorScope _childScope;
@@ -20,12 +21,19 @@ namespace Grace.DependencyInjection
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="context"></param>
+        /// <param name="key"></param>
         /// <param name="activationDelegate"></param>
         /// <param name="scopeName"></param>
-        public Scoped(IExportLocatorScope scope,  IInjectionContext context, ActivationStrategyDelegate activationDelegate, string scopeName = null)
+        public Scoped(
+            IExportLocatorScope scope, 
+            IInjectionContext context,
+            object key,
+            ActivationStrategyDelegate activationDelegate, 
+            string scopeName = null)
         {
             _scope = scope;
             _context = context;
+            _key = key;
             _activationDelegate = activationDelegate;
             _scopeName = scopeName;
         }
@@ -41,7 +49,7 @@ namespace Grace.DependencyInjection
                 {
                     _childScope = _scope.BeginLifetimeScope(_scopeName);
 
-                    _instance = (T)_activationDelegate(_childScope, _childScope, _context);
+                    _instance = (T)_activationDelegate(_childScope, _childScope, _context, _key);
                 }
 
                 return _instance;

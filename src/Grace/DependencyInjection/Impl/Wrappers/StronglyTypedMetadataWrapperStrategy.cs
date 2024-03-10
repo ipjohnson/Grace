@@ -65,12 +65,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             var newRequest = request.NewRequest(requestType, this, request.ActivationType, RequestType.Other, null, true, true);
 
-            var strategy = request.GetWrappedExportStrategy();
-
-            if (strategy == null)
-            {
-                throw new Exception("Could not find export strategy to get metadata from");
-            }
+            var strategy = request.GetWrappedExportStrategy()
+                ?? throw new Exception("Could not find export strategy to get metadata from");
 
             var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
@@ -90,17 +86,15 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <summary>
         /// Compiles delegate
         /// </summary>
-        /// <param name="scope"></param>
         /// <param name="compiler"></param>
-        /// <param name="activationType"></param>
-        protected override ActivationStrategyDelegate CompileDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        /// <param name="request"></param>
+        protected override ActivationStrategyDelegate CompileDelegate(
+            IActivationStrategyCompiler compiler,
+            IActivationExpressionRequest request)
         {
-            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(request.RequestingScope, request);
 
-            var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, request);
-
-            return compiler.CompileDelegate(scope, expressionResult);
+            return compiler.CompileDelegate(request.RequestingScope, expressionResult);
         }
     }
 }

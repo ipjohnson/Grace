@@ -75,7 +75,8 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data to be used while locating</param>
         /// <param name="consider">strategy filter</param>
         /// <param name="comparer">comparer to use to sort collection</param>
-        List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null);
+        /// <param name="withKey">key to use during construction</param>
+        List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null, object withKey = null);
 
         /// <summary>
         /// Locate all of a specific type
@@ -85,7 +86,8 @@ namespace Grace.DependencyInjection
         /// <param name="extraData">extra data to use during locate</param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null);
+        /// <param name="withKey">key to use during construction</param>
+        List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null, object withKey = null);
 
         /// <summary>
         /// Try to locate an export by type

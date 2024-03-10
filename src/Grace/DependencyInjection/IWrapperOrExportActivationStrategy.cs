@@ -13,8 +13,13 @@ namespace Grace.DependencyInjection
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType);
+        ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler, 
+            Type activationType,
+            object key = null);
 
         /// <summary>
         /// Get an activation expression for this strategy

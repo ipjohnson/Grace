@@ -41,16 +41,22 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedClass = typeof(FuncExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
-            var closedMethod = closedClass.GetRuntimeMethod(nameof(FuncExpression<object>.CreateFunc), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(
+                nameof(FuncExpression<object>.CreateFunc), 
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, this);
 
             request.RequireExportScope();
             request.RequireDisposalScope();
 
-            var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
-                    request.DisposalScopeExpression, request.InjectionContextParameter);
+            var callExpression = Expression.Call(
+                Expression.Constant(instance), 
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.GetKeyExpression());
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
@@ -75,7 +81,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TResult>), RequestType.Other, null, true);
 
-                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
@@ -89,10 +94,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="scope"></param>
             /// <param name="disposalScope"></param>
             /// <param name="context"></param>
+            /// <param name="key"></param>
             /// <returns></returns>
-            public Func<TResult> CreateFunc(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context)
+            public Func<TResult> CreateFunc(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, object key)
             {
-                return () => (TResult)_action(scope, disposalScope, context);
+                return () => (TResult)_action(scope, disposalScope, context, key);
             }
         }
     }

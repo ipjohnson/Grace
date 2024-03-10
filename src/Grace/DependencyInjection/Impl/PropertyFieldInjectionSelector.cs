@@ -60,11 +60,9 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (_filter == null || _filter(property))
                     {
-                        var importAttribute = _processAttributes ?
-                            property.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() :
-                            null;
-
-                        var importInfo = importAttribute?.ProvideImportInfo(property.PropertyType,property.Name);
+                        var importInfo = _processAttributes
+                            ? ImportAttributeInfo.For(property, property.PropertyType, property.Name)
+                            : null;
 
                         object key = importInfo?.ImportKey ?? LocateKey;
 
@@ -89,11 +87,9 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (_filter == null || _filter(field))
                     {
-                        var importAttribute = _processAttributes ?
-                            field.GetCustomAttributes().OfType<IImportAttribute>().FirstOrDefault() :
-                            null;
-
-                        var importInfo = importAttribute?.ProvideImportInfo(field.FieldType, field.Name);
+                        var importInfo = _processAttributes 
+                            ? ImportAttributeInfo.For(field, field.FieldType, field.Name)
+                            : null;
 
                         object key = importInfo?.ImportKey ?? LocateKey;
 

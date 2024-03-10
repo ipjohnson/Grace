@@ -160,10 +160,16 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data </param>
         /// <param name="consider">provide method to filter out exports</param>
         /// <param name="comparer">comparer to use for sorting</param>
+        /// <param name="withKey">key to use during construction</param>
         /// <returns>list of all type</returns>
-        public override List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
+        public override List<object> LocateAll(
+            Type type, 
+            object extraData = null, 
+            ActivationStrategyFilter consider = null, 
+            IComparer<object> comparer = null, 
+            object withKey = null)
         {
-            return ((IInjectionScope)this).InternalLocateAll(this, this, type, extraData, consider, comparer);
+            return ((IInjectionScope)this).InternalLocateAll(this, this, type, withKey, extraData, consider, comparer);
         }
 
         /// <summary>
@@ -174,10 +180,16 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to use during construction</param>
         /// <param name="consider">provide method to filter out exports</param>
         /// <param name="comparer">comparer to use for sorting</param>
+        /// <param name="withKey">key to use during construction</param>
         /// <returns>list of all located</returns>
-        public override List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
+        public override List<T> LocateAll<T>(
+            Type type = null, 
+            object extraData = null, 
+            ActivationStrategyFilter consider = null, 
+            IComparer<T> comparer = null,
+            object withKey = null)
         {
-            return ((IInjectionScope)this).InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
+            return ((IInjectionScope)this).InternalLocateAll(this, this, type ?? typeof(T), withKey, extraData, consider, comparer);
         }
 
         /// <summary>
@@ -466,7 +478,7 @@ namespace Grace.DependencyInjection.Impl
                 var strategyDelegate =
                     strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
 
-                return strategyDelegate(childScope, disposalScope, CreateContext(extraData));
+                return strategyDelegate(childScope, disposalScope, CreateContext(extraData), null);
             }
 
             if (Parent != null)
@@ -490,10 +502,18 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="type"></param>
+        /// <param name="withKey"></param>
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        List<T> IInjectionScope.InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer)
+        List<T> IInjectionScope.InternalLocateAll<T>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            object withKey,
+            object extraData, 
+            ActivationStrategyFilter consider, 
+            IComparer<T> comparer)
         {
             var returnList = new List<T>();
 
@@ -503,7 +523,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (collection != null)
             {
-                LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, context, consider, returnList);
+                LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, withKey, context, consider, returnList);
             }
 
             if (type.IsConstructedGenericType)
@@ -514,13 +534,13 @@ namespace Grace.DependencyInjection.Impl
 
                 if (collection != null)
                 {
-                    LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, context, consider, returnList);
+                    LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, withKey, context, consider, returnList);
                 }
             }
 
             if (Parent is IInjectionScope injectionParent)
             {
-                returnList.AddRange(injectionParent.InternalLocateAll<T>(scope, disposalScope, type, context, consider, null));
+                returnList.AddRange(injectionParent.InternalLocateAll<T>(scope, disposalScope, type, withKey, context, consider, null));
             }
 
             if (comparer != null)
@@ -554,7 +574,7 @@ namespace Grace.DependencyInjection.Impl
                     var activation = strategy.GetActivationStrategyDelegate(this,
                         InternalFieldStorage.ActivationStrategyCompiler, typeof(object));
 
-                    returnList.Add(activation(scope, disposalScope, context.Clone()));
+                    returnList.Add(activation(scope, disposalScope, context.Clone(), null));
                 }
             }
 
@@ -624,42 +644,31 @@ namespace Grace.DependencyInjection.Impl
             {
                 if (type.IsArray)
                 {
-                    return DynamicArray(scope, disposalScope, type, consider, injectionContext);
+                    return DynamicArray(scope, disposalScope, type, key, consider, injectionContext);
                 }
 
                 if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    return DynamicIEnumerable(scope, disposalScope, type, consider, injectionContext);
+                    return DynamicIEnumerable(scope, disposalScope, type, key, consider, injectionContext);
                 }
             }
 
-            var compiledDelegate = InternalFieldStorage.ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, InternalFieldStorage.MissingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
-
-            if (compiledDelegate != null)
+            if (((IInjectionScope)this)
+                .InternalTryLocateActivationDelegate(scope, disposalScope, type, consider, key, key, injectionContext, out var value))
             {
-                if (key == null && consider == null)
-                {
-                    compiledDelegate = AddObjectFactory(type, compiledDelegate);
-                }
-
-                return compiledDelegate(scope, disposalScope ?? scope, injectionContext);
+                return value;
             }
 
-            if (Parent != null)
-            {
-                var injectionScopeParent = (IInjectionScope)Parent;
-
-                return injectionScopeParent.LocateFromChildScope(scope, disposalScope, type, injectionContext, consider, key, allowNull, isDynamic);
-            }
+            var rootConfig = GetRootScopeConfiguration();
 
             if (type == typeof(IInjectionScope) &&
-                ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
+                rootConfig.Behaviors.AllowInjectionScopeLocation)
             {
                 return scope;
             }
 
-            var value = ScopeConfiguration.Implementation.Locate<IInjectionContextValueProvider>()
-                .GetValueFromInjectionContext(scope, type, null, injectionContext, !allowNull);
+            value = rootConfig.Implementation.Locate<IInjectionContextValueProvider>()
+                .GetValueFromInjectionContext(scope, type, null, injectionContext, isRequired: !allowNull);
 
             if (value != null)
             {
@@ -674,7 +683,52 @@ namespace Grace.DependencyInjection.Impl
             return null;
         }
 
-        private object DynamicIEnumerable(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
+        private IInjectionScopeConfiguration GetRootScopeConfiguration()
+        {
+            IExportLocatorScope scope = this;
+
+            while (scope.Parent != null)
+            { 
+                scope = scope.Parent;
+            }
+
+            return ((InjectionScope)scope).ScopeConfiguration;
+        }
+
+        bool IInjectionScope.InternalTryLocateActivationDelegate(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            ActivationStrategyFilter consider, 
+            object key,
+            object realKey, // May differ when key is ImportKey.Any
+            IInjectionContext injectionContext,
+            out object value)
+        {
+            var compiledDelegate = InternalFieldStorage.ActivationStrategyCompiler.FindDelegate(this, type, consider, key, injectionContext, InternalFieldStorage.MissingExportStrategyProviders != ImmutableLinkedList<IMissingExportStrategyProvider>.Empty);
+
+            if (compiledDelegate != null)
+            {
+                if (key == null && consider == null)
+                {
+                    compiledDelegate = AddObjectFactory(type, compiledDelegate);
+                }
+
+                value = compiledDelegate(scope, disposalScope ?? scope, injectionContext, realKey);
+                return true;
+            }
+
+            if (Parent != null)
+            {
+                return ((IInjectionScope)Parent)
+                    .InternalTryLocateActivationDelegate(scope, disposalScope, type, consider, key, realKey, injectionContext, out value);
+            }
+
+            value = null;
+            return false;
+        }
+
+        private object DynamicIEnumerable(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object key, ActivationStrategyFilter consider, IInjectionContext injectionContext)
         {
             if (InternalFieldStorage.DynamicIEnumerableLocator == null)
             {
@@ -682,18 +736,26 @@ namespace Grace.DependencyInjection.Impl
                     ScopeConfiguration.Implementation.Locate<IDynamicIEnumerableLocator>(), null);
             }
 
-            return InternalFieldStorage.DynamicIEnumerableLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
+            return InternalFieldStorage.DynamicIEnumerableLocator.Locate(this, scope, disposalScope, type, key, consider, injectionContext);
         }
 
-        private object DynamicArray(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
+        private object DynamicArray(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            object key,
+            ActivationStrategyFilter consider, 
+            IInjectionContext injectionContext)
         {
             if (InternalFieldStorage.DynamicArrayLocator == null)
             {
-                Interlocked.CompareExchange(ref InternalFieldStorage.DynamicArrayLocator,
-                    ScopeConfiguration.Implementation.Locate<IDynamicArrayLocator>(), null);
+                Interlocked.CompareExchange(
+                    ref InternalFieldStorage.DynamicArrayLocator,
+                    ScopeConfiguration.Implementation.Locate<IDynamicArrayLocator>(), 
+                    null);
             }
 
-            return InternalFieldStorage.DynamicArrayLocator.Locate(this, scope, disposalScope, type, consider, injectionContext);
+            return InternalFieldStorage.DynamicArrayLocator.Locate(this, scope, disposalScope, type, key, consider, injectionContext);
         }
 
         private ActivationStrategyDelegate AddObjectFactory(Type type, ActivationStrategyDelegate activationStrategyDelegate)
@@ -720,57 +782,78 @@ namespace Grace.DependencyInjection.Impl
             return InternalFieldStorage.Wrappers;
         }
 
-        private void LocateEnumerablesFromStrategyCollection<TStrategy, TValue>(IActivationStrategyCollection<TStrategy> collection, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList) where TStrategy : IWrapperOrExportActivationStrategy
+        private void LocateEnumerablesFromStrategyCollection<TStrategy, TValue>(
+            IActivationStrategyCollection<TStrategy> collection, 
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            object key,
+            IInjectionContext context, 
+            ActivationStrategyFilter filter, 
+            List<TValue> returnList) 
+            where TStrategy : IWrapperOrExportActivationStrategy
         {
-            foreach (var strategy in collection.GetStrategies())
+            if (key == null)
             {
-                ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, strategy);
-            }
-
-            if (InternalFieldStorage.ScopeConfiguration.ReturnKeyedInEnumerable)
-            {
-                foreach (var keyValuePair in collection.GetKeyedStrategies())
+                foreach (var strategy in collection.GetStrategies())
                 {
-                    ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, keyValuePair.Value);
+                    ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, strategy);
+                }
+
+                if (InternalFieldStorage.ScopeConfiguration.ReturnKeyedInEnumerable)
+                {
+                    foreach (var keyValuePair in collection.GetKeyedStrategies())
+                    {
+                        ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, keyValuePair.Value);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var strategy in collection.GetKeyedStrategies(key))
+                {
+                    ProcessStrategyForCollection(scope, disposalScope, type, context, filter, returnList, strategy, key);
                 }
             }
         }
 
-        private void ProcessStrategyForCollection<TStrategy, TValue>(IExportLocatorScope scope, IDisposalScope disposalScope,
-            Type type, IInjectionContext context, ActivationStrategyFilter filter, List<TValue> returnList, TStrategy strategy)
+        private void ProcessStrategyForCollection<TStrategy, TValue>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope,
+            Type type, 
+            IInjectionContext context, 
+            ActivationStrategyFilter filter, 
+            List<TValue> returnList, 
+            TStrategy strategy, 
+            object key = null)
             where TStrategy : IWrapperOrExportActivationStrategy
         {
             if (strategy.HasConditions)
             {
-                var pass = true;
-
+                var staticContext = new StaticInjectionContext(type);
+                
                 foreach (var condition in strategy.Conditions)
                 {
-                    if (!condition.MeetsCondition(strategy, new StaticInjectionContext(type)))
+                    if (!condition.MeetsCondition(strategy, staticContext))
                     {
-                        pass = false;
-                        break;
+                        return;
                     }
-                }
-
-                if (!pass)
-                {
-                    return;
                 }
             }
 
-            if (filter != null && !filter(strategy))
+            if (filter?.Invoke(strategy) == false)
             {
                 return;
             }
 
             var activationDelegate =
-                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type);
+                strategy.GetActivationStrategyDelegate(this, InternalFieldStorage.ActivationStrategyCompiler, type, key);
 
             if (activationDelegate != null)
             {
                 returnList.Add(
-                    (TValue)activationDelegate(scope, disposalScope, context?.Clone()));
+                    (TValue)activationDelegate(scope, disposalScope, context?.Clone(), key)
+                );
             }
         }
 

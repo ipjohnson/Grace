@@ -464,38 +464,24 @@ namespace Grace.DependencyInjection.Impl
 
             foreach (var property in type.GetRuntimeProperties())
             {
-                foreach (var attribute in property.GetCustomAttributes())
+                var importInfo = ImportAttributeInfo.For(property, property.PropertyType, property.Name);
+                if (importInfo != null)
                 {
-                    if (attribute is IImportAttribute importAttribute)
-                    {
-                        var injectionInfo = importAttribute.ProvideImportInfo(property.PropertyType, property.Name);
-
-                        if (injectionInfo != null)
+                    strategy.MemberInjectionSelector(new KnownMemberInjectionSelector(
+                        new MemberInjectionInfo
                         {
-                            strategy.MemberInjectionSelector(new KnownMemberInjectionSelector(
-                                    new MemberInjectionInfo
-                                    {
-                                        MemberInfo = property,
-                                        IsRequired = injectionInfo.IsRequired,
-                                        LocateKey = injectionInfo.ImportKey
-                                    }));
-                        }
-                    }
+                            MemberInfo = property,
+                            IsRequired = importInfo.IsRequired,
+                            LocateKey = importInfo.ImportKey
+                        }));
                 }
             }
 
             foreach (var method in type.GetRuntimeMethods())
             {
-                foreach (var attribute in method.GetCustomAttributes())
+                if (ImportAttributeInfo.For(method, null, method.Name) != null)
                 {
-                    var importAttribute = attribute as IImportAttribute;
-
-                    var injectionInfo = importAttribute?.ProvideImportInfo(null, method.Name);
-
-                    if (injectionInfo != null)
-                    {
-                        strategy.MethodInjectionInfo(new MethodInjectionInfo { Method = method });
-                    }
+                    strategy.MethodInjectionInfo(new MethodInjectionInfo { Method = method });
                 }
             }
         }

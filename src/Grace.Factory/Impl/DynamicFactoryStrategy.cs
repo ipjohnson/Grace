@@ -55,7 +55,8 @@ namespace Grace.Factory.Impl
             {
                 request.ScopeParameter,
                 request.DisposalScopeExpression,
-                request.InjectionContextParameter
+                request.InjectionContextParameter,
+                Expression.Constant(request.LocateKey, typeof(object)),
             };
 
             var uniqueId = UniqueStringId.Generate();

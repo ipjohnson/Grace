@@ -37,7 +37,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (ReferenceEquals(currentNode.Key, type))
             {
-                return currentNode.Value(scope, scope, null);
+                return currentNode.Value(scope, scope, injectionContext: null, key: null);
             }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return ReferenceEquals(currentNode.Key, type) ?
-                currentNode.Value(scope, scope, null) :
+                currentNode.Value(scope, scope, injectionContext: null, key: null) :
                 FallbackExecution(currentNode, type, scope, false, null);
         }
 
@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (ReferenceEquals(currentNode.Key, type))
             {
-                return currentNode.Value(scope, scope, null);
+                return currentNode.Value(scope, scope, injectionContext: null, key: null);
             }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
@@ -71,7 +71,7 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return ReferenceEquals(currentNode.Key, type) ?
-                currentNode.Value(scope, scope, null) :
+                currentNode.Value(scope, scope, injectionContext: null, key: null) :
                 FallbackExecution(currentNode, type, scope, true, null);
         }
 
@@ -89,7 +89,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (ReferenceEquals(currentNode.Key, type))
             {
-                return currentNode.Value(scope, scope, context);
+                return currentNode.Value(scope, scope, context, key: null);
             }
 
             while (currentNode.Hash != hashCode && currentNode.Height != 0)
@@ -98,7 +98,7 @@ namespace Grace.DependencyInjection.Impl
             }
 
             return ReferenceEquals(currentNode.Key, type) ?
-                currentNode.Value(scope, scope, context) :
+                currentNode.Value(scope, scope, context, key: null) :
                 FallbackExecution(currentNode, type, scope, allowNull, context);
         }
 
@@ -112,7 +112,7 @@ namespace Grace.DependencyInjection.Impl
                 {
                     if (ReferenceEquals(kvp.Key, type))
                     {
-                        return kvp.Value(scope, scope, context);
+                        return kvp.Value(scope, scope, context, key: null);
                     }
                 }
             }

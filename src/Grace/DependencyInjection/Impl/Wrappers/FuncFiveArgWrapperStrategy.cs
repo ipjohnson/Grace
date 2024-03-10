@@ -44,16 +44,22 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var closedClass = typeof(FuncExpression<,,,,,>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 
-            var closedMethod = closedClass.GetRuntimeMethod(nameof(FuncExpression<object,object,object,object,object,object>.CreateFunc), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(
+                nameof(FuncExpression<object,object,object,object,object,object>.CreateFunc), 
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
             request.RequireExportScope();
             request.RequireDisposalScope();
 
-            var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
-                    request.DisposalScopeExpression, request.InjectionContextParameter);
+            var callExpression = Expression.Call(
+                Expression.Constant(instance), 
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.GetKeyExpression());
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
@@ -97,7 +103,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T4), _t4Id));
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T5), _t5Id));
 
-                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
@@ -111,9 +116,13 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="scope"></param>
             /// <param name="disposalScope"></param>
             /// <param name="context"></param>
+            /// <param name="key"></param>
             /// <returns></returns>
-            public Func<T1, T2, T3, T4, T5, TResult> CreateFunc(IExportLocatorScope scope, IDisposalScope disposalScope,
-                IInjectionContext context)
+            public Func<T1, T2, T3, T4, T5, TResult> CreateFunc(
+                IExportLocatorScope scope, 
+                IDisposalScope disposalScope,
+                IInjectionContext context,
+                object key)
             {
                 return (arg1, arg2, arg3, arg4, arg5) =>
                 {
@@ -125,7 +134,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                     newContext.SetExtraData(_t4Id, arg4);
                     newContext.SetExtraData(_t5Id, arg5);
 
-                    return (TResult)_action(scope, disposalScope, newContext);
+                    return (TResult)_action(scope, disposalScope, newContext, key);
                 };
             }
         }

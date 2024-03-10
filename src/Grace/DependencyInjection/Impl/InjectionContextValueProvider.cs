@@ -103,7 +103,7 @@ namespace Grace.DependencyInjection.Impl
                         ReflectionService.InjectAndExecuteDelegate(scope, new StaticInjectionContext(type), context, value as Delegate);
                 }
 
-                if (!(type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())))
+                if (!type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
                 {
                     try
                     {
@@ -284,16 +284,10 @@ namespace Grace.DependencyInjection.Impl
 
         protected virtual bool GetValueFromExtraDataProvider(Type type, object key, IExtraDataContainer dataProvider, out object tValue)
         {
-            object value = null;
-
-            if (key != null)
-            {
-                value = dataProvider.GetExtraData(key);
-            }
-
-            if (value != null)
+            if (key != null && dataProvider.GetExtraData(key) is object value)
             {
                 tValue = value;
+                
                 return true;
             }
 

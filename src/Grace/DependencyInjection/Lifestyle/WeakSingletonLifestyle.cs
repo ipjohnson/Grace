@@ -40,18 +40,24 @@ namespace Grace.DependencyInjection.Lifestyle
             if (_delegate == null)
             {
                 // new request as we don't want to carry any info over from parent request
-                var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+                var newRequest = request.NewRootedRequest(scope, true);
 
                 var newDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
                 Interlocked.CompareExchange(ref _delegate, newDelegate, null);
             }
 
-            var getMethod = typeof(WeakSingletonLifestyle).GetRuntimeMethod(nameof(GetValue), new[] {typeof(IInjectionScope)});
+            var getMethod = typeof(WeakSingletonLifestyle).GetRuntimeMethod(
+                nameof(GetValue), 
+                new[] { typeof(IInjectionScope), typeof(object) });
 
             var closedMethod = getMethod.MakeGenericMethod(request.ActivationType);
 
-            var expression = Expression.Call(Expression.Constant(this), closedMethod, Expression.Constant(scope));
+            var expression = Expression.Call(
+                Expression.Constant(this), 
+                closedMethod, 
+                Expression.Constant(scope),
+                request.Constants.ScopeParameter);
 
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
@@ -61,7 +67,8 @@ namespace Grace.DependencyInjection.Lifestyle
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="scope"></param>
-        public T GetValue<T>(IInjectionScope scope)
+        /// <param name="key"></param>
+        public T GetValue<T>(IInjectionScope scope, object key)
         {
             var target = _weakReference.Target;
 
@@ -79,7 +86,7 @@ namespace Grace.DependencyInjection.Lifestyle
                     return (T) target;
                 }
 
-                target = _delegate(scope, scope, null);
+                target = _delegate(scope, scope, null, key);
 
                 _weakReference.Target = target;
 

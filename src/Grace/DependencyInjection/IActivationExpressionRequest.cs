@@ -155,15 +155,18 @@ namespace Grace.DependencyInjection
         /// Injection context parameter
         /// </summary>
         ParameterExpression InjectionContextParameter { get; }
+
+        /// <summary>
+        /// Locate Key parameter
+        /// </summary>
+        ParameterExpression KeyParameter { get; }
     }
 
     /// <summary>
     /// Data that is per delegate, used for lifestyles
     /// </summary>
     public interface IDataPerDelegate : IExtraDataContainer
-    {
-        
-    }
+    { }
 
     /// <summary>
     /// Request context to create expression
@@ -384,6 +387,27 @@ namespace Grace.DependencyInjection
         bool DisposalScopeRequired();
 
         /// <summary>
+        /// Require imported key
+        /// </summary>
+        void RequireKey();
+
+        /// <summary>
+        /// Imported key required
+        /// </summary>
+        bool KeyRequired();
+
+        /// <summary>
+        /// Indicates whether the key for this request is determined during activation 
+        /// (passed as a parameter to activation delegate), or is static (in LocateKey).
+        /// </summary>
+        bool HasDynamicKey();
+
+        /// <summary>
+        /// Get an expression representing the imported key
+        /// </summary>
+        Expression GetKeyExpression();
+
+        /// <summary>
         /// Create new request from this request
         /// </summary>
         /// <param name="activationType">request type</param>
@@ -399,10 +423,10 @@ namespace Grace.DependencyInjection
         /// <summary>
         /// Creates new rooted request (for lifestyles)
         /// </summary>
-        /// <param name="activationType"></param>
         /// <param name="requestingScope"></param>
         /// <param name="maintainPaths"></param>
-        IActivationExpressionRequest NewRootedRequest(Type activationType, IInjectionScope requestingScope, bool maintainPaths = false);
+        /// <remarks>Activation type and located key are copied over by default</remarks>
+        IActivationExpressionRequest NewRootedRequest(IInjectionScope requestingScope, bool maintainPaths = false);
 
         /// <summary>
         /// Scope the request originated in
