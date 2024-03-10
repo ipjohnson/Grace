@@ -1,45 +1,12 @@
-﻿using Optional;
-using Grace.DependencyInjection;
-using System;
-using System.Collections.Generic;
+﻿using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Wrappers;
+using Optional;
+using System;
 using System.Linq.Expressions;
 using System.Linq;
 
 namespace Grace.Tests.ThirdParty.Optional
 {
-    /// <summary>
-    /// Optional strategy provider
-    /// </summary>
-    public class OptionalStrategyProvider : IMissingExportStrategyProvider
-    {
-        /// <summary>
-        /// Can a given request be located using this provider
-        /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="request"></param>
-        public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
-        {
-            return request.ActivationType.IsConstructedGenericType &&
-                   request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>);
-        }
-
-        /// <summary>
-        /// Provide exports for a missing type
-        /// </summary>
-        /// <param name="scope">scope to provide value</param>
-        /// <param name="request">request</param>
-        /// <returns>set of activation strategies</returns>
-        public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
-        {
-            if (request.ActivationType.IsConstructedGenericType &&
-                request.ActivationType.GetGenericTypeDefinition() == typeof(Option<>))
-            {
-                yield return new OptionalWrapperStrategy(scope);
-            }
-        }
-    }
-
     public class OptionalWrapperStrategy(IInjectionScope scope) 
         : BaseWrapperStrategy(typeof(Option<>), scope)
     {

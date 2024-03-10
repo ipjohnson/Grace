@@ -13,8 +13,8 @@ namespace Grace.Tests.ThirdParty.Optional
         public OptionalTests()
         {
             container.Configure(c =>
-            {
-                c.AddMissingExportStrategyProvider(new OptionalStrategyProvider());
+            {                
+                c.ExportWrapper(new OptionalWrapperStrategy(c.OwningScope));
             });
         }
 
