@@ -16,10 +16,12 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <param name="injectionScope"></param>
         public ReadOnlyCollectionStrategy(IInjectionScope injectionScope) : base(typeof(ReadOnlyCollection<>), injectionScope)
-        {
-            AddExportAs(typeof(ReadOnlyCollection<>));
+        {            
+            // ReadOnlyCollection<> is registered by BaseGenericEnumerableStrategy
             AddExportAs(typeof(IReadOnlyList<>));
+            AddExportAsKeyed(typeof(IReadOnlyList<>), ImportKey.Any);
             AddExportAs(typeof(IReadOnlyCollection<>));
+            AddExportAsKeyed(typeof(IReadOnlyCollection<>), ImportKey.Any);
         }
         
         /// <summary>

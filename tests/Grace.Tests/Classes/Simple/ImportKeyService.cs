@@ -1,8 +1,9 @@
+using System;
 using Grace.DependencyInjection.Attributes;
 
 namespace Grace.Tests.Classes.Simple
 {
-    public class ImportKeyService
+    public class ImportKeyService : IComparable<ImportKeyService>
     {
         public ImportKeyService()
         { }
@@ -22,6 +23,8 @@ namespace Grace.Tests.Classes.Simple
         { 
             ObjectKey = key;
         }
+
+        public int CompareTo(ImportKeyService other) => IntKey.CompareTo(other.IntKey);
 
         public object ObjectKey { get; set; }
         public string StringKey { get; set; }

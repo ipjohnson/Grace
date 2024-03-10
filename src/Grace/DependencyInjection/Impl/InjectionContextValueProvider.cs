@@ -103,7 +103,7 @@ namespace Grace.DependencyInjection.Impl
                         ReflectionService.InjectAndExecuteDelegate(scope, new StaticInjectionContext(type), context, value as Delegate);
                 }
 
-                if (!(type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())))
+                if (!type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
                 {
                     try
                     {

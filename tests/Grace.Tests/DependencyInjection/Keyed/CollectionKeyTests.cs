@@ -1,4 +1,8 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 using Grace.Tests.Classes.Simple;
 using Xunit;
@@ -88,14 +92,59 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.Collection(parent.Value, AssertInstance1, AssertInstance2);
         }
 
+        private void AssertSpecialCollection<T>() where T: IEnumerable<ImportKeyService>
+        {
+            var list = container.Locate<T>(withKey: "Keyed");
+            Assert.Collection(list, AssertInstance1, AssertInstance2);
+
+            var parent = container.Locate<ServiceWithKeyWrapper<T>>();
+            Assert.Collection(parent.Value, AssertInstance1, AssertInstance2);
+        }
+
+        private void AssertUnorderedCollection<T>() where T: IEnumerable<ImportKeyService>
+        {
+            var list = container.Locate<T>(withKey: "Keyed");
+            Assert.Collection(list.OrderBy(x => x.IntKey), AssertInstance1, AssertInstance2);
+
+            var parent = container.Locate<ServiceWithKeyWrapper<T>>();
+            Assert.Collection(parent.Value.OrderBy(x => x.IntKey), AssertInstance1, AssertInstance2);
+        }
+
+        [Fact]
+        public void GraceImmutableLinkedList() 
+            => AssertSpecialCollection<ImmutableLinkedList<ImportKeyService>>();
+
+        [Fact]
+        public void GraceImmutableArray() 
+            => AssertSpecialCollection<Grace.Data.Immutable.ImmutableArray<ImportKeyService>>();
+
+        [Fact]
+        public void ReadonlyCollections()
+        {
+            AssertSpecialCollection<IReadOnlyCollection<ImportKeyService>>();
+            AssertSpecialCollection<IReadOnlyList<ImportKeyService>>();
+            AssertSpecialCollection<ReadOnlyCollection<ImportKeyService>>();
+        }
+        
         [Fact]
         public void List()
         {
-            var list = container.Locate<List<ImportKeyService>>(withKey: "Keyed");
-            Assert.Collection(list, AssertInstance1, AssertInstance2);
-
-            var parent = container.Locate<ServiceWithKeyWrapper<List<ImportKeyService>>>();
-            Assert.Collection(parent.Value, AssertInstance1, AssertInstance2);
+            AssertSpecialCollection<IList<ImportKeyService>>();
+            AssertSpecialCollection<ICollection<ImportKeyService>>();
+            AssertSpecialCollection<List<ImportKeyService>>();            
         }
+
+#if NET6_0_OR_GREATER
+        [Fact]
+        public void SystemImmutableCollections()
+        {
+            AssertSpecialCollection<ImmutableList<ImportKeyService>>();
+            AssertSpecialCollection<System.Collections.Immutable.ImmutableArray<ImportKeyService>>();
+            AssertSpecialCollection<ImmutableQueue<ImportKeyService>>();
+            AssertUnorderedCollection<ImmutableStack<ImportKeyService>>();
+            AssertUnorderedCollection<ImmutableHashSet<ImportKeyService>>();
+            AssertSpecialCollection<ImmutableSortedSet<ImportKeyService>>();
+        }
+#endif        
     }
 }
