@@ -16,6 +16,8 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// <param name="injectionScope"></param>
         protected BaseGenericEnumerableStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
         {
+            AddExportAs(activationType);
+            AddExportAsKeyed(activationType, ImportKey.Any);
         }
 
         /// <summary>

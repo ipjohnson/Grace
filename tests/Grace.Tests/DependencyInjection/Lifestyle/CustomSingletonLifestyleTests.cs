@@ -39,21 +39,28 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
                 }
 
                 // Create new request as we shouldn't carry over anything from the previous request
-                var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+                var newRequest = request.NewRootedRequest(scope, true);
 
                 _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
                 var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(SingletonActivation));
 
-                ConstantExpression = Expression.Call(Expression.Constant(this), singletonMethod,
-                    request.Constants.ScopeParameter, request.Constants.RootDisposalScope,
-                    request.Constants.InjectionContextParameter);
+                ConstantExpression = Expression.Call(
+                    Expression.Constant(this), 
+                    singletonMethod,
+                    request.Constants.ScopeParameter, 
+                    request.Constants.RootDisposalScope,
+                    request.Constants.InjectionContextParameter,
+                    request.GetKeyExpression());
 
                 return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
             }
 
-            private object SingletonActivation(IExportLocatorScope scope, IDisposalScope disposalScope,
-                IInjectionContext context)
+            private object SingletonActivation(
+                IExportLocatorScope scope, 
+                IDisposalScope disposalScope,
+                IInjectionContext context,
+                object key)
             {
                 if (_singleton != null)
                 {
@@ -64,7 +71,7 @@ namespace Grace.Tests.DependencyInjection.Lifestyle
                 {
                     if (_singleton == null)
                     {
-                        _singleton = _activationDelegate(scope, disposalScope, context);
+                        _singleton = _activationDelegate(scope, disposalScope, context, key);
                     }
                 }
 

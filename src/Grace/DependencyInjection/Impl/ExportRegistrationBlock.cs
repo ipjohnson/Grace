@@ -419,6 +419,14 @@ namespace Grace.DependencyInjection.Impl
             return new FluentWrapperStrategyConfiguration(strategy);
         }
 
+        /// <inheritdoc />
+        public void ExportWrapper(ICompiledWrapperStrategy strategy)
+        {
+            if (strategy == null) throw new ArgumentNullException(nameof(strategy));
+
+            _wrapperProviders = _wrapperProviders.Add(new SimpleExportWrapperProvider(strategy));
+        }
+
         /// <summary>
         /// Test if a type is exported
         /// </summary>

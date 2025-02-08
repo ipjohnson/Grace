@@ -82,9 +82,7 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                var attribute = property.GetCustomAttributes(true).FirstOrDefault(a => a is IImportAttribute) as IImportAttribute;
-
-                var importInfo = attribute?.ProvideImportInfo(property.PropertyType, property.Name);
+                var importInfo = ImportAttributeInfo.For(property, property.PropertyType, property.Name);
 
                 if (importInfo == null)
                 {
@@ -164,9 +162,7 @@ namespace Grace.DependencyInjection.Impl
                     continue;
                 }
 
-                var importAttribute = method.GetCustomAttributes(true).FirstOrDefault(a => a is IImportAttribute) as IImportAttribute;
-
-                var importInfo = importAttribute?.ProvideImportInfo(null, method.Name);
+                var importInfo = ImportAttributeInfo.For(method, null, method.Name);
 
                 if (importInfo != null)
                 {

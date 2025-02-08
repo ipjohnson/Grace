@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Grace is a feature-rich dependency injection container designed with ease of use and performance in mind.</Description>
-    <Authors>Ian Johnson</Authors>
-    <TargetFrameworks>net462;net6.0;net7.0</TargetFrameworks>
+    <Description>Grace is a feature-rich dependency injection container designed with ease of use and performance in mind.</Description>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Grace</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Grace.snk</AssemblyOriginatorKeyFile>
@@ -20,7 +18,6 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -36,6 +33,8 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="PolySharp" Version="1.14.1" />
   </ItemGroup>
 
 </Project>

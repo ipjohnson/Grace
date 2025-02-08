@@ -222,28 +222,16 @@ namespace Grace.DependencyInjection
         /// <param name="typeName"></param>
         public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, string typeName)
         {
-            var provider = (IConcreteExportStrategyProvider)
-                block.OwningScope.MissingExportStrategyProviders.FirstOrDefault(p => p is IConcreteExportStrategyProvider);
-
-            provider?.AddFilter(t =>
-            {
-                if (typeName.StartsWith("*"))
+            block.OwningScope.MissingExportStrategyProviders
+                .OfType<IConcreteExportStrategyProvider>()
+                .FirstOrDefault()
+                ?.AddFilter(t => (typeName.StartsWith("*"), typeName.EndsWith("*")) switch
                 {
-                    if (typeName.EndsWith("*"))
-                    {
-                        return t.FullName.Contains(typeName.Replace("*", ""));
-                    }
-
-                    return t.FullName.EndsWith(typeName.Replace("*", ""));
-                }
-
-                if (typeName.EndsWith("*"))
-                {
-                    return t.FullName.StartsWith(typeName.Replace("*", ""));
-                }
-
-                return t.FullName == typeName;
-            });
+                    (true, true) => t.FullName.Contains(typeName.Replace("*", "")),
+                    (true, false) => t.FullName.EndsWith(typeName.Replace("*", "")),
+                    (false, true) => t.FullName.StartsWith(typeName.Replace("*", "")),
+                    (false, false) => t.FullName == typeName,                    
+                });
 
             return block;
         }
@@ -255,10 +243,10 @@ namespace Grace.DependencyInjection
         /// <param name="type"></param>
         public static IExportRegistrationBlock ExcludeTypeFromAutoRegistration(this IExportRegistrationBlock block, Type type)
         {
-            var provider = (IConcreteExportStrategyProvider)
-                block.OwningScope.MissingExportStrategyProviders.FirstOrDefault(p => p is IConcreteExportStrategyProvider);
-
-            provider?.AddFilter(t => t.GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()));
+            block.OwningScope.MissingExportStrategyProviders
+                .OfType<IConcreteExportStrategyProvider>()
+                .FirstOrDefault()
+                ?.AddFilter(t => t.GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()));
 
             return block;
         }

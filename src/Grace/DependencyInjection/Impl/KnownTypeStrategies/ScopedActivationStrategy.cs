@@ -15,10 +15,16 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
         public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.WrapperStrategy;
 
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key)
         {
-            var expression = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 0, scope));
+            var request = compiler.CreateNewRequest(activationType, 0, scope);
+            request.SetLocateKey(key);
+
+            var expression = GetActivationExpression(scope, request);
 
             return compiler.CompileDelegate(scope, expression);
         }
@@ -34,7 +40,7 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
             var scopeNameRequest =
                 request.NewRequest(typeof(string), this, ActivationType, RequestType.Other, null, true, true);
-
+            scopeNameRequest.SetLocateKey(null);
             scopeNameRequest.SetIsRequired(false);
 
             var scopeNameExpression =
@@ -44,30 +50,28 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
 
             var closedType = typeof(Scoped<>).MakeGenericType(type);
 
-            var newExpression = Expression.New(closedType.GetTypeInfo().DeclaredConstructors.Single(),
-                request.ScopeParameter, request.InjectionContextParameter, Expression.Constant(compiled), scopeNameExpression.Expression);
+            var newExpression = Expression.New(
+                closedType.GetTypeInfo().DeclaredConstructors.Single(),
+                request.ScopeParameter, 
+                request.InjectionContextParameter, 
+                request.GetKeyExpression(),
+                Expression.Constant(compiled), 
+                scopeNameExpression.Expression);
 
             return request.Services.Compiler.CreateNewResult(request, newExpression);
         }
 
         public Type GetWrappedType(Type type)
         {
-            if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Scoped<>))
-            {
-                return type.GenericTypeArguments[0];
-            }
-
-            return null;
+            return type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Scoped<>)
+                ? type.GenericTypeArguments[0]
+                : null;
         }
 
         public void SetWrappedType(Type type)
-        {
-
-        }
+        { }
 
         public void SetWrappedGenericArgPosition(int argPosition)
-        {
-
-        }
+        { }
     }
 }

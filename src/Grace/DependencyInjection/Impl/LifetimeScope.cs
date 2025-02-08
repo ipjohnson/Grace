@@ -97,12 +97,18 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to be used while locating</param>
         /// <param name="consider">strategy filter</param>
         /// <param name="comparer">comparer to use to sort collection</param>
+        /// <param name="withKey">key to use during construction</param>
         /// <returns>list of objects</returns>
-        public override List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
+        public override List<object> LocateAll(
+            Type type, 
+            object extraData = null, 
+            ActivationStrategyFilter consider = null, 
+            IComparer<object> comparer = null, 
+            object withKey = null)
         {
             var context = _injectionScope.CreateContext(extraData);
 
-            return _injectionScope.InternalLocateAll(this, this, type, context, consider, comparer);
+            return _injectionScope.InternalLocateAll(this, this, type, withKey, context, consider, comparer);
         }
 
         /// <summary>
@@ -113,10 +119,16 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData">extra data to use during locate</param>
         /// <param name="consider">filter for strategies</param>
         /// <param name="comparer">comparer</param>
+        /// <param name="withKey">key to use during construction</param>
         /// <returns>list of all T</returns>
-        public override List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
+        public override List<T> LocateAll<T>(
+            Type type = null, 
+            object extraData = null, 
+            ActivationStrategyFilter consider = null, 
+            IComparer<T> comparer = null,
+            object withKey = null)
         {
-            return _injectionScope.InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
+            return _injectionScope.InternalLocateAll(this, this, type ?? typeof(T), withKey, extraData, consider, comparer);
         }
 
         /// <summary>

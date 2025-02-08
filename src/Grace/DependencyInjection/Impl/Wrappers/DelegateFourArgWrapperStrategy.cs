@@ -42,22 +42,30 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
             var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod("Invoke");
 
-            var list = new List<Type>(invokeMethod.GetParameters().Select(p => p.ParameterType));
-            list.Add(invokeMethod.ReturnType);
-            list.Add(request.ActivationType);
+            var list = new List<Type>(invokeMethod.GetParameters().Select(p => p.ParameterType))
+            {
+                invokeMethod.ReturnType,
+                request.ActivationType
+            };
 
             var closedClass = typeof(DelegateExpression<,,,,,>).MakeGenericType(list.ToArray());
 
-            var closedMethod = closedClass.GetRuntimeMethod(nameof(DelegateExpression<object,object,object,object,object,object>.CreateDelegate), new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
+            var closedMethod = closedClass.GetRuntimeMethod(
+                nameof(DelegateExpression<object,object,object,object,object,object>.CreateDelegate), 
+                new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext), typeof(object) });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
             
             request.RequireExportScope();
             request.RequireDisposalScope();
 
-            var callExpression =
-                Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
-                    request.DisposalScopeExpression, request.InjectionContextParameter);
+            var callExpression = Expression.Call(
+                Expression.Constant(instance), 
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.GetKeyExpression());
 
             return request.Services.Compiler.CreateNewResult(request, callExpression);
         }
@@ -100,7 +108,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T3), _arg3Id));
                 newRequest.AddKnownValueExpression(CreateKnownValueExpression(request, typeof(T4), _arg4Id));
 
-                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
@@ -116,13 +123,17 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <param name="scope"></param>
             /// <param name="disposalScope"></param>
             /// <param name="context"></param>
+            /// <param name="key"></param>
             /// <returns></returns>
-            public TDelegate CreateDelegate(IExportLocatorScope scope, IDisposalScope disposalScope,
-                IInjectionContext context)
+            public TDelegate CreateDelegate(
+                IExportLocatorScope scope,
+                IDisposalScope disposalScope,
+                IInjectionContext context,
+                object key)
             {
-                var funcClass = new FuncClass(scope, disposalScope, context, _action, _injectionContextCreator, _arg1Id, _arg2Id, _arg3Id, _arg4Id);
+                var funcClass = new FuncClass(scope, disposalScope, context, key, _action, _injectionContextCreator, _arg1Id, _arg2Id, _arg3Id, _arg4Id);
 
-                return (TDelegate)((object)_funcMethodInfo.CreateDelegate(typeof(TDelegate), funcClass));
+                return (TDelegate)(object)_funcMethodInfo.CreateDelegate(typeof(TDelegate), funcClass);
             }
 
             /// <summary>
@@ -132,13 +143,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             {
                 private readonly IExportLocatorScope _scope;
                 private readonly IDisposalScope _disposalScope;
+                private readonly IInjectionContext _context;
+                private readonly object _key;
+                private readonly ActivationStrategyDelegate _action;
+                private readonly IInjectionContextCreator _injectionContextCreator;
                 private readonly string _arg1Id;
                 private readonly string _arg2Id;
                 private readonly string _arg3Id;
                 private readonly string _arg4Id;
-                private readonly IInjectionContext _context;
-                private readonly ActivationStrategyDelegate _action;
-                private readonly IInjectionContextCreator _injectionContextCreator;
 
                 /// <summary>
                 /// Default constructor
@@ -146,17 +158,19 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                 /// <param name="scope"></param>
                 /// <param name="disposalScope"></param>
                 /// <param name="context"></param>
+                /// <param name="key"></param>
                 /// <param name="action"></param>
                 /// <param name="injectionContextCreator"></param>
                 /// <param name="arg1Id"></param>
                 /// <param name="arg2Id"></param>
                 /// <param name="arg3Id"></param>
                 /// <param name="arg4Id"></param>
-                public FuncClass(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate action, IInjectionContextCreator injectionContextCreator, string arg1Id, string arg2Id, string arg3Id, string arg4Id)
+                public FuncClass(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, object key, ActivationStrategyDelegate action, IInjectionContextCreator injectionContextCreator, string arg1Id, string arg2Id, string arg3Id, string arg4Id)
                 {
                     _scope = scope;
                     _disposalScope = disposalScope;
                     _context = context;
+                    _key = key;
                     _action = action;
                     _injectionContextCreator = injectionContextCreator;
                     _arg1Id = arg1Id;
@@ -182,7 +196,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
                     newContext.SetExtraData(_arg3Id, arg3);
                     newContext.SetExtraData(_arg4Id, arg4);
 
-                    return (TResult)_action(_scope, _disposalScope, newContext);
+                    return (TResult)_action(_scope, _disposalScope, newContext, _key);
                 }
             }
         }

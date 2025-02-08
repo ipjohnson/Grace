@@ -131,6 +131,23 @@ namespace Grace.Tests.DependencyInjection.Expressions
             Assert.NotNull(instance);
             Assert.Equal(20, instance.Value.SomeValue);
         }
+
+        [Fact]
+        public void ExpressionExport_LocateInjectedKey()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c => 
+            {
+                c.ExportExpression(() => new BasicService() { Count = Arg.ImportKey<int>() })
+                    .AsKeyed<IBasicService>(42);
+            });
+
+            var instance = container.Locate<IBasicService>(withKey: 42);
+            
+            Assert.NotNull(instance);
+            Assert.Equal(42, instance.Count);
+        }
     }
 }
 

@@ -28,12 +28,18 @@ namespace Grace.DependencyInjection
         ImmutableArray<T> GetStrategies();
 
         /// <summary>
-        /// list of strategies and their keys
+        /// List of all keyed strategies, with their key
         /// </summary>
         IEnumerable<KeyValuePair<object, T>> GetKeyedStrategies();
 
         /// <summary>
-        /// Get a keyed strategy
+        /// Get all strategies for a given key (incl. ImportKey.Any)
+        /// </summary>
+        /// <param name="key">key</param>
+        IEnumerable<T> GetKeyedStrategies(object key);
+
+        /// <summary>
+        /// Get main keyed strategy for a given key (fallbacks to ImportKey.Any)
         /// </summary>
         /// <param name="key">key</param>
         T GetKeyedStrategy(object key);

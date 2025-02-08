@@ -149,6 +149,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         {
                             var newRequest = request.NewRequest(wrappedType, request.RequestingStrategy,
                                 request.InjectedType, request.RequestType, request.Info, false, true);
+                            newRequest.SetLocateKey(request.LocateKey);
 
                             request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
                         }
@@ -161,7 +162,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
                         if (request.LocateKey != null)
                         {
                             var strategy = collection.GetKeyedStrategy(request.LocateKey);
-
                             if (strategy != null)
                             {
                                 wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
@@ -200,7 +200,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                                     if (pass &&
                                         request.RequestingStrategy != strategy &&
-                                        (request.Filter == null || request.Filter(strategy)))
+                                        request.Filter?.Invoke(strategy) != false)
                                     {
                                         wrappers = ImmutableLinkedList<IActivationPathNode>.Empty
                                             .Add(new WrapperActivationPathNode(strategy, wrappedType, null))

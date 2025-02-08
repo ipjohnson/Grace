@@ -109,25 +109,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         private ConstructorParameterInfo ProcessImportAttributes(ParameterInfo parameter)
         {
-            var importAttribute = (IImportAttribute)parameter.GetCustomAttributes()?.FirstOrDefault(a => a is IImportAttribute);
-
-            if (importAttribute != null)
+            var info = ImportAttributeInfo.For(parameter, parameter.ParameterType, parameter.Name);
+            if (info != null)
             {
-                var info = importAttribute.ProvideImportInfo(parameter.ParameterType, parameter.Name);
-
-                if (info != null)
+                return new ConstructorParameterInfo(null)
                 {
-                    return new ConstructorParameterInfo(null)
-                    {
-                        LocateWithKey = info.ImportKey,
-                        DefaultValue = info.DefaultValue,
-                        EnumerableComparer = info.Comparer,
-                        ExportStrategyFilter = info.ExportStrategyFilter,
-                        IsRequired = info.IsRequired
-                    };
-                }
+                    LocateWithKey = info.ImportKey,
+                    DefaultValue = info.DefaultValue,
+                    EnumerableComparer = info.Comparer,
+                    ExportStrategyFilter = info.ExportStrategyFilter,
+                    IsRequired = info.IsRequired
+                };
             }
-
+            
             return null;
         }
 
@@ -153,21 +147,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var parameterInfo = parameter.ParameterType.GetTypeInfo();
 
-            var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
-                p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
-                     (p.ParameterType == null ||
-                      p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo) ||
-                      parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo())));
+            return 
+                configuration.ConstructorParameters.FirstOrDefault(p => 
+                    string.Equals(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) 
+                    && (p.ParameterType == null || AreCompatible(p.ParameterType.GetTypeInfo(), parameterInfo)))
+                ?? 
+                configuration.ConstructorParameters.FirstOrDefault(p => 
+                    string.IsNullOrEmpty(p.ParameterName) 
+                    && p.ParameterType != null 
+                    && AreCompatible(p.ParameterType.GetTypeInfo(), parameterInfo));
 
-            if (matchedConstructor != null)
-            {
-                return matchedConstructor;
-            }
-
-            return configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
-                                                                        p.ParameterType != null &&
-                                                                        (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) ||
-                                                                        p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo)));
+            bool AreCompatible(Type a, Type b) => a.IsAssignableFrom(b) || b.IsAssignableFrom(a);
         }
 
         /// <summary>
@@ -308,19 +298,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return configuration.SelectedConstructor;
             }
 
-            var constructors = configuration.ActivationType.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic && !c.IsStatic).OrderByDescending(c => c.GetParameters().Length).ToArray();
-
-            if (constructors.Length == 0)
+            var constructors = configuration
+                .ActivationType.GetTypeInfo()
+                .DeclaredConstructors
+                .Where(c => c.IsPublic && !c.IsStatic)
+                .ToArray();
+            
+            return constructors switch
             {
-                throw new Exception("Could not find public constructor on type " + configuration.ActivationType.FullName);
-            }
-
-            if (constructors.Length == 1)
-            {
-                return constructors[0];
-            }
-
-            return PickConstructor(requestingScope, configuration, request, constructors);
+                [] => throw new Exception("Could not find public constructor on type " + configuration.ActivationType.FullName),
+                [var ctor] => ctor,
+                _ => PickConstructor(requestingScope, configuration, request, constructors),
+            };
         }
 
         /// <summary>
@@ -384,10 +373,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     key = parameter.Name;
                 }
 
-                var dependencySatisified = parameter.IsOptional ||
-                                           parameter.ParameterType.IsGenericParameter ||
-                                           CanGetValueFromInfo(configuration, parameter) ||
-                                           injectionScope.CanLocate(parameter.ParameterType, null, key);
+                var dependencySatisified = parameter.IsOptional 
+                    || parameter.ParameterType.IsGenericParameter 
+                    || CanGetValueFromInfo(configuration, parameter, out var configKey) 
+                    || injectionScope.CanLocate(parameter.ParameterType, null, configKey ?? key);
 
                 var dependency = new ActivationStrategyDependency(DependencyType.ConstructorParameter,
                     configuration.ActivationStrategy,
@@ -429,12 +418,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="parameter"></param>
-        protected virtual bool CanGetValueFromInfo(TypeActivationConfiguration configuration, ParameterInfo parameter)
+        /// <param name="configuredKey"></param>
+        protected virtual bool CanGetValueFromInfo(
+            TypeActivationConfiguration configuration, 
+            ParameterInfo parameter, 
+            out object configuredKey)
         {
             var matchedParameter = FindParameterInfoExpression(parameter, configuration);
+            configuredKey = matchedParameter?.LocateWithKey;
 
             if (matchedParameter == null)
-            {
+            {                
                 return false;
             }
 

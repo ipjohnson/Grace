@@ -304,7 +304,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected override ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration,
             IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {
-            return constructors.OrderByDescending(c => c.GetParameters().Length).First();
+            #if NET6_0_OR_GREATER
+            return constructors.MinBy(c => c.GetParameters().Length);
+            #else
+            return constructors.OrderBy(c => c.GetParameters().Length).First();
+            #endif
         }
 
         /// <summary>
@@ -343,6 +347,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 currentScope = currentScope.Parent;
             }
 
+            // TODO: Dynamic locate should support keyed dependencies
             return scope.GetInjectionScope().CanLocate(typeof(T));
         }
 
@@ -356,14 +361,14 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="parameterName"></param>
         /// <param name="isRequired"></param>
         /// <param name="useDefault"></param>
-        /// <param name="defaultVlalue"></param>
+        /// <param name="defaultValue"></param>
         public virtual T DynamicLocate<T>(IExportLocatorScope scope,
                                           IDisposalScope disposalScope,
                                           IInjectionContext context,
                                           string parameterName,
                                           bool isRequired,
                                           bool useDefault,
-                                          T defaultVlalue)
+                                          T defaultValue)
         {
             var value = context.GetExtraData(parameterName);
 
@@ -379,6 +384,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 return (T)value;
             }
 
+            // TODO: Dynamic locate should support keyed dependencies
             value = scope.GetInjectionScope()
                 .LocateFromChildScope(scope, disposalScope, typeof(T), context, null, null, true, false);
 
@@ -417,7 +423,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 throw new Exception("Could not locate type");
             }
 
-            return defaultVlalue;
+            return defaultValue;
         }
 
         /// <summary>

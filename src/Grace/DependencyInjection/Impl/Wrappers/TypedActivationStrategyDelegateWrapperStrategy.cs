@@ -73,7 +73,6 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
                 var newRequest = request.NewRequest(requestType, activationStrategy, typeof(TypedActivationStrategyDelegate<TResult>), RequestType.Other, null, true);
 
-                newRequest.SetLocateKey(request.LocateKey);
                 newRequest.DisposalScopeExpression = request.Constants.RootDisposalScope;
 
                 var activationExpression = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
@@ -87,7 +86,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             /// <returns></returns>
             public TypedActivationStrategyDelegate<TResult> CreateFunc()
             {
-                return (scope, disposalScope, context) => (TResult)_action(scope, disposalScope, context);
+                return (scope, disposalScope, context, key) => (TResult)_action(scope, disposalScope, context, key);
             }
         }
     }

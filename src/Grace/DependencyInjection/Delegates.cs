@@ -6,8 +6,9 @@
     /// <param name="scope"></param>
     /// <param name="disposalScope"></param>
     /// <param name="injectionContext"></param>
+    /// <param name="key"></param>
     /// <returns></returns>
-    public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
+    public delegate object ActivationStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext, object key);
 
     /// <summary>
     /// Delegate for activating a strongly typed strategy
@@ -16,8 +17,9 @@
     /// <param name="scope"></param>
     /// <param name="disposalScope"></param>
     /// <param name="injectionContext"></param>
+    /// <param name="key"></param>
     /// <returns></returns>
-    public delegate T TypedActivationStrategyDelegate<out T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext);
+    public delegate T TypedActivationStrategyDelegate<out T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext, object key);
 
     /// <summary>
     /// Delegate for injecting value
@@ -25,8 +27,9 @@
     /// <param name="scope">injection scope</param>
     /// <param name="disposalScope">disposal scope</param>
     /// <param name="injectionContext">injection context</param>
+    /// <param name="key">located key</param>
     /// <param name="injectedInstance">instance to inject</param>
-    public delegate void InjectionStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext, object injectedInstance);
+    public delegate void InjectionStrategyDelegate(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext injectionContext, object key, object injectedInstance);
     
     /// <summary>
     /// Used to filter out exports at container configuration time

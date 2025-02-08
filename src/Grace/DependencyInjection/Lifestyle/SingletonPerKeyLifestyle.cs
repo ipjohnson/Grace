@@ -42,20 +42,32 @@ namespace Grace.DependencyInjection.Lifestyle
             }
 
             // Create new request as we shouldn't carry over anything from the previous request
-            var newRequest = request.NewRootedRequest(request.ActivationType, scope, true);
+            var newRequest = request.NewRootedRequest(scope, true);
 
             _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
-            ConstantExpression = Expression.Convert(Expression.Call(Expression.Constant(this), getInstanceMethodInfo,
-                newRequest.ScopeParameter, Expression.Constant(scope), request.InjectionContextParameter,
-                Expression.Constant(_activationDelegate)), request.ActivationType);
+            ConstantExpression = Expression.Convert(
+                Expression.Call(
+                    Expression.Constant(this), 
+                    getInstanceMethodInfo,
+                    newRequest.ScopeParameter, 
+                    Expression.Constant(scope), 
+                    request.InjectionContextParameter,
+                    request.GetKeyExpression(),
+                    Expression.Constant(_activationDelegate)
+                ), 
+                request.ActivationType);
 
             var result = request.Services.Compiler.CreateNewResult(request, ConstantExpression);
 
             return result;
         }
 
-        private object GetInstance(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context,
+        private object GetInstance(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            IInjectionContext context,
+            object locateKey,
             ActivationStrategyDelegate activationDelegate)
         {
             var key = _keyFunc(scope, context);
@@ -67,7 +79,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 return value;
             }
 
-            value = activationDelegate(scope, disposalScope, context);
+            value = activationDelegate(scope, disposalScope, context, locateKey);
 
             value = ImmutableHashTree.ThreadSafeAdd(ref _singletons, key, value);
 

@@ -46,7 +46,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// the locate key for injected method parameter
         /// </summary>
-        public string LocateKey { get; set; }
+        public object LocateKey { get; set; }
 
         /// <summary>
         /// if the injected method parameter is required

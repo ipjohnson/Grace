@@ -69,13 +69,14 @@ namespace Grace.DependencyInjection.Impl
             if (activationType == null) throw new ArgumentNullException(nameof(activationType));
             if (requestingScope == null) throw new ArgumentNullException(nameof(requestingScope));
 
-            return new ActivationExpressionRequest(activationType,
-                                                   RequestType.Root,
-                                                   new ActivationServices(this, _builder, _attributeDiscoveryService, _exportExpressionBuilder, _injectionContextCreator),
-                                                   _constants,
-                                                   objectGraphDepth,
-                                                   requestingScope,
-                                                   new PerDelegateData());
+            return new ActivationExpressionRequest(
+                activationType,
+                RequestType.Root,
+                new ActivationServices(this, _builder, _attributeDiscoveryService, _exportExpressionBuilder, _injectionContextCreator),
+                _constants,
+                objectGraphDepth,
+                requestingScope,
+                new PerDelegateData());
         }
 
         /// <summary>
@@ -101,14 +102,9 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="checkForMissingType"></param>
         public virtual ActivationStrategyDelegate FindDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext forMissingType, bool checkForMissingType)
         {
-            var activationDelegate = LocateStrategyFromCollectionContainers(scope, locateType, consider, key, forMissingType);
-
-            if (activationDelegate != null)
-            {
-                return activationDelegate;
-            }
-
-            activationDelegate = LocateEnumerableStrategy(scope, locateType);
+            var activationDelegate = 
+                LocateStrategyFromCollectionContainers(scope, locateType, consider, key, forMissingType)
+                ?? LocateEnumerableStrategy(scope, locateType, key);
 
             if (activationDelegate != null)
             {
@@ -195,6 +191,7 @@ namespace Grace.DependencyInjection.Impl
                         request.Constants.ScopeParameter,
                         request.Constants.RootDisposalScope,
                         request.Constants.InjectionContextParameter,
+                        request.Constants.KeyParameter,
                         objectParameter).Compile();
 
             return compiled;
@@ -261,13 +258,15 @@ namespace Grace.DependencyInjection.Impl
                 compileExpression = Expression.Block(expressionContext.ExtraParameters(), list);
             }
 
-            var compiled =
-                Expression.Lambda<ActivationStrategyDelegate>(compileExpression,
-                        expressionContext.Request.Constants.ScopeParameter,
-                        expressionContext.Request.Constants.RootDisposalScope,
-                        expressionContext.Request.Constants.InjectionContextParameter).Compile();
-
-            return compiled;
+            return Expression
+                .Lambda<ActivationStrategyDelegate>(
+                    compileExpression,
+                    expressionContext.Request.Constants.ScopeParameter,
+                    expressionContext.Request.Constants.RootDisposalScope,
+                    expressionContext.Request.Constants.InjectionContextParameter,
+                    expressionContext.Request.Constants.KeyParameter
+                )
+                .Compile();
         }
 
         protected virtual T CompileExpressionResultToOptimized<T>(
@@ -291,35 +290,28 @@ namespace Grace.DependencyInjection.Impl
                 compileExpression = Expression.Block(expressionContext.ExtraParameters(), list);
             }
 
-            var parameterList = new List<ParameterExpression>();
+            var parameterList = new List<ParameterExpression>(4)
+            {
+                expressionContext.Request.Constants.ScopeParameter,
+                expressionContext.Request.Constants.RootDisposalScope,
+                expressionContext.Request.Constants.InjectionContextParameter,
+                expressionContext.Request.Constants.KeyParameter,
+            };
 
             var invokeMethod = typeof(T).GetTypeInfo().GetDeclaredMethod("Invoke");
-            var parameterInfos = invokeMethod.GetParameters();
+            var parameterCount = invokeMethod.GetParameters().Length;
 
-            if (parameterInfos.Length > 3)
+            if (parameterCount > parameterList.Count)
             {
                 throw new Exception("Delegate type not supported: " + typeof(T).Name);
             }
 
-            if (parameterInfos.Length > 0)
-            {
-                parameterList.Add(expressionContext.Request.Constants.ScopeParameter);
-            }
-
-            if (parameterInfos.Length > 1)
-            {
-                parameterList.Add(expressionContext.Request.Constants.RootDisposalScope);
-            }
-
-            if (parameterInfos.Length > 2)
-            {
-                parameterList.Add(expressionContext.Request.Constants.InjectionContextParameter);
-            }
-
-            var compiled =
-                Expression.Lambda<T>(compileExpression, parameterList).Compile();
-
-            return compiled;
+            return Expression
+                .Lambda<T>(
+                    compileExpression, 
+                    parameterList.GetRange(0, parameterCount)
+                )
+                .Compile();
         }
 
         /// <summary>
@@ -333,17 +325,19 @@ namespace Grace.DependencyInjection.Impl
             {
                 foreach (var activationStrategy in strategyProvider.ProvideExports(scope, request))
                 {
-                    if (activationStrategy is ICompiledExportStrategy exportStrategy)
+                    switch (activationStrategy)
                     {
-                        scope.StrategyCollectionContainer.AddStrategy(exportStrategy);
-                    }
-                    else if (activationStrategy is ICompiledWrapperStrategy wrapperStrategy)
-                    {
-                        scope.WrapperCollectionContainer.AddStrategy(wrapperStrategy);
-                    }
-                    else if (activationStrategy is ICompiledDecoratorStrategy strategy)
-                    {
-                        scope.DecoratorCollectionContainer.AddStrategy(strategy);
+                        case ICompiledExportStrategy exportStrategy:
+                            scope.StrategyCollectionContainer.AddStrategy(exportStrategy);
+                            break;
+
+                        case ICompiledWrapperStrategy wrapperStrategy:
+                            scope.WrapperCollectionContainer.AddStrategy(wrapperStrategy);
+                            break;
+
+                        case ICompiledDecoratorStrategy decoratorStrategy:
+                            scope.DecoratorCollectionContainer.AddStrategy(decoratorStrategy);
+                            break;
                     }
                 }
             }
@@ -360,165 +354,80 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="injectionContext"></param>
         protected virtual ActivationStrategyDelegate LocateStrategyFromCollectionContainers(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key, IInjectionContext injectionContext)
         {
+            var openGenericType = locateType.IsConstructedGenericType
+                ? locateType.GetGenericTypeDefinition() 
+                : null;
+
             if (key != null)
             {
-                return FindKeyedDelegate(scope, locateType, consider, key);
+                return FindKeyedStrategy(scope.StrategyCollectionContainer, locateType)
+                    ?? FindKeyedStrategy(scope.StrategyCollectionContainer, openGenericType)
+                    ?? FindKeyedWrapperStrategy(scope.WrapperCollectionContainer, locateType)
+                    ?? FindKeyedWrapperStrategy(scope.WrapperCollectionContainer, openGenericType);
             }
-
-            var strategyCollection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(locateType);
-
-            if (strategyCollection != null)
+            else
             {
-                var primary = consider == null ?
-                    strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
-
-                if (primary != null)
-                {
-                    return primary;
-                }
-
-                var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
-
-                if (strategyDelegate != null)
-                {
-                    return strategyDelegate;
-                }
+                return FindStrategy(scope.StrategyCollectionContainer, locateType)
+                    ?? FindStrategy(scope.StrategyCollectionContainer, openGenericType)
+                    ?? FindStrategy(scope.WrapperCollectionContainer, locateType)
+                    ?? FindStrategy(scope.WrapperCollectionContainer, openGenericType);
             }
 
-            var isGeneric = locateType.IsConstructedGenericType;
-
-            if (isGeneric)
+            ActivationStrategyDelegate FindStrategy<T>(
+                IActivationStrategyCollectionContainer<T> container,
+                Type type)
+                where T: IWrapperOrExportActivationStrategy
             {
-                var generic = locateType.GetGenericTypeDefinition();
+                if (type == null) return null;
 
-                strategyCollection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(generic);
+                var collection = container.GetActivationStrategyCollection(type);
+                if (collection == null) return null;
+                
+                var primary = consider == null 
+                    ? collection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType)
+                    : null;
 
-                if (strategyCollection != null)
-                {
-                    var primary = consider == null ?
-                        strategyCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
-
-                    if (primary != null)
-                    {
-                        return primary;
-                    }
-
-                    var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
-
-                    if (strategyDelegate != null)
-                    {
-                        return strategyDelegate;
-                    }
-                }
+                return primary ?? GetStrategyFromCollection(collection, scope, consider, locateType);
             }
 
-            var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(locateType);
-
-            if (wrapperCollection != null)
+            ActivationStrategyDelegate FindKeyedWrapperStrategy(
+                IActivationStrategyCollectionContainer<ICompiledWrapperStrategy> container,
+                Type type)
             {
-                var primary = consider == null ?
-                    wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
+                if (type == null) return null;
 
-                if (primary != null)
-                {
-                    return primary;
-                }
+                var collection = container.GetActivationStrategyCollection(type);
+                if (collection == null) return null;
+                
+                var primary = consider == null 
+                    ? collection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType, key)
+                    : null;
 
-                var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
+                return primary ?? GetStrategyFromCollection(collection, scope, consider, locateType, key);
+            }            
 
-                if (strategyDelegate != null)
-                {
-                    return strategyDelegate;
-                }
-            }
-
-            if (isGeneric)
+            ActivationStrategyDelegate FindKeyedStrategy(
+                IActivationStrategyCollectionContainer<ICompiledExportStrategy> container,
+                Type type)
             {
-                var generic = locateType.GetGenericTypeDefinition();
+                if (type == null) return null;
 
-                wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(generic);
-
-                if (wrapperCollection != null)
-                {
-                    var primary = consider == null ?
-                        wrapperCollection.GetPrimary()?.GetActivationStrategyDelegate(scope, this, locateType) : null;
-
-                    if (primary != null)
-                    {
-                        return primary;
-                    }
-
-                    var strategyDelegate = GetStrategyFromCollection(strategyCollection, scope, consider, locateType);
-
-                    if (strategyDelegate != null)
-                    {
-                        return strategyDelegate;
-                    }
-                }
+                return container.GetActivationStrategyCollection(type)
+                    ?.GetKeyedStrategy(key)
+                    ?.GetActivationStrategyDelegate(scope, this, locateType, key);
             }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Find keyed delegate from strategies
-        /// </summary>
-        /// <param name="scope">scope</param>
-        /// <param name="locateType">locate type</param>
-        /// <param name="consider">filter for strategies</param>
-        /// <param name="key">key to use during locate</param>
-        /// <returns>delegate</returns>
-        protected virtual ActivationStrategyDelegate FindKeyedDelegate(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
-        {
-            var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(locateType);
-
-            var strategy = collection?.GetKeyedStrategy(key);
-
-            if (strategy != null)
-            {
-                return strategy.GetActivationStrategyDelegate(scope, this, locateType);
-            }
-
-            if (locateType.IsConstructedGenericType)
-            {
-                var openGeneric = locateType.GetGenericTypeDefinition();
-
-                collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(openGeneric);
-
-                strategy = collection?.GetKeyedStrategy(key);
-
-                if (strategy != null)
-                {
-                    return strategy.GetActivationStrategyDelegate(scope, this, locateType);
-                }
-                else
-                {
-                    var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(openGeneric);
-                    if (wrapperCollection != null)
-                    {
-                        var wrapperStrategy = wrapperCollection.GetStrategies()
-                            .OfType<IKeyWrapperActivationStrategy>()
-                            .FirstOrDefault();
-
-                        return wrapperStrategy?.GetActivationStrategyDelegate(scope, this, locateType, key);
-                    }
-                }
-            }
-
-            return null;
         }
 
         private void AddInjectionContextExpression(IActivationExpressionResult expressionContext)
         {
-            var method = typeof(IInjectionContextCreator).GetRuntimeMethod(nameof(IInjectionContextCreator.CreateContext),
-                    new[]
-                    {
-                        typeof(object)
-                    });
+            var method = typeof(IInjectionContextCreator).GetRuntimeMethod(
+                nameof(IInjectionContextCreator.CreateContext),
+                new[] { typeof(object) });
 
-            var newExpression = Expression.Call(Expression.Constant(_injectionContextCreator),
-                                                method,
-                                                Expression.Constant(null, typeof(object)));
+            var newExpression = Expression.Call(
+                Expression.Constant(_injectionContextCreator),
+                method,
+                Expression.Constant(null, typeof(object)));
 
             var assign =
                 Expression.Assign(expressionContext.Request.InjectionContextParameter, newExpression);
@@ -532,59 +441,60 @@ namespace Grace.DependencyInjection.Impl
             expressionContext.AddExtraExpression(ifThen, insertBeginning: true);
         }
 
-        private ActivationStrategyDelegate GetStrategyFromCollection<T>(IActivationStrategyCollection<T> strategyCollection, IInjectionScope scope, ActivationStrategyFilter consider, Type locateType) where T : IWrapperOrExportActivationStrategy
+        private ActivationStrategyDelegate GetStrategyFromCollection<T>(
+            IActivationStrategyCollection<T> strategyCollection, 
+            IInjectionScope scope, 
+            ActivationStrategyFilter consider, 
+            Type locateType,
+            object key = null) 
+            where T : IWrapperOrExportActivationStrategy
         {
             foreach (var strategy in strategyCollection.GetStrategies())
             {
                 if (strategy.HasConditions)
                 {
-                    var pass = true;
-
                     foreach (var condition in strategy.Conditions)
                     {
                         if (!condition.MeetsCondition(strategy, new StaticInjectionContext(locateType)))
                         {
-                            pass = false;
-                            break;
+                            goto outerLoop;
                         }
-                    }
-
-                    if (!pass)
-                    {
-                        continue;
                     }
                 }
 
-                if (consider != null && !consider(strategy))
+                if (consider?.Invoke(strategy) == false)
                 {
                     continue;
                 }
 
-                var strategyDelegate = strategy.GetActivationStrategyDelegate(scope, this, locateType);
+                var strategyDelegate = strategy.GetActivationStrategyDelegate(scope, this, locateType, key);
 
                 if (strategyDelegate != null)
                 {
                     return strategyDelegate;
                 }
+
+                outerLoop: continue;
             }
 
             return null;
         }
 
-
-        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType)
+        private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, object key)
         {
             if (locateType.IsArray ||
                 (locateType.IsConstructedGenericType &&
                  locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                var result = _builder.GetActivationExpression(scope, CreateNewRequest(locateType, 1, scope));
+                var request = CreateNewRequest(locateType, 1, scope);
+                request.SetLocateKey(key);
+
+                var result = _builder.GetEnumerableActivationExpression(scope, request);
 
                 return CompileDelegate(scope, result);
             }
 
             return null;
         }
-
     }
 }

@@ -17,9 +17,13 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="type"></param>
+        /// <param name="key"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        object Locate(IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext);
+        object Locate(
+            IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, 
+            Type type, object key, 
+            ActivationStrategyFilter consider, IInjectionContext injectionContext);
     }
 
     /// <summary>
@@ -30,16 +34,19 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>
         /// Delegate to create enumerable
         /// </summary>
+        /// <param name="key"></param>
         /// <param name="injectionScope"></param>
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        public delegate object EnumerableCreateDelegate(IInjectionScope injectionScope, 
-                                                        IExportLocatorScope scope, 
-                                                        IDisposalScope disposalScope,
-                                                        ActivationStrategyFilter consider,
-                                                        IInjectionContext injectionContext);
+        public delegate object EnumerableCreateDelegate(
+            object key,
+            IInjectionScope injectionScope, 
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope,
+            ActivationStrategyFilter consider,
+            IInjectionContext injectionContext);
 
         private ImmutableHashTree<Type, EnumerableCreateDelegate> _delegates = ImmutableHashTree<Type, EnumerableCreateDelegate>.Empty;
 
@@ -50,9 +57,10 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="type"></param>
+        /// <param name="key"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        public object Locate(IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)
+        public object Locate(IInjectionScope injectionScope, IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object key, ActivationStrategyFilter consider, IInjectionContext injectionContext)
         {
             var createDelegate = _delegates.GetValueOrDefault(type);
 
@@ -70,30 +78,30 @@ namespace Grace.DependencyInjection.Impl
                 createDelegate = ImmutableHashTree.ThreadSafeAdd(ref _delegates, type, createDelegate);
             }
 
-            return createDelegate(injectionScope, scope, disposalScope, consider, injectionContext);
+            return createDelegate(key, injectionScope, scope, disposalScope, consider, injectionContext);
         }
 
         /// <summary>
         /// static method to create enumerable dynamic
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
         /// <param name="injectionScope"></param>
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="consider"></param>
         /// <param name="injectionContext"></param>
-        public static object EnumerableCreateMethod<T>(IInjectionScope injectionScope, IExportLocatorScope scope,
+        public static object EnumerableCreateMethod<T>(
+            object key,
+            IInjectionScope injectionScope, IExportLocatorScope scope,
             IDisposalScope disposalScope, ActivationStrategyFilter consider, IInjectionContext injectionContext)
 
         {
-            var all = injectionScope.InternalLocateAll<T>(scope, disposalScope, typeof(T), injectionContext, consider, null);
+            var all = injectionScope.InternalLocateAll<T>(scope, disposalScope, typeof(T), key, injectionContext, consider, null);
 
-            if (injectionScope.ScopeConfiguration.Behaviors.CustomEnumerableCreator != null)
-            {
-                return injectionScope.ScopeConfiguration.Behaviors.CustomEnumerableCreator.CreateEnumerable(scope, all.ToArray());
-            }
-
-            return all;
+            return injectionScope.ScopeConfiguration.Behaviors.CustomEnumerableCreator is {} enumerableCreator
+                ? enumerableCreator.CreateEnumerable(scope, all.ToArray())
+                : all;            
         }
     }
 }
