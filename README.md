@@ -1,3 +1,6 @@
+# Notice:
+After many years of development I am making the decision to sunset Grace. While it's still possible to use Grace, the evolution of the built in dependency injection container has made Grace less relavent. I say thank you to the people that have supported the project over the past decade and look forward to the future of C# and specifically source code generators. 
+
 # Grace
 
 <img src="https://raw.githubusercontent.com/ipjohnson/Grace/master/img/logo.svg?sanitize=true" width="76">
