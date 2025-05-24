@@ -1,5 +1,5 @@
 # Notice:
-After many years of development I am making the decision to sunset Grace. While it's still possible to use Grace, the evolution of the built in dependency injection container has made Grace less relavent. I say thank you to the people that have supported the project over the past decade and look forward to the future of C# and specifically source code generators. 
+After many years of development I am making the decision to sunset Grace. While it's still possible to use Grace, the evolution of the built in dependency injection container has made Grace less relavent. I say thank you to the people that have supported the project over the past decade and look forward to the future of C# and specifically source code generators. You can check out my next project that builds on top of the existing microsoft DI container https://github.com/ipjohnson/DependencyModules. 
 
 # Grace
 
