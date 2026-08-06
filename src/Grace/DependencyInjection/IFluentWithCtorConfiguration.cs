@@ -189,6 +189,11 @@ namespace Grace.DependencyInjection
         /// <param name="locateKey">locate key</param>
         /// <returns>configuration object</returns>
         IFluentWithCtorConfiguration<T, TParam> LocateWithKey(object locateKey);
+
+        /// <summary>
+        /// Inject the currently imported key
+        /// </summary>
+        IFluentWithCtorConfiguration<T, TParam> LocateWithImportKey();
         
         /// <summary>
         /// Name of the parameter being configured

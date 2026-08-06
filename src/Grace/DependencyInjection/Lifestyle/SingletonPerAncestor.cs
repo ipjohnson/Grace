@@ -53,40 +53,29 @@ namespace Grace.DependencyInjection.Lifestyle
             var ancestorId = GetAncestorRequestId(context);
             var newDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(request));
 
-            MethodInfo closedMethod;
-
-            if (_guaranteeOnlyOne)
-            {
-                var openMethod = typeof(SingletonPerAncestor).GetRuntimeMethod(nameof(GetValueGuaranteeOnce),
+            var openMethod = typeof(SingletonPerAncestor)
+                .GetRuntimeMethod(
+                    _guaranteeOnlyOne ? nameof(GetValueGuaranteeOnce) : nameof(GetValue),
                     new[]
                     {
                         typeof(IExportLocatorScope),
                         typeof(IDisposalScope),
                         typeof(IInjectionContext),
+                        typeof(object),
                         typeof(ActivationStrategyDelegate),
                         typeof(string)
                     });
 
-                closedMethod = openMethod.MakeGenericMethod(request.ActivationType);
-            }
-            else
-            {
-                var openMethod = typeof(SingletonPerAncestor).GetRuntimeMethod(nameof(GetValue),
-                    new[]
-                    {
-                        typeof(IExportLocatorScope),
-                        typeof(IDisposalScope),
-                        typeof(IInjectionContext),
-                        typeof(ActivationStrategyDelegate),
-                        typeof(string)
-                    });
+            var closedMethod = openMethod.MakeGenericMethod(request.ActivationType);
 
-                closedMethod = openMethod.MakeGenericMethod(request.ActivationType);
-            }
-
-            var expression = Expression.Call(closedMethod, request.ScopeParameter,
-                request.DisposalScopeExpression, request.InjectionContextParameter,
-                Expression.Constant(newDelegate), Expression.Constant(ancestorId));
+            var expression = Expression.Call(
+                closedMethod, 
+                request.ScopeParameter,
+                request.DisposalScopeExpression, 
+                request.InjectionContextParameter,
+                request.GetKeyExpression(),
+                Expression.Constant(newDelegate), 
+                Expression.Constant(ancestorId));
 
             request.RequireInjectionContext();
             request.RequireExportScope();
@@ -127,9 +116,15 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="context"></param>
+        /// <param name="key"></param>
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
-        public static T GetValue<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate,
+        public static T GetValue<T>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            IInjectionContext context,
+            object key,
+            ActivationStrategyDelegate activationDelegate,
             string uniqueId)
         {
             var value = context.SharedData.GetExtraData(uniqueId);
@@ -139,7 +134,7 @@ namespace Grace.DependencyInjection.Lifestyle
                 return (T)value;
             }
 
-            value = activationDelegate(scope, disposalScope, context);
+            value = activationDelegate(scope, disposalScope, context, key);
 
             context.SharedData.SetExtraData(uniqueId, value);
 
@@ -152,9 +147,17 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="scope"></param>
         /// <param name="disposalScope"></param>
         /// <param name="context"></param>
+        /// <param name="key"></param>
         /// <param name="activationDelegate"></param>
         /// <param name="uniqueId"></param>
-        public static T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate activationDelegate, string uniqueId)
+        public static T GetValueGuaranteeOnce<T>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            IInjectionContext context,
+            object key,
+            ActivationStrategyDelegate activationDelegate,
+            string uniqueId
+            )
         {
             var value = context.SharedData.GetExtraData(uniqueId);
 
@@ -166,7 +169,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
                     if (value == null)
                     {
-                        value = activationDelegate(scope, disposalScope, context);
+                        value = activationDelegate(scope, disposalScope, context, key);
 
                         context.SharedData.SetExtraData(uniqueId, value);
                     }

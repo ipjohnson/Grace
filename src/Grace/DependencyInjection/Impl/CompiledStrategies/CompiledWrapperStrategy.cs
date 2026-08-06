@@ -20,7 +20,8 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
         /// <param name="builder"></param>
-        public CompiledWrapperStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) : base(activationType, injectionScope)
+        public CompiledWrapperStrategy(Type activationType, IInjectionScope injectionScope, IDefaultStrategyExpressionBuilder builder) 
+            : base(activationType, injectionScope)
         {
             _builder = builder;
         }
@@ -36,13 +37,20 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key = null)
         {
-            var request = GetActivationExpression(scope, compiler.CreateNewRequest(activationType, 1, scope));
+            var request = compiler.CreateNewRequest(activationType, 1, scope);
+            request.SetLocateKey(key);
 
-            return compiler.CompileDelegate(scope, request);
+            var expression = GetActivationExpression(scope, request);
+
+            return compiler.CompileDelegate(scope, expression);
         }
 
         /// <summary>

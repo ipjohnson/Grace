@@ -66,8 +66,13 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        public virtual ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler, Type activationType)
+        public virtual ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler, 
+            Type activationType,
+            object key = null)
         {
             if (StrategyDelegate != null)
             {
@@ -75,6 +80,7 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
             }
 
             var request = compiler.CreateNewRequest(activationType, 1, scope);
+            request.SetLocateKey(key);
 
             var expression = GetActivationExpression(scope, request);
 

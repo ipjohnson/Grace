@@ -128,110 +128,90 @@ namespace Grace.DependencyInjection.Impl
         /// <returns>set of activation strategies</returns>
         public virtual IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var requestedType = request.ActivationType;
+            return GetStrategy(request.ActivationType) is {} strategy ? [strategy] : [];
 
-            if (requestedType.IsConstructedGenericType)
+            IActivationStrategy GetStrategy(Type requestedType)
             {
-                var genericType = requestedType.GetGenericTypeDefinition();
-
-                if (genericType == typeof(ImmutableLinkedList<>))
+                if (requestedType.IsConstructedGenericType)
                 {
-                    yield return new ImmutableLinkListStrategy(scope);
-                    yield break;
-                }
+                    var genericType = requestedType.GetGenericTypeDefinition();
 
-                if (genericType == typeof(ImmutableArray<>))
-                {
-                    yield return new ImmutableArrayStrategy(scope);
-                    yield break;
-                }
-
-                if (genericType == typeof(IReadOnlyCollection<>) ||
-                    genericType == typeof(IReadOnlyList<>) ||
-                    genericType == typeof(ReadOnlyCollection<>))
-                {
-                    yield return new ReadOnlyCollectionStrategy(scope);
-                    yield break;
-                }
-
-                if (genericType == typeof(IList<>) ||
-                    genericType == typeof(ICollection<>) ||
-                    genericType == typeof(List<>))
-                {
-                    yield return new ListEnumerableStrategy(scope);
-                    yield break;
-                }
-
-                if (genericType == typeof(KeyedLocateDelegate<,>))
-                {
-                    yield return new KeyedLocateDelegateStrategy(scope);
-                    yield break;
-                }
-
-
-                if (genericType.FullName == "System.Collections.Immutable.ImmutableList`1" ||
-                    genericType.FullName == "System.Collections.Immutable.ImmutableArray`1" ||
-                    genericType.FullName == "System.Collections.Immutable.ImmutableQueue`1" ||
-                    genericType.FullName == "System.Collections.Immutable.ImmutableStack`1" ||
-                    genericType.FullName == "System.Collections.Immutable.ImmutableSortedSet`1" ||
-                    genericType.FullName == "System.Collections.Immutable.ImmutableHashSet`1")
-                {
-                    yield return new ImmutableCollectionStrategy(genericType, scope);
-                    yield break;
-                }
-            }
-
-            if (requestedType.GetTypeInfo().IsInterface || 
-                requestedType.GetTypeInfo().IsAbstract)
-            {
-                yield break;
-            }
-
-            if (typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(requestedType.GetTypeInfo()))
-            {
-                var method = requestedType.GetTypeInfo().GetDeclaredMethod("Invoke");
-
-                if (method.ReturnType != typeof(void) && 
-                    scope.CanLocate(method.ReturnType))
-                {
-                    var parameterCount = method.GetParameters().Length;
-
-                    switch (parameterCount)
+                    if (genericType == typeof(ImmutableLinkedList<>))
                     {
-                        case 0:
-                            yield return new DelegateNoArgWrapperStrategy(requestedType, scope);
-                            break;
+                        return new ImmutableLinkListStrategy(scope);
+                    }
 
-                        case 1:
-                            yield return new DelegateOneArgWrapperStrategy(requestedType, scope);
-                            break;
+                    if (genericType == typeof(ImmutableArray<>))
+                    {
+                         return new ImmutableArrayStrategy(scope);
+                    }
 
-                        case 2:
-                            yield return new DelegateTwoArgWrapperStrategy(requestedType, scope);
-                            break;
+                    if (genericType == typeof(IReadOnlyCollection<>) ||
+                        genericType == typeof(IReadOnlyList<>) ||
+                        genericType == typeof(ReadOnlyCollection<>))
+                    {
+                        return new ReadOnlyCollectionStrategy(scope);
+                    }
 
-                        case 3:
-                            yield return new DelegateThreeArgWrapperStrategy(requestedType, scope);
-                            break;
+                    if (genericType == typeof(IList<>) ||
+                        genericType == typeof(ICollection<>) ||
+                        genericType == typeof(List<>))
+                    {
+                        return new ListEnumerableStrategy(scope);
+                    }
 
-                        case 4:
-                            yield return new DelegateFourArgWrapperStrategy(requestedType, scope);
-                            break;
+                    if (genericType == typeof(KeyedLocateDelegate<,>))
+                    {
+                        return new KeyedLocateDelegateStrategy(scope);
+                    }
 
-                        case 5:
-                            yield return new DelegateFiveArgWrapperStrategy(requestedType, scope);
-                            break;
+                    if (genericType.FullName is "System.Collections.Immutable.ImmutableList`1" 
+                        or "System.Collections.Immutable.ImmutableArray`1" 
+                        or "System.Collections.Immutable.ImmutableQueue`1"
+                        or "System.Collections.Immutable.ImmutableStack`1"
+                        or "System.Collections.Immutable.ImmutableSortedSet`1"
+                        or "System.Collections.Immutable.ImmutableHashSet`1")
+                    {
+                        return new ImmutableCollectionStrategy(genericType, scope);
                     }
                 }
-            }
-            else if (ShouldCreateConcreteStrategy(request))
-            {
-                var strategy =
-                    new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder).ProcessAttributeForStrategy();
 
-                strategy.Lifestyle = scope.ScopeConfiguration.AutoRegistrationLifestylePicker?.Invoke(requestedType);
+                if (requestedType is { IsInterface: true } or { IsAbstract: true })
+                {
+                    return null;
+                }
 
-                yield return strategy;
+                if (typeof(MulticastDelegate).IsAssignableFrom(requestedType))
+                {
+                    var method = requestedType.GetMethod("Invoke");
+
+                    if (method.ReturnType != typeof(void) && 
+                        scope.CanLocate(method.ReturnType) &&
+                        method.GetParameters().Length is int paramCount and < 6)
+                    {
+                        return paramCount switch
+                        {
+                            0 => new DelegateNoArgWrapperStrategy(requestedType, scope),
+                            1 => new DelegateOneArgWrapperStrategy(requestedType, scope),
+                            2 => new DelegateTwoArgWrapperStrategy(requestedType, scope),
+                            3 => new DelegateThreeArgWrapperStrategy(requestedType, scope),
+                            4 => new DelegateFourArgWrapperStrategy(requestedType, scope),
+                            5 => new DelegateFiveArgWrapperStrategy(requestedType, scope),
+                            _ => throw new InvalidOperationException("Unreachable code"),
+                        };
+                    }
+                }
+                else if (ShouldCreateConcreteStrategy(request))
+                {
+                    var strategy = new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder)
+                        .ProcessAttributeForStrategy();
+
+                    strategy.Lifestyle = scope.ScopeConfiguration.AutoRegistrationLifestylePicker?.Invoke(requestedType);
+
+                    return strategy;
+                }
+
+                return null;
             }
         }
 
@@ -242,24 +222,23 @@ namespace Grace.DependencyInjection.Impl
         {
             var type = request.ActivationType;
 
-            if(type == typeof(string) || 
-               type.GetTypeInfo().IsPrimitive)
+            if(type == typeof(string) || type.IsPrimitive)
             {
                 return false;
             }
 
-            if (type.GetTypeInfo().IsValueType && 
+            if (type.IsValueType && 
                 (type.Namespace == "System" || (type.Namespace?.StartsWith("System") ?? false)))
             {
                 return false;
             }
 
-            if (type.IsConstructedGenericType && type.GetTypeInfo().GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 return false;
             }
 
-            return type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic) && 
+            return type.GetConstructors().Any(c => c.IsPublic && !c.IsStatic) && 
                    _filters.All(func => !func(type));
         }
     }

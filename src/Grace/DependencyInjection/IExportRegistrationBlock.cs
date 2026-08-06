@@ -186,6 +186,12 @@ namespace Grace.DependencyInjection
         IFluentWrapperStrategyConfiguration ExportWrapper(Type type);
 
         /// <summary>
+        /// Export a wrapper strategy (types like Func(), Owned, Meta are wrapper types)
+        /// </summary>
+        /// <param name="strategy"></param>
+        void ExportWrapper(ICompiledWrapperStrategy strategy);
+
+        /// <summary>
         /// Test if a type is exported
         /// </summary>
         /// <param name="type"></param>

@@ -52,7 +52,7 @@ namespace Grace.DependencyInjection
                 context = injectionScope.CreateContext(extraData);
             }
 
-            injectionDelegate(scope, scope, context, instance);
+            injectionDelegate(scope, scope, context, key: null, instance);
         }
 
         /// <summary>

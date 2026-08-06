@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Grace.Data.Immutable;
+using Grace.DependencyInjection.Lifestyle;
 using Grace.Diagnostics;
 
 namespace Grace.DependencyInjection.Impl
@@ -15,7 +16,8 @@ namespace Grace.DependencyInjection.Impl
     /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{" + nameof(DebugDisplayString) + ",nq}")]
     [DebuggerTypeProxy(typeof(ActivationStrategyCollectionContainerDebuggerView<>))]
-    public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> where T : class, IActivationStrategy
+    public class ActivationStrategyCollectionContainer<T> : IActivationStrategyCollectionContainer<T> 
+        where T : class, IConfigurableActivationStrategy
     {
         /// <summary>
         /// Default constructor
@@ -115,6 +117,11 @@ namespace Grace.DependencyInjection.Impl
             foreach (var keyedPair in strategy.ExportAsKeyed)
             {
                 added = true;
+
+                if (keyedPair.Value == ImportKey.Any && strategy.Lifestyle is not null and not AnyKeyLifestyle)
+                {
+                    strategy.Lifestyle = new AnyKeyLifestyle(strategy.Lifestyle);
+                }
 
                 if (ExportAsBase)
                 {

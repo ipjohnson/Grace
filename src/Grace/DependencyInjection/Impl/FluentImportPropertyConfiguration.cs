@@ -152,6 +152,17 @@ namespace Grace.DependencyInjection.Impl
         }
 
         /// <summary>
+        /// Injects the currently imported key
+        /// </summary>
+        /// <returns>configuration object</returns>
+        public IFluentImportPropertyConfiguration<T, TProp> LocateWithImportKey()
+        {
+            _memberInjectionInfo.LocateKey = ImportKey.Key;
+
+            return this;
+        }
+
+        /// <summary>
         /// Provide value for property
         /// </summary>
         /// <param name="value">property value</param>

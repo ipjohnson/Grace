@@ -17,23 +17,15 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         /// </summary>
         /// <param name="activationType"></param>
         /// <param name="injectionScope"></param>
-        public ImmutableCollectionStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
+        public ImmutableCollectionStrategy(Type activationType, IInjectionScope injectionScope) 
+            : base(activationType.GetGenericTypeDefinition(), injectionScope)
         {
-            var staticType = activationType.GetTypeInfo().Assembly.GetType(activationType.FullName.Replace("`1", ""));
+            var staticType = activationType.Assembly
+                .GetType(activationType.FullName.Replace("`1", ""));
 
-            _createMethod = staticType.GetTypeInfo()
-                .GetDeclaredMethods("Create")
-                .First(m =>
-                {
-                    var parameters = m.GetParameters();
-
-                    if (parameters.Length == 1 && parameters[0].ParameterType.IsArray)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                });
+            _createMethod = staticType
+                .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                .First(m => m.Name == "Create" && m.GetParameters() is [{ ParameterType.IsArray: true }]);
         }
 
 

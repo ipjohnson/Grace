@@ -18,7 +18,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         protected override ConstructorInfo PickConstructor(IInjectionScope injectionScope, TypeActivationConfiguration configuration,
             IActivationExpressionRequest request, ConstructorInfo[] constructors)
         {
+            #if NET6_0_OR_GREATER
+            return constructors.MaxBy(c => c.GetParameters().Length);
+            #else
             return constructors.OrderByDescending(c => c.GetParameters().Length).First();
+            #endif
         }
     }
 }

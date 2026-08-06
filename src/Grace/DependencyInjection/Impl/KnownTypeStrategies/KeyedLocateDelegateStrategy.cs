@@ -46,9 +46,13 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">unused by KeyedLocateDelegateStrategy</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key = null)
         {
             var objectDelegate = _delegates.GetValueOrDefault(activationType);
 
@@ -76,14 +80,13 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// <param name="request"></param>
         public IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var openMethod = typeof(KeyedLocateDelegateStrategy).GetRuntimeMethod(nameof(CreateKeyedDelegate),
-                new[] { typeof(IExportLocatorScope) });
-
-            var closedMethod = openMethod.MakeGenericMethod(request.ActivationType.GenericTypeArguments);
+            var method = typeof(KeyedLocateDelegateStrategy)
+                .GetRuntimeMethod(nameof(CreateKeyedDelegate), [typeof(IExportLocatorScope)])
+                .MakeGenericMethod(request.ActivationType.GenericTypeArguments);
 
             request.RequireExportScope();
 
-            var expression = Expression.Call(null, closedMethod, request.ScopeParameter);
+            var expression = Expression.Call(null, method, request.ScopeParameter);
 
             return request.Services.Compiler.CreateNewResult(request, expression);
         }
@@ -101,11 +104,8 @@ namespace Grace.DependencyInjection.Impl.KnownTypeStrategies
         /// Provide secondary strategies such as exporting property or method
         /// </summary>
         /// <returns>export strategies</returns>
-        public IEnumerable<ICompiledExportStrategy> SecondaryStrategies()
-        {
-            return ImmutableLinkedList<ICompiledExportStrategy>.Empty;
-        }
-
+        public IEnumerable<ICompiledExportStrategy> SecondaryStrategies() => [];
+        
         /// <summary>
         /// Creates a new keyed delegate
         /// </summary>

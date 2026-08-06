@@ -141,12 +141,12 @@ namespace Grace.DependencyInjection.Impl
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="defaultValue"></param>
-        public T LocateOrDefault<T>(T defaultValue = default(T))
+        public T LocateOrDefault<T>(T defaultValue = default)
         {
             return (T)LocateOrDefault(typeof(T), defaultValue);
         }
 
-        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
+        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context, object key)
         {
             var initialStorage = InternalScopedStorage;
             var storage = initialStorage;
@@ -161,14 +161,14 @@ namespace Grace.DependencyInjection.Impl
                 storage = storage.Next;
             }
 
-            var value = createDelegate(this, this, context);
+            var value = createDelegate(this, this, context, key);
 
             if (Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage) == initialStorage)
             {
                 return (T)value;
             }
 
-            return HandleScopedStorageCollision<T>(id, (T)value);
+            return HandleScopedStorageCollision(id, (T)value);
         }
 
         /// <summary>
@@ -198,10 +198,10 @@ namespace Grace.DependencyInjection.Impl
                 Interlocked.CompareExchange(ref InternalScopedStorage, new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value }, initialStorage), 
                 initialStorage))
             {
-                return (T)value;
+                return value;
             }
 
-            return HandleScopedStorageCollision<T>(id, (T)value);
+            return HandleScopedStorageCollision(id, value);
 
         }
 
@@ -253,8 +253,8 @@ namespace Grace.DependencyInjection.Impl
         
         public abstract object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
         public abstract T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
-        public abstract List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null);
-        public abstract List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null);
+        public abstract List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null, object withKey = null);
+        public abstract List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null, object withKey = null);
         public abstract bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);
 
         public abstract bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false);

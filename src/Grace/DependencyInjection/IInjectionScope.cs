@@ -88,6 +88,28 @@ namespace Grace.DependencyInjection
             object extraData, ActivationStrategyFilter consider, bool allowNull);
 
         /// <summary>
+        /// Internal locate activation delegate method
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="disposalScope"></param>
+        /// <param name="type"></param>
+        /// <param name="consider"></param>
+        /// <param name="key"></param>
+        /// <param name="realKey"></param>
+        /// <param name="injectionContext"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        bool InternalTryLocateActivationDelegate(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            ActivationStrategyFilter consider, 
+            object key, 
+            object realKey,
+            IInjectionContext injectionContext, 
+            out object value);
+
+        /// <summary>
         /// Internal locate all method
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -97,7 +119,15 @@ namespace Grace.DependencyInjection
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <param name="comparer"></param>
-        List<T> InternalLocateAll<T>(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, object extraData, ActivationStrategyFilter consider, IComparer<T> comparer);
+        /// <param name="withKey"></param>
+        List<T> InternalLocateAll<T>(
+            IExportLocatorScope scope, 
+            IDisposalScope disposalScope, 
+            Type type, 
+            object withKey, 
+            object extraData, 
+            ActivationStrategyFilter consider, 
+            IComparer<T> comparer);
 
         /// <summary>
         /// 

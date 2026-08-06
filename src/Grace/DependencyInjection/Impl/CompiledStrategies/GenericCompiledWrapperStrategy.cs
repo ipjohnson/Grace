@@ -12,7 +12,10 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     {
         private readonly IDefaultStrategyExpressionBuilder _builder;
         private int _wrappedGenericArgPosition;
-        private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+        private ImmutableHashTree<Type, ActivationStrategyDelegate> _delegates 
+            = ImmutableHashTree<Type, ActivationStrategyDelegate>.Empty;
+        private ImmutableHashTree<(Type, object), ActivationStrategyDelegate> _keyedDelegates 
+            = ImmutableHashTree<(Type, object), ActivationStrategyDelegate>.Empty;
 
         /// <summary>
         /// Default constructor
@@ -47,11 +50,17 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
         /// <param name="scope">injection scope</param>
         /// <param name="compiler"></param>
         /// <param name="activationType">activation type</param>
+        /// <param name="key">key of keyed activation</param>
         /// <returns>activation delegate</returns>
-        public ActivationStrategyDelegate GetActivationStrategyDelegate(IInjectionScope scope, IActivationStrategyCompiler compiler,
-            Type activationType)
+        public ActivationStrategyDelegate GetActivationStrategyDelegate(
+            IInjectionScope scope, 
+            IActivationStrategyCompiler compiler,
+            Type activationType,
+            object key = null)
         {
-            var objectDelegate = _delegates.GetValueOrDefault(activationType);
+            var objectDelegate = key == null
+                ? _delegates.GetValueOrDefault(activationType)
+                : _keyedDelegates.GetValueOrDefault((activationType, key));
 
             if (objectDelegate != null)
             {
@@ -59,12 +68,20 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
             }
 
             var request = compiler.CreateNewRequest(activationType, 1, scope);
+            request.SetLocateKey(key);
 
             var expression = GetActivationExpression(scope, request);
 
             objectDelegate = compiler.CompileDelegate(scope, expression);
 
-            ImmutableHashTree.ThreadSafeAdd(ref _delegates, activationType, objectDelegate);
+            if (key == null)
+            {
+                ImmutableHashTree.ThreadSafeAdd(ref _delegates, activationType, objectDelegate);
+            }
+            else
+            {
+                ImmutableHashTree.ThreadSafeAdd(ref _keyedDelegates, (activationType, key), objectDelegate);
+            }
 
             return objectDelegate;
         }

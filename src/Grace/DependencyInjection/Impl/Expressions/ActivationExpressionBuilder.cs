@@ -21,6 +21,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
 
         /// <summary>
+        /// Get a linq expression to satisfy requests for T[] or IEnumerable&lt;T&gt;
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        IActivationExpressionResult GetEnumerableActivationExpression(IInjectionScope scope, IActivationExpressionRequest request);
+
+        /// <summary>
         /// Decorate an export strategy with decorators
         /// </summary>
         /// <param name="scope">scope</param>
@@ -76,77 +83,40 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request">request</param>
         public virtual IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
         {
-            var activationExpressionResult = GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey);
+            var activationExpressionResult =
+                GetValueFromRequest(scope, request, request.ActivationType, request.LocateKey)
+                ?? GetValueFromInjectionValueProviders(scope, request)
+                ?? GetActivationExpressionFromStrategies(scope, request)
+                ?? GetEnumerableActivationExpression(scope, request)
+                ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
             if (activationExpressionResult != null)
             {
                 return activationExpressionResult;
-            }
-
-            activationExpressionResult = GetValueFromInjectionValueProviders(scope, request);
-
-            if (activationExpressionResult != null)
-            {
-                return activationExpressionResult;
-            }
-
-            activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
-
-            if (activationExpressionResult != null)
-            {
-                return activationExpressionResult;
-            }
-
-            if (request.ActivationType.IsArray)
-            {
-                return ArrayExpressionCreator.GetArrayExpression(scope, request);
-            }
-
-            if (request.ActivationType.IsConstructedGenericType &&
-                request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            {
-                return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator);
-            }
-
-            var wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-            if (wrapperResult != null)
-            {
-                return wrapperResult;
             }
 
             if (scope.MissingExportStrategyProviders.Any())
             {
                 lock (scope.GetLockObject(InjectionScope.ActivationStrategyAddLockName))
                 {
-                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+                    activationExpressionResult =
+                        GetActivationExpressionFromStrategies(scope, request)
+                        ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (activationExpressionResult != null)
                     {
                         return activationExpressionResult;
-                    }
-
-                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-                    if (wrapperResult != null)
-                    {
-                        return wrapperResult;
                     }
 
                     request.Services.Compiler.ProcessMissingStrategyProviders(scope, request);
 
-                    activationExpressionResult = GetActivationExpressionFromStrategies(scope, request);
+                    activationExpressionResult =
+                        GetActivationExpressionFromStrategies(scope, request)
+                        ?? WrapperExpressionCreator.GetActivationExpression(scope, request);
 
                     if (activationExpressionResult != null)
                     {
                         return activationExpressionResult;
-                    }
-
-                    wrapperResult = WrapperExpressionCreator.GetActivationExpression(scope, request);
-
-                    if (wrapperResult != null)
-                    {
-                        return wrapperResult;
                     }
                 }
             }
@@ -169,6 +139,28 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return GetValueFromInjectionContext(scope, request);
         }
 
+        /// <summary>
+        /// Get a linq expression to satisfy requests for T[] or IEnumerable&lt;T&gt;
+        /// </summary>
+        /// <param name="scope">scope</param>
+        /// <param name="request">request</param>
+        public IActivationExpressionResult GetEnumerableActivationExpression(
+            IInjectionScope scope, 
+            IActivationExpressionRequest request)
+        {
+            var activationType = request.ActivationType;
+
+            return activationType switch 
+            {
+                { IsArray: true } => ArrayExpressionCreator.GetArrayExpression(scope, request),
+
+                { IsConstructedGenericType: true } 
+                    when activationType.GetGenericTypeDefinition() == typeof(IEnumerable<>) 
+                    => EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator),
+
+                _ => null,
+            };
+        }
 
         /// <summary>
         /// Get a value dynamically
@@ -229,9 +221,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             var key = request.LocateKey;
 
-            if (key is string)
+            if (key is string stringKey)
             {
-                key = ((string)key).ToLowerInvariant();
+                key = stringKey.ToLowerInvariant();
             }
 
             request.RequireExportScope();
@@ -294,6 +286,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
             return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
         }
 
+        private static T ConvertKey<T>(object key)
+        {
+            return key == null
+                ? default
+                : typeof(T).IsAssignableFrom(key.GetType()) 
+                    ? (T)key 
+                    : throw new InvalidOperationException($"Key '{key}' of type {key.GetType().FullName} cannot be converted to {typeof(T).FullName}");
+        }
+
         /// <summary>
         /// Get expression result from request
         /// </summary>
@@ -301,14 +302,44 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="request"></param>
         /// <param name="activationType"></param>
         /// <param name="key"></param>
-        protected virtual IActivationExpressionResult GetValueFromRequest(IInjectionScope scope,
-                                                               IActivationExpressionRequest request,
-                                                               Type activationType,
-                                                               object key)
+        protected virtual IActivationExpressionResult GetValueFromRequest(
+            IInjectionScope scope,
+            IActivationExpressionRequest request,
+            Type activationType,
+            object key)
         {
-            var knownValues =
-                request.KnownValueExpressions.Where(
-                    v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo())).ToArray();
+            // Must be checked first, otherwise a compatible type might be found in KnownValues!
+            if (ReferenceEquals(key, ImportKey.Key))
+            {                
+                // `Other` requests are variations of their parent request: wrappers, collection strategies, etc.
+                // We need to climb up to the original request: a `Root`, or a child `ConstructorParameter`, `MethodParameter` or `Property`.                
+                var original = request; 
+                while (original.RequestType == RequestType.Other)
+                {
+                    original = original.Parent;
+                }
+                
+                var parent = original.Parent;
+                if (parent == null)
+                {
+                    return request.Services.Compiler.CreateNewResult(request, Expression.Constant(null, activationType));
+                }
+
+                Expression keyExpression = parent.GetKeyExpression();
+                
+                var convertMethod = typeof(ActivationExpressionBuilder)
+                    .GetMethod(nameof(ConvertKey), BindingFlags.Static | BindingFlags.NonPublic)
+                    .MakeGenericMethod(activationType);
+
+                var convertedKeyExpression = Expression.Call(null, convertMethod, keyExpression);
+
+                return request.Services.Compiler.CreateNewResult(request, convertedKeyExpression);
+            }
+
+            var knownValues = request
+                .KnownValueExpressions
+                .Where(v => activationType.GetTypeInfo().IsAssignableFrom(v.ActivationType.GetTypeInfo()))
+                .ToArray();
 
             if (knownValues.Length > 0)
             {
@@ -319,18 +350,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (key != null)
                 {
-                    IKnownValueExpression knownValue;
-
-                    if (key is string keyString)
-                    {
-                        knownValue =
-                            knownValues.FirstOrDefault(v =>
-                                string.Compare(keyString, v.Key as string, StringComparison.CurrentCultureIgnoreCase) == 0);
-                    }
-                    else
-                    {
-                        knownValue = knownValues.FirstOrDefault(v => v.Key == key);
-                    }
+                    var knownValue = key is string keyString 
+                        ? knownValues.FirstOrDefault(v => keyString.Equals(v.Key as string, StringComparison.CurrentCultureIgnoreCase))
+                        : knownValues.FirstOrDefault(v => key == v.Key);
 
                     if (knownValue != null)
                     {
@@ -350,15 +372,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
                 if (request.Info is ParameterInfo parameterInfo)
                 {
-                    var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name));
-
-                    if (knownValue != null)
-                    {
-                        return knownValue.ValueExpression(request);
-                    }
-
-                    knownValue = knownValues.FirstOrDefault(v =>
-                        Equals(v.Position.GetValueOrDefault(-1), parameterInfo.Position));
+                    var knownValue = 
+                        knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name))
+                        ?? knownValues.FirstOrDefault(v => Equals(v.Position ?? -1, parameterInfo.Position));
 
                     if (knownValue != null)
                     {
@@ -533,7 +549,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     if (request.LocateKey != null)
                     {
                         var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
-
                         if (keyedStrategy != null)
                         {
                             return ActivationExpressionForStrategy(scope, request, keyedStrategy);
@@ -576,7 +591,6 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 if (request.LocateKey != null)
                 {
                     var keyedStrategy = collection.GetKeyedStrategy(request.LocateKey);
-
                     if (keyedStrategy != null)
                     {
                         return ActivationExpressionForStrategy(scope, request, keyedStrategy);
