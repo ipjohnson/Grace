@@ -51,4 +51,6 @@ Features in Grace
 * [Source Link](https://github.com/dotnet/sourcelink) support enabled
 * [Release Notes](https://github.com/ipjohnson/Grace/wiki/Release-Notes)
 
+Grace is a supported Microsoft DI container, [View Grace in .NET Matrix](https://matrix.dev-team.org/?category=dependency-injection&library=Grace).
+
 Special thanks to @silkfire for the logo
